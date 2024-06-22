@@ -1,0 +1,11 @@
+.App {
+  text-align: center;
+}
+.App .Navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.App .service_tabs{
+  margin-top: 20px;
+}
