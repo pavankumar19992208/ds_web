@@ -106,8 +106,8 @@
 }
 
 .loginPopupContainer {
-  min-width: 40%;
-  min-height: 60%;
+  min-width: 525px;
+  min-height: 356px;
   background-color: white;
   padding: 20px;
   border-radius: 10px;
