@@ -78,7 +78,20 @@
   text-align: left;
 }*/
 /* Add this to your CSS file */
-
+.widget-container{
+  border:solid 1px;
+  padding:20px;
+  border-radius: 10px;
+  margin-left:5%;
+  margin-right: 5%;
+  margin-top: 2%;
+}
+.widget-align-left{
+  margin-left: 10%;
+}
+.widget-align-right{
+  margin-right: 20%;
+}
 .loginPopup {
   position: fixed;
   top: 0;
@@ -93,6 +106,8 @@
 }
 
 .loginPopupContainer {
+  min-width: 40%;
+  min-height: 60%;
   background-color: white;
   padding: 20px;
   border-radius: 10px;
@@ -109,17 +124,17 @@
   display: flex;
   justify-content: space-between;
   align-items:right;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 }
 
 .loginHeader h2 {
   margin: 0;
-  font-size: medium;
+  font-size:small;
   color:black;
   text-align: center;
   letter-spacing: 0.1em;
   font-weight: 500; 
-  border: 1px solid green;
+  border: 1px solid rgb(10, 10, 10);
   border-radius: 5px;
   padding: 10px 20px;
   display: inline-block;
@@ -128,16 +143,17 @@
 .closeButton {
   background-color: transparent;
   border: none;
-  font-size: 18px;
+  font-size: 15px;
+  font-weight:700 ;
   cursor: pointer;
-  border: 1px solid green;
+  border: 1px solid rgb(7, 7, 7);
   border-radius: 5px;
   padding: 10px 20px;
   display: inline-block;
 }
 
 .closeButton:hover {
-  color: #ccc;
+  color:red;
 }
 
 .inputGroup {
@@ -148,15 +164,16 @@
   display: block;
   margin-bottom: 10px;
   font-weight: bold;
+
 }
 
 .inputGroup input[type="text"],.inputGroup input[type="password"] {
   padding: 10px;
-  width: 90%;
+  width: 50%;
   border: 1px solid #9c1149;
   border-radius: 5px;
   font-size: 16px;
-  margin-top: 0%;
+ 
   
 
   
@@ -208,17 +225,19 @@
 .forgotPassword {
   background-color: transparent;
   border: none;
-  padding: 10px 20px;
-  font-size: 16px;
+  padding: 10px 15px;
+  font-size: 14px;
   cursor: pointer;
   height: 40px;
-  width: 100%;
+  color: #d85050;
+  text-decoration: underline;
+  width:fit-content;
   margin-right: 10px;
   justify-self: start;  
 }
 
 .forgotPassword:hover {
-  color: #ccc;
+  color: #f41515;
   
 }
 .inputGroup inputIcon from .loginbody span{
@@ -252,12 +271,11 @@
 
 }
 .button-grid {
-  display: grid;
+  display: flex;
   grid-template-columns: 1fr 1fr;
-  justify-content: space-between;
-  gap:190px;
+  /* justify-content: space-between; */
   justify-items: stretch;
-
+  gap: 62px;
 }
 
 
