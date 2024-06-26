@@ -31,7 +31,6 @@ const NavBar = () => {
     color: '#042642',
     fontFamily: 'monospace',
     borderRadius: '30px',
-    // border: '1px solid #04264229',
     marginLeft: '1.5%',
     marginRight: '1.5%',
     marginTop: windowWidth < 450 ? '3%' : '1%',
