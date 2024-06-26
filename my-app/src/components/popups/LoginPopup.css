@@ -1,0 +1,281 @@
+/* LoginPopup.css */
+/*.loginPopup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 30px;
+}
+
+.loginPopupContainer {
+  width: 30%;
+  height: 60%;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 30px;
+}
+
+.loginHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.closeButton {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-size: 20px;
+}
+
+.loginBody {
+  display: flex;
+  flex-direction: column;
+}
+
+.inputGroup {
+  margin-bottom: 15px;
+}
+
+.inputGroup label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.inputGroup input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.loginButton, .forgotPassword {
+  margin-top: 10px;
+  padding: 10px;
+  width: 100%;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.loginButton {
+  background-color: #007bff;
+  color: white;
+}
+
+.forgotPassword {
+  background-color: transparent;
+  color: red;
+  text-align: left;
+}*/
+/* Add this to your CSS file */
+.widget-container{
+  border:solid 1px;
+  padding:20px;
+  border-radius: 10px;
+  margin-left:5%;
+  margin-right: 5%;
+  margin-top: 2%;
+}
+.widget-align-left{
+  margin-left: 10%;
+}
+.widget-align-right{
+  margin-right: 20%;
+}
+.loginPopup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background-image: url('https://images.unsplash.com/photo-1516919884426-7a6a9a5f9a5d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80'); /* School theme background image */
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loginPopupContainer {
+  min-width: 40%;
+  min-height: 60%;
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  width: 500px;
+  background: #cadcfce7;
+  height: 300px;
+  overflow: hidden;
+
+}
+
+
+.loginHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items:right;
+  margin-bottom: 15px;
+}
+
+.loginHeader h2 {
+  margin: 0;
+  font-size:small;
+  color:black;
+  text-align: center;
+  letter-spacing: 0.1em;
+  font-weight: 500; 
+  border: 1px solid rgb(10, 10, 10);
+  border-radius: 5px;
+  padding: 10px 20px;
+  display: inline-block;
+}
+
+.closeButton {
+  background-color: transparent;
+  border: none;
+  font-size: 15px;
+  font-weight:700 ;
+  cursor: pointer;
+  border: 1px solid rgb(7, 7, 7);
+  border-radius: 5px;
+  padding: 10px 20px;
+  display: inline-block;
+}
+
+.closeButton:hover {
+  color:red;
+}
+
+.inputGroup {
+  margin-bottom: 20px;
+}
+
+.inputGroup label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: bold;
+
+}
+
+.inputGroup input[type="text"],.inputGroup input[type="password"] {
+  padding: 10px;
+  width: 50%;
+  border: 1px solid #9c1149;
+  border-radius: 5px;
+  font-size: 16px;
+ 
+  
+
+  
+}
+
+.inputGroup input[type="text"]:focus,.inputGroup input[type="password"]:focus {
+  border-color: #aaa;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  
+}
+
+.inputIcon {
+  position: relative;
+
+}
+
+.inputIcon input[type="text"],.inputIcon input[type="password"] {
+  padding-left: 35px;
+}
+
+.inputIcon i {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-size: 18px;
+  color: #ccc;
+}
+
+.loginButton {
+  background-color: #4CAF50;
+  color: #fff;
+  padding: 10px 20px;
+  
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  height: 40px;
+  width:fit-content;
+  justify-self: end;
+  
+
+
+}
+
+.loginButton:hover {
+  background-color: #3e8e41;
+}
+
+.forgotPassword {
+  background-color: transparent;
+  border: none;
+  padding: 10px 15px;
+  font-size: 14px;
+  cursor: pointer;
+  height: 40px;
+  color: #d85050;
+  text-decoration: underline;
+  width:fit-content;
+  margin-right: 10px;
+  justify-self: start;  
+}
+
+.forgotPassword:hover {
+  color: #f41515;
+  
+}
+.inputGroup inputIcon from .loginbody span{
+  justify-content: left;
+  position: relative;
+  width: 300px;
+  margin-top: 35px;
+  font-weight: bold;
+
+
+}
+.inputGroup i {
+  position: absolute;
+  left: 10px;
+  top: 12px;
+  color: #666;
+}
+.inputGroup span,.inputGroup label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: bold;
+  text-align: center; /* align left */
+  padding-left: 100px;
+}
+.space {
+  text-align: left;
+  padding-left: 35px;
+  padding-top: 10px;
+  padding-bottom: 0%;
+  margin-bottom: 5px;
+
+}
+.button-grid {
+  display: flex;
+  grid-template-columns: 1fr 1fr;
+  /* justify-content: space-between; */
+  justify-items: stretch;
+  gap: 62px;
+}
+
+

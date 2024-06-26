@@ -2,17 +2,24 @@
 import React, { useState, useEffect } from 'react';
 import logo from '../images/large-dNk4O_UUZ-transformed (1).png';
 import { FaBars } from 'react-icons/fa'; // Import the pi-bars icon
+import LoginPopup from './popups/LoginPopup';
 
 const NavBar = () => {
   const [isHovered, setIsHovered] = useState({});
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [isMenuOpen, setIsMenuOpen] = useState(false); // State to toggle the menu
+  const [showLoginPopup, setShowLoginPopup] = useState(false); // State to control the visibility of the LoginPopup
 
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+    // Function to toggle the LoginPopup visibility
+    const toggleLoginPopup = () => {
+      setShowLoginPopup(!showLoginPopup);
+    };
 
   const navBarStyle = {
     maxHeight: windowWidth < 768 ? '20vh' : '10vh',
@@ -108,6 +115,7 @@ const renderButtons = () => (
       style={buttonStyle('login')} 
       onMouseEnter={() => setIsHovered({...isHovered, login: true})}
       onMouseLeave={() => setIsHovered({...isHovered, login: false})}
+      onClick={toggleLoginPopup}
     >
       Admin Login
     </button>
@@ -115,6 +123,7 @@ const renderButtons = () => (
 );
 
   return (
+    <>
     <div style={navBarStyle}>
       <img src={logo} alt="Logo" style={logoStyle} />
       <div style={titleStyle}>
@@ -137,6 +146,8 @@ const renderButtons = () => (
       )}
       {isMenuOpen && windowWidth < 450 && renderButtons()} 
     </div>
+    {showLoginPopup && <LoginPopup onClose={toggleLoginPopup} />}
+    </>
   );
 };
 
