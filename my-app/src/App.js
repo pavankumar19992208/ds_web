@@ -1,15 +1,16 @@
-
 import './App.css';
-import Navbar from './components/Navbar'
-import Services from './components/Services'
-import Welcome from './components/Welcome'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import P2pHeader from './components/P2pHeader/P2pHeader';
+import WelcomeBoard from './components/WelcomeBoard/WelcomeBoard'
+
 function App() {
   return (
-    <div className="App">
-      <div className='Navbar'><Navbar/></div>
-      <div classNmae='Welcome'><Welcome/></div>
-      <div className='service_tabs'><Services/></div>
-    </div>
+    <Router>
+        <Routes>
+          <Route path="/" element={<WelcomeBoard  />} />
+          <Route path="/p2pheader" element={<P2pHeader />} />
+        </Routes>
+    </Router>
   );
 }
 

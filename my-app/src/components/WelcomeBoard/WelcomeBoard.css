@@ -1,0 +1,16 @@
+.App {
+    height: 100vh; /* Viewport height */
+    overflow-y: scroll; /* Allows content to scroll */
+    scrollbar-width: none; 
+  }
+  .App .Navbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .App .service_tabs{
+    margin-top: 20px;
+  }
+  .App::-webkit-scrollbar {
+    display: none; /* For Chrome, Safari, and Opera */
+  }

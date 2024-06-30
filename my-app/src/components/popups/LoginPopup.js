@@ -1,8 +1,13 @@
 import React from 'react';
 import './LoginPopup.css'; // Assuming you will create this CSS file
-
+import { useNavigate } from 'react-router-dom';
 
 const LoginPopup = ({ onClose }) => {
+  let navigate = useNavigate();
+
+  function handleLogin() {
+    navigate('/p2pheader'); // Use the path to your P2pheader component
+  }
   return (
 <div className="loginPopup">
   <div className="loginPopupContainer">
@@ -24,7 +29,7 @@ const LoginPopup = ({ onClose }) => {
       </div>
       <div class="button-grid">
       <button className="forgotPassword widget-align-left" >forgot password</button>
-      <button className="loginButton widget-align-right">LOGIN</button>
+      <button className="loginButton widget-align-right" onClick={handleLogin}>LOGIN</button>
       </div>
     </div>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />

@@ -1,8 +1,10 @@
 // In StudentServices.js
+import './StudentServices.css'
+import SsGenie from './StudentServices/Ss_Genie';
 export default function StudentServices(props) {
     return (
-        <div style={{ backgroundColor: '#EA738D88', marginRight: '20px', marginLeft: '20px', borderRadius: '30px', ...props.style }}>
-         <p style={{ margin: 0 }}>klghcfhjbdncvkdnvkljbhdv</p>
+        <div className="SS-container">
+         <SsGenie/>
         </div>
       );
   }
