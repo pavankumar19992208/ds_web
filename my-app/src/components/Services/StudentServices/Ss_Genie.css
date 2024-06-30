@@ -1,0 +1,15 @@
+.container {
+  display: flex; /* Aligns children (side-by-side containers) in a row */
+}
+
+.side-by-side {
+  flex: 1 1; /* Each container takes equal width */
+  display: flex;
+  justify-content: center; /* Center items horizontally */
+  align-items: center; /* Center items vertically */
+  height: 100vh; /* Adjust height as needed */
+}
+
+.item {
+  /* Style for your items */
+}
