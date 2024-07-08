@@ -9,6 +9,11 @@ function SsGenie() {
   const images = [genieimg1, genieimg2, genieimg3];
   return (
     <div className="container">
+              <div className="side-by-side">
+        <div className="item">
+          <ImageSlider images={images} />
+        </div>
+      </div>
       <div className="side-by-side">
         <div className="item services-list">
           <ul>
@@ -20,11 +25,6 @@ function SsGenie() {
             <li><strong>Exam-Ready Responses:</strong> With Genie, students receive structured responses that they can directly use in exams and worksheets, enhancing their learning and preparation.</li>
             <li><strong>Multimedia Content:</strong> Genie delivers content in various formats, including images, videos, and text, catering to different learning preferences and making education engaging and fun.</li>
           </ul>
-        </div>
-      </div>
-      <div className="side-by-side">
-        <div className="item">
-          <ImageSlider images={images} />
         </div>
       </div>
     </div>
