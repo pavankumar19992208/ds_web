@@ -2,9 +2,20 @@ import React, { useState, useEffect } from 'react';
 import { storage } from '../../../connections/firebase'; // Ensure you have configured Firebase
 import axios from 'axios';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import Select from 'react-select';
+import makeAnimated from 'react-select/animated';
 import './TeacherRegistration.css'; // Import the CSS file
 
-const subjectsList = ['ENGLISH', 'TELUGU', 'MATHEMATICS', 'SCIENCE', 'SOCIAL', 'HINDI'];
+const subjectsList = [
+    { value: 'ENGLISH', label: 'ENGLISH' },
+    { value: 'TELUGU', label: 'TELUGU' },
+    { value: 'MATHEMATICS', label: 'MATHEMATICS' },
+    { value: 'SCIENCE', label: 'SCIENCE' },
+    { value: 'SOCIAL', label: 'SOCIAL' },
+    { value: 'HINDI', label: 'HINDI' }
+];
+
+const animatedComponents = makeAnimated();
 
 const TeacherRegistration = () => {
     const [formData, setFormData] = useState({
@@ -49,14 +60,8 @@ const TeacherRegistration = () => {
         setTeacherPicFile(e.target.files[0]);
     };
 
-    const handleSubjectsChange = (e) => {
-        const { options } = e.target;
-        const selectedSubjects = [];
-        for (let i = 0, l = options.length; i < l; i++) {
-            if (options[i].selected) {
-                selectedSubjects.push(options[i].value);
-            }
-        }
+    const handleSubjectsChange = (selectedOptions) => {
+        const selectedSubjects = selectedOptions ? selectedOptions.map(option => option.value) : [];
         setFormData({
             ...formData,
             SUBJECTS: selectedSubjects
@@ -102,19 +107,14 @@ const TeacherRegistration = () => {
             <div className="form-group">
                 <label>
                     Subjects:
-                    <select
-                        multiple
-                        name="SUBJECTS"
-                        value={formData.SUBJECTS}
+                    <Select
+                        closeMenuOnSelect={false}
+                        components={animatedComponents}
+                        isMulti
+                        options={subjectsList}
                         onChange={handleSubjectsChange}
                         required
-                    >
-                        {subjectsList.map((subject) => (
-                            <option key={subject} value={subject}>
-                                {subject}
-                            </option>
-                        ))}
-                    </select>
+                    />
                 </label>
                 <div>
                     Selected Subjects: {formData.SUBJECTS.join(', ')}
