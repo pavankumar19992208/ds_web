@@ -27,6 +27,16 @@ const TeacherRegistration = () => {
     });
     const [teacherPicFile, setTeacherPicFile] = useState(null);
 
+    useEffect(() => {
+        const userDetails = JSON.parse(localStorage.getItem('userDetails'));
+        if (userDetails) {
+            setFormData((prevFormData) => ({
+                ...prevFormData,
+                SCHOOL_ID: userDetails.data.SCHOOL_ID
+            }));
+        }
+    }, []);
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({

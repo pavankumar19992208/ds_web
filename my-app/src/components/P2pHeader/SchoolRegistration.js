@@ -59,7 +59,8 @@ const SchoolRegistration = () => {
         try {
             let schoolLogoUrl = '';
             if (schoolLogoFile) {
-                const storageRef = ref(storage, `school_logos/${schoolLogoFile.name}`);
+                const fileExtension = schoolLogoFile.name.split('.').pop();
+                const storageRef = ref(storage, `school_logos/${formData.SCHOOL_ID}.${fileExtension}`);
                 await uploadBytes(storageRef, schoolLogoFile);
                 schoolLogoUrl = await getDownloadURL(storageRef);
             }

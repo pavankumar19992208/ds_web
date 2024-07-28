@@ -19,8 +19,10 @@ const SchoolLogin = () => {
         
             if (response.status === 200) {
                 console.log('Response:', response.data);
+                // Extract the data excluding the password field
+                const { PASSWORD, ...userDetails } = response.data;
                 // Store the details from the backend
-                localStorage.setItem('userDetails', JSON.stringify(response.data));
+                localStorage.setItem('userDetails', JSON.stringify(userDetails));
                 navigate('/school_dashboard'); // Adjust the path as needed
             } else {
                 setError('Login failed. Please check your credentials.');

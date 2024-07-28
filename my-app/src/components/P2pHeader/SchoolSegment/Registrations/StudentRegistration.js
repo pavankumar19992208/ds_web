@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './StudentRegistration.css';
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage } from '../../../connections/firebase';
@@ -25,6 +25,16 @@ const StudentRegistration = () => {
   });
 
   const [profilePic, setProfilePic] = useState(null);
+
+  useEffect(() => {
+	const userDetails = JSON.parse(localStorage.getItem('userDetails'));
+	if (userDetails) {
+	  setFormData((prevFormData) => ({
+		...prevFormData,
+		SCHOOL_ID: userDetails.data.SCHOOL_ID
+	  }));
+	}
+  }, []);
 
   const handleChange = (e) => {
 	setFormData({
