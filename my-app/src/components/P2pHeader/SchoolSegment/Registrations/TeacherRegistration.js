@@ -127,7 +127,6 @@ const TeacherRegistration = () => {
                         type="file"
                         accept=".svg,.png,.jpg,.jpeg"
                         onChange={handleFileChange}
-                        required
                     />
                 </label>
             </div>
