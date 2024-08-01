@@ -68,6 +68,12 @@ const TeacherRegistration = () => {
         });
     };
 
+    const generateTeacherId = (teacher) => {
+        const randomDigits = Array.from({ length: 4 }, () => Math.floor(Math.random() * 10)).join('');
+        const teacherId = ('t' + teacher.TEACHER_NAME.slice(0, 2) + teacher.SCHOOL_ID.slice(3, 6) + randomDigits).toUpperCase();
+        return teacherId;
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -78,7 +84,8 @@ const TeacherRegistration = () => {
                 teacherPicUrl = await getDownloadURL(storageRef);
             }
 
-            const finalFormData = { ...formData, TEACHER_PIC: teacherPicUrl };
+            const teacherId = generateTeacherId(formData);
+            const finalFormData = { ...formData, TEACHER_ID: teacherId, TEACHER_PIC: teacherPicUrl };
             const response = await axios.post('http://127.0.0.1:8000/tregister', finalFormData);
             console.log('Response:', response.data);
         } catch (error) {

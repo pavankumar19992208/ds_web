@@ -47,6 +47,14 @@ const StudentRegistration = () => {
 		setProfilePic(e.target.files[0]);
 	};
 
+	const generateStudentId = (data) => {
+		const randomInt = String(Math.floor(100 + Math.random() * 900));
+		const schoolId = data.SCHOOL_ID;
+		const gradeStr = data.GRADE.padStart(2, '0');
+		const studentId = "S" + schoolId.slice(0, 2) + schoolId.slice(3, 5) + gradeStr + randomInt;
+		return studentId;
+	};
+
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 
@@ -57,12 +65,15 @@ const StudentRegistration = () => {
 			profilePicUrl = await getDownloadURL(storageRef);
 		}
 
-		const response = await fetch('http://127.0.0.1:8000/st_register', {
+		const studentId = generateStudentId(formData);
+		const finalFormData = { ...formData, STUDENT_ID: studentId, STUDENT_PIC: profilePicUrl };
+
+		const response = await fetch('https://e591-115-98-192-27.ngrok-free.app/st_register', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify({ ...formData, STUDENT_PIC: profilePicUrl })
+			body: JSON.stringify(finalFormData)
 		});
 		const result = await response.json();
 		alert(`Student ID: ${result.student_id}, Password: ${result.password}`);
