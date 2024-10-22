@@ -1,0 +1,133 @@
+#navbar {
+  background-color: #fff;
+  box-shadow: none;
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 100%;
+
+    justify-content: center;
+    height: 60px;
+    border: 1px solid hsla(220, 20%, 80%, 0.4);
+
+}
+
+.navbar-left {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+}
+.navbar-left Button{
+  /* border: 1px solid #ccc; */
+  padding: 10px 20px;
+  background-color: #fff;
+  /* box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);  */
+}
+#avatar{
+  height: 30px;
+  width: 30px;
+}
+
+.profile-card {
+  padding: 20px;
+  text-align: center;
+  width: 500px;
+}
+
+#profile-avatar {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto;
+}
+
+#profile-name {
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+#profile-description {
+  margin-top: 10px;
+  color: #555;
+}
+
+#name{
+    margin-left: 30px !important;
+    color: black;
+    font-family: "Pacifico", cursive;
+    font-weight: 500;
+    font-style: normal;
+    letter-spacing: 2px;
+    font-size: 18px;
+}
+
+.navbar-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+}
+#icon{
+  border: 1px solid hsla(220, 20%, 80%, 0.4);
+}
+#icon, #logout_icon {
+  color: #374441;
+  margin-left: 24px;
+  border-radius: 12px;
+   width: 45px;
+    height: 45px;
+
+}
+
+#calendar-menu {
+  margin-top: 50px;
+}
+
+#logout_icon{
+    color: #374441;
+    background-color: #0E5E9D60;
+   
+}
+#logout_icon:hover{
+    color: white;
+    background-color: #374441;
+}
+/* #navbar{
+    box-shadow: none;
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 100%;
+    background-color: #fff;  
+    font-family: "Ramabhadra", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    align-items: center;
+    height: 50px;
+    border: 1px solid hsla(220, 20%, 80%, 0.4);
+
+}
+
+#calendar-menu{
+   margin-top: 50px;
+
+}
+
+
+
+#icon{
+    color: #374441;
+    width: 30px;
+    height: 30px;
+    margin-right: 20px;
+
+    
+}
+#logout_icon{
+    color: 374441;
+    background-color: #faaa72;
+    width: 30px;
+    height: 30px;
+} */

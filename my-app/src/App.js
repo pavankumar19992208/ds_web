@@ -4,9 +4,9 @@ import P2pHeader from './components/P2pHeader/P2pHeader';
 import WelcomeBoard from './components/WelcomeBoard/WelcomeBoard'
 import SchoolLogin from './components/P2pHeader/SchoolSegment/SchoolLogin';
 import SchoolRegistration from './components/P2pHeader/SchoolRegistration';
-import SchoolDashboard from './components/P2pHeader/SchoolSegment/SchoolDashbord';
 import StudentRegistration from './components/P2pHeader/SchoolSegment/Registrations/StudentRegistration';
 import TeacherRegistration from './components/P2pHeader/SchoolSegment/Registrations/TeacherRegistration';
+import HomePage from './components/P2pHeader/SchoolSegment/schooldashboard/Homepage/SchoolDashboard';
 
 function App() {
   return (
@@ -16,7 +16,7 @@ function App() {
           <Route path="/p2pheader" element={<P2pHeader />} />
           <Route path="/schlogin" element={<SchoolLogin />} />
           <Route path="/register-school" element={<SchoolRegistration />} />
-          <Route path="/school_dashboard" element={<SchoolDashboard />} />
+          <Route path="/school_dashboard" element={<HomePage />} />
           <Route path="/student_registration" element={<StudentRegistration />} />
           <Route path="/teacher_registration" element={<TeacherRegistration />} />
         </Routes>

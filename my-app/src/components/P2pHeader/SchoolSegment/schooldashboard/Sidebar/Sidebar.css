@@ -1,0 +1,91 @@
+
+.sidebar {
+    padding: 1%;
+  width: 15%;
+  background-color: hsl(220, 35%, 97%);;  
+  height: 100vh;
+  position: fixed;
+  left: 0px;
+  top: 50px;
+  overflow-y: auto;
+  border-right: 1px solid hsla(220, 20%, 80%, 0.4);
+  z-index: 1000;
+  transition: width 0.3s ease-in-out;
+
+}
+.sidebar.collapsed {
+  width: 60px !important;
+}
+.profile-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-top: 40px ;
+  border-bottom: 1px solid #ccc;  
+
+}
+
+.profile-card.collapsed {
+  border-bottom: none;
+}
+.profile-card .avatar {
+  width: 60px;
+  height: 60px;
+  
+}
+.sidebar.collapsed .avatar {
+  transition: width 0.3s ease-in-out;
+  width: 40px;
+  height: 40px;
+}
+
+
+.profile-card .username {
+  margin-top: 16px;
+  color: #333;
+  font-family: "Pacifico", cursive;
+  font-weight: 500;
+  font-style: normal;
+  letter-spacing: 2px;
+  font-size: 18px;
+}
+
+.nested {
+  padding-left: 32px; /* Directly setting the padding */
+}
+
+.list-item {
+    margin-bottom: 6px;
+
+    border-radius: 12px; 
+    /* border-bottom: 1px solid black; */
+}
+
+
+/* Existing styles */
+
+
+@media (max-width: 1024px) {
+  .sidebar {
+    padding: 1%;
+    width: 18%;
+    background-color: #f4f4f4;  
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 50px;
+    overflow-y: auto;
+  }
+
+  .profile-card .avatar {
+    width: 40px;
+    height: 40px;
+    
+  }
+  .profile-card .username {
+    font-size: 16px;
+  }
+
+
+}

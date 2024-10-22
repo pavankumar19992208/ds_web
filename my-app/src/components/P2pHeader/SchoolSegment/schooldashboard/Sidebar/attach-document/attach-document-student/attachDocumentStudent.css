@@ -1,0 +1,24 @@
+/* attachDocumentStudent.css */
+.page-container {
+    position: absolute;
+    right: 20px;
+    top: 60px;
+  display: flex;
+  justify-content: flex-end; /* Align items to the right */
+  padding: 20px; /* Optional: Add some padding */
+}
+
+.form-container {
+  max-width: 600px; /* Adjust the width as needed */
+  width: 100%;
+}
+
+.attach-button {
+    width: 50vh;
+  background-color: #3f51b5; /* Primary color */
+  color: white; /* Text color */
+}
+
+.attach-button:hover {
+  background-color: #303f9f; /* Darker shade on hover */
+}

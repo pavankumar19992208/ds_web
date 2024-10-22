@@ -1,0 +1,13 @@
+.attach-document-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  flex-direction: column;
+}
+
+.card {
+  margin: 10px;
+  width: 300px;
+  cursor: pointer;
+}
