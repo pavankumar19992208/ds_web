@@ -1,14 +1,13 @@
 // SchoolLogin.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import '../../popups/LoginPopup.css'; // Update the path as necessary
 
 const SchoolLogin = () => {
     let navigate = useNavigate();
     const [schoolId, setSchoolId] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
+    const [error] = useState('');
 
     const handleLogin = async () => {
         navigate('/school_dashboard');

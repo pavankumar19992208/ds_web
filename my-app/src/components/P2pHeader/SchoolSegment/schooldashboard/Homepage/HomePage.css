@@ -1,5 +1,5 @@
 body, html {
-  overflow-x: hidden; /* Prevent horizontal scrolling */
+  overflow-x: hidden;
   /* background-image: url('./img.jpg'); */
   background-size: cover;
   /* background-color: rgb(235, 235, 235); */

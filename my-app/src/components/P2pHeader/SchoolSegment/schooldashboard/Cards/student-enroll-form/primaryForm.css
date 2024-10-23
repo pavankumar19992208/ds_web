@@ -1,0 +1,51 @@
+.appBar {
+  position: relative;
+}
+
+.layout {
+  display: flex;
+  flex-direction: row; /* Ensure Sidebar and form are in a row */
+  justify-content: center; /* Center horizontally */
+  align-items: flex-start; /* Align items to the start vertically */
+  height: 95vh; /* Full viewport height */
+  width: 100%; /* Full viewport width */
+  padding: 16px; /* theme.spacing(2) */
+  overflow: auto;
+}
+
+.paper {
+  width: 100% ;
+  max-width: 800px; /* Max width of the form */
+  margin: 24px; /* theme.spacing(3) */
+  padding: 16px; /* theme.spacing(2) */
+  margin-top: 80px; /* theme.spacing(10) */
+  overflow: auto; /* Allow scrolling within the form */
+}
+
+@media (min-width: 600px) {
+  .paper {
+    margin-top: 80px; /* theme.spacing(10) */
+    margin-bottom: 48px; /* theme.spacing(6) */
+    padding: 24px; /* theme.spacing(3) */
+  }
+}
+
+.stepper {
+  padding: 24px 0 40px; /* theme.spacing(3, 0, 5) */
+}
+
+.buttons {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.button {
+  margin-top: 24px; /* theme.spacing(3) */
+  margin-left: 8px; /* theme.spacing(1) */
+  background-color: #ff8040; /* Change button color */
+  color: white; /* Change text color */
+}
+
+.button:hover {
+  background-color: #faaa72; /* Change button color on hover */
+}

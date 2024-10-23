@@ -36,9 +36,10 @@ const Cards = ({ studentCount, teacherCount }) => {
         </div>
       </div>
       <div className="card">
-        <h2>Outstanding Student Fees</h2>
+        <h2>Time Tables</h2>
         <div className="button-group">
-          <button id='enroll-btn' onClick={handleFeeDue}>Details</button>
+          <button id='enroll-btn' onClick={handleFeeDue}>Schedule</button>
+          <button>View</button>
         </div>
       </div>
       <div className="card">
@@ -57,7 +58,8 @@ const Cards = ({ studentCount, teacherCount }) => {
       <div className="card">
         <h2>Class Timetables</h2>
         <div className="button-group">
-          <button id='enroll-btn' onClick={handleFeeDue}>View</button>
+          <button id='enroll-btn' onClick={handleFeeDue}>Schedule</button>
+          <button>View</button>
         </div>
       </div>
     </div>

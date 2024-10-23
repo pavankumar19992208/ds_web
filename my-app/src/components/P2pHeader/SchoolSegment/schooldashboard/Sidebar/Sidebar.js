@@ -11,6 +11,7 @@ import { CgAttachment } from "react-icons/cg";
 import { PiMonitorFill } from "react-icons/pi";
 import { BsPersonFillCheck } from "react-icons/bs";
 import { TrendingUp, Home } from '@mui/icons-material';
+import { BiSolidCalendarEdit } from "react-icons/bi";
 import './Sidebar.css'; // Import the CSS file
 
 const Sidebar = ({ visibleItems = [], hideProfile = false }) => { // Add hideProfile prop
@@ -25,8 +26,8 @@ const Sidebar = ({ visibleItems = [], hideProfile = false }) => { // Add hidePro
   }, [location.pathname]);
 
   const navigateToHomepage = () => {
-    navigate('/');
-    setSelectedItem('home');
+    navigate('/school_dashboard');
+    setSelectedItem('school_dashboard');
   };
 
   const navigateToAttachDocument = () => {
@@ -112,6 +113,14 @@ const Sidebar = ({ visibleItems = [], hideProfile = false }) => { // Add hidePro
             <ListItem button className="list-item" sx={listItemHoverStyle}>
               <IoIosAlert size={22} />
               <ListItemText primary="Teacher Alert" className="list-item-text" sx={{ marginLeft: 2 }} />
+            </ListItem>
+          </Tooltip>
+        )}
+        {visibleItems.includes('eventPlanning') && (
+          <Tooltip title="Event Planning" placement="right">
+            <ListItem button className="list-item" sx={listItemHoverStyle}>
+            <BiSolidCalendarEdit size={22} />
+            <ListItemText primary="Event Planning" className="list-item-text" sx={{ marginLeft: 2 }} />
             </ListItem>
           </Tooltip>
         )}

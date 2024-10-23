@@ -5,7 +5,7 @@ import Events from '../Events/Events';
 import Cards from '../Cards/cards';
 import './HomePage.css';
 
-const HomePage = () => {
+const SchoolDashboard = () => {
   const [studentCount, setStudentCount] = useState(0);
   const [teacherCount, setTeacherCount] = useState(0);
 
@@ -47,7 +47,7 @@ const HomePage = () => {
   return (
     <div className="homepage">
       <Navbar />
-      <Sidebar visibleItems={['home', 'attachDocument', 'subjectAllocation', 'attendanceTracking', 'leaveApprovals', 'academicPerformance','teacherAlert']} />
+      <Sidebar visibleItems={['home', 'attachDocument', 'subjectAllocation', 'attendanceTracking', 'leaveApprovals', 'academicPerformance','teacherAlert', 'eventPlanning']} />
       <main className="main-content">
         <Cards studentCount={studentCount} teacherCount={teacherCount} />
       </main>
@@ -56,4 +56,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default SchoolDashboard;
