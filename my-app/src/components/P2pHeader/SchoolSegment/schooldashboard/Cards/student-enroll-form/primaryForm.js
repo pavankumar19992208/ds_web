@@ -15,13 +15,13 @@ import DetailsForm from './personalInfo';
 import GuardianInfoForm from './guardianInfo';
 import AcademicInfoForm from './academicInfo';
 import DocumentsUpload from './documentsUpload';
-import PaymentForm from './stPayment'; // Import the PaymentForm component
-import Sidebar from '../../Sidebar/Sidebar'; // Import Sidebar
-import Navbar from '../../Navbar/Navbar'; // Import Navbar
-import './primaryForm.css'; // Import the CSS file
+import PaymentForm from './stPayment';
+import Sidebar from '../../Sidebar/Sidebar';
+import Navbar from '../../Navbar/Navbar';
+import './primaryForm.css';
 import { GlobalStateContext } from '../../../../../../GlobalStateContext';
-import { storage } from '../../../../../../components/connections/firebase'; // Import Firebase storage
-import { ref, uploadString, getDownloadURL } from 'firebase/storage'; // Import necessary functions
+import { storage } from '../../../../../../components/connections/firebase';
+import { ref, uploadString, getDownloadURL } from 'firebase/storage';
 
 const steps = ['Personal Info', 'Guardian Info', 'Academic \n & Medical Details', 'Upload Documents', 'Payment','Review \n & Submit'];
 
@@ -143,11 +143,11 @@ export default function EnrollForm() {
   };
 
   const handleSubmit = async () => {
-    // Handle form submission logic here
     console.log('Form submitted:', formData);
 
     // Upload documents to Firebase
     for (const doc of formData.documents) {
+      const fileExtension = doc.name.split('.').pop();
       const storageRef = ref(storage, `documents/${doc.type}/${doc.name}`);
       try {
         await uploadString(storageRef, doc.data, 'data_url');
@@ -163,7 +163,7 @@ export default function EnrollForm() {
     <React.Fragment>
       <Navbar schoolName={globalData.data.SCHOOL_NAME} schoolLogo={globalData.data.SCHOOL_LOGO} />
       <main className="layout">
-        <Sidebar visibleItems={['home']} hideProfile={true} /> {/* Add Sidebar */}
+        <Sidebar visibleItems={['home']} hideProfile={true} />
         <Paper className="paper">
           <Typography component="h1" variant="h4" align="center">
             Student's Enroll Form
