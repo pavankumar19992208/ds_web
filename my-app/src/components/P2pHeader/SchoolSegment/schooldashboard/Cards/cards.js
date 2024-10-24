@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './cards.css';
 
-const Cards = ({ studentCount, teacherCount }) => {
+const Cards = ({ studentCount, teacherCount, schoolName, schoolLogo }) => {
   const navigate = useNavigate();
 
   const handleStudentEnrollClick = () => {
@@ -15,6 +15,10 @@ const Cards = ({ studentCount, teacherCount }) => {
 
   const handleFeeDue = () => {
     navigate('/fee-due');
+  };
+
+  const handleModifySchoolData = () => {
+    navigate('/school-internal-data');
   };
 
   return (
@@ -36,9 +40,9 @@ const Cards = ({ studentCount, teacherCount }) => {
         </div>
       </div>
       <div className="card">
-        <h2>Time Tables</h2>
+        <h2>School Internal Data</h2>
         <div className="button-group">
-          <button id='enroll-btn' onClick={handleFeeDue}>Schedule</button>
+          <button id='enroll-btn' onClick={handleModifySchoolData}>Modify</button>
           <button>View</button>
         </div>
       </div>

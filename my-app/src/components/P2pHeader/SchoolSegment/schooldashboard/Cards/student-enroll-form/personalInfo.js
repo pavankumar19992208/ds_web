@@ -12,8 +12,37 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function DetailsForm() {
+export default function DetailsForm({ formData, setFormData }) {
   const classes = useStyles();
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      personalInfo: {
+        ...prevData.personalInfo,
+        [name]: value,
+      },
+    }));
+  };
+
+  const handleFileChange = (event) => {
+    const { name, files } = event.target;
+    const file = files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setFormData((prevData) => ({
+          ...prevData,
+          personalInfo: {
+            ...prevData.personalInfo,
+            [name]: e.target.result,
+          },
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   return (
     <React.Fragment>
@@ -35,6 +64,8 @@ export default function DetailsForm() {
             label="Full name"
             fullWidth
             autoComplete="name"
+            value={formData.personalInfo.fullName || ''}
+            onChange={handleChange}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -48,6 +79,8 @@ export default function DetailsForm() {
             InputLabelProps={{
               shrink: true,
             }}
+            value={formData.personalInfo.dob || ''}
+            onChange={handleChange}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -58,6 +91,8 @@ export default function DetailsForm() {
             label="Gender"
             select
             fullWidth
+            value={formData.personalInfo.gender || ''}
+            onChange={handleChange}
           >
             <MenuItem value="male">Male</MenuItem>
             <MenuItem value="female">Female</MenuItem>
@@ -75,6 +110,7 @@ export default function DetailsForm() {
             InputLabelProps={{
               shrink: true,
             }}
+            onChange={handleFileChange}
           />
         </Grid>
 
@@ -92,6 +128,8 @@ export default function DetailsForm() {
             label="Class"
             select
             fullWidth
+            value={formData.personalInfo.class || ''}
+            onChange={handleChange}
           >
             {[...Array(10).keys()].map(i => (
               <MenuItem key={i + 1} value={i + 1}>{i + 1}</MenuItem>
@@ -105,6 +143,8 @@ export default function DetailsForm() {
             name="previousSchool"
             label="Previous School Name"
             fullWidth
+            value={formData.personalInfo.previousSchool || ''}
+            onChange={handleChange}
           />
         </Grid>
         <Grid item xs={12}>
@@ -114,6 +154,8 @@ export default function DetailsForm() {
             name="languagesKnown"
             label="Languages Known"
             fullWidth
+            value={formData.personalInfo.languagesKnown || ''}
+            onChange={handleChange}
           />
         </Grid>
 
@@ -130,6 +172,8 @@ export default function DetailsForm() {
             name="religion"
             label="Religion"
             fullWidth
+            value={formData.personalInfo.religion || ''}
+            onChange={handleChange}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -139,6 +183,8 @@ export default function DetailsForm() {
             name="category"
             label="Category"
             fullWidth
+            value={formData.personalInfo.category || ''}
+            onChange={handleChange}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -148,6 +194,8 @@ export default function DetailsForm() {
             name="nationality"
             label="Nationality"
             fullWidth
+            value={formData.personalInfo.nationality || ''}
+            onChange={handleChange}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -157,6 +205,8 @@ export default function DetailsForm() {
             name="aadharNumber"
             label="Aadhar Number"
             fullWidth
+            value={formData.personalInfo.aadharNumber || ''}
+            onChange={handleChange}
           />
         </Grid>
       </Grid>

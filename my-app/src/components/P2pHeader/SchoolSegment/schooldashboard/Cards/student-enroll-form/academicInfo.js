@@ -2,7 +2,6 @@ import React, {} from 'react';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
-import Divider from '@material-ui/core/Divider';
 import MenuItem from '@material-ui/core/MenuItem';
 
 export default function AcademicInfoForm() {
@@ -40,15 +39,14 @@ export default function AcademicInfoForm() {
         <Grid item xs={12}>
           <TextField
             type="file"
-            id="uploadPercentage"
-            label="Upload Percentage Document"
+            id="uploadTransferCertificate"
+            label="Upload Transfer Certificate Document"
             fullWidth
             InputLabelProps={{ shrink: true }}
           />
         </Grid>
       </Grid>
 
-      <Divider style={{ margin: '20px 0' }} />
 
       <Typography variant="h6" gutterBottom>
         Medical Info

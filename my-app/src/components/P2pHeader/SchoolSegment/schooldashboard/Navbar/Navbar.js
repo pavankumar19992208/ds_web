@@ -3,7 +3,7 @@ import { AppBar, Toolbar, IconButton, Menu, MenuItem, Avatar, Typography, Drawer
 import { Event, Notifications, ExitToApp } from '@material-ui/icons';
 import './Navbar.css';
 
-const Navbar = () => {
+const Navbar = ({ schoolName, schoolLogo }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
@@ -27,9 +27,9 @@ const Navbar = () => {
       <Toolbar sx={{ width: "100%" }}>
         <div className="navbar-left">
           <Button onClick={toggleDrawer(true)} style={{ display: 'flex', alignItems: 'center', textTransform: 'none' }}>
-            <Avatar id='avatar' alt="School Logo" src="/path/to/school-logo.png" />
+            <Avatar id='avatar' alt="School Logo" src={schoolLogo} />
             <Typography id='name' variant="h6" style={{ marginLeft: '10px' }}>
-              School Name
+              {schoolName}
             </Typography>
           </Button>
         </div>
@@ -68,12 +68,10 @@ const Navbar = () => {
           onKeyDown={toggleDrawer(false)}
         >
           <div className="profile-card">
-            <Avatar id='profile-avatar' alt="School Logo" src="/path/to/school-logo.png" />
+            <Avatar id='profile-avatar' alt="School Logo" src={schoolLogo} />
             <Typography id='profile-name' variant="h6" style={{ marginLeft: '10px' }}>
-              School Name
+              {schoolName}
             </Typography>
-            {/* <Typography id='profile-description' variant="body1" style={{ marginLeft: '10px' }}> */}
-            {/* Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum            </Typography> */}
           </div>
         </Box>
       </Drawer>

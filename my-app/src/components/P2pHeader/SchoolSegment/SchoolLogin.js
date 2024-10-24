@@ -1,16 +1,37 @@
-// SchoolLogin.js
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { GlobalStateContext } from '../../../GlobalStateContext';
 import '../../popups/LoginPopup.css'; // Update the path as necessary
+import BASE_URL from '../../../config';
 
 const SchoolLogin = () => {
     let navigate = useNavigate();
+    const { setGlobalData } = useContext(GlobalStateContext);
     const [schoolId, setSchoolId] = useState('');
     const [password, setPassword] = useState('');
-    const [error] = useState('');
+    const [error, setError] = useState('');
 
     const handleLogin = async () => {
-        navigate('/school_dashboard');
+        try {
+            const response = await fetch(`${BASE_URL}/sch_login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ schoolId, password }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Login failed');
+            }
+
+            const data = await response.json();
+            console.log(data);
+            setGlobalData(data);
+            navigate('/school_dashboard');
+        } catch (error) {
+            setError('Invalid school ID or password');
+        }
     };
 
     return (
@@ -23,33 +44,27 @@ const SchoolLogin = () => {
                     <div className="loginBody">
                         <div className="inputGroup inputIcon">
                             <h4 className='space widget-align-left'>SCHOOL ID</h4>
-                            <i className="fas fa-user widget-align-left"></i>
-                            <input 
-                                type="text" 
-                                placeholder="" 
+                            <input
+                                type="text"
                                 value={schoolId}
                                 onChange={(e) => setSchoolId(e.target.value)}
+                                className="loginInput"
                             />
                         </div>
                         <div className="inputGroup inputIcon">
                             <h4 className='space widget-align-left'>PASSWORD</h4>
-                            <i className="fas fa-lock widget-align-left"></i>
-                            <input 
-                                type="password" 
-                                placeholder="" 
+                            <input
+                                type="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
+                                className="loginInput"
                             />
                         </div>
-                        {error && <div className="error-message">{error}</div>}
-                        <div className="button-grid">
-                            <button className="forgotPassword widget-align-left">forgot password</button>
-                            <button className="loginButton widget-align-right" onClick={handleLogin}>LOGIN</button>
-                        </div>
+                        {error && <div className="error">{error}</div>}
+                        <button onClick={handleLogin} className="loginButton">Login</button>
                     </div>
-                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
                 </div>
-            </div> 
+            </div>
         </div>
     );
 };

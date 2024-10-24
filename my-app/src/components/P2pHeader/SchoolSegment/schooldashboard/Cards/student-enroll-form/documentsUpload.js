@@ -2,26 +2,25 @@ import React, { useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
-import MenuItem from '@material-ui/core/MenuItem';
 
 export default function DocumentsUpload() {
-  const [documentType, setDocumentType] = useState('');
-  const [uploadedDocuments, setUploadedDocuments] = useState([]);
+  const [uploadedDocuments, setUploadedDocuments] = useState({
+    aadhar: null,
+    tc: null,
+    rationcard: null,
+    income: null,
+    birth: null,
+  });
 
-  const handleDocumentTypeChange = (event) => {
-    setDocumentType(event.target.value);
-    setUploadedDocuments([]); // Reset the uploaded documents when type changes
-  };
-
-  const handleDocumentUpload = (event) => {
+  const handleDocumentUpload = (event, documentType) => {
     const file = event.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
-        setUploadedDocuments((prevDocuments) => [
+        setUploadedDocuments((prevDocuments) => ({
           ...prevDocuments,
-          { name: file.name, data: e.target.result, type: documentType }
-        ]);
+          [documentType]: { name: file.name, data: e.target.result, type: documentType },
+        }));
       };
       reader.readAsDataURL(file);
     }
@@ -34,39 +33,80 @@ export default function DocumentsUpload() {
       </Typography>
       <Grid container spacing={3}>
         <Grid item xs={12} md={6}>
-          <TextField
-            select
-            required
-            id="documentType"
-            label="Document Type"
-            fullWidth
-            value={documentType}
-            onChange={handleDocumentTypeChange}
-          >
-            <MenuItem value="aadhar">Aadhar</MenuItem>
-            <MenuItem value="tc">Transfer Certificate (TC)</MenuItem>
-            <MenuItem value="rationcard">Ration Card</MenuItem>
-            <MenuItem value="income">Income Certificate</MenuItem>
-            <MenuItem value="birth">Birth Certificate</MenuItem>
-          </TextField>
-        </Grid>
-        <Grid item xs={12} md={6}>
+          <Typography variant="subtitle1">Aadhar</Typography>
           <TextField
             type="file"
-            id="uploadDocument"
-            label="Upload Document"
+            id="uploadDocument-aadhar"
+            label="Upload Aadhar"
             fullWidth
             InputLabelProps={{ shrink: true }}
-            onChange={handleDocumentUpload}
+            onChange={(event) => handleDocumentUpload(event, 'aadhar')}
           />
         </Grid>
-        {uploadedDocuments.map((doc, index) => (
-          <Grid item xs={12} key={index}>
-            <Typography variant="subtitle1">{doc.type}</Typography>
-            <img src={doc.data} alt={doc.name} style={{ maxWidth: '100%', maxHeight: '200px' }} />
-            <Typography variant="body2">{doc.name}</Typography>
+        <Grid item xs={12} md={6}>
+          <Typography variant="subtitle1">Transfer Certificate (TC)</Typography>
+          <TextField
+            type="file"
+            id="uploadDocument-tc"
+            label="Upload Transfer Certificate (TC)"
+            fullWidth
+            InputLabelProps={{ shrink: true }}
+            onChange={(event) => handleDocumentUpload(event, 'tc')}
+          />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Typography variant="subtitle1">Ration Card</Typography>
+          <TextField
+            type="file"
+            id="uploadDocument-rationcard"
+            label="Upload Ration Card"
+            fullWidth
+            InputLabelProps={{ shrink: true }}
+            onChange={(event) => handleDocumentUpload(event, 'rationcard')}
+          />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Typography variant="subtitle1">Income Certificate</Typography>
+          <TextField
+            type="file"
+            id="uploadDocument-income"
+            label="Upload Income Certificate"
+            fullWidth
+            InputLabelProps={{ shrink: true }}
+            onChange={(event) => handleDocumentUpload(event, 'income')}
+          />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Typography variant="subtitle1">Birth Certificate</Typography>
+          <TextField
+            type="file"
+            id="uploadDocument-birth"
+            label="Upload Birth Certificate"
+            fullWidth
+            InputLabelProps={{ shrink: true }}
+            onChange={(event) => handleDocumentUpload(event, 'birth')}
+          />
+        </Grid>
+        {Object.values(uploadedDocuments).some(doc => doc) && (
+          <Grid item xs={12}>
+            <Typography variant="h6" gutterBottom>
+              Uploaded Documents
+            </Typography>
+            {Object.entries(uploadedDocuments).map(([type, doc], index) => (
+              doc && (
+                <Grid container spacing={2} key={index}>
+                  <Grid item xs={12} sm={6}>
+                    <Typography variant="subtitle1">{doc.type}</Typography>
+                    <img src={doc.data} alt={doc.name} style={{ maxWidth: '100%', maxHeight: '200px' }} />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <Typography variant="body2">{doc.name}</Typography>
+                  </Grid>
+                </Grid>
+              )
+            ))}
           </Grid>
-        ))}
+        )}
       </Grid>
     </React.Fragment>
   );

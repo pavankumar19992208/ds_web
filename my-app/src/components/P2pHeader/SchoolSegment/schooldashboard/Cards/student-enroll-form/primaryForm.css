@@ -15,13 +15,16 @@
 
 .paper {
   width: 100% ;
-  max-width: 800px; /* Max width of the form */
+  max-width: 1000px; /* Max width of the form */
   margin: 24px; /* theme.spacing(3) */
   padding: 16px; /* theme.spacing(2) */
   margin-top: 80px; /* theme.spacing(10) */
   overflow: auto; /* Allow scrolling within the form */
 }
 
+.stepper .MuiStepLabel-label {
+  white-space: pre-line;
+}
 @media (min-width: 600px) {
   .paper {
     margin-top: 80px; /* theme.spacing(10) */
