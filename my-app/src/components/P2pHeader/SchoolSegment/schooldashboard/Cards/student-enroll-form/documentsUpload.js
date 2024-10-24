@@ -2,28 +2,53 @@ import React, { useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Button from '@material-ui/core/Button';
+import { storage } from '../../../../../../components/connections/firebase'; // Import Firebase storage
+import { ref, uploadString, getDownloadURL } from 'firebase/storage'; // Import necessary functions
 
-export default function DocumentsUpload() {
-  const [uploadedDocuments, setUploadedDocuments] = useState({
-    aadhar: null,
-    tc: null,
-    rationcard: null,
-    income: null,
-    birth: null,
-  });
+export default function DocumentsUpload({ formData, setFormData }) {
+  const [open, setOpen] = useState(false);
+  const [uploadedDoc, setUploadedDoc] = useState({});
 
   const handleDocumentUpload = (event, documentType) => {
     const file = event.target.files[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = (e) => {
-        setUploadedDocuments((prevDocuments) => ({
-          ...prevDocuments,
-          [documentType]: { name: file.name, data: e.target.result, type: documentType },
-        }));
+      reader.onload = async (e) => {
+        const fileData = e.target.result;
+        const storageRef = ref(storage, `documents/${documentType}/${file.name}`);
+        
+        try {
+          await uploadString(storageRef, fileData, 'data_url');
+          const downloadURL = await getDownloadURL(storageRef);
+          console.log("furl",downloadURL);
+          setFormData((prevFormData) => ({
+            ...prevFormData,
+            documents: [
+              ...prevFormData.documents,
+              { name: file.name, data: downloadURL, type: documentType },
+            ],
+          }));
+
+          setUploadedDoc({ name: file.name, type: documentType });
+          setOpen(true);
+
+          console.log(`Document uploaded: ${documentType} - ${file.name}`);
+        } catch (error) {
+          console.error("Error uploading document: ", error);
+        }
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  const handleClose = () => {
+    setOpen(false);
   };
 
   return (
@@ -87,27 +112,20 @@ export default function DocumentsUpload() {
             onChange={(event) => handleDocumentUpload(event, 'birth')}
           />
         </Grid>
-        {Object.values(uploadedDocuments).some(doc => doc) && (
-          <Grid item xs={12}>
-            <Typography variant="h6" gutterBottom>
-              Uploaded Documents
-            </Typography>
-            {Object.entries(uploadedDocuments).map(([type, doc], index) => (
-              doc && (
-                <Grid container spacing={2} key={index}>
-                  <Grid item xs={12} sm={6}>
-                    <Typography variant="subtitle1">{doc.type}</Typography>
-                    <img src={doc.data} alt={doc.name} style={{ maxWidth: '100%', maxHeight: '200px' }} />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <Typography variant="body2">{doc.name}</Typography>
-                  </Grid>
-                </Grid>
-              )
-            ))}
-          </Grid>
-        )}
       </Grid>
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>Document Uploaded</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            {`The document "${uploadedDoc.name}" of type "${uploadedDoc.type}" has been successfully uploaded.`}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
     </React.Fragment>
   );
 }

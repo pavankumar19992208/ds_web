@@ -20,6 +20,9 @@ import Sidebar from '../../Sidebar/Sidebar'; // Import Sidebar
 import Navbar from '../../Navbar/Navbar'; // Import Navbar
 import './primaryForm.css'; // Import the CSS file
 import { GlobalStateContext } from '../../../../../../GlobalStateContext';
+import { storage } from '../../../../../../components/connections/firebase'; // Import Firebase storage
+import { ref, uploadString, getDownloadURL } from 'firebase/storage'; // Import necessary functions
+
 const steps = ['Personal Info', 'Guardian Info', 'Academic \n & Medical Details', 'Upload Documents', 'Payment','Review \n & Submit'];
 
 function getStepContent(step, formData, setFormData) {
@@ -139,9 +142,21 @@ export default function EnrollForm() {
     });
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     // Handle form submission logic here
     console.log('Form submitted:', formData);
+
+    // Upload documents to Firebase
+    for (const doc of formData.documents) {
+      const storageRef = ref(storage, `documents/${doc.type}/${doc.name}`);
+      try {
+        await uploadString(storageRef, doc.data, 'data_url');
+        const downloadURL = await getDownloadURL(storageRef);
+        console.log(`Document uploaded: ${doc.type} - ${doc.name} - URL: ${downloadURL}`);
+      } catch (error) {
+        console.error("Error uploading document: ", error);
+      }
+    }
   };
 
   return (

@@ -64,7 +64,7 @@ const SchoolRegistration = () => {
                 await uploadBytes(storageRef, schoolLogoFile);
                 schoolLogoUrl = await getDownloadURL(storageRef);
             }
-
+            
             const finalFormData = { ...formData, SCHOOL_LOGO: schoolLogoUrl };
             const response = await axios.post('http://127.0.0.1:8000/schregister', finalFormData);
             console.log('Response:', response.data);
