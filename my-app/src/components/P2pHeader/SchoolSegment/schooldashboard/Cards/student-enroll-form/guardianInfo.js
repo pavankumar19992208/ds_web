@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
+// guardianInfo.js
+import React, { useState, useEffect } from 'react';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 
-export default function GuardianInfoForm() {
+export default function GuardianInfoForm({ formData, setFormData }) {
   const [sameAddress, setSameAddress] = useState(false);
-  const [currentAddress, setCurrentAddress] = useState({
+  const [currentAddress, setCurrentAddress] = useState(formData.guardianInfo.currentAddress || {
     line1: '',
     line2: '',
     city: '',
@@ -15,7 +16,7 @@ export default function GuardianInfoForm() {
     state: '',
     pincode: ''
   });
-  const [permanentAddress, setPermanentAddress] = useState({
+  const [permanentAddress, setPermanentAddress] = useState(formData.guardianInfo.permanentAddress || {
     line1: '',
     line2: '',
     city: '',
@@ -23,6 +24,17 @@ export default function GuardianInfoForm() {
     state: '',
     pincode: ''
   });
+
+  useEffect(() => {
+    setFormData((prevData) => ({
+      ...prevData,
+      guardianInfo: {
+        ...prevData.guardianInfo,
+        currentAddress,
+        permanentAddress,
+      },
+    }));
+  }, [currentAddress, permanentAddress, setFormData]);
 
   const handleCheckboxChange = (event) => {
     setSameAddress(event.target.checked);
@@ -39,6 +51,17 @@ export default function GuardianInfoForm() {
     }
   };
 
+  const handleInputChange = (event) => {
+    const { id, value } = event.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      guardianInfo: {
+        ...prevData.guardianInfo,
+        [id]: value,
+      },
+    }));
+  };
+
   return (
     <React.Fragment>
       <Typography variant="h6" gutterBottom>
@@ -52,6 +75,8 @@ export default function GuardianInfoForm() {
             label="Father's Name"
             fullWidth
             autoComplete="fathers-name"
+            value={formData.guardianInfo.fathersName || ''}
+            onChange={handleInputChange}
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -61,6 +86,8 @@ export default function GuardianInfoForm() {
             label="Mother's Name"
             fullWidth
             autoComplete="mothers-name"
+            value={formData.guardianInfo.mothersName || ''}
+            onChange={handleInputChange}
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -69,6 +96,8 @@ export default function GuardianInfoForm() {
             label="Guardian (Optional)"
             fullWidth
             autoComplete="guardian"
+            value={formData.guardianInfo.guardian || ''}
+            onChange={handleInputChange}
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -78,6 +107,8 @@ export default function GuardianInfoForm() {
             label="Parent Occupation"
             fullWidth
             autoComplete="parent-occupation"
+            value={formData.guardianInfo.parentOccupation || ''}
+            onChange={handleInputChange}
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -87,10 +118,11 @@ export default function GuardianInfoForm() {
             label="Parent Qualification"
             fullWidth
             autoComplete="parent-qualification"
+            value={formData.guardianInfo.parentQualification || ''}
+            onChange={handleInputChange}
           />
         </Grid>
       </Grid>
-
 
       <Typography variant="h6" gutterBottom>
         Contact Information
@@ -103,6 +135,8 @@ export default function GuardianInfoForm() {
             label="Phone Number"
             fullWidth
             autoComplete="phone-number"
+            value={formData.guardianInfo.phoneNumber || ''}
+            onChange={handleInputChange}
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -112,6 +146,8 @@ export default function GuardianInfoForm() {
             label="Email"
             fullWidth
             autoComplete="email"
+            value={formData.guardianInfo.email || ''}
+            onChange={handleInputChange}
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -121,10 +157,11 @@ export default function GuardianInfoForm() {
             label="Emergency Contact Number"
             fullWidth
             autoComplete="emergency-contact-number"
+            value={formData.guardianInfo.emergencyContactNumber || ''}
+            onChange={handleInputChange}
           />
         </Grid>
       </Grid>
-
 
       <Typography variant="h6" gutterBottom>
         Current Address
@@ -207,7 +244,6 @@ export default function GuardianInfoForm() {
         }
         label="Current address is same as permanent address"
       />
-
 
       <Typography variant="h6" gutterBottom>
         Permanent Address

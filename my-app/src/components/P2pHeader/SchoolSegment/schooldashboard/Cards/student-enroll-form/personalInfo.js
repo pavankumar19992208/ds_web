@@ -47,7 +47,7 @@ export default function DetailsForm({ formData, setFormData }) {
   return (
     <React.Fragment>
       <Typography variant="h6" gutterBottom>
-        Personal details
+        Student information
       </Typography>
       <Grid container spacing={3} className={classes.formContainer}>
         {/* Section 1 */}

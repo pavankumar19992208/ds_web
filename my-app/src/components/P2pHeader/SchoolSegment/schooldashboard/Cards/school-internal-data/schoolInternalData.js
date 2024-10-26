@@ -6,7 +6,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Paper from '@material-ui/core/Paper';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
-import AddIcon from '@material-ui/icons/Add'; // Import AddIcon
+import AddIcon from '@material-ui/icons/Add';
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
 import Navbar from '../../Navbar/Navbar';
@@ -21,8 +21,8 @@ const useStyles = makeStyles((theme) => ({
     maxHeight: '100vh',
   },
   gridContainer: {
-    maxWidth: '100%', // Increase the width as needed
-    margin: '50px auto', // Center the container
+    maxWidth: '100%',
+    margin: '50px auto',
   },
   buttons: {
     display: 'flex',
@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
   },
   gradeLevelsTitle: {
     marginTop: theme.spacing(2),
-    marginBottom: theme.spacing(-3), 
+    marginBottom: theme.spacing(-3),
   },
   academicYearTitle: {
     marginTop: theme.spacing(2),
@@ -48,6 +48,10 @@ const useStyles = makeStyles((theme) => ({
   },
   feeStructureTitle: {
     marginTop: theme.spacing(2),
+  },
+  totalAmount: {
+    marginTop: theme.spacing(2),
+    fontWeight: 'bold',
   },
 }));
 
@@ -112,6 +116,13 @@ const SchoolInternalData = () => {
     }
   };
 
+  const calculateTotalAmount = () => {
+    return feeStructure.reduce((total, fee) => {
+      const amount = parseFloat(fee.amount) || 0;
+      return total + amount;
+    }, 0);
+  };
+
   const statesOfIndia = [
     'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh',
     'Goa', 'Gujarat', 'Haryana', 'Himachal Pradesh', 'Jharkhand',
@@ -137,7 +148,6 @@ const SchoolInternalData = () => {
           </Typography>
           <Grid container spacing={3} className={`${classes.formContainer} ${classes.gridContainer}`}>
             <Grid item xs={12} sm={6}>
-              {/* <Typography variant="h6">Type of School</Typography> */}
               <TextField
                 required
                 id="schoolType"
@@ -157,7 +167,6 @@ const SchoolInternalData = () => {
               </TextField>
             </Grid>
             <Grid item xs={12} sm={6}>
-              {/* <Typography variant="h6">Curriculum / Syllabus</Typography> */}
               <TextField
                 required
                 id="curriculum"
@@ -190,7 +199,6 @@ const SchoolInternalData = () => {
               )}
             </Grid>
             <Grid item xs={12} sm={6}>
-              {/* <Typography variant="h6">List of Subjects Taught</Typography> */}
               <TextField
                 required
                 id="subjects"
@@ -225,7 +233,6 @@ const SchoolInternalData = () => {
               )}
             </Grid>
             <Grid item xs={12} sm={6}>
-              {/* <Typography variant="h6">Medium of Instruction</Typography> */}
               <TextField
                 required
                 id="medium"
@@ -243,7 +250,6 @@ const SchoolInternalData = () => {
               </TextField>
             </Grid>
             <Grid item xs={12} sm={6}>
-              {/* <Typography variant="h6">Examination Pattern</Typography> */}
               <TextField
                 required
                 id="examPattern"
@@ -272,7 +278,6 @@ const SchoolInternalData = () => {
               )}
             </Grid>
             <Grid item xs={12} sm={6}>
-              {/* <Typography variant="h6">Assessment Criteria</Typography> */}
               <TextField
                 required
                 id="assessmentCriteria"
@@ -479,6 +484,9 @@ const SchoolInternalData = () => {
                   </Grid>
                 </Grid>
               ))}
+              <Typography variant="h6" className={classes.totalAmount}>
+                Total Amount: ₹{calculateTotalAmount()}
+              </Typography>
             </Grid>
           </Grid>
           <div className={classes.buttons}>

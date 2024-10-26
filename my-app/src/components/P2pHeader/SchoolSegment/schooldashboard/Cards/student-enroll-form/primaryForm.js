@@ -8,9 +8,13 @@ import Typography from '@material-ui/core/Typography';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import Grid from '@material-ui/core/Grid';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 import DetailsForm from './personalInfo';
 import GuardianInfoForm from './guardianInfo';
 import AcademicInfoForm from './academicInfo';
@@ -22,10 +26,25 @@ import './primaryForm.css';
 import { GlobalStateContext } from '../../../../../../GlobalStateContext';
 import { storage } from '../../../../../../components/connections/firebase';
 import { ref, uploadString, getDownloadURL } from 'firebase/storage';
+import { makeStyles } from '@material-ui/core/styles';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+import IconButton from '@material-ui/core/IconButton';
 
-const steps = ['Personal Info', 'Guardian Info', 'Academic \n & Medical Details', 'Upload Documents', 'Payment','Review \n & Submit'];
+const useStyles = makeStyles((theme) => ({
+  formContainer: {
+    overflow: 'auto',
+    maxHeight: '80vh',
+  },
+  button: {
+    marginTop: theme.spacing(3),
+    marginLeft: theme.spacing(1),
+  },
+}));
 
-function getStepContent(step, formData, setFormData) {
+const steps = ['Personal Info', 'Guardian Info', 'Academic & Medical Details', 'Upload Documents', 'Payment', 'Review & Submit'];
+
+function getStepContent(step, formData, setFormData, handleDocumentClick, expandedDoc, setExpandedDoc) {
   switch (step) {
     case 0:
       return <DetailsForm formData={formData} setFormData={setFormData} />;
@@ -43,70 +62,125 @@ function getStepContent(step, formData, setFormData) {
           <Typography variant="h6" gutterBottom>
             Review Your Details
           </Typography>
-          <TableContainer component={Paper}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell colSpan={2}>Field</TableCell>
-                  <TableCell colSpan={2}>Value</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                <TableRow>
-                  <TableCell colSpan={4}>
-                    <Typography variant="subtitle1">Personal Info</Typography>
-                  </TableCell>
-                </TableRow>
-                {Object.entries(formData.personalInfo).map(([key, value]) => (
-                  <TableRow key={key}>
-                    <TableCell colSpan={2}>{key}</TableCell>
-                    <TableCell colSpan={2}>
-                      {key === 'photo' ? (
-                        <img src={value} alt="Uploaded" style={{ maxWidth: '100%', maxHeight: '200px' }} />
-                      ) : (
-                        value
+          <Grid container spacing={3}>
+            <Grid item xs={12} sm={6}>
+              <Typography variant="h6">Personal details</Typography>
+              <Table>
+                <TableBody>
+                  {Object.entries(formData.personalInfo).map(([key, value]) => (
+                    <TableRow key={key}>
+                      <TableCell>{key}</TableCell>
+                      <TableCell>
+                        {typeof value === 'object' ? JSON.stringify(value) : value}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Typography variant="h6">Guardian Info</Typography>
+              <Table>
+                <TableBody>
+                  {Object.entries(formData.guardianInfo).map(([key, value]) => (
+                    <TableRow key={key}>
+                      <TableCell>{key}</TableCell>
+                      <TableCell>
+                        {typeof value === 'object' ? JSON.stringify(value) : value}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </Grid>
+            {formData.guardianInfo.currentAddress && Object.keys(formData.guardianInfo.currentAddress).length > 0 && (
+              <Grid item xs={12} sm={6}>
+                <Typography variant="h6">Current Address</Typography>
+                <Table>
+                  <TableBody>
+                    {Object.entries(formData.guardianInfo.currentAddress).map(([key, value]) => (
+                      <TableRow key={key}>
+                        <TableCell>{key}</TableCell>
+                        <TableCell>{value}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </Grid>
+            )}
+            {formData.guardianInfo.permanentAddress && Object.keys(formData.guardianInfo.permanentAddress).length > 0 && (
+              <Grid item xs={12} sm={6}>
+                <Typography variant="h6">Permanent Address</Typography>
+                <Table>
+                  <TableBody>
+                    {Object.entries(formData.guardianInfo.permanentAddress).map(([key, value]) => (
+                      <TableRow key={key}>
+                        <TableCell>{key}</TableCell>
+                        <TableCell>{value}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </Grid>
+            )}
+            <Grid item xs={12} sm={6}>
+              <Typography variant="h6">Academic & Medical Info</Typography>
+              <Table>
+                <TableBody>
+                  {Object.entries(formData.academicInfo).map(([key, value]) => (
+                    <TableRow key={key}>
+                      <TableCell>{key}</TableCell>
+                      <TableCell>
+                        {typeof value === 'object' ? JSON.stringify(value) : value}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Typography variant="h6">Uploaded Documents</Typography>
+              <Table>
+                <TableBody>
+                  {formData.documents.map((doc, index) => (
+                    <React.Fragment key={index}>
+                      <TableRow>
+                        <TableCell>{doc.name}</TableCell>
+                        <TableCell>{doc.type}</TableCell>
+                        <TableCell>
+                          <IconButton onClick={() => setExpandedDoc(expandedDoc === index ? null : index)}>
+                            {expandedDoc === index ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                      {expandedDoc === index && (
+                        <TableRow>
+                          <TableCell colSpan={3}>
+                            <img src={doc.data} alt={doc.name} style={{ width: '100%' }} />
+                          </TableCell>
+                        </TableRow>
                       )}
-                    </TableCell>
-                  </TableRow>
-                ))}
-                <TableRow>
-                  <TableCell colSpan={4}>
-                    <Typography variant="subtitle1">Guardian Info</Typography>
-                  </TableCell>
-                </TableRow>
-                {Object.entries(formData.guardianInfo).map(([key, value]) => (
-                  <TableRow key={key}>
-                    <TableCell colSpan={2}>{key}</TableCell>
-                    <TableCell colSpan={2}>{value}</TableCell>
-                  </TableRow>
-                ))}
-                <TableRow>
-                  <TableCell colSpan={4}>
-                    <Typography variant="subtitle1">Academic & Medical Info</Typography>
-                  </TableCell>
-                </TableRow>
-                {Object.entries(formData.academicInfo).map(([key, value]) => (
-                  <TableRow key={key}>
-                    <TableCell colSpan={2}>{key}</TableCell>
-                    <TableCell colSpan={2}>{value}</TableCell>
-                  </TableRow>
-                ))}
-                <TableRow>
-                  <TableCell colSpan={4}>
-                    <Typography variant="subtitle1">Uploaded Documents</Typography>
-                  </TableCell>
-                </TableRow>
-                {formData.documents.map((doc, index) => (
-                  <TableRow key={index}>
-                    <TableCell colSpan={2}>{doc.name}</TableCell>
-                    <TableCell colSpan={2}>
-                      <img src={doc.data} alt={doc.name} style={{ maxWidth: '100%', maxHeight: '200px' }} />
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+                    </React.Fragment>
+                  ))}
+                </TableBody>
+              </Table>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Typography variant="h6">Payment Info</Typography>
+              <Table>
+                <TableBody>
+                  {Object.entries(formData.paymentInfo).map(([key, value]) => (
+                    <TableRow key={key}>
+                      <TableCell>{key}</TableCell>
+                      <TableCell>
+                        {typeof value === 'object' ? JSON.stringify(value) : value}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </Grid>
+          </Grid>
         </div>
       );
     default:
@@ -115,6 +189,7 @@ function getStepContent(step, formData, setFormData) {
 }
 
 export default function EnrollForm() {
+  const classes = useStyles();
   const [activeStep, setActiveStep] = useState(0);
   const { globalData } = useContext(GlobalStateContext);
   const [formData, setFormData] = useState({
@@ -122,7 +197,12 @@ export default function EnrollForm() {
     guardianInfo: {},
     academicInfo: {},
     documents: [],
+    paymentInfo: {}, // Add paymentInfo to formData
   });
+  const [open, setOpen] = useState(false);
+  const [selectedDoc, setSelectedDoc] = useState(null);
+  const [showDocuments, setShowDocuments] = useState(false);
+  const [expandedDoc, setExpandedDoc] = useState(null);
 
   const handleNext = () => {
     setActiveStep(activeStep + 1);
@@ -139,24 +219,69 @@ export default function EnrollForm() {
       guardianInfo: {},
       academicInfo: {},
       documents: [],
+      paymentInfo: {}, // Reset paymentInfo
     });
   };
 
   const handleSubmit = async () => {
     console.log('Form submitted:', formData);
 
-    // Upload documents to Firebase
+    // Upload documents to Firebase and collect URLs
+    const uploadedDocuments = [];
     for (const doc of formData.documents) {
-      const fileExtension = doc.name.split('.').pop();
       const storageRef = ref(storage, `documents/${doc.type}/${doc.name}`);
       try {
         await uploadString(storageRef, doc.data, 'data_url');
         const downloadURL = await getDownloadURL(storageRef);
+        uploadedDocuments.push({
+          name: doc.name,
+          type: doc.type,
+          url: downloadURL,
+        });
         console.log(`Document uploaded: ${doc.type} - ${doc.name} - URL: ${downloadURL}`);
       } catch (error) {
         console.error("Error uploading document: ", error);
       }
     }
+
+    // Prepare payload
+    const payload = {
+      ...formData,
+      documents: uploadedDocuments,
+    };
+
+    // Log payload to console
+    console.log('Payload to be sent:', payload);
+
+    // Send formData and uploadedDocuments to backend
+    try {
+      const response = await fetch('https://your-backend-url.com/submit_form', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        throw new Error('Form submission failed');
+      }
+
+      const data = await response.json();
+      console.log('Form data sent to backend successfully:', data);
+    } catch (error) {
+      console.error('Error sending form data to backend:', error);
+    }
+  };
+
+  const handleDocumentClick = (doc) => {
+    setSelectedDoc(doc);
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setSelectedDoc(null);
   };
 
   return (
@@ -188,7 +313,7 @@ export default function EnrollForm() {
                   <Button
                     variant="contained"
                     onClick={handleEnrollMore}
-                    className="button"
+                    className={classes.button}
                   >
                     Enroll More
                   </Button>
@@ -196,17 +321,17 @@ export default function EnrollForm() {
               </React.Fragment>
             ) : (
               <React.Fragment>
-                {getStepContent(activeStep, formData, setFormData)}
+                {getStepContent(activeStep, formData, setFormData, handleDocumentClick, expandedDoc, setExpandedDoc)}
                 <div className="buttons">
                   {activeStep !== 0 && (
-                    <Button onClick={handleBack} className="button">
+                    <Button onClick={handleBack} className={classes.button}>
                       Back
                     </Button>
                   )}
                   <Button
                     variant="contained"
                     onClick={activeStep === steps.length - 1 ? handleSubmit : handleNext}
-                    className="button"
+                    className={classes.button}
                   >
                     {activeStep === steps.length - 1 ? 'Verify and Submit' : 'Next'}
                   </Button>
@@ -216,6 +341,26 @@ export default function EnrollForm() {
           </React.Fragment>
         </Paper>
       </main>
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>Document Content</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            {selectedDoc ? (
+              <div>
+                <Typography variant="h6">{selectedDoc.name}</Typography>
+                <img src={selectedDoc.data} alt={selectedDoc.name} style={{ width: '100%' }} />
+              </div>
+            ) : (
+              'No document selected'
+            )}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
     </React.Fragment>
   );
 }
