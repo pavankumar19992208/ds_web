@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GlobalStateContext } from '../../../GlobalStateContext';
 import '../../popups/LoginPopup.css'; // Update the path as necessary
-import BASE_URL from '../../../config';
+import BaseUrl from '../../../config';
 
 const SchoolLogin = () => {
     let navigate = useNavigate();
@@ -13,7 +13,7 @@ const SchoolLogin = () => {
 
     const handleLogin = async () => {
         try {
-            const response = await fetch(`${BASE_URL}/sch_login`, {
+            const response = await fetch(`${BaseUrl}/sch_login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

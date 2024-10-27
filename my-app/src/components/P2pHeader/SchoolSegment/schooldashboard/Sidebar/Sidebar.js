@@ -12,9 +12,11 @@ import { PiMonitorFill } from "react-icons/pi";
 import { BsPersonFillCheck } from "react-icons/bs";
 import { TrendingUp, Home } from '@mui/icons-material';
 import { BiSolidCalendarEdit } from "react-icons/bi";
+import { RiFlightTakeoffFill } from "react-icons/ri";
+import { FaUserEdit } from "react-icons/fa"; // Import the new icon
 import './Sidebar.css'; // Import the CSS file
 
-const Sidebar = ({ visibleItems = [], hideProfile = false }) => { // Add hideProfile prop
+const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true }) => {
   const [selectedItem, setSelectedItem] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
@@ -35,6 +37,16 @@ const Sidebar = ({ visibleItems = [], hideProfile = false }) => { // Add hidePro
     setSelectedItem('attachDocument');
   };
 
+  const navigateToCareerGuidance = () => {
+    navigate('/career-guidance');
+    setSelectedItem('careerGuidance');
+  };
+
+  const navigateToUpdateEnrollment = () => {
+    navigate('/update-enrollment');
+    setSelectedItem('updateEnrollment');
+  };
+
   const listItemHoverStyle = {
     transition: 'background-color 0.3s ease-in-out',
     '&:hover': {
@@ -46,8 +58,10 @@ const Sidebar = ({ visibleItems = [], hideProfile = false }) => { // Add hidePro
     backgroundColor: '#0E5E9D60',
   };
 
+  const isPrimaryFormOpen = location.pathname.includes('primaryForm');
+
   return (
-    <Box className="sidebar">
+    <Box className={showTitle ? "sidebar" : "sidebar_d"} sx={{ width: isPrimaryFormOpen ? '60px' : '240px' }}>
       <List component="nav">
         {visibleItems.includes('home') && (
           <Tooltip title="Home" placement="right">
@@ -59,7 +73,7 @@ const Sidebar = ({ visibleItems = [], hideProfile = false }) => { // Add hidePro
               style={selectedItem === 'home' ? { pointerEvents: 'none' } : {}}
             >
               <Home sx={{ marginRight: 2 }} />
-              <ListItemText primary="Home" className="list-item-text" />
+              {!isPrimaryFormOpen && showTitle && <ListItemText primary="Home" className="list-item-text" />}
             </ListItem>
           </Tooltip>
         )}
@@ -72,7 +86,7 @@ const Sidebar = ({ visibleItems = [], hideProfile = false }) => { // Add hidePro
               onClick={navigateToAttachDocument}
             >
               <CgAttachment size={21} />
-              <ListItemText primary="Attach Document" className="list-item-text" sx={{ marginLeft: 2 }} />
+              {!isPrimaryFormOpen && showTitle && <ListItemText primary="Attach Document" className="list-item-text" sx={{ marginLeft: 2 }} />}
             </ListItem>
           </Tooltip>
         )}
@@ -80,7 +94,7 @@ const Sidebar = ({ visibleItems = [], hideProfile = false }) => { // Add hidePro
           <Tooltip title="Subject Allocation" placement="right">
             <ListItem button className="list-item" sx={listItemHoverStyle}>
               <MdTopic size={22} />
-              <ListItemText primary="Subject Allocation" className="list-item-text" sx={{ marginLeft: 2 }} />
+              {!isPrimaryFormOpen && showTitle && <ListItemText primary="Subject Allocation" className="list-item-text" sx={{ marginLeft: 2 }} />}
             </ListItem>
           </Tooltip>
         )}
@@ -88,7 +102,7 @@ const Sidebar = ({ visibleItems = [], hideProfile = false }) => { // Add hidePro
           <Tooltip title="Attendance Tracking" placement="right">
             <ListItem button className="list-item" sx={listItemHoverStyle}>
               <PiMonitorFill size={22} />
-              <ListItemText primary="Attendance Tracking" className="list-item-text" sx={{ marginLeft: 2 }} />
+              {!isPrimaryFormOpen && showTitle && <ListItemText primary="Attendance Tracking" className="list-item-text" sx={{ marginLeft: 2 }} />}
             </ListItem>
           </Tooltip>
         )}
@@ -96,7 +110,7 @@ const Sidebar = ({ visibleItems = [], hideProfile = false }) => { // Add hidePro
           <Tooltip title="Leave Approvals" placement="right">
             <ListItem button className="list-item" sx={listItemHoverStyle}>
               <BsPersonFillCheck size={22} />
-              <ListItemText primary="Leave Approvals" className="list-item-text" sx={{ marginLeft: 2 }} />
+              {!isPrimaryFormOpen && showTitle && <ListItemText primary="Leave Approvals" className="list-item-text" sx={{ marginLeft: 2 }} />}
             </ListItem>
           </Tooltip>
         )}
@@ -104,7 +118,7 @@ const Sidebar = ({ visibleItems = [], hideProfile = false }) => { // Add hidePro
           <Tooltip title="Academic Performance" placement="right">
             <ListItem button className="list-item" sx={listItemHoverStyle}>
               <TrendingUp sx={{ marginRight: 2 }} />
-              <ListItemText primary="Academic Performance" className="list-item-text" />
+              {!isPrimaryFormOpen && showTitle && <ListItemText primary="Academic Performance" className="list-item-text" />}
             </ListItem>
           </Tooltip>
         )}
@@ -112,15 +126,31 @@ const Sidebar = ({ visibleItems = [], hideProfile = false }) => { // Add hidePro
           <Tooltip title="Teacher Alert" placement="right">
             <ListItem button className="list-item" sx={listItemHoverStyle}>
               <IoIosAlert size={22} />
-              <ListItemText primary="Teacher Alert" className="list-item-text" sx={{ marginLeft: 2 }} />
+              {!isPrimaryFormOpen && showTitle && <ListItemText primary="Teacher Alert" className="list-item-text" sx={{ marginLeft: 2 }} />}
             </ListItem>
           </Tooltip>
         )}
         {visibleItems.includes('eventPlanning') && (
           <Tooltip title="Event Planning" placement="right">
             <ListItem button className="list-item" sx={listItemHoverStyle}>
-            <BiSolidCalendarEdit size={22} />
-            <ListItemText primary="Event Planning" className="list-item-text" sx={{ marginLeft: 2 }} />
+              <BiSolidCalendarEdit size={22} />
+              {!isPrimaryFormOpen && showTitle && <ListItemText primary="Event Planning" className="list-item-text" sx={{ marginLeft: 2 }} />}
+            </ListItem>
+          </Tooltip>
+        )}
+        {visibleItems.includes('careerGuidance') && (
+          <Tooltip title="Career Guidance" placement="right">
+            <ListItem button className="list-item" sx={listItemHoverStyle} onClick={navigateToCareerGuidance}>
+              <RiFlightTakeoffFill size={22} />
+              {!isPrimaryFormOpen && showTitle && <ListItemText primary="Career Guidance" className="list-item-text" sx={{ marginLeft: 2 }} />}
+            </ListItem>
+          </Tooltip>
+        )}
+        {visibleItems.includes('updateEnrollment') && (
+          <Tooltip title="Update Enrollment" placement="right">
+            <ListItem button className="list-item" sx={listItemHoverStyle} onClick={navigateToUpdateEnrollment}>
+              <FaUserEdit size={22} />
+              {!isPrimaryFormOpen && showTitle && <ListItemText primary="Update Enrollment" className="list-item-text" sx={{ marginLeft: 2 }} />}
             </ListItem>
           </Tooltip>
         )}

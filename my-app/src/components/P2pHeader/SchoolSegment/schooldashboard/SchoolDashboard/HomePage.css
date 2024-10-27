@@ -32,9 +32,15 @@ body, html {
 
 
 @media (max-width: 1024px) {
+  .homepage {
+    left: 25%;
+    
+     }
   .main-content {
     margin-top: 100px;
   padding: 10px;
+ 
+
 
 }  
   

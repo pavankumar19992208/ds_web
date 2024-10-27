@@ -1,11 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { AppBar, Toolbar, IconButton, Menu, MenuItem, Avatar, Typography, Drawer, Box, Button } from '@material-ui/core';
 import { Event, Notifications, ExitToApp } from '@material-ui/icons';
+import { GlobalStateContext } from '../../../../../GlobalStateContext';
 import './Navbar.css';
 
 const Navbar = ({ schoolName, schoolLogo }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const { setGlobalData } = useContext(GlobalStateContext);
+  const navigate = useNavigate();
 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -20,6 +24,11 @@ const Navbar = ({ schoolName, schoolLogo }) => {
       return;
     }
     setDrawerOpen(open);
+  };
+
+  const handleLogout = () => {
+    setGlobalData(null); // Clear global data
+    navigate('/schlogin'); // Redirect to SchoolLogin page
   };
 
   return (
@@ -55,7 +64,7 @@ const Navbar = ({ schoolName, schoolLogo }) => {
           <IconButton id="icon">
             <Notifications />
           </IconButton>
-          <IconButton id="logout_icon">
+          <IconButton id="logout_icon" onClick={handleLogout}>
             <ExitToApp />
           </IconButton>
         </div>

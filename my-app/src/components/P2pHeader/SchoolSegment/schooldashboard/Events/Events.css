@@ -73,8 +73,9 @@ height: 40vh; /* Set a maximum height for the card */
 
 @media(max-width: 1024px){
   #card {
-    width: 40%;
-    height: 35vh; /* Set a maximum height for the card */
+    width: 94%;
+    margin-bottom: 0px;
+    height: 20vh;
   }
   .news-section {
     width: 67vh; 

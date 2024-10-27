@@ -9,6 +9,7 @@ import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
+import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -30,11 +31,13 @@ import { makeStyles } from '@material-ui/core/styles';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import IconButton from '@material-ui/core/IconButton';
+import BaseUrl from '../../../../../../config';
 
 const useStyles = makeStyles((theme) => ({
   formContainer: {
-    overflow: 'auto',
-    maxHeight: '80vh',
+    overflow: 'visible', // Ensure the container grows based on its content
+    maxHeight: 'none', // Remove the maximum height restriction
+    height: 'auto', // Ensure the height adjusts automatically
   },
   button: {
     marginTop: theme.spacing(3),
@@ -42,12 +45,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const steps = ['Personal Info', 'Guardian Info', 'Academic & Medical Details', 'Upload Documents', 'Payment', 'Review & Submit'];
+const steps = ['Student Info', 'Guardian Info', 'Academic & Medical Details', 'Upload Documents', 'Payment', 'Review & Submit'];
 
 function getStepContent(step, formData, setFormData, handleDocumentClick, expandedDoc, setExpandedDoc) {
   switch (step) {
     case 0:
-      return <DetailsForm formData={formData} setFormData={setFormData} />;
+      return <DetailsForm formData={formData} setFormData={setFormData} className="formContainer" />;
     case 1:
       return <GuardianInfoForm formData={formData} setFormData={setFormData} />;
     case 2:
@@ -193,7 +196,20 @@ export default function EnrollForm() {
   const [activeStep, setActiveStep] = useState(0);
   const { globalData } = useContext(GlobalStateContext);
   const [formData, setFormData] = useState({
-    personalInfo: {},
+    personalInfo: {
+      StudentName: '',
+      DOB: '',
+      Gender: '',
+      Photo: '',
+      Grade: '',
+      PreviousSchool: '',
+      languages: [''],
+      Religion: '',
+      Category: '',
+      Nationality: '',
+      AadharNumber: '',
+      Password: '',
+    },
     guardianInfo: {},
     academicInfo: {},
     documents: [],
@@ -215,7 +231,20 @@ export default function EnrollForm() {
   const handleEnrollMore = () => {
     setActiveStep(0);
     setFormData({
-      personalInfo: {},
+      personalInfo: {
+        StudentName: '',
+        DOB: '',
+        Gender: '',
+        Photo: '',
+        Grade: '',
+        PreviousSchool: '',
+        languages: [''],
+        Religion: '',
+        Category: '',
+        Nationality: '',
+        AadharNumber: '',
+        Password: '',
+      },
       guardianInfo: {},
       academicInfo: {},
       documents: [],
@@ -225,7 +254,7 @@ export default function EnrollForm() {
 
   const handleSubmit = async () => {
     console.log('Form submitted:', formData);
-
+  
     // Upload documents to Firebase and collect URLs
     const uploadedDocuments = [];
     for (const doc of formData.documents) {
@@ -243,30 +272,59 @@ export default function EnrollForm() {
         console.error("Error uploading document: ", error);
       }
     }
-
+  
     // Prepare payload
     const payload = {
-      ...formData,
-      documents: uploadedDocuments,
+      SchoolId: globalData.data.SCHOOL_ID,
+      StudentName: formData.personalInfo.StudentName,
+      DOB: formData.personalInfo.DOB,
+      Gender: formData.personalInfo.Gender,
+      Photo: formData.personalInfo.Photo,
+      Grade: formData.personalInfo.Grade,
+      PreviousSchool: formData.personalInfo.PreviousSchool,
+      LanguagesKnown: formData.personalInfo.languages,
+      Religion: formData.personalInfo.Religion,
+      Category: formData.personalInfo.Category,
+      MotherName: formData.guardianInfo.MotherName,
+      FatherName: formData.guardianInfo.FatherName,
+      Nationality: formData.personalInfo.Nationality,
+      AadharNumber: formData.personalInfo.AadharNumber,
+      GuardianName: formData.guardianInfo.GuardianName,
+      MobileNumber: formData.guardianInfo.MobileNumber,
+      Email: formData.guardianInfo.Email,
+      EmergencyContact: formData.guardianInfo.EmergencyContact,
+      CurrentAddress: formData.guardianInfo.currentAddress,
+      PermanentAddress: formData.guardianInfo.permanentAddress,
+      PreviousPercentage: formData.academicInfo.PreviousPercentage,
+      BloodGroup: formData.academicInfo.BloodGroup,
+      MedicalDisability: formData.academicInfo.MedicalDisability,
+      Documents: uploadedDocuments.reduce((acc, doc) => {
+        acc[doc.type] = doc.url;
+        return acc;
+      }, {}),
+      PaymentDetails: formData.paymentInfo,
+      Password: formData.personalInfo.Password,
+      ParentOccupation: formData.guardianInfo.ParentOccupation,
+      ParentQualification: formData.guardianInfo.ParentQualification,
     };
-
+  
     // Log payload to console
     console.log('Payload to be sent:', payload);
-
+  
     // Send formData and uploadedDocuments to backend
     try {
-      const response = await fetch('https://your-backend-url.com/submit_form', {
+      const response = await fetch(`${BaseUrl}/registerstudent`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(payload),
       });
-
+  
       if (!response.ok) {
         throw new Error('Form submission failed');
       }
-
+  
       const data = await response.json();
       console.log('Form data sent to backend successfully:', data);
     } catch (error) {
@@ -288,11 +346,29 @@ export default function EnrollForm() {
     <React.Fragment>
       <Navbar schoolName={globalData.data.SCHOOL_NAME} schoolLogo={globalData.data.SCHOOL_LOGO} />
       <main className="layout">
-        <Sidebar visibleItems={['home']} hideProfile={true} />
+        <Sidebar visibleItems={['home', 'updateEnrollment']} hideProfile={true} showTitle={false} />
         <Paper className="paper">
           <Typography component="h1" variant="h4" align="center">
             Student's Enroll Form
           </Typography>
+          <Grid container spacing={3}>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="School Name"
+                value={globalData.data.SCHOOL_NAME}
+                fullWidth
+                disabled
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="School ID"
+                value={globalData.data.SCHOOL_ID}
+                fullWidth
+                disabled
+              />
+            </Grid>
+          </Grid>
           <Stepper activeStep={activeStep} className="stepper">
             {steps.map((label) => (
               <Step key={label}>

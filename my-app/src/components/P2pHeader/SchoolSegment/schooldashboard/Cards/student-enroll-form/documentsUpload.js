@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
@@ -13,20 +13,31 @@ export default function DocumentsUpload({ formData, setFormData }) {
   const [open, setOpen] = useState(false);
   const [uploadedDoc, setUploadedDoc] = useState({});
 
+  useEffect(() => {
+    const storedDocuments = JSON.parse(localStorage.getItem('uploadedDocuments')) || [];
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      documents: storedDocuments,
+    }));
+  }, [setFormData]);
+
   const handleDocumentUpload = (event, documentType) => {
     const file = event.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
         const fileData = e.target.result;
-        setFormData((prevFormData) => ({
-          ...prevFormData,
-          documents: [
-            ...prevFormData.documents,
-            { name: file.name, data: fileData, type: documentType },
-          ],
-        }));
-        setUploadedDoc({ name: file.name, type: documentType });
+        const newDocument = { name: file.name, data: fileData, type: documentType };
+        setFormData((prevFormData) => {
+          const updatedDocuments = prevFormData.documents.filter(doc => doc.type !== documentType);
+          const newDocuments = [...updatedDocuments, newDocument];
+          localStorage.setItem('uploadedDocuments', JSON.stringify(newDocuments));
+          return {
+            ...prevFormData,
+            documents: newDocuments,
+          };
+        });
+        setUploadedDoc(newDocument);
         setOpen(true);
       };
       reader.readAsDataURL(file);
@@ -47,7 +58,8 @@ export default function DocumentsUpload({ formData, setFormData }) {
           <Typography variant="subtitle1">Aadhar</Typography>
           <TextField
             type="file"
-            id="uploadDocument-aadhar"
+            id="Aadhar"
+            name="Aadhar"
             label="Upload Aadhar"
             fullWidth
             InputLabelProps={{ shrink: true }}

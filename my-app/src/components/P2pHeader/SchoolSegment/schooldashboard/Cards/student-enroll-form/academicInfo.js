@@ -16,6 +16,8 @@ export default function AcademicInfoForm({ formData, setFormData }) {
     }));
   };
 
+  const bloodGroups = ['A+', 'A-', 'O+', 'O-', 'AB+', 'AB-', 'Rh+', 'Rh-'];
+
   return (
     <React.Fragment>
       <Typography variant="h6" gutterBottom>
@@ -26,11 +28,12 @@ export default function AcademicInfoForm({ formData, setFormData }) {
           <TextField
             select
             required
-            name="previousClass"
+            id="PreviousClass"
+            name="PreviousClass"
             label="Previous Class"
             fullWidth
             autoComplete="previous-class"
-            value={formData.academicInfo.previousClass || ''}
+            value={formData.academicInfo.PreviousClass || ''}
             onChange={handleChange}
           >
             {[...Array(10).keys()].map((num) => (
@@ -43,21 +46,12 @@ export default function AcademicInfoForm({ formData, setFormData }) {
         <Grid item xs={12} md={6}>
           <TextField
             required
-            name="previousPercentage"
+            id="PreviousPercentage"
+            name="PreviousPercentage"
             label="Percentage of Previous Class"
             fullWidth
             autoComplete="previous-percentage"
-            value={formData.academicInfo.previousPercentage || ''}
-            onChange={handleChange}
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <TextField
-            type="file"
-            name="uploadTransferCertificate"
-            label="Upload Transfer Certificate Document"
-            fullWidth
-            InputLabelProps={{ shrink: true }}
+            value={formData.academicInfo.PreviousPercentage || ''}
             onChange={handleChange}
           />
         </Grid>
@@ -69,40 +63,33 @@ export default function AcademicInfoForm({ formData, setFormData }) {
       <Grid container spacing={3}>
         <Grid item xs={12} md={6}>
           <TextField
+            select
             required
-            name="bloodGroup"
+            id="BloodGroup"
+            name="BloodGroup"
             label="Blood Group"
             fullWidth
             autoComplete="blood-group"
-            value={formData.academicInfo.bloodGroup || ''}
+            value={formData.academicInfo.BloodGroup || ''}
             onChange={handleChange}
-          />
+          >
+            {bloodGroups.map((group) => (
+              <MenuItem key={group} value={group}>
+                {group}
+              </MenuItem>
+            ))}
+          </TextField>
         </Grid>
         <Grid item xs={12} md={6}>
           <TextField
-            name="allergies"
+            id="MedicalDisability"
+            name="MedicalDisability"
             label="Allergies or Other"
             fullWidth
             autoComplete="allergies"
-            value={formData.academicInfo.allergies || ''}
+            value={formData.academicInfo.MedicalDisability || ''}
             onChange={handleChange}
           />
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <TextField
-            select
-            required
-            name="severity"
-            label="Severity"
-            fullWidth
-            autoComplete="severity"
-            value={formData.academicInfo.severity || ''}
-            onChange={handleChange}
-          >
-            <MenuItem value="low">Low</MenuItem>
-            <MenuItem value="moderate">Moderate</MenuItem>
-            <MenuItem value="high">High</MenuItem>
-          </TextField>
         </Grid>
       </Grid>
     </React.Fragment>

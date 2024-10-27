@@ -13,9 +13,23 @@
   transition: width 0.3s ease-in-out;
 
 }
-.sidebar.collapsed {
-  width: 60px !important;
+.sidebar_d {
+  padding: 1%;
+  width: 56px !important;
+background-color: hsl(220, 35%, 97%);;  
+height: 100vh;
+position: fixed;
+left: 0px;
+top: 50px;
+overflow-y: auto;
+border-right: 1px solid hsla(220, 20%, 80%, 0.4);
+z-index: 1000;
+transition: width 0.3s ease-in-out;
+
+
 }
+
+
 .profile-card {
   display: flex;
   flex-direction: column;
@@ -69,15 +83,18 @@
 @media (max-width: 1024px) {
   .sidebar {
     padding: 1%;
-    width: 18%;
     background-color: #f4f4f4;  
-    height: 100vh;
+    height: 120vh;
     position: fixed;
     left: 0;
     top: 50px;
     overflow-y: auto;
+    width: 220px !important;
+ 
   }
 
+
+  
   .profile-card .avatar {
     width: 40px;
     height: 40px;

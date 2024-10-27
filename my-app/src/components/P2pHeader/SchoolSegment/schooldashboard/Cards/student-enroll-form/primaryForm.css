@@ -2,6 +2,12 @@
   position: relative;
 }
 
+.formContainer {
+  overflow: visible; /* Ensure the container grows based on its content */
+  max-height: none; /* Remove the maximum height restriction */
+  height: auto; /* Ensure the height adjusts automatically */
+}
+
 .layout {
   display: flex;
   flex-direction: row; /* Ensure Sidebar and form are in a row */
@@ -11,6 +17,7 @@
   width: 100%; /* Full viewport width */
   padding: 16px; /* theme.spacing(2) */
   overflow: auto;
+  position: absolute;
 }
 
 .paper {
@@ -24,6 +31,12 @@
 
 .stepper .MuiStepLabel-label {
   white-space: pre-line;
+}
+@media (min-width: 1024px){
+  .layout {
+    left: 70px;
+  }
+
 }
 @media (min-width: 600px) {
   .paper {

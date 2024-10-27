@@ -1,10 +1,10 @@
-// guardianInfo.js
 import React, { useState, useEffect } from 'react';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import MenuItem from '@material-ui/core/MenuItem';
 
 export default function GuardianInfoForm({ formData, setFormData }) {
   const [sameAddress, setSameAddress] = useState(false);
@@ -52,15 +52,17 @@ export default function GuardianInfoForm({ formData, setFormData }) {
   };
 
   const handleInputChange = (event) => {
-    const { id, value } = event.target;
+    const { name, value } = event.target;
     setFormData((prevData) => ({
       ...prevData,
       guardianInfo: {
         ...prevData.guardianInfo,
-        [id]: value,
+        [name]: value,
       },
     }));
   };
+
+  const qualifications = ['Matriculation', '12th or Diploma', 'Graduation', 'Post Graduation'];
 
   return (
     <React.Fragment>
@@ -71,56 +73,68 @@ export default function GuardianInfoForm({ formData, setFormData }) {
         <Grid item xs={12} md={6}>
           <TextField
             required
-            id="fathersName"
+            id="FatherName"
+            name="FatherName"
             label="Father's Name"
             fullWidth
             autoComplete="fathers-name"
-            value={formData.guardianInfo.fathersName || ''}
+            value={formData.guardianInfo.FatherName || ''}
             onChange={handleInputChange}
           />
         </Grid>
         <Grid item xs={12} md={6}>
           <TextField
             required
-            id="mothersName"
+            id="MotherName"
+            name="MotherName"
             label="Mother's Name"
             fullWidth
             autoComplete="mothers-name"
-            value={formData.guardianInfo.mothersName || ''}
+            value={formData.guardianInfo.MotherName || ''}
             onChange={handleInputChange}
           />
         </Grid>
         <Grid item xs={12} md={6}>
           <TextField
-            id="guardian"
+            id="GuardianName"
+            name="GuardianName"
             label="Guardian (Optional)"
             fullWidth
             autoComplete="guardian"
-            value={formData.guardianInfo.guardian || ''}
+            value={formData.guardianInfo.GuardianName || ''}
             onChange={handleInputChange}
           />
         </Grid>
         <Grid item xs={12} md={6}>
           <TextField
             required
-            id="parentOccupation"
+            id="ParentOccupation"
+            name="ParentOccupation"
             label="Parent Occupation"
             fullWidth
             autoComplete="parent-occupation"
-            value={formData.guardianInfo.parentOccupation || ''}
+            value={formData.guardianInfo.ParentOccupation || ''}
             onChange={handleInputChange}
           />
         </Grid>
         <Grid item xs={12} md={6}>
           <TextField
+            select
             required
-            id="parentQualification"
+            id="ParentQualification"
+            name="ParentQualification"
             label="Parent Qualification"
             fullWidth
             autoComplete="parent-qualification"
-            value={formData.guardianInfo.parentQualification || ''}
+            value={formData.guardianInfo.ParentQualification || ''}
             onChange={handleInputChange}
-          />
+          >
+            {qualifications.map((qualification) => (
+              <MenuItem key={qualification} value={qualification}>
+                {qualification}
+              </MenuItem>
+            ))}
+          </TextField>
         </Grid>
       </Grid>
 
@@ -131,33 +145,36 @@ export default function GuardianInfoForm({ formData, setFormData }) {
         <Grid item xs={12} md={6}>
           <TextField
             required
-            id="phoneNumber"
+            id="MobileNumber"
+            name="MobileNumber"
             label="Phone Number"
             fullWidth
             autoComplete="phone-number"
-            value={formData.guardianInfo.phoneNumber || ''}
+            value={formData.guardianInfo.MobileNumber || ''}
             onChange={handleInputChange}
           />
         </Grid>
         <Grid item xs={12} md={6}>
           <TextField
             required
-            id="email"
+            id="Email"
+            name="Email"
             label="Email"
             fullWidth
             autoComplete="email"
-            value={formData.guardianInfo.email || ''}
+            value={formData.guardianInfo.Email || ''}
             onChange={handleInputChange}
           />
         </Grid>
         <Grid item xs={12} md={6}>
           <TextField
             required
-            id="emergencyContactNumber"
+            id="EmergencyContact"
+            name="EmergencyContact"
             label="Emergency Contact Number"
             fullWidth
             autoComplete="emergency-contact-number"
-            value={formData.guardianInfo.emergencyContactNumber || ''}
+            value={formData.guardianInfo.EmergencyContact || ''}
             onChange={handleInputChange}
           />
         </Grid>
