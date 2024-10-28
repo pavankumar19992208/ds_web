@@ -8,8 +8,22 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles((theme) => ({
+  typography: {
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(1),
+    color: '#3f51b5',
+  },
+  textField: {
+    marginLeft: theme.spacing(2),
+    width: '92%',
+  },
+}));
 
 export default function DocumentsUpload({ formData, setFormData }) {
+  const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [uploadedDoc, setUploadedDoc] = useState({});
   const [fileNames, setFileNames] = useState({});
@@ -54,12 +68,9 @@ export default function DocumentsUpload({ formData, setFormData }) {
 
   return (
     <React.Fragment>
-      <Typography variant="h6" gutterBottom>
-        Document Upload
-      </Typography>
       <Grid container spacing={3}>
         <Grid item xs={12} md={6}>
-          <Typography variant="subtitle1">Aadhar</Typography>
+          <Typography variant="subtitle1" className={classes.typography}>Aadhar :</Typography>
           <TextField
             type="file"
             id="Aadhar"
@@ -68,11 +79,12 @@ export default function DocumentsUpload({ formData, setFormData }) {
             fullWidth
             InputLabelProps={{ shrink: true }}
             onChange={(event) => handleDocumentUpload(event, 'aadhar')}
+            className={classes.textField}
           />
-          {fileNames.aadhar && <Typography variant="body2">{fileNames.aadhar}</Typography>}
+          {fileNames.aadhar && <Typography variant="body2" className={classes.typography}>{fileNames.aadhar}</Typography>}
         </Grid>
         <Grid item xs={12} md={6}>
-          <Typography variant="subtitle1">Transfer Certificate (TC)</Typography>
+          <Typography variant="subtitle1" className={classes.typography}>Transfer Certificate (TC) :</Typography>
           <TextField
             type="file"
             id="uploadDocument-tc"
@@ -80,11 +92,12 @@ export default function DocumentsUpload({ formData, setFormData }) {
             fullWidth
             InputLabelProps={{ shrink: true }}
             onChange={(event) => handleDocumentUpload(event, 'tc')}
+            className={classes.textField}
           />
-          {fileNames.tc && <Typography variant="body2">{fileNames.tc}</Typography>}
+          {fileNames.tc && <Typography variant="body2" className={classes.typography}>{fileNames.tc}</Typography>}
         </Grid>
         <Grid item xs={12} md={6}>
-          <Typography variant="subtitle1">Ration Card</Typography>
+          <Typography variant="subtitle1" className={classes.typography}>Ration Card :</Typography>
           <TextField
             type="file"
             id="uploadDocument-rationcard"
@@ -92,11 +105,12 @@ export default function DocumentsUpload({ formData, setFormData }) {
             fullWidth
             InputLabelProps={{ shrink: true }}
             onChange={(event) => handleDocumentUpload(event, 'rationcard')}
+            className={classes.textField}
           />
-          {fileNames.rationcard && <Typography variant="body2">{fileNames.rationcard}</Typography>}
+          {fileNames.rationcard && <Typography variant="body2" className={classes.typography}>{fileNames.rationcard}</Typography>}
         </Grid>
         <Grid item xs={12} md={6}>
-          <Typography variant="subtitle1">Income Certificate</Typography>
+          <Typography variant="subtitle1" className={classes.typography}>Income Certificate :</Typography>
           <TextField
             type="file"
             id="uploadDocument-income"
@@ -104,11 +118,12 @@ export default function DocumentsUpload({ formData, setFormData }) {
             fullWidth
             InputLabelProps={{ shrink: true }}
             onChange={(event) => handleDocumentUpload(event, 'income')}
+            className={classes.textField}
           />
-          {fileNames.income && <Typography variant="body2">{fileNames.income}</Typography>}
+          {fileNames.income && <Typography variant="body2" className={classes.typography}>{fileNames.income}</Typography>}
         </Grid>
         <Grid item xs={12} md={6}>
-          <Typography variant="subtitle1">Birth Certificate</Typography>
+          <Typography variant="subtitle1" className={classes.typography}>Birth Certificate :</Typography>
           <TextField
             type="file"
             id="uploadDocument-birth"
@@ -116,8 +131,9 @@ export default function DocumentsUpload({ formData, setFormData }) {
             fullWidth
             InputLabelProps={{ shrink: true }}
             onChange={(event) => handleDocumentUpload(event, 'birth')}
+            className={classes.textField}
           />
-          {fileNames.birth && <Typography variant="body2">{fileNames.birth}</Typography>}
+          {fileNames.birth && <Typography variant="body2" className={classes.typography}>{fileNames.birth}</Typography>}
         </Grid>
       </Grid>
       <Dialog open={open} onClose={handleClose}>

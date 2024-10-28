@@ -5,8 +5,38 @@ import TextField from '@material-ui/core/TextField';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import MenuItem from '@material-ui/core/MenuItem';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
+
+const useStyles = makeStyles((theme) => ({
+  personalTitle: {
+    color: '#3f51b5',
+    fontSize: '1rem',
+    marginTop: theme.spacing(3),
+    marginBottom: theme.spacing(1),
+  },
+  contactTitle: {
+    color: '#3f51b5',
+    fontSize: '1rem',
+    marginTop: theme.spacing(5),
+    marginBottom: theme.spacing(1),
+  },
+  addressTitle: {
+    color: '#3f51b5',
+    fontSize: '1rem',
+    marginTop: theme.spacing(5),
+    marginBottom: theme.spacing(1),
+  },
+  formControlLabel: {
+    marginLeft: theme.spacing(2),
+  },
+  textField: {
+    marginLeft: theme.spacing(2),
+    width: '92%',
+  },
+}));
 
 export default function GuardianInfoForm({ formData, setFormData }) {
+  const classes = useStyles();
   const [sameAddress, setSameAddress] = useState(false);
   const [currentAddress, setCurrentAddress] = useState(formData.guardianInfo.currentAddress || {
     line1: '',
@@ -66,8 +96,8 @@ export default function GuardianInfoForm({ formData, setFormData }) {
 
   return (
     <React.Fragment>
-      <Typography variant="h6" gutterBottom style={{ color: 'blue', fontSize: '1rem', marginTop: '24px', marginBottom: '3px' }}>
-        Parent Information
+      <Typography variant="h6" gutterBottom className={classes.personalTitle}>
+        Parent Information :
       </Typography>
       <Grid container spacing={3}>
         <Grid item xs={12} md={6}>
@@ -80,7 +110,7 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             autoComplete="fathers-name"
             value={formData.guardianInfo.FatherName || ''}
             onChange={handleInputChange}
-            style={{ marginLeft: '16px', width: '92%' }}
+            className={classes.textField}
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -93,7 +123,7 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             autoComplete="mothers-name"
             value={formData.guardianInfo.MotherName || ''}
             onChange={handleInputChange}
-            style={{ marginLeft: '16px', width: '92%' }}
+            className={classes.textField}
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -105,7 +135,7 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             autoComplete="guardian"
             value={formData.guardianInfo.GuardianName || ''}
             onChange={handleInputChange}
-            style={{ marginLeft: '16px', width: '92%' }}
+            className={classes.textField}
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -118,7 +148,7 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             autoComplete="parent-occupation"
             value={formData.guardianInfo.ParentOccupation || ''}
             onChange={handleInputChange}
-            style={{ marginLeft: '16px', width: '92%' }}
+            className={classes.textField}
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -132,7 +162,7 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             autoComplete="parent-qualification"
             value={formData.guardianInfo.ParentQualification || ''}
             onChange={handleInputChange}
-            style={{ marginLeft: '16px', width: '92%' }}
+            className={classes.textField}
           >
             {qualifications.map((qualification) => (
               <MenuItem key={qualification} value={qualification}>
@@ -143,8 +173,8 @@ export default function GuardianInfoForm({ formData, setFormData }) {
         </Grid>
       </Grid>
 
-      <Typography variant="h6" gutterBottom style={{ color: 'blue', fontSize: '1rem', marginTop: '24px', marginBottom: '2px' }}>
-        Contact Information
+      <Typography variant="h6" gutterBottom className={classes.contactTitle}>
+        Contact Information :
       </Typography>
       <Grid container spacing={3}>
         <Grid item xs={12} md={6}>
@@ -157,7 +187,7 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             autoComplete="phone-number"
             value={formData.guardianInfo.MobileNumber || ''}
             onChange={handleInputChange}
-            style={{ marginLeft: '16px', width: '92%' }}
+            className={classes.textField}
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -170,7 +200,7 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             autoComplete="email"
             value={formData.guardianInfo.Email || ''}
             onChange={handleInputChange}
-            style={{ marginLeft: '16px', width: '92%' }}
+            className={classes.textField}
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -183,13 +213,13 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             autoComplete="emergency-contact-number"
             value={formData.guardianInfo.EmergencyContact || ''}
             onChange={handleInputChange}
-            style={{ marginLeft: '16px', width: '92%' }}
+            className={classes.textField}
           />
         </Grid>
       </Grid>
 
-      <Typography variant="h6" gutterBottom style={{ color: 'blue', fontSize: '1rem', marginTop: '30px', marginBottom: '2px' }}>
-        Current Address
+      <Typography variant="h6" gutterBottom className={classes.addressTitle}>
+        Current Address :
       </Typography>
       <Grid container spacing={3}>
         <Grid item xs={12}>
@@ -201,7 +231,7 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             autoComplete="address-line1"
             value={currentAddress.line1}
             onChange={handleCurrentAddressChange}
-            style={{ marginLeft: '16px', width: '92%' }}
+            className={classes.textField}
           />
         </Grid>
         <Grid item xs={12}>
@@ -212,7 +242,7 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             autoComplete="address-line2"
             value={currentAddress.line2}
             onChange={handleCurrentAddressChange}
-            style={{ marginLeft: '16px', width: '92%' }}
+            className={classes.textField}
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -224,7 +254,7 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             autoComplete="address-city"
             value={currentAddress.city}
             onChange={handleCurrentAddressChange}
-            style={{ marginLeft: '16px', width: '92%' }}
+            className={classes.textField}
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -236,7 +266,7 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             autoComplete="address-district"
             value={currentAddress.district}
             onChange={handleCurrentAddressChange}
-            style={{ marginLeft: '16px', width: '92%' }}
+            className={classes.textField}
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -248,7 +278,7 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             autoComplete="address-state"
             value={currentAddress.state}
             onChange={handleCurrentAddressChange}
-            style={{ marginLeft: '16px', width: '92%' }}
+            className={classes.textField}
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -260,7 +290,7 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             autoComplete="address-pincode"
             value={currentAddress.pincode}
             onChange={handleCurrentAddressChange}
-            style={{ marginLeft: '16px', width: '92%' }}
+            className={classes.textField}
           />
         </Grid>
       </Grid>
@@ -274,11 +304,11 @@ export default function GuardianInfoForm({ formData, setFormData }) {
           />
         }
         label="Current address is same as permanent address"
-        style={{ marginLeft: '16px' }}
+        className={classes.formControlLabel}
       />
 
-      <Typography variant="h6" gutterBottom style={{ color: 'blue', fontSize: '1rem', marginTop: '20px', marginBottom: '2px' }}>
-        Permanent Address
+      <Typography variant="h6" gutterBottom className={classes.addressTitle}>
+        Permanent Address :
       </Typography>
       <Grid container spacing={3}>
         <Grid item xs={12}>
@@ -290,7 +320,7 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             autoComplete="address-line1"
             value={permanentAddress.line1}
             onChange={(e) => setPermanentAddress({ ...permanentAddress, line1: e.target.value })}
-            style={{ marginLeft: '16px', width: '92%' }}
+            className={classes.textField}
           />
         </Grid>
         <Grid item xs={12}>
@@ -301,7 +331,7 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             autoComplete="address-line2"
             value={permanentAddress.line2}
             onChange={(e) => setPermanentAddress({ ...permanentAddress, line2: e.target.value })}
-            style={{ marginLeft: '16px', width: '92%' }}
+            className={classes.textField}
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -313,7 +343,7 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             autoComplete="address-city"
             value={permanentAddress.city}
             onChange={(e) => setPermanentAddress({ ...permanentAddress, city: e.target.value })}
-            style={{ marginLeft: '16px', width: '92%' }}
+            className={classes.textField}
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -325,7 +355,7 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             autoComplete="address-district"
             value={permanentAddress.district}
             onChange={(e) => setPermanentAddress({ ...permanentAddress, district: e.target.value })}
-            style={{ marginLeft: '16px', width: '92%' }}
+            className={classes.textField}
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -337,7 +367,7 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             autoComplete="address-state"
             value={permanentAddress.state}
             onChange={(e) => setPermanentAddress({ ...permanentAddress, state: e.target.value })}
-            style={{ marginLeft: '16px', width: '92%' }}
+            className={classes.textField}
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -349,7 +379,7 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             autoComplete="address-pincode"
             value={permanentAddress.pincode}
             onChange={(e) => setPermanentAddress({ ...permanentAddress, pincode: e.target.value })}
-            style={{ marginLeft: '16px', width: '92%' }}
+            className={classes.textField}
           />
         </Grid>
       </Grid>

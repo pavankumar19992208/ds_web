@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(0),
   },
   coloredTypography: {
-    color: theme.palette.primary.main, // Set the color to the primary color of the theme
+    color: '#3f51b5', // Set the color to the primary color of the theme
   },
   fieldMargin: {
     marginLeft: theme.spacing(2), // Add left margin to all fields
@@ -47,6 +47,10 @@ const useStyles = makeStyles((theme) => ({
   },
   reducedWidth: {
     width: '92%', // Reduce the width of the fields
+  },
+  typographyMargin: {
+    marginTop: theme.spacing(3),
+    marginBottom: theme.spacing(-2),
   },
 }));
 
@@ -135,7 +139,7 @@ export default function DetailsForm({ formData, setFormData }) {
       <Grid container spacing={3} className={classes.formContainer}>
         {/* Section 1 */}
         <Grid item xs={12}>
-          <Typography style={{marginTop:'24px'}} variant="subtitle1" gutterBottom className={`${classes.basicInfoMargin} ${classes.coloredTypography}`}>
+          <Typography variant="subtitle1" gutterBottom className={`${classes.basicInfoMargin} ${classes.coloredTypography} ${classes.typographyMargin}`}>
             Basic Information :
           </Typography>
         </Grid>
@@ -205,7 +209,7 @@ export default function DetailsForm({ formData, setFormData }) {
 
         {/* Section 2 */}
         <Grid item xs={12}>
-          <Typography variant="subtitle1" gutterBottom className={`${classes.educationalInfoMargin} ${classes.coloredTypography}`}>
+          <Typography variant="subtitle1" gutterBottom className={`${classes.educationalInfoMargin} ${classes.coloredTypography} ${classes.typographyMargin}`}>
             Educational Information :
           </Typography>
         </Grid>
@@ -239,7 +243,7 @@ export default function DetailsForm({ formData, setFormData }) {
           />
         </Grid>
         <Grid item xs={12}>
-          <Typography style={{marginTop:'16px'}} variant="subtitle1" gutterBottom className={classes.coloredTypography}>
+          <Typography variant="subtitle1" gutterBottom className={`${classes.coloredTypography} ${classes.typographyMargin}`}>
             Languages Known :
           </Typography>
           {languages.map((language, index) => (
@@ -272,7 +276,7 @@ export default function DetailsForm({ formData, setFormData }) {
 
         {/* Section 3 */}
         <Grid item xs={12}>
-          <Typography variant="subtitle1" gutterBottom className={`${classes.additionalInfoMargin} ${classes.coloredTypography}`}>
+          <Typography variant="subtitle1" gutterBottom className={`${classes.additionalInfoMargin} ${classes.coloredTypography} ${classes.typographyMargin}`}>
             Additional Information :
           </Typography>
         </Grid>
