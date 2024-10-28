@@ -64,8 +64,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const steps = ['Student Info', 'Guardian Info', 'Academic & Medical Details', 'Upload Documents', 'Payment', 'Review & Submit'];
-
+const steps = ['Student Info', 'Guardian Info', 'Academic \n & Medical Details', 'Upload Documents', 'Payment', 'Review \n & Submit'];
 const personalInfoKeys = ['StudentName', 'DOB', 'Gender', 'Photo', 'Grade', 'PreviousSchool', 'languages', 'Religion', 'Category', 'Nationality', 'AadharNumber', 'Password'];
 const guardianInfoKeys = ['MotherName', 'FatherName', 'GuardianName', 'MobileNumber', 'Email', 'EmergencyContact', 'ParentOccupation', 'ParentQualification'];
 const academicInfoKeys = ['PreviousPercentage', 'BloodGroup', 'MedicalDisability'];
@@ -384,10 +383,10 @@ export default function EnrollForm() {
           </Typography>
           <Grid container spacing={3}>
             <Grid item xs={12} sm={6} style={{ marginTop: '20px', marginBottom: '12px' }}>
-              <Typography variant="h6">{globalData.data.SCHOOL_NAME}</Typography>
+              <Typography variant="h6" style={{ fontSize: '1rem' }}>{globalData.data.SCHOOL_NAME}</Typography>
             </Grid>
             <Grid item xs={12} sm={6} style={{ textAlign: 'right', marginTop: '16px' }}>
-              <Typography variant="h6">School ID: {globalData.data.SCHOOL_ID}</Typography>
+              <Typography variant="h6" style={{ fontSize: '1rem' }}>School ID : {globalData.data.SCHOOL_ID}</Typography>
             </Grid>
           </Grid>
           <Stepper activeStep={activeStep} className="stepper">
