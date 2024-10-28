@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
@@ -13,8 +13,7 @@ import './personalInfo.css';
 
 const useStyles = makeStyles((theme) => ({
   formContainer: {
-    overflow: 'auto', // Allow scrolling within the form
-    maxHeight: '80vh', // Set a maximum height to ensure scrolling
+    // Removed overflow and maxHeight to fit content naturally
   },
   languageField: {
     display: 'flex',
@@ -38,12 +37,27 @@ const useStyles = makeStyles((theme) => ({
   additionalInfoMargin: {
     marginBottom: theme.spacing(-3), // Adjust the value as needed
     marginTop: theme.spacing(0),
-  }
+  },
+  coloredTypography: {
+    color: theme.palette.primary.main, // Set the color to the primary color of the theme
+  },
+  fieldMargin: {
+    marginLeft: theme.spacing(2), // Add left margin to all fields
+    marginRight: theme.spacing(2), // Add right margin to all fields
+  },
+  reducedWidth: {
+    width: '92%', // Reduce the width of the fields
+  },
 }));
 
 export default function DetailsForm({ formData, setFormData }) {
   const classes = useStyles();
   const [languages, setLanguages] = useState(formData.personalInfo.languages || ['']);
+  const [fileName, setFileName] = useState(formData.personalInfo.PhotoName || '');
+
+  useEffect(() => {
+    setFileName(formData.personalInfo.PhotoName || '');
+  }, [formData.personalInfo.PhotoName]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -72,8 +86,10 @@ export default function DetailsForm({ formData, setFormData }) {
             personalInfo: {
               ...prevData.personalInfo,
               [name]: downloadURL,
+              PhotoName: file.name,
             },
           }));
+          setFileName(file.name);
           console.log(`Photo uploaded: ${file.name} - URL: ${downloadURL}`);
         } catch (error) {
           console.error("Error uploading photo: ", error);
@@ -116,13 +132,10 @@ export default function DetailsForm({ formData, setFormData }) {
 
   return (
     <React.Fragment>
-      <Typography className='heading1' variant="h6" gutterBottom>
-        Student information
-      </Typography>
       <Grid container spacing={3} className={classes.formContainer}>
         {/* Section 1 */}
         <Grid item xs={12}>
-          <Typography variant="subtitle1" gutterBottom className={classes.basicInfoMargin}>
+          <Typography style={{marginTop:'24px'}} variant="subtitle1" gutterBottom className={`${classes.basicInfoMargin} ${classes.coloredTypography}`}>
             Basic Information :
           </Typography>
         </Grid>
@@ -136,6 +149,7 @@ export default function DetailsForm({ formData, setFormData }) {
             autoComplete="name"
             value={formData.personalInfo.StudentName || ''}
             onChange={handleChange}
+            className={`${classes.fieldMargin} ${classes.reducedWidth}`}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -151,6 +165,7 @@ export default function DetailsForm({ formData, setFormData }) {
             }}
             value={formData.personalInfo.DOB || ''}
             onChange={handleChange}
+            className={`${classes.fieldMargin} ${classes.reducedWidth}`}
           />
         </Grid>
         {/* >>> */}
@@ -164,6 +179,7 @@ export default function DetailsForm({ formData, setFormData }) {
             fullWidth
             value={formData.personalInfo.Gender || ''}
             onChange={handleChange}
+            className={`${classes.fieldMargin} ${classes.reducedWidth}`}
           >
             <MenuItem value="male">Male</MenuItem>
             <MenuItem value="female">Female</MenuItem>
@@ -182,12 +198,14 @@ export default function DetailsForm({ formData, setFormData }) {
               shrink: true,
             }}
             onChange={handleFileChange}
+            className={`${classes.fieldMargin} ${classes.reducedWidth}`}
           />
+          {fileName && <Typography variant="body2" className={classes.coloredTypography}>{fileName}</Typography>}
         </Grid>
 
         {/* Section 2 */}
         <Grid item xs={12}>
-          <Typography variant="subtitle1" gutterBottom className={classes.educationalInfoMargin}>
+          <Typography variant="subtitle1" gutterBottom className={`${classes.educationalInfoMargin} ${classes.coloredTypography}`}>
             Educational Information :
           </Typography>
         </Grid>
@@ -201,6 +219,7 @@ export default function DetailsForm({ formData, setFormData }) {
             fullWidth
             value={formData.personalInfo.Grade || ''}
             onChange={handleChange}
+            className={`${classes.fieldMargin} ${classes.reducedWidth}`}
           >
             {[...Array(10).keys()].map(i => (
               <MenuItem key={i + 1} value={i + 1}>{i + 1}</MenuItem>
@@ -216,10 +235,11 @@ export default function DetailsForm({ formData, setFormData }) {
             fullWidth
             value={formData.personalInfo.PreviousSchool || ''}
             onChange={handleChange}
+            className={`${classes.fieldMargin} ${classes.reducedWidth}`}
           />
         </Grid>
         <Grid item xs={12}>
-          <Typography variant="subtitle1" gutterBottom>
+          <Typography style={{marginTop:'16px'}} variant="subtitle1" gutterBottom className={classes.coloredTypography}>
             Languages Known :
           </Typography>
           {languages.map((language, index) => (
@@ -232,7 +252,7 @@ export default function DetailsForm({ formData, setFormData }) {
                 fullWidth
                 value={language}
                 onChange={(event) => handleLanguageChange(index, event)}
-                className={classes.languageInput}
+                className={`${classes.languageInput} ${classes.fieldMargin} ${classes.reducedWidth}`}
               />
             </div>
           ))}
@@ -252,7 +272,7 @@ export default function DetailsForm({ formData, setFormData }) {
 
         {/* Section 3 */}
         <Grid item xs={12}>
-          <Typography variant="subtitle1" gutterBottom className={classes.additionalInfoMargin}>
+          <Typography variant="subtitle1" gutterBottom className={`${classes.additionalInfoMargin} ${classes.coloredTypography}`}>
             Additional Information :
           </Typography>
         </Grid>
@@ -265,6 +285,7 @@ export default function DetailsForm({ formData, setFormData }) {
             fullWidth
             value={formData.personalInfo.Religion || ''}
             onChange={handleChange}
+            className={`${classes.fieldMargin} ${classes.reducedWidth}`}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -276,6 +297,7 @@ export default function DetailsForm({ formData, setFormData }) {
             fullWidth
             value={formData.personalInfo.Category || ''}
             onChange={handleChange}
+            className={`${classes.fieldMargin} ${classes.reducedWidth}`}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -287,6 +309,7 @@ export default function DetailsForm({ formData, setFormData }) {
             fullWidth
             value={formData.personalInfo.Nationality || ''}
             onChange={handleChange}
+            className={`${classes.fieldMargin} ${classes.reducedWidth}`}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -298,6 +321,7 @@ export default function DetailsForm({ formData, setFormData }) {
             fullWidth
             value={formData.personalInfo.AadharNumber || ''}
             onChange={handleChange}
+            className={`${classes.fieldMargin} ${classes.reducedWidth}`}
           />
         </Grid>
       </Grid>

@@ -12,14 +12,15 @@ import Button from '@material-ui/core/Button';
 export default function DocumentsUpload({ formData, setFormData }) {
   const [open, setOpen] = useState(false);
   const [uploadedDoc, setUploadedDoc] = useState({});
+  const [fileNames, setFileNames] = useState({});
 
   useEffect(() => {
-    const storedDocuments = JSON.parse(localStorage.getItem('uploadedDocuments')) || [];
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      documents: storedDocuments,
-    }));
-  }, [setFormData]);
+    const storedFileNames = formData.documents.reduce((acc, doc) => {
+      acc[doc.type] = doc.name;
+      return acc;
+    }, {});
+    setFileNames(storedFileNames);
+  }, [formData.documents]);
 
   const handleDocumentUpload = (event, documentType) => {
     const file = event.target.files[0];
@@ -31,13 +32,16 @@ export default function DocumentsUpload({ formData, setFormData }) {
         setFormData((prevFormData) => {
           const updatedDocuments = prevFormData.documents.filter(doc => doc.type !== documentType);
           const newDocuments = [...updatedDocuments, newDocument];
-          localStorage.setItem('uploadedDocuments', JSON.stringify(newDocuments));
           return {
             ...prevFormData,
             documents: newDocuments,
           };
         });
         setUploadedDoc(newDocument);
+        setFileNames((prevFileNames) => ({
+          ...prevFileNames,
+          [documentType]: file.name,
+        }));
         setOpen(true);
       };
       reader.readAsDataURL(file);
@@ -65,6 +69,7 @@ export default function DocumentsUpload({ formData, setFormData }) {
             InputLabelProps={{ shrink: true }}
             onChange={(event) => handleDocumentUpload(event, 'aadhar')}
           />
+          {fileNames.aadhar && <Typography variant="body2">{fileNames.aadhar}</Typography>}
         </Grid>
         <Grid item xs={12} md={6}>
           <Typography variant="subtitle1">Transfer Certificate (TC)</Typography>
@@ -76,6 +81,7 @@ export default function DocumentsUpload({ formData, setFormData }) {
             InputLabelProps={{ shrink: true }}
             onChange={(event) => handleDocumentUpload(event, 'tc')}
           />
+          {fileNames.tc && <Typography variant="body2">{fileNames.tc}</Typography>}
         </Grid>
         <Grid item xs={12} md={6}>
           <Typography variant="subtitle1">Ration Card</Typography>
@@ -87,6 +93,7 @@ export default function DocumentsUpload({ formData, setFormData }) {
             InputLabelProps={{ shrink: true }}
             onChange={(event) => handleDocumentUpload(event, 'rationcard')}
           />
+          {fileNames.rationcard && <Typography variant="body2">{fileNames.rationcard}</Typography>}
         </Grid>
         <Grid item xs={12} md={6}>
           <Typography variant="subtitle1">Income Certificate</Typography>
@@ -98,6 +105,7 @@ export default function DocumentsUpload({ formData, setFormData }) {
             InputLabelProps={{ shrink: true }}
             onChange={(event) => handleDocumentUpload(event, 'income')}
           />
+          {fileNames.income && <Typography variant="body2">{fileNames.income}</Typography>}
         </Grid>
         <Grid item xs={12} md={6}>
           <Typography variant="subtitle1">Birth Certificate</Typography>
@@ -109,6 +117,7 @@ export default function DocumentsUpload({ formData, setFormData }) {
             InputLabelProps={{ shrink: true }}
             onChange={(event) => handleDocumentUpload(event, 'birth')}
           />
+          {fileNames.birth && <Typography variant="body2">{fileNames.birth}</Typography>}
         </Grid>
       </Grid>
       <Dialog open={open} onClose={handleClose}>

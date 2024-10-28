@@ -66,11 +66,7 @@ const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true }) =
         {visibleItems.includes('home') && (
           <Tooltip title="Home" placement="right">
             <ListItem
-              button
-              className="list-item"
-              sx={selectedItem === 'home' ? selectedListItemStyle : listItemHoverStyle}
-              onClick={navigateToHomepage}
-              style={selectedItem === 'home' ? { pointerEvents: 'none' } : {}}
+              button className="list-item" sx={selectedItem === 'home' ? selectedListItemStyle : listItemHoverStyle} onClick={navigateToHomepage} style={selectedItem === 'home' ? { pointerEvents: 'none' } : {}}
             >
               <Home sx={{ marginRight: 2 }} />
               {!isPrimaryFormOpen && showTitle && <ListItemText primary="Home" className="list-item-text" />}

@@ -9,7 +9,6 @@ import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
-import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -42,6 +41,16 @@ const useStyles = makeStyles((theme) => ({
   button: {
     marginTop: theme.spacing(3),
     marginLeft: theme.spacing(1),
+  },
+  nextButton: {
+    backgroundColor: '#0E5E9D',
+    color: '#fff',
+    fontWeight: '500',
+    '&:hover': {
+      backgroundColor: '#0E5E9D60',
+      color:'#374441',
+     
+    },
   },
 }));
 
@@ -228,6 +237,10 @@ export default function EnrollForm() {
     setActiveStep(activeStep - 1);
   };
 
+  const handleStepClick = (step) => {
+    setActiveStep(step);
+  };
+
   const handleEnrollMore = () => {
     setActiveStep(0);
     setFormData({
@@ -254,7 +267,7 @@ export default function EnrollForm() {
 
   const handleSubmit = async () => {
     console.log('Form submitted:', formData);
-  
+
     // Upload documents to Firebase and collect URLs
     const uploadedDocuments = [];
     for (const doc of formData.documents) {
@@ -272,7 +285,7 @@ export default function EnrollForm() {
         console.error("Error uploading document: ", error);
       }
     }
-  
+
     // Prepare payload
     const payload = {
       SchoolId: globalData.data.SCHOOL_ID,
@@ -307,10 +320,10 @@ export default function EnrollForm() {
       ParentOccupation: formData.guardianInfo.ParentOccupation,
       ParentQualification: formData.guardianInfo.ParentQualification,
     };
-  
+
     // Log payload to console
     console.log('Payload to be sent:', payload);
-  
+
     // Send formData and uploadedDocuments to backend
     try {
       const response = await fetch(`${BaseUrl}/registerstudent`, {
@@ -320,13 +333,16 @@ export default function EnrollForm() {
         },
         body: JSON.stringify(payload),
       });
-  
+
       if (!response.ok) {
         throw new Error('Form submission failed');
       }
-  
+
       const data = await response.json();
       console.log('Form data sent to backend successfully:', data);
+
+      // Clear local storage after successful submission
+      localStorage.removeItem('uploadedDocuments');
     } catch (error) {
       console.error('Error sending form data to backend:', error);
     }
@@ -352,26 +368,16 @@ export default function EnrollForm() {
             Student's Enroll Form
           </Typography>
           <Grid container spacing={3}>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                label="School Name"
-                value={globalData.data.SCHOOL_NAME}
-                fullWidth
-                disabled
-              />
+            <Grid item xs={12} sm={6} style={{ marginTop: '20px', marginBottom: '12px' }}>
+              <Typography variant="h6">{globalData.data.SCHOOL_NAME}</Typography>
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                label="School ID"
-                value={globalData.data.SCHOOL_ID}
-                fullWidth
-                disabled
-              />
+            <Grid item xs={12} sm={6} style={{ textAlign: 'right', marginTop: '16px' }}>
+              <Typography variant="h6">School ID: {globalData.data.SCHOOL_ID}</Typography>
             </Grid>
           </Grid>
           <Stepper activeStep={activeStep} className="stepper">
-            {steps.map((label) => (
-              <Step key={label}>
+            {steps.map((label, index) => (
+              <Step key={label} onClick={() => handleStepClick(index)}>
                 <StepLabel>{label}</StepLabel>
               </Step>
             ))}
@@ -407,7 +413,7 @@ export default function EnrollForm() {
                   <Button
                     variant="contained"
                     onClick={activeStep === steps.length - 1 ? handleSubmit : handleNext}
-                    className={classes.button}
+                    className={`${classes.button} ${classes.nextButton}`}
                   >
                     {activeStep === steps.length - 1 ? 'Verify and Submit' : 'Next'}
                   </Button>

@@ -13,6 +13,7 @@ import Navbar from '../../Navbar/Navbar';
 import Sidebar from '../../Sidebar/Sidebar';
 import { GlobalStateContext } from '../../../../../../GlobalStateContext';
 import './schoolInternalData.css';
+import BaseUrl from '../../../../../../config';
 
 const useStyles = makeStyles((theme) => ({
   formContainer: {},
@@ -123,6 +124,54 @@ const SchoolInternalData = () => {
     }, 0);
   };
 
+  const handleSubmit = async () => {
+    const totalAmount = calculateTotalAmount();
+    const payload = {
+      SchoolId: globalData.data.SCHOOL_ID,
+      State: state,
+      SchoolType: schoolType,
+      Curriculum: curriculum,
+      OtherCurriculum: otherCurriculum,
+      GradeLevelFrom: gradeLevel1,
+      GradeLevelTo: gradeLevel2,
+      Subjects: subjects,
+      OtherSubject: otherSubject,
+      Medium: medium,
+      AcademicYearStart: academicYearStart,
+      AcademicYearEnd: academicYearEnd,
+      ExtraPrograms: extraPrograms,
+      SchoolTimingFrom: schoolTimingFrom,
+      SchoolTimingTo: schoolTimingTo,
+      ExamPattern: examPattern,
+      OtherExamPattern: otherExamPattern,
+      AssessmentCriteria: assessmentCriteria,
+      OtherAssessmentCriteria: otherAssessmentCriteria,
+      FeeStructure: feeStructure,
+      TotalAmount: totalAmount,
+    };
+
+    console.log('Payload to be sent:', payload);
+
+    try {
+      const response = await fetch(`${BaseUrl}/schoolInternalData`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        throw new Error('Form submission failed');
+      }
+
+      const data = await response.json();
+      console.log('Form data sent to backend successfully:', data);
+    } catch (error) {
+      console.error('Error sending form data to backend:', error);
+    }
+  };
+
   const statesOfIndia = [
     'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh',
     'Goa', 'Gujarat', 'Haryana', 'Himachal Pradesh', 'Jharkhand',
@@ -141,11 +190,20 @@ const SchoolInternalData = () => {
     <React.Fragment>
       <Navbar schoolName={globalData.data.SCHOOL_NAME} schoolLogo={globalData.data.SCHOOL_LOGO} />
       <main className={`${classes.mainContainer} layout`}>
-        <Sidebar visibleItems={['home']} hideProfile={true} />
-        <Paper className="paper">
+      <Sidebar visibleItems={['home']} hideProfile={true} showTitle={false} />
+      <Paper className="paper">
           <Typography component="h1" variant="h4" align="center">
             School Information
           </Typography>
+          <Grid container spacing={3}>
+            <Grid item xs={12} sm={6} style={{ marginTop: '32px' }}>
+              <Typography variant="h6">{globalData.data.SCHOOL_NAME}</Typography>
+            </Grid>
+            <Grid item xs={12} sm={6} style={{ textAlign: 'right', marginTop: '16px' }}>
+              <Typography variant="h6">School ID: {globalData.data.SCHOOL_ID}</Typography>
+            </Grid>
+          </Grid>
+
           <Grid container spacing={3} className={`${classes.formContainer} ${classes.gridContainer}`}>
             <Grid item xs={12} sm={6}>
               <TextField
@@ -160,10 +218,8 @@ const SchoolInternalData = () => {
               >
                 <MenuItem value="">Select</MenuItem>
                 <MenuItem value="primary">Primary</MenuItem>
-                <MenuItem value="middle">Middle</MenuItem>
                 <MenuItem value="highSchool">High School</MenuItem>
                 <MenuItem value="higherSecondary">Higher Secondary</MenuItem>
-                <MenuItem value="preSchool">Pre-School or Nursery - 12</MenuItem>
               </TextField>
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -186,6 +242,23 @@ const SchoolInternalData = () => {
                 <MenuItem value="cambridge">Cambridge</MenuItem>
                 <MenuItem value="other">Other</MenuItem>
               </TextField>
+              {curriculum === 'stateboard' && (
+                <TextField
+                  required
+                  id="state"
+                  name="state"
+                  label="Choose State"
+                  select
+                  fullWidth
+                  value={state}
+                  onChange={handleStateChange}
+                >
+                  <MenuItem value="">Select</MenuItem>
+                  {statesOfIndia.map((state, index) => (
+                    <MenuItem key={index} value={state}>{state}</MenuItem>
+                  ))}
+                </TextField>
+              )}
               {curriculum === 'other' && (
                 <TextField
                   required
@@ -490,8 +563,8 @@ const SchoolInternalData = () => {
             </Grid>
           </Grid>
           <div className={classes.buttons}>
-            <Button variant="contained" color="primary" className={classes.button}>
-              Save
+            <Button variant="contained" color="primary" className={classes.button} onClick={handleSubmit}>
+              Submit
             </Button>
           </div>
         </Paper>
