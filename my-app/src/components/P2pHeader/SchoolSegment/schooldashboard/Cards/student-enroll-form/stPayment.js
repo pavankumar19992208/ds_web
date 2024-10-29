@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
@@ -18,19 +18,41 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const validateNumbers = (value) => /^[0-9]+$/.test(value);
+
 export default function PaymentForm({ formData, setFormData }) {
   const classes = useStyles();
+  const [errors, setErrors] = useState({});
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      paymentInfo: {
-        ...prevData.paymentInfo,
-        [name]: value,
-      },
-    }));
+    let isValid = true;
+
+    if (name === 'Amount') {
+      isValid = validateNumbers(value);
+    }
+
+    if (isValid) {
+      setFormData((prevData) => ({
+        ...prevData,
+        paymentInfo: {
+          ...prevData.paymentInfo,
+          [name]: value,
+        },
+      }));
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [name]: '',
+      }));
+    } else {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [name]: 'Invalid number input',
+      }));
+    }
   };
+
+  const paymentMethod = formData.paymentInfo?.PaymentMethod;
 
   return (
     <React.Fragment>
@@ -46,7 +68,7 @@ export default function PaymentForm({ formData, setFormData }) {
             name="PaymentMethod"
             label="Payment Mode"
             fullWidth
-            value={formData.paymentInfo?.PaymentMethod || ''}
+            value={paymentMethod || ''}
             onChange={handleChange}
             className={classes.textField}
           >
@@ -65,8 +87,10 @@ export default function PaymentForm({ formData, setFormData }) {
             fullWidth
             value={formData.paymentInfo?.Amount || ''}
             onChange={handleChange}
-            disabled={formData.paymentInfo?.paymentMethod === 'upi' || formData.paymentInfo?.paymentMethod === 'bankTransfer'}
+            disabled={paymentMethod === 'upi' || paymentMethod === 'bankTransfer'}
             className={classes.textField}
+            error={!!errors.Amount}
+            helperText={errors.Amount}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -78,7 +102,7 @@ export default function PaymentForm({ formData, setFormData }) {
             fullWidth
             value={formData.paymentInfo?.TransactionId || ''}
             onChange={handleChange}
-            disabled={formData.paymentInfo?.paymentMethod === 'cash' || formData.paymentInfo?.paymentMethod === 'bankTransfer'}
+            disabled={paymentMethod === 'cash' || paymentMethod === 'bankTransfer'}
             className={classes.textField}
           />
         </Grid>
@@ -91,7 +115,7 @@ export default function PaymentForm({ formData, setFormData }) {
             fullWidth
             value={formData.paymentInfo?.BankTransfer || ''}
             onChange={handleChange}
-            disabled={formData.paymentInfo?.paymentMethod === 'upi' || formData.paymentInfo?.paymentMethod === 'cash'}
+            disabled={paymentMethod === 'upi' || paymentMethod === 'cash'}
             className={classes.textField}
           />
         </Grid>

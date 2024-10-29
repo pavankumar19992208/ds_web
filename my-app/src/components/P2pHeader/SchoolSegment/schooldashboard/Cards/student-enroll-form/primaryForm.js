@@ -68,7 +68,7 @@ const steps = ['Student Info', 'Guardian Info', 'Academic \n & Medical Details',
 const personalInfoKeys = ['StudentName', 'DOB', 'Gender', 'Photo', 'Grade', 'PreviousSchool', 'languages', 'Religion', 'Category', 'Nationality', 'AadharNumber', 'Password'];
 const guardianInfoKeys = ['MotherName', 'FatherName', 'GuardianName', 'MobileNumber', 'Email', 'EmergencyContact', 'ParentOccupation', 'ParentQualification'];
 const academicInfoKeys = ['PreviousPercentage', 'BloodGroup', 'MedicalDisability'];
-const paymentInfoKeys = ['PaymentMethod', 'Amount', 'TransactionId', 'BankTransfer'];
+const requiredDocuments = ['aadhar', 'tc', 'rationcard', 'income', 'birth'];
 
 function getStepContent(step, formData, setFormData, handleDocumentClick, expandedDoc, setExpandedDoc, classes) {
   switch (step) {
@@ -83,6 +83,7 @@ function getStepContent(step, formData, setFormData, handleDocumentClick, expand
     case 4:
       return <PaymentForm formData={formData} setFormData={setFormData} />;
     case 5:
+      const { PaymentMethod, Amount, TransactionId, BankTransfer } = formData.paymentInfo;
       return (
         <div>
           <Typography variant="h6" gutterBottom className={classes.reviewTitle}>
@@ -97,7 +98,19 @@ function getStepContent(step, formData, setFormData, handleDocumentClick, expand
                     <TableRow key={key}>
                       <TableCell>{key}</TableCell>
                       <TableCell>
-                        {typeof formData.personalInfo[key] === 'object' ? JSON.stringify(formData.personalInfo[key]) : formData.personalInfo[key] || ''}
+                        {key === 'Photo' ? (
+                          <div>
+                            <Typography>{formData.personalInfo.PhotoName}</Typography>
+                            <IconButton onClick={() => setExpandedDoc(expandedDoc === key ? null : key)}>
+                              {expandedDoc === key ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                            </IconButton>
+                            {expandedDoc === key && (
+                              <img src={formData.personalInfo.Photo} alt="Uploaded Photo" style={{ width: '100%' }} />
+                            )}
+                          </div>
+                        ) : (
+                          typeof formData.personalInfo[key] === 'object' ? JSON.stringify(formData.personalInfo[key]) : formData.personalInfo[key] || ''
+                        )}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -195,14 +208,28 @@ function getStepContent(step, formData, setFormData, handleDocumentClick, expand
               <Typography variant="h6" className={classes.reviewSectionTitle}>Payment Info</Typography>
               <Table>
                 <TableBody>
-                  {paymentInfoKeys.map((key) => (
-                    <TableRow key={key}>
-                      <TableCell>{key}</TableCell>
-                      <TableCell>
-                        {typeof formData.paymentInfo[key] === 'object' ? JSON.stringify(formData.paymentInfo[key]) : formData.paymentInfo[key] || ''}
-                      </TableCell>
+                  <TableRow>
+                    <TableCell>Payment Method</TableCell>
+                    <TableCell>{PaymentMethod}</TableCell>
+                  </TableRow>
+                  {PaymentMethod === 'cash' && (
+                    <TableRow>
+                      <TableCell>Amount</TableCell>
+                      <TableCell>{Amount}</TableCell>
                     </TableRow>
-                  ))}
+                  )}
+                  {PaymentMethod === 'upi' && (
+                    <TableRow>
+                      <TableCell>Transaction ID</TableCell>
+                      <TableCell>{TransactionId}</TableCell>
+                    </TableRow>
+                  )}
+                  {PaymentMethod === 'bankTransfer' && (
+                    <TableRow>
+                      <TableCell>Bank Transfer</TableCell>
+                      <TableCell>{BankTransfer}</TableCell>
+                    </TableRow>
+                  )}
                 </TableBody>
               </Table>
             </Grid>
@@ -233,7 +260,30 @@ export default function EnrollForm() {
       AadharNumber: '',
       Password: '',
     },
-    guardianInfo: {},
+    guardianInfo: {
+      MotherName: '',
+      FatherName: '',
+      ParentOccupation: '',
+      ParentQualification: '',
+      currentAddress: {
+        line1: '',
+        line2: '',
+        city: '',
+        district: '',
+        state: '',
+        pincode: ''
+      },
+      permanentAddress: {
+        line1: '',
+        line2: '',
+        city: '',
+        district: '',
+        state: '',
+        pincode: ''
+      },
+      EmergencyContact: '',
+      MobileNumber: ''
+    },
     academicInfo: {},
     documents: [],
     paymentInfo: {}, // Add paymentInfo to formData
@@ -243,7 +293,26 @@ export default function EnrollForm() {
   const [showDocuments, setShowDocuments] = useState(false);
   const [expandedDoc, setExpandedDoc] = useState(null);
 
+  const validateStep = () => {
+    if (activeStep === 0) {
+      const { StudentName, DOB, Gender, Grade, AadharNumber } = formData.personalInfo;
+      return StudentName && DOB && Gender && Grade && AadharNumber;
+    } else if (activeStep === 1) {
+      const { MotherName, FatherName, ParentOccupation, ParentQualification, currentAddress, permanentAddress, EmergencyContact, MobileNumber } = formData.guardianInfo;
+      return MotherName && FatherName && ParentOccupation && ParentQualification && EmergencyContact && MobileNumber &&
+        currentAddress.line1 && currentAddress.city && currentAddress.district && currentAddress.state && currentAddress.pincode &&
+        permanentAddress.line1 && permanentAddress.city && permanentAddress.district && permanentAddress.state && permanentAddress.pincode;
+    } else if (activeStep === 3) {
+      return requiredDocuments.every(docType => formData.documents.some(doc => doc.type === docType));
+    }
+    return true;
+  };
+
   const handleNext = () => {
+    if (!validateStep()) {
+      alert('Please fill all required fields.');
+      return;
+    }
     setActiveStep(activeStep + 1);
   };
 
@@ -252,7 +321,11 @@ export default function EnrollForm() {
   };
 
   const handleStepClick = (step) => {
-    setActiveStep(step);
+    if (step <= activeStep || validateStep()) {
+      setActiveStep(step);
+    } else {
+      alert('Please fill all required fields.');
+    }
   };
 
   const handleEnrollMore = () => {
@@ -272,16 +345,39 @@ export default function EnrollForm() {
         AadharNumber: '',
         Password: '',
       },
-      guardianInfo: {},
+      guardianInfo: {
+        MotherName: '',
+        FatherName: '',
+        ParentOccupation: '',
+        ParentQualification: '',
+        currentAddress: {
+          line1: '',
+          line2: '',
+          city: '',
+          district: '',
+          state: '',
+          pincode: ''
+        },
+        permanentAddress: {
+          line1: '',
+          line2: '',
+          city: '',
+          district: '',
+          state: '',
+          pincode: ''
+        },
+        EmergencyContact: '',
+        MobileNumber: ''
+      },
       academicInfo: {},
       documents: [],
       paymentInfo: {}, // Reset paymentInfo
     });
   };
 
-  const handleSubmit = async () => {
+    const handleSubmit = async () => {
     console.log('Form submitted:', formData);
-
+  
     // Upload documents to Firebase and collect URLs
     const uploadedDocuments = [];
     for (const doc of formData.documents) {
@@ -299,14 +395,25 @@ export default function EnrollForm() {
         console.error("Error uploading document: ", error);
       }
     }
-
+  
+    // Prepare PaymentDetails based on selected payment method
+    const { PaymentMethod, Amount, TransactionId, BankTransfer } = formData.paymentInfo;
+    let PaymentDetails = { PaymentMethod };
+    if (PaymentMethod === 'cash') {
+      PaymentDetails = { ...PaymentDetails, Amount };
+    } else if (PaymentMethod === 'upi') {
+      PaymentDetails = { ...PaymentDetails, TransactionId };
+    } else if (PaymentMethod === 'bankTransfer') {
+      PaymentDetails = { ...PaymentDetails, BankTransfer };
+    }
+  
     // Prepare payload
     const payload = {
       SchoolId: globalData.data.SCHOOL_ID,
       StudentName: formData.personalInfo.StudentName,
       DOB: formData.personalInfo.DOB,
       Gender: formData.personalInfo.Gender,
-      Photo: formData.personalInfo.Photo,
+      Photo: formData.personalInfo.Photo, // Use the URL of the uploaded photo
       Grade: formData.personalInfo.Grade,
       PreviousSchool: formData.personalInfo.PreviousSchool,
       LanguagesKnown: formData.personalInfo.languages,
@@ -329,15 +436,15 @@ export default function EnrollForm() {
         acc[doc.type] = doc.url;
         return acc;
       }, {}),
-      PaymentDetails: formData.paymentInfo,
+      PaymentDetails,
       Password: formData.personalInfo.Password,
       ParentOccupation: formData.guardianInfo.ParentOccupation,
       ParentQualification: formData.guardianInfo.ParentQualification,
     };
-
+  
     // Log payload to console
     console.log('Payload to be sent:', payload);
-
+  
     // Send formData and uploadedDocuments to backend
     try {
       const response = await fetch(`${BaseUrl}/registerstudent`, {
@@ -347,14 +454,14 @@ export default function EnrollForm() {
         },
         body: JSON.stringify(payload),
       });
-
+  
       if (!response.ok) {
         throw new Error('Form submission failed');
       }
-
+  
       const data = await response.json();
       console.log('Form data sent to backend successfully:', data);
-
+  
       // Clear local storage after successful submission
       localStorage.removeItem('uploadedDocuments');
     } catch (error) {

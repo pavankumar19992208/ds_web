@@ -35,6 +35,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const validateAlphabets = (value) => /^[A-Za-z\s]+$/.test(value);
+const validateNumbers = (value) => /^[0-9]+$/.test(value);
+// const validateEmail = (value) => /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value);
+
 export default function GuardianInfoForm({ formData, setFormData }) {
   const classes = useStyles();
   const [sameAddress, setSameAddress] = useState(false);
@@ -54,6 +58,7 @@ export default function GuardianInfoForm({ formData, setFormData }) {
     state: '',
     pincode: ''
   });
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     setFormData((prevData) => ({
@@ -83,13 +88,35 @@ export default function GuardianInfoForm({ formData, setFormData }) {
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      guardianInfo: {
-        ...prevData.guardianInfo,
-        [name]: value,
-      },
-    }));
+    let isValid = true;
+
+    if (['FatherName', 'MotherName', 'GuardianName'].includes(name)) {
+      isValid = validateAlphabets(value);
+    } else if (['MobileNumber', 'EmergencyContact'].includes(name)) {
+      isValid = validateNumbers(value);
+    }
+    // else if (name === 'Email') {
+    //   isValid = validateEmail(value);
+    // }
+
+    if (isValid) {
+      setFormData((prevData) => ({
+        ...prevData,
+        guardianInfo: {
+          ...prevData.guardianInfo,
+          [name]: value,
+        },
+      }));
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [name]: '',
+      }));
+    } else {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [name]: `Invalid ${name === 'Email' ? 'email' : name === 'MobileNumber' || name === 'EmergencyContact' ? 'number' : 'alphabetic'} input`,
+      }));
+    }
   };
 
   const qualifications = ['Matriculation', '12th or Diploma', 'Graduation', 'Post Graduation', 'Other'];
@@ -111,6 +138,8 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             value={formData.guardianInfo.FatherName || ''}
             onChange={handleInputChange}
             className={classes.textField}
+            error={!!errors.FatherName}
+            helperText={errors.FatherName}
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -124,6 +153,8 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             value={formData.guardianInfo.MotherName || ''}
             onChange={handleInputChange}
             className={classes.textField}
+            error={!!errors.MotherName}
+            helperText={errors.MotherName}
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -136,6 +167,8 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             value={formData.guardianInfo.GuardianName || ''}
             onChange={handleInputChange}
             className={classes.textField}
+            error={!!errors.GuardianName}
+            helperText={errors.GuardianName}
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -188,6 +221,8 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             value={formData.guardianInfo.MobileNumber || ''}
             onChange={handleInputChange}
             className={classes.textField}
+            error={!!errors.MobileNumber}
+            helperText={errors.MobileNumber}
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -201,6 +236,8 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             value={formData.guardianInfo.Email || ''}
             onChange={handleInputChange}
             className={classes.textField}
+            error={!!errors.Email}
+            helperText={errors.Email}
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -214,6 +251,8 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             value={formData.guardianInfo.EmergencyContact || ''}
             onChange={handleInputChange}
             className={classes.textField}
+            error={!!errors.EmergencyContact}
+            helperText={errors.EmergencyContact}
           />
         </Grid>
       </Grid>

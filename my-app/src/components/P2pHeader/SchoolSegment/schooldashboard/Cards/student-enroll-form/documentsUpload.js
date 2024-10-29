@@ -72,6 +72,7 @@ export default function DocumentsUpload({ formData, setFormData }) {
         <Grid item xs={12} md={6}>
           <Typography variant="subtitle1" className={classes.typography}>Aadhar :</Typography>
           <TextField
+            required
             type="file"
             id="Aadhar"
             name="Aadhar"
@@ -86,6 +87,7 @@ export default function DocumentsUpload({ formData, setFormData }) {
         <Grid item xs={12} md={6}>
           <Typography variant="subtitle1" className={classes.typography}>Transfer Certificate (TC) :</Typography>
           <TextField
+            required
             type="file"
             id="uploadDocument-tc"
             label="Upload Transfer Certificate (TC)"
@@ -99,6 +101,7 @@ export default function DocumentsUpload({ formData, setFormData }) {
         <Grid item xs={12} md={6}>
           <Typography variant="subtitle1" className={classes.typography}>Ration Card :</Typography>
           <TextField
+            required
             type="file"
             id="uploadDocument-rationcard"
             label="Upload Ration Card"
@@ -112,6 +115,7 @@ export default function DocumentsUpload({ formData, setFormData }) {
         <Grid item xs={12} md={6}>
           <Typography variant="subtitle1" className={classes.typography}>Income Certificate :</Typography>
           <TextField
+            required
             type="file"
             id="uploadDocument-income"
             label="Upload Income Certificate"
@@ -125,6 +129,7 @@ export default function DocumentsUpload({ formData, setFormData }) {
         <Grid item xs={12} md={6}>
           <Typography variant="subtitle1" className={classes.typography}>Birth Certificate :</Typography>
           <TextField
+            required
             type="file"
             id="uploadDocument-birth"
             label="Upload Birth Certificate"

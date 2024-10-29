@@ -52,12 +52,19 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(3),
     marginBottom: theme.spacing(-2),
   },
+  languagesMargin:{
+    marginBottom: theme.spacing(2),
+  },
 }));
+
+const validateAlphabets = (value) => /^[A-Za-z\s]+$/.test(value);
+const validateNumbers = (value) => /^[0-9]+$/.test(value);
 
 export default function DetailsForm({ formData, setFormData }) {
   const classes = useStyles();
   const [languages, setLanguages] = useState(formData.personalInfo.languages || ['']);
   const [fileName, setFileName] = useState(formData.personalInfo.PhotoName || '');
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     setFileName(formData.personalInfo.PhotoName || '');
@@ -65,13 +72,32 @@ export default function DetailsForm({ formData, setFormData }) {
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      personalInfo: {
-        ...prevData.personalInfo,
-        [name]: value,
-      },
-    }));
+    let isValid = true;
+
+    if (['StudentName', 'PreviousSchool', 'Religion', 'Category', 'Nationality'].includes(name)) {
+      isValid = validateAlphabets(value);
+    } else if (name === 'AadharNumber') {
+      isValid = validateNumbers(value);
+    }
+
+    if (isValid) {
+      setFormData((prevData) => ({
+        ...prevData,
+        personalInfo: {
+          ...prevData.personalInfo,
+          [name]: value,
+        },
+      }));
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [name]: '',
+      }));
+    } else {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [name]: `Invalid ${name === 'AadharNumber' ? 'number' : 'alphabetic'} input`,
+      }));
+    }
   };
 
   const handleFileChange = async (event) => {
@@ -154,6 +180,8 @@ export default function DetailsForm({ formData, setFormData }) {
             value={formData.personalInfo.StudentName || ''}
             onChange={handleChange}
             className={`${classes.fieldMargin} ${classes.reducedWidth}`}
+            error={!!errors.StudentName}
+            helperText={errors.StudentName}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -192,7 +220,6 @@ export default function DetailsForm({ formData, setFormData }) {
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
-            required
             id="Photo"
             name="Photo"
             label="Upload Photo"
@@ -232,7 +259,6 @@ export default function DetailsForm({ formData, setFormData }) {
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
-            required
             id="PreviousSchool"
             name="PreviousSchool"
             label="Previous School Name"
@@ -240,10 +266,12 @@ export default function DetailsForm({ formData, setFormData }) {
             value={formData.personalInfo.PreviousSchool || ''}
             onChange={handleChange}
             className={`${classes.fieldMargin} ${classes.reducedWidth}`}
+            error={!!errors.PreviousSchool}
+            helperText={errors.PreviousSchool}
           />
         </Grid>
         <Grid item xs={12}>
-          <Typography variant="subtitle1" gutterBottom className={`${classes.coloredTypography} ${classes.typographyMargin}`}>
+          <Typography variant="subtitle1" gutterBottom className={`${classes.coloredTypography} ${classes.languagesMargin}`}>
             Languages Known :
           </Typography>
           {languages.map((language, index) => (
@@ -282,7 +310,6 @@ export default function DetailsForm({ formData, setFormData }) {
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
-            required
             id="Religion"
             name="Religion"
             label="Religion"
@@ -290,11 +317,12 @@ export default function DetailsForm({ formData, setFormData }) {
             value={formData.personalInfo.Religion || ''}
             onChange={handleChange}
             className={`${classes.fieldMargin} ${classes.reducedWidth}`}
+            error={!!errors.Religion}
+            helperText={errors.Religion}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
-            required
             id="Category"
             name="Category"
             label="Category"
@@ -302,11 +330,12 @@ export default function DetailsForm({ formData, setFormData }) {
             value={formData.personalInfo.Category || ''}
             onChange={handleChange}
             className={`${classes.fieldMargin} ${classes.reducedWidth}`}
+            error={!!errors.Category}
+            helperText={errors.Category}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
-            required
             id="Nationality"
             name="Nationality"
             label="Nationality"
@@ -314,6 +343,8 @@ export default function DetailsForm({ formData, setFormData }) {
             value={formData.personalInfo.Nationality || ''}
             onChange={handleChange}
             className={`${classes.fieldMargin} ${classes.reducedWidth}`}
+            error={!!errors.Nationality}
+            helperText={errors.Nationality}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -326,6 +357,8 @@ export default function DetailsForm({ formData, setFormData }) {
             value={formData.personalInfo.AadharNumber || ''}
             onChange={handleChange}
             className={`${classes.fieldMargin} ${classes.reducedWidth}`}
+            error={!!errors.AadharNumber}
+            helperText={errors.AadharNumber}
           />
         </Grid>
       </Grid>
