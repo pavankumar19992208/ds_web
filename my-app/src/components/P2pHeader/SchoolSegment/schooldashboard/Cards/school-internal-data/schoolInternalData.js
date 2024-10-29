@@ -37,22 +37,40 @@ const useStyles = makeStyles((theme) => ({
   gradeLevelsTitle: {
     marginTop: theme.spacing(2),
     marginBottom: theme.spacing(-3),
+    color: '#3f51b5',
+    fontSize: '1rem',
   },
   academicYearTitle: {
     marginTop: theme.spacing(2),
+    color: '#3f51b5',
+    fontSize: '1rem',
   },
   schoolTimingTitle: {
     marginTop: theme.spacing(2),
+    color: '#3f51b5',
+    fontSize: '1rem',
   },
   extraCircularProgramsTitle: {
     marginTop: theme.spacing(2),
+    color: '#3f51b5',
+    fontSize: '1rem',
   },
   feeStructureTitle: {
     marginTop: theme.spacing(2),
+    color: '#3f51b5',
+    fontSize: '1rem',
   },
   totalAmount: {
     marginTop: theme.spacing(2),
     fontWeight: 'bold',
+  },
+  field: {
+    marginLeft: theme.spacing(2),
+    width: '92%',
+  },
+  feeTypeTitle: {
+    marginLeft: theme.spacing(0.5),
+    width: '90%',
   },
 }));
 
@@ -215,6 +233,7 @@ const SchoolInternalData = () => {
                 fullWidth
                 value={schoolType}
                 onChange={(e) => setSchoolType(e.target.value)}
+                className={classes.field}
               >
                 <MenuItem value="">Select</MenuItem>
                 <MenuItem value="primary">Primary</MenuItem>
@@ -232,6 +251,7 @@ const SchoolInternalData = () => {
                 fullWidth
                 value={curriculum}
                 onChange={(e) => setCurriculum(e.target.value)}
+                className={classes.field}
               >
                 <MenuItem value="">Select</MenuItem>
                 <MenuItem value="stateboard">Stateboard</MenuItem>
@@ -284,6 +304,7 @@ const SchoolInternalData = () => {
                 SelectProps={{
                   multiple: true,
                 }}
+                className={classes.field}
               >
                 <MenuItem value="telugu">Telugu</MenuItem>
                 <MenuItem value="hindi">Hindi</MenuItem>
@@ -315,6 +336,7 @@ const SchoolInternalData = () => {
                 fullWidth
                 value={medium}
                 onChange={(e) => setMedium(e.target.value)}
+                className={classes.field}
               >
                 <MenuItem value="">Select</MenuItem>
                 <MenuItem value="hindi">Hindi</MenuItem>
@@ -332,6 +354,7 @@ const SchoolInternalData = () => {
                 fullWidth
                 value={examPattern}
                 onChange={(e) => setExamPattern(e.target.value)}
+                className={classes.field}
               >
                 <MenuItem value="">Select</MenuItem>
                 <MenuItem value="semester">Semester Based</MenuItem>
@@ -360,6 +383,7 @@ const SchoolInternalData = () => {
                 fullWidth
                 value={assessmentCriteria}
                 onChange={(e) => setAssessmentCriteria(e.target.value)}
+                className={classes.field}
               >
                 <MenuItem value="">Select</MenuItem>
                 <MenuItem value="percentage">Percentage %</MenuItem>
@@ -381,7 +405,7 @@ const SchoolInternalData = () => {
             </Grid>
 
             <Grid item xs={12}>
-              <Typography variant="h6" className={classes.gradeLevelsTitle}>Grades Levels Offered</Typography>
+              <Typography variant="h6" className={classes.gradeLevelsTitle}>Grades Levels Offered :</Typography>
             </Grid>
             <Grid container item xs={12} spacing={3}>
               <Grid item xs={6}>
@@ -394,6 +418,7 @@ const SchoolInternalData = () => {
                   fullWidth
                   value={gradeLevel1}
                   onChange={(e) => setGradeLevel1(e.target.value)}
+                  className={classes.field}
                 >
                   <MenuItem value="">Select</MenuItem>
                   {gradeLevels.map((level, index) => (
@@ -411,6 +436,7 @@ const SchoolInternalData = () => {
                   fullWidth
                   value={gradeLevel2}
                   onChange={(e) => setGradeLevel2(e.target.value)}
+                  className={classes.field}
                 >
                   <MenuItem value="">Select</MenuItem>
                   {gradeLevels.map((level, index) => (
@@ -421,7 +447,7 @@ const SchoolInternalData = () => {
             </Grid>
 
             <Grid item xs={12}>
-              <Typography variant="h6" className={classes.academicYearTitle}>Academic Year</Typography>
+              <Typography variant="h6" className={classes.academicYearTitle}>Academic Year :</Typography>
             </Grid>
             <Grid container item xs={12} spacing={3}>
               <Grid item xs={6}>
@@ -437,6 +463,7 @@ const SchoolInternalData = () => {
                   InputLabelProps={{
                     shrink: true,
                   }}
+                  className={classes.field}
                 />
               </Grid>
               <Grid item xs={6}>
@@ -452,11 +479,12 @@ const SchoolInternalData = () => {
                   InputLabelProps={{
                     shrink: true,
                   }}
+                  className={classes.field}
                 />
               </Grid>
             </Grid>
             <Grid item xs={12}>
-              <Typography variant="h6" className={classes.schoolTimingTitle}>School Timing</Typography>
+              <Typography variant="h6" className={classes.schoolTimingTitle}>School Timing :</Typography>
             </Grid>
             <Grid container item xs={12} spacing={3}>
               <Grid item xs={6}>
@@ -472,6 +500,7 @@ const SchoolInternalData = () => {
                   InputLabelProps={{
                     shrink: true,
                   }}
+                  className={classes.field}
                 />
               </Grid>
               <Grid item xs={6}>
@@ -487,11 +516,12 @@ const SchoolInternalData = () => {
                   InputLabelProps={{
                     shrink: true,
                   }}
+                  className={classes.field}
                 />
               </Grid>
             </Grid>
             <Grid item xs={12} sm={6}>
-              <Typography variant="h6" className={classes.extraCircularProgramsTitle}>Extra Curricular Programs</Typography>
+              <Typography variant="h6" className={classes.extraCircularProgramsTitle}>Extra Curricular Programs :</Typography>
               {extraPrograms.map((program, index) => (
                 <Grid container spacing={1} key={index}>
                   <Grid item xs={9}>
@@ -503,7 +533,9 @@ const SchoolInternalData = () => {
                       fullWidth
                       value={program}
                       onChange={(e) => handleExtraProgramChange(index, e.target.value)}
+                      className={classes.field}
                     />
+                    
                   </Grid>
                   <Grid item xs={1}>
                     <IconButton onClick={() => deleteExtraProgram(index)}>
@@ -520,7 +552,7 @@ const SchoolInternalData = () => {
             </Grid>
 
             <Grid item xs={12} sm={6}>
-              <Typography variant="h6" className={classes.feeStructureTitle}>Fee Structure</Typography>
+              <Typography variant="h6" className={classes.feeStructureTitle}>Fee Structure :</Typography>
               {feeStructure.map((fee, index) => (
                 <Grid container spacing={1} key={index}>
                   <Grid item xs={4}>
@@ -532,6 +564,7 @@ const SchoolInternalData = () => {
                       fullWidth
                       value={fee.feeType}
                       onChange={(e) => handleFeeStructureChange(index, 'feeType', e.target.value)}
+                      className={classes.feeTypeTitle}
                     />
                   </Grid>
                   <Grid item xs={4}>
@@ -543,6 +576,9 @@ const SchoolInternalData = () => {
                       fullWidth
                       value={fee.amount}
                       onChange={(e) => handleFeeStructureChange(index, 'amount', e.target.value)}
+                      inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+                      error={isNaN(fee.amount)}
+                      helperText={isNaN(fee.amount) ? 'Please enter a valid number' : ''}
                     />
                   </Grid>
                   <Grid item xs={1}>
