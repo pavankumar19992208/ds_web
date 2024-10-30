@@ -15,7 +15,7 @@
 }
 .sidebar_d {
   padding: 1%;
-  width: 56px !important;
+  width: 54px !important;
 background-color: hsl(220, 35%, 97%);;  
 height: 100vh;
 position: fixed;
@@ -25,9 +25,17 @@ overflow-y: auto;
 border-right: 1px solid hsla(220, 20%, 80%, 0.4);
 z-index: 1000;
 transition: width 0.3s ease-in-out;
+display: flex;
+flex-direction: row;
+justify-content: center;
 
 
 }
+.sidebar_d .list-item {
+  display: flex;
+  justify-content: center;
+}
+
 
 
 .profile-card {
@@ -48,12 +56,6 @@ transition: width 0.3s ease-in-out;
   height: 60px;
   
 }
-.sidebar.collapsed .avatar {
-  transition: width 0.3s ease-in-out;
-  width: 40px;
-  height: 40px;
-}
-
 
 .profile-card .username {
   margin-top: 16px;

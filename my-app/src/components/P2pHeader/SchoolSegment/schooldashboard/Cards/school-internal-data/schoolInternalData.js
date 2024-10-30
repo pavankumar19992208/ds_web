@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
   },
   gridContainer: {
     maxWidth: '100%',
-    margin: '50px auto',
+    margin: '32px auto',
   },
   buttons: {
     display: 'flex',
@@ -208,17 +208,17 @@ const SchoolInternalData = () => {
     <React.Fragment>
       <Navbar schoolName={globalData.data.SCHOOL_NAME} schoolLogo={globalData.data.SCHOOL_LOGO} />
       <main className={`${classes.mainContainer} layout`}>
-      <Sidebar visibleItems={['home']} hideProfile={true} showTitle={false} />
+      <Sidebar visibleItems={['home', 'updateEnrollment']} hideProfile={true} showTitle={false} />
       <Paper className="paper">
           <Typography component="h1" variant="h4" align="center">
             School Information
           </Typography>
           <Grid container spacing={3}>
-            <Grid item xs={12} sm={6} style={{ marginTop: '32px' }}>
-              <Typography variant="h6">{globalData.data.SCHOOL_NAME}</Typography>
+            <Grid item xs={12} sm={6} style={{ marginTop: '24px' }}>
+              <Typography variant="h6" style={{ fontSize: '1rem' }}>{globalData.data.SCHOOL_NAME}</Typography>
             </Grid>
-            <Grid item xs={12} sm={6} style={{ textAlign: 'right', marginTop: '16px' }}>
-              <Typography variant="h6">School ID: {globalData.data.SCHOOL_ID}</Typography>
+            <Grid item xs={12} sm={6} style={{ textAlign: 'right', marginTop: '24px'}}>
+              <Typography variant="h6" style={{ fontSize: '1rem' }}>School ID: {globalData.data.SCHOOL_ID}</Typography>
             </Grid>
           </Grid>
 

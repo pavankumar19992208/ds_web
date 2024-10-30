@@ -15,22 +15,22 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import DetailsForm from './personalInfo';
-import GuardianInfoForm from './guardianInfo';
-import AcademicInfoForm from './academicInfo';
-import DocumentsUpload from './documentsUpload';
-import PaymentForm from './stPayment';
-import Sidebar from '../../Sidebar/Sidebar';
-import Navbar from '../../Navbar/Navbar';
+import DetailsForm from '../PersonalInfo/personalInfo';
+import GuardianInfoForm from '../GuardianInfo/guardianInfo';
+import AcademicInfoForm from '../AcademicInfo/academicInfo';
+import DocumentsUpload from '../DocumentsUpload/documentsUpload';
+import PaymentForm from '../PaymentForm/stPayment';
+import Sidebar from '../../../Sidebar/Sidebar';
+import Navbar from '../../../Navbar/Navbar';
 import './primaryForm.css';
-import { GlobalStateContext } from '../../../../../../GlobalStateContext';
-import { storage } from '../../../../../../components/connections/firebase';
+import { GlobalStateContext } from '../../../../../../../GlobalStateContext';
+import { storage } from '../../../../../../connections/firebase';
 import { ref, uploadString, getDownloadURL } from 'firebase/storage';
 import { makeStyles } from '@material-ui/core/styles';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import IconButton from '@material-ui/core/IconButton';
-import BaseUrl from '../../../../../../config';
+import BaseUrl from '../../../../../../../config';
 
 const useStyles = makeStyles((theme) => ({
   formContainer: {
@@ -105,8 +105,7 @@ function getStepContent(step, formData, setFormData, handleDocumentClick, expand
                               {expandedDoc === key ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                             </IconButton>
                             {expandedDoc === key && (
-                              <img src={formData.personalInfo.Photo} alt="Uploaded Photo" style={{ width: '100%' }} />
-                            )}
+                              <img src={formData.personalInfo.Photo} alt="User's uploaded photo" style={{ width: '100%' }} />                            )}
                           </div>
                         ) : (
                           typeof formData.personalInfo[key] === 'object' ? JSON.stringify(formData.personalInfo[key]) : formData.personalInfo[key] || ''

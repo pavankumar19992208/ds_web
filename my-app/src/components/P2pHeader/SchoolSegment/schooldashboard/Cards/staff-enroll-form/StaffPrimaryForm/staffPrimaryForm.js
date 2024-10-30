@@ -5,25 +5,15 @@ import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import Button from '@material-ui/core/Button';
-import Link from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
-import DetailsForm from './detailsForm';
-import QualificationForm from './qualificationForm';
-import Sidebar from '../../Sidebar/Sidebar'; // Import Sidebar
-import Navbar from '../../Navbar/Navbar'; // Import Navbar
-
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
+import StaffPersonalInfo from '../StaffPersonalInfo/staffPersonalInfo';
+import ProfessionalDetailsForm from '../StaffProfessionalInfo/staffProfessionalInfo'; // Import ProfessionalDetailsForm
+import EmploymentDetailsForm from '../StaffEmployementInfo/staffEmployementInfo'; // Import EmploymentDetailsForm
+import EmergencyContactForm from '../StaffEmergencyContactInfo/staffEmergencyContactInfo'; // Import EmergencyContactForm
+import DocumentsUploadForm from '../StaffDocumentsUpload/staffDocumentUpload'; // Import DocumentsUploadForm
+import AdditionalFieldsForm from '../StaffAdditionalInfo/staffAdditionalInfo'; // Import AdditionalFieldsForm
+import Sidebar from '../../../Sidebar/Sidebar'; // Import Sidebar
+import Navbar from '../../../Navbar/Navbar'; // Import Navbar
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -33,23 +23,20 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'row', // Ensure Sidebar and form are in a row
     justifyContent: 'center', // Center horizontally
-    alignItems: 'center', // Center vertically
+    alignItems: 'flex-start', // Center vertically
     height: '100vh', // Full viewport height
     width: '100%', // Full viewport width
     padding: theme.spacing(2),
-    
+    overflow: 'auto',
+    position:'absolute',
   },
   paper: {
     width: '100%',
-    maxWidth: 600, // Max width of the form
-    margin: theme.spacing(3),
-    padding: theme.spacing(2),
-    [theme.breakpoints.up(600 + theme.spacing(3) * 2)]: {
-      marginTop: theme.spacing(6),
-      marginBottom: theme.spacing(6),
-      padding: theme.spacing(3),
-    },
-    
+    maxWidth: '1000px', // Increase max width of the form
+    margin: '24px',
+    padding: '16px',
+    marginTop: '80px',
+    overFlow: 'auto',
   },
   stepper: {
     padding: theme.spacing(3, 0, 5),
@@ -69,20 +56,35 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const steps = ['Personal details', 'Qualification & Experience'];
+const steps = [
+  'Personal details',
+  'Professional Details',
+  'Employment Details',
+  'Emergency Contact Info',
+  'Documents Upload',
+  'Additional Fields'
+];
 
 function getStepContent(step) {
   switch (step) {
     case 0:
-      return <DetailsForm />;
+      return <StaffPersonalInfo />;
     case 1:
-      return <QualificationForm />;
+      return <ProfessionalDetailsForm />;
+    case 2:
+      return <EmploymentDetailsForm />;
+    case 3:
+      return <EmergencyContactForm />;
+    case 4:
+      return <DocumentsUploadForm />;
+    case 5:
+      return <AdditionalFieldsForm />;
     default:
       throw new Error('Unknown step');
   }
 }
 
-export default function EnrollForm() {
+export default function StaffPrimaryForm() {
   const classes = useStyles();
   const [activeStep, setActiveStep] = React.useState(0);
 
@@ -102,7 +104,7 @@ export default function EnrollForm() {
     <React.Fragment>
       <Navbar /> {/* Add Navbar */}
       <main className={classes.layout}>
-        <Sidebar visibleItems={['home']} hideProfile={true} /> {/* Add Sidebar */}
+        <Sidebar visibleItems={['home', 'updateEnrollment']} hideProfile={true} showTitle={false} />
         <Paper className={classes.paper}>
           <Typography component="h1" variant="h4" align="center">
             Teacher's Enroll Form
@@ -155,7 +157,6 @@ export default function EnrollForm() {
           </React.Fragment>
         </Paper>
       </main>
-      <Copyright />
     </React.Fragment>
   );
 }

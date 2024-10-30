@@ -61,15 +61,15 @@ const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true }) =
   const isPrimaryFormOpen = location.pathname.includes('primaryForm');
 
   return (
-    <Box className={showTitle ? "sidebar" : "sidebar_d"} sx={{ width: isPrimaryFormOpen ? '60px' : '240px' }}>
+    <Box className={showTitle ? "sidebar" : "sidebar_d"} sx={{ width: isPrimaryFormOpen ? '60px' : '240px', justifyContent: 'center' }}>
       <List component="nav">
         {visibleItems.includes('home') && (
           <Tooltip title="Home" placement="right">
             <ListItem
               button className="list-item" sx={selectedItem === 'home' ? selectedListItemStyle : listItemHoverStyle} onClick={navigateToHomepage} style={selectedItem === 'home' ? { pointerEvents: 'none' } : {}}
             >
-              <Home sx={{ marginRight: 2 }} />
-              {!isPrimaryFormOpen && showTitle && <ListItemText primary="Home" className="list-item-text" />}
+              <Home  />
+              {!isPrimaryFormOpen && showTitle && <ListItemText primary="Home" className="list-item-text" sx={{ marginLeft: 2 }} />}
             </ListItem>
           </Tooltip>
         )}

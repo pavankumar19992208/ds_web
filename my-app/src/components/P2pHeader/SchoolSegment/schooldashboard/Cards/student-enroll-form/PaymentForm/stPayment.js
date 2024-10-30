@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
 
 const validateNumbers = (value) => /^[0-9]+$/.test(value);
 
-export default function PaymentForm({ formData, setFormData }) {
+export default function StudentPaymentForm({ formData, setFormData }) {
   const classes = useStyles();
   const [errors, setErrors] = useState({});
 
