@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
 import { makeStyles } from '@material-ui/core/styles';
@@ -50,23 +49,26 @@ const StaffProfessionalInfo = ({ formData, setFormData }) => {
     return error;
   };
 
-  const handleChange = (event) => {
+   const handleChange = (event) => {
     const { name, value } = event.target;
-    const error = validateField(name, value);
-
+    let error = validateField(name, value);
+  
+    // Show error if the field is empty
+    if (!value) {
+      error = 'This field is required';
+    }
+  
     setErrors((prev) => ({
       ...prev,
       [name]: error,
     }));
-
-    if (!error) {
-      const updatedFormValues = { ...formValues, [name]: value };
-      setFormValues(updatedFormValues);
-      setFormData((prevData) => ({
-        ...prevData,
-        professionalInfo: updatedFormValues,
-      }));
-    }
+  
+    const updatedFormValues = { ...formValues, [name]: value };
+    setFormValues(updatedFormValues);
+    setFormData((prevData) => ({
+      ...prevData,
+      professionalInfo: updatedFormValues,
+    }));
   };
 
   return (

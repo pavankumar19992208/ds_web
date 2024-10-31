@@ -49,17 +49,24 @@ const StaffEmploymentInfo = ({ formData, setFormData }) => {
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    const error = validateField(name, value);
-
+    let error = validateField(name, value);
+  
+    // Show error if the field is empty
+    if (!value) {
+      error = 'This field is required';
+    }
+  
     setErrors((prev) => ({
       ...prev,
       [name]: error,
     }));
-
-    if (!error) {
-      setFormValues({ ...formValues, [name]: value });
-      setFormData({ ...formData, employmentInfo: { ...formValues, [name]: value } });
-    }
+  
+    const updatedFormValues = { ...formValues, [name]: value };
+    setFormValues(updatedFormValues);
+    setFormData((prevData) => ({
+      ...prevData,
+      employmentInfo: updatedFormValues,
+    }));
   };
 
   return (

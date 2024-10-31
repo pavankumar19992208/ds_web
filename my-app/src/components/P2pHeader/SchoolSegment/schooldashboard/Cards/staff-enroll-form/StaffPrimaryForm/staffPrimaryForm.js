@@ -158,8 +158,130 @@ export default function StaffPrimaryForm() {
     },
     documents: [],
   });
+  const [errors, setErrors] = useState({});
+
+  const validatePersonalInfo = () => {
+    const { personalInfo } = formData;
+    const requiredFields = ['fullName', 'dob', 'gender', 'contactNumber', 'currentAddress', 'permanentAddress'];
+    let isValid = true;
+    let newErrors = {};
+
+    requiredFields.forEach((field) => {
+      if (!personalInfo[field] || (typeof personalInfo[field] === 'object' && Object.values(personalInfo[field]).some(value => !value))) {
+        isValid = false;
+        newErrors[field] = 'This field is required';
+      }
+    });
+
+    setErrors(newErrors);
+    return isValid;
+  };
+
+  const validateProfessionalInfo = () => {
+    const { professionalInfo } = formData;
+    const requiredFields = ['position', 'subjectSpecialization', 'grade', 'qualification'];
+    let isValid = true;
+    let newErrors = {};
+
+    requiredFields.forEach((field) => {
+      if (!professionalInfo[field]) {
+        isValid = false;
+        newErrors[field] = 'This field is required';
+      }
+    });
+
+    setErrors(newErrors);
+    return isValid;
+  };
+
+  const validateEmploymentInfo = () => {
+    const { employmentInfo } = formData;
+    const requiredFields = ['joiningDate', 'employmentType'];
+    let isValid = true;
+    let newErrors = {};
+
+    requiredFields.forEach((field) => {
+      if (!employmentInfo[field]) {
+        isValid = false;
+        newErrors[field] = 'This field is required';
+      }
+    });
+
+    setErrors(newErrors);
+    return isValid;
+  };
+
+  const validateEmergencyContactInfo = () => {
+    const { emergencyContactInfo } = formData;
+    const requiredFields = ['emergencyContactName', 'emergencyContactNumber', 'relationshipToTeacher'];
+    let isValid = true;
+    let newErrors = {};
+
+    requiredFields.forEach((field) => {
+      if (!emergencyContactInfo[field]) {
+        isValid = false;
+        newErrors[field] = 'This field is required';
+      }
+    });
+
+    setErrors(newErrors);
+    return isValid;
+  };
+
+  const validateDocumentUpload = () => {
+    const requiredDocuments = ['resume', 'photoID'];
+    let isValid = true;
+    let newErrors = {};
+
+    requiredDocuments.forEach((docType) => {
+      if (!formData.documents.some(doc => doc.type === docType)) {
+        isValid = false;
+        newErrors[docType] = 'This document is required';
+      }
+    });
+
+    setErrors(newErrors);
+    return isValid;
+  };
+
+  const validateAdditionalInfo = () => {
+    const { additionalInfo } = formData;
+    const requiredFields = ['languagesKnown'];
+    let isValid = true;
+    let newErrors = {};
+
+    requiredFields.forEach((field) => {
+      if (!additionalInfo[field]) {
+        isValid = false;
+        newErrors[field] = 'This field is required';
+      }
+    });
+
+    setErrors(newErrors);
+    return isValid;
+  };
 
   const handleNext = () => {
+    if (activeStep === 0 && !validatePersonalInfo()) {
+      alert("Please fill out all required fields in Personal Details.");
+      return;
+    }
+    if (activeStep === 1 && !validateProfessionalInfo()) {
+      alert("Please fill out all required fields in Professional Details.");
+      return;
+    }
+    if (activeStep === 2 && !validateEmploymentInfo()) {
+      alert("Please fill out all required fields in Employment Details.");
+      return;
+    }
+    if (activeStep === 3 && !validateEmergencyContactInfo()) {
+      alert("Please fill out all required fields in Emergency Contact Info.");
+      return;
+    }
+    if (activeStep === 4 && !validateDocumentUpload()) {
+      alert("Please upload all required documents.");
+      return;
+    }
     setActiveStep(activeStep + 1);
   };
 
@@ -172,6 +294,11 @@ export default function StaffPrimaryForm() {
   };
 
   const handleSubmit = async () => {
+    if (!validateAdditionalInfo()) {
+      alert("Please fill out all required fields in Additional Fields.");
+      return;
+    }
+
     const payload = {
       fullName: formData.personalInfo.fullName,
       dob: formData.personalInfo.dob,
@@ -191,14 +318,11 @@ export default function StaffPrimaryForm() {
       otherEmploymentType: formData.employmentInfo.otherEmploymentType,
       previousSchool: formData.employmentInfo.previousSchool,
       emergencyContactName: formData.emergencyContactInfo.emergencyContactName,
-      emergencyContactNumber:
-        formData.emergencyContactInfo.emergencyContactNumber,
-      relationshipToTeacher:
-        formData.emergencyContactInfo.relationshipToTeacher,
+      emergencyContactNumber: formData.emergencyContactInfo.emergencyContactNumber,
+      relationshipToTeacher: formData.emergencyContactInfo.relationshipToTeacher,
       languagesKnown: formData.additionalInfo.languagesKnown,
       interests: formData.additionalInfo.interests,
-      availabilityOfExtraCirricularActivities:
-        formData.additionalInfo.availabilityOfExtraCirricularActivities,
+      availabilityOfExtraCirricularActivities: formData.additionalInfo.availabilityOfExtraCirricularActivities,
       documents: formData.documents.reduce((acc, doc) => {
         acc[doc.type] = doc.url;
         return acc;
@@ -206,7 +330,7 @@ export default function StaffPrimaryForm() {
     };
 
     // Log payload to console
-    console.log(" to be sent:", payload);
+    console.log("Payload to be sent:", payload);
 
     try {
       const response = await fetch(`${BaseUrl}/registerstaff`, {

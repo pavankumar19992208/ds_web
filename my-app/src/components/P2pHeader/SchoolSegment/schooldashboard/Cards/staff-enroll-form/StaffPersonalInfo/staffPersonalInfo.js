@@ -26,34 +26,37 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
 
   const handleInputChange = (e, fieldType, addressType = null) => {
     const { name, value } = e.target;
-    const error = validateField(name, value);
-
+    let error = validateField(name, value);
+  
+    // Show error if the field is empty
+    if (!value) {
+      error = 'This field is required';
+    }
+  
     setErrors((prev) => ({
       ...prev,
       [name]: error,
     }));
-
-    if (!error) {
-      if (fieldType === 'personalInfo') {
-        setFormData((prev) => ({
-          ...prev,
-          personalInfo: {
-            ...prev.personalInfo,
+  
+    if (fieldType === 'personalInfo') {
+      setFormData((prev) => ({
+        ...prev,
+        personalInfo: {
+          ...prev.personalInfo,
+          [name]: value,
+        },
+      }));
+    } else if (fieldType === 'address' && addressType) {
+      setFormData((prev) => ({
+        ...prev,
+        personalInfo: {
+          ...prev.personalInfo,
+          [addressType]: {
+            ...prev.personalInfo[addressType],
             [name]: value,
           },
-        }));
-      } else if (fieldType === 'address' && addressType) {
-        setFormData((prev) => ({
-          ...prev,
-          personalInfo: {
-            ...prev.personalInfo,
-            [addressType]: {
-              ...prev.personalInfo[addressType],
-              [name]: value,
-            },
-          },
-        }));
-      }
+        },
+      }));
     }
   };
 

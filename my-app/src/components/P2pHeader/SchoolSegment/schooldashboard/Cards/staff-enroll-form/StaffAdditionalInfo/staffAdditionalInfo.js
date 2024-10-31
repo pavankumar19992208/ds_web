@@ -35,22 +35,25 @@ const StaffAdditionalInfo = ({ formData, setFormData }) => {
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    const error = validateField(name, value);
+    let error = validateField(name, value);
+
+    // Show error if the field is empty
+    if (!value) {
+      error = 'This field is required';
+    }
 
     setErrors((prev) => ({
       ...prev,
       [name]: error,
     }));
 
-    if (!error) {
-      setFormData((prevData) => ({
-        ...prevData,
-        additionalInfo: {
-          ...prevData.additionalInfo,
-          [name]: value,
-        },
-      }));
-    }
+    setFormData((prevData) => ({
+      ...prevData,
+      additionalInfo: {
+        ...prevData.additionalInfo,
+        [name]: value,
+      },
+    }));
   };
 
   return (
