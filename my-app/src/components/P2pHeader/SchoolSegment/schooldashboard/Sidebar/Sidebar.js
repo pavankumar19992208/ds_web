@@ -14,6 +14,7 @@ import { TrendingUp, Home } from '@mui/icons-material';
 import { BiSolidCalendarEdit } from "react-icons/bi";
 import { RiFlightTakeoffFill } from "react-icons/ri";
 import { FaUserEdit } from "react-icons/fa"; // Import the new icon
+import { MdInventory } from "react-icons/md";
 import './Sidebar.css'; // Import the CSS file
 
 const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true }) => {
@@ -147,6 +148,14 @@ const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true }) =
             <ListItem button className="list-item" sx={listItemHoverStyle} onClick={navigateToUpdateEnrollment}>
               <FaUserEdit size={22} />
               {!isPrimaryFormOpen && showTitle && <ListItemText primary="Update Enrollment" className="list-item-text" sx={{ marginLeft: 2 }} />}
+            </ListItem>
+          </Tooltip>
+        )}
+        {visibleItems.includes('inventoryManagement') && (
+          <Tooltip title="Inventory Management" placement="right">
+            <ListItem button className="list-item" sx={listItemHoverStyle}>
+              <MdInventory size={22} />
+              {!isPrimaryFormOpen && showTitle && <ListItemText primary="Inventory Management" className="list-item-text" sx={{ marginLeft: 2 }} />}
             </ListItem>
           </Tooltip>
         )}
