@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useContext } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Stepper from '@material-ui/core/Stepper';
@@ -7,13 +7,15 @@ import StepLabel from '@material-ui/core/StepLabel';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import StaffPersonalInfo from '../StaffPersonalInfo/staffPersonalInfo';
-import ProfessionalDetailsForm from '../StaffProfessionalInfo/staffProfessionalInfo'; // Import ProfessionalDetailsForm
-import EmploymentDetailsForm from '../StaffEmployementInfo/staffEmployementInfo'; // Import EmploymentDetailsForm
-import EmergencyContactForm from '../StaffEmergencyContactInfo/staffEmergencyContactInfo'; // Import EmergencyContactForm
-import DocumentsUploadForm from '../StaffDocumentsUpload/staffDocumentUpload'; // Import DocumentsUploadForm
-import AdditionalFieldsForm from '../StaffAdditionalInfo/staffAdditionalInfo'; // Import AdditionalFieldsForm
-import Sidebar from '../../../Sidebar/Sidebar'; // Import Sidebar
-import Navbar from '../../../Navbar/Navbar'; // Import Navbar
+import ProfessionalDetailsForm from '../StaffProfessionalInfo/staffProfessionalInfo';
+import EmploymentDetailsForm from '../StaffEmployementInfo/staffEmployementInfo';
+import EmergencyContactForm from '../StaffEmergencyContactInfo/staffEmergencyContactInfo';
+import DocumentsUploadForm from '../StaffDocumentsUpload/staffDocumentUpload';
+import AdditionalFieldsForm from '../StaffAdditionalInfo/staffAdditionalInfo';
+import Sidebar from '../../../Sidebar/Sidebar';
+import Navbar from '../../../Navbar/Navbar';
+import BaseUrl from '../../../../../../../config';
+import { GlobalStateContext } from '../../../../../../../GlobalStateContext';
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -21,18 +23,18 @@ const useStyles = makeStyles((theme) => ({
   },
   layout: {
     display: 'flex',
-    flexDirection: 'row', // Ensure Sidebar and form are in a row
-    justifyContent: 'center', // Center horizontally
-    alignItems: 'flex-start', // Center vertically
-    height: '100vh', // Full viewport height
-    width: '100%', // Full viewport width
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    height: '100vh',
+    width: '100%',
     padding: theme.spacing(2),
     overflow: 'auto',
-    position:'absolute',
+    position: 'absolute',
   },
   paper: {
     width: '100%',
-    maxWidth: '1000px', // Increase max width of the form
+    maxWidth: '1000px',
     margin: '24px',
     padding: '16px',
     marginTop: '80px',
@@ -48,10 +50,10 @@ const useStyles = makeStyles((theme) => ({
   button: {
     marginTop: theme.spacing(3),
     marginLeft: theme.spacing(1),
-    backgroundColor: '#ff8040', // Change button color
-    color: 'white', // Change text color
+    backgroundColor: '#ff8040',
+    color: 'white',
     '&:hover': {
-      backgroundColor: '#faaa72', // Change button color on hover
+      backgroundColor: '#faaa72',
     },
   },
 }));
@@ -65,20 +67,20 @@ const steps = [
   'Additional Fields'
 ];
 
-function getStepContent(step) {
+function getStepContent(step, formData, setFormData) {
   switch (step) {
     case 0:
-      return <StaffPersonalInfo />;
+      return <StaffPersonalInfo formData={formData} setFormData={setFormData} />;
     case 1:
-      return <ProfessionalDetailsForm />;
+      return <ProfessionalDetailsForm formData={formData} setFormData={setFormData} />;
     case 2:
-      return <EmploymentDetailsForm />;
+      return <EmploymentDetailsForm formData={formData} setFormData={setFormData} />;
     case 3:
-      return <EmergencyContactForm />;
+      return <EmergencyContactForm formData={formData} setFormData={setFormData} />;
     case 4:
-      return <DocumentsUploadForm />;
+      return <DocumentsUploadForm formData={formData} setFormData={setFormData} />;
     case 5:
-      return <AdditionalFieldsForm />;
+      return <AdditionalFieldsForm formData={formData} setFormData={setFormData} />;
     default:
       throw new Error('Unknown step');
   }
@@ -86,7 +88,58 @@ function getStepContent(step) {
 
 export default function StaffPrimaryForm() {
   const classes = useStyles();
-  const [activeStep, setActiveStep] = React.useState(0);
+  const [activeStep, setActiveStep] = useState(0);
+  const { globalData } = useContext(GlobalStateContext);
+  const [formData, setFormData] = useState({
+    personalInfo: {
+      fullName: '',
+      dob: '',
+      gender: '',
+      contactNumber: '',
+      email: '',
+      currentAddress: {
+        line1: '',
+        line2: '',
+        city: '',
+        district: '',
+        state: '',
+        pinCode: '',
+      },
+      permanentAddress: {
+        line1: '',
+        line2: '',
+        city: '',
+        district: '',
+        state: '',
+        pinCode: '',
+      },
+    },
+    professionalInfo: {
+      position: '',
+      subjectSpecialization: '',
+      grade: '',
+      experience: '',
+      qualification: '',
+      certifications: '',
+    },
+    employmentInfo: {
+      joiningDate: '',
+      employmentType: '',
+      otherEmploymentType: '',
+      previousSchool: '',
+    },
+    emergencyContactInfo: {
+      emergencyContactName: '',
+      emergencyContactNumber: '',
+      relationshipToTeacher: '',
+    },
+    additionalInfo: {
+      languagesKnown: '',
+      interests: '',
+      availabilityOfExtraCirricularActivities: '',
+    },
+    documents: [],
+  });
 
   const handleNext = () => {
     setActiveStep(activeStep + 1);
@@ -100,14 +153,68 @@ export default function StaffPrimaryForm() {
     setActiveStep(0);
   };
 
+  const handleSubmit = async () => {
+    const payload = {
+      fullName: formData.personalInfo.fullName,
+      dob: formData.personalInfo.dob,
+      gender: formData.personalInfo.gender,
+      contactNumber: formData.personalInfo.contactNumber,
+      email: formData.personalInfo.email,
+      currentAddress: formData.personalInfo.currentAddress,
+      permanentAddress: formData.personalInfo.permanentAddress,
+      position: formData.professionalInfo.position,
+      subjectSpecialization: formData.professionalInfo.subjectSpecialization,
+      grade: formData.professionalInfo.grade,
+      experience: formData.professionalInfo.experience,
+      qualification: formData.professionalInfo.qualification,
+      certifications: formData.professionalInfo.certifications,
+      joiningDate: formData.employmentInfo.joiningDate,
+      employmentType: formData.employmentInfo.employmentType,
+      otherEmploymentType: formData.employmentInfo.otherEmploymentType,
+      previousSchool: formData.employmentInfo.previousSchool,
+      emergencyContactName: formData.emergencyContactInfo.emergencyContactName,
+      emergencyContactNumber: formData.emergencyContactInfo.emergencyContactNumber,
+      relationshipToTeacher: formData.emergencyContactInfo.relationshipToTeacher,
+      languagesKnown: formData.additionalInfo.languagesKnown,
+      interests: formData.additionalInfo.interests,
+      availabilityOfExtraCirricularActivities: formData.additionalInfo.availabilityOfExtraCirricularActivities,
+      documents: formData.documents.reduce((acc, doc) => {
+        acc[doc.type] = doc.url;
+        return acc;
+      }, {}),
+    };
+
+    // Log payload to console
+    console.log('Payload to be sent:', payload);
+
+    try {
+      const response = await fetch(`${BaseUrl}/registerstaff`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        throw new Error('Form submission failed');
+      }
+
+      const data = await response.json();
+      console.log('Form data sent to backend successfully:', data);
+    } catch (error) {
+      console.error('Error sending form data to backend:', error);
+    }
+  };
+
   return (
     <React.Fragment>
-      <Navbar /> {/* Add Navbar */}
+      <Navbar schoolName={globalData.data.SCHOOL_NAME} schoolLogo={globalData.data.SCHOOL_LOGO} />
       <main className={classes.layout}>
         <Sidebar visibleItems={['home', 'updateEnrollment']} hideProfile={true} showTitle={false} />
         <Paper className={classes.paper}>
           <Typography component="h1" variant="h4" align="center">
-            Teacher's Enroll Form
+            Staff Enroll Form
           </Typography>
           <Stepper activeStep={activeStep} className={classes.stepper}>
             {steps.map((label) => (
@@ -137,7 +244,7 @@ export default function StaffPrimaryForm() {
               </React.Fragment>
             ) : (
               <React.Fragment>
-                {getStepContent(activeStep)}
+                {getStepContent(activeStep, formData, setFormData)}
                 <div className={classes.buttons}>
                   {activeStep !== 0 && (
                     <Button onClick={handleBack} className={classes.button}>
@@ -146,7 +253,7 @@ export default function StaffPrimaryForm() {
                   )}
                   <Button
                     variant="contained"
-                    onClick={handleNext}
+                    onClick={activeStep === steps.length - 1 ? handleSubmit : handleNext}
                     className={classes.button}
                   >
                     {activeStep === steps.length - 1 ? 'Submit' : 'Next'}

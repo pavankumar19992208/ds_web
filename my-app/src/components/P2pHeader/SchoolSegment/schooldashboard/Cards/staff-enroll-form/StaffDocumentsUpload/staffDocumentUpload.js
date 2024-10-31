@@ -9,6 +9,8 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
+import { storage } from '../../../../../../connections/firebase'; // Adjust the import path as necessary
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 const useStyles = makeStyles((theme) => ({
   typography: {
@@ -36,29 +38,28 @@ export default function StaffDocumentUploadForm({ formData = { documents: [] }, 
     setFileNames(storedFileNames);
   }, [formData.documents]);
 
-  const handleDocumentUpload = (event, documentType) => {
+  const handleDocumentUpload = async (event, documentType) => {
     const file = event.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const fileData = e.target.result;
-        const newDocument = { name: file.name, data: fileData, type: documentType };
-        setFormData((prevFormData) => {
-          const updatedDocuments = prevFormData.documents.filter(doc => doc.type !== documentType);
-          const newDocuments = [...updatedDocuments, newDocument];
-          return {
-            ...prevFormData,
-            documents: newDocuments,
-          };
-        });
-        setUploadedDoc(newDocument);
-        setFileNames((prevFileNames) => ({
-          ...prevFileNames,
-          [documentType]: file.name,
-        }));
-        setOpen(true);
-      };
-      reader.readAsDataURL(file);
+      const storageRef = ref(storage, `documents/${file.name}`);
+      await uploadBytes(storageRef, file);
+      const fileURL = await getDownloadURL(storageRef);
+
+      const newDocument = { name: file.name, url: fileURL, type: documentType };
+      setFormData((prevFormData) => {
+        const updatedDocuments = prevFormData.documents.filter(doc => doc.type !== documentType);
+        const newDocuments = [...updatedDocuments, newDocument];
+        return {
+          ...prevFormData,
+          documents: newDocuments,
+        };
+      });
+      setUploadedDoc(newDocument);
+      setFileNames((prevFileNames) => ({
+        ...prevFileNames,
+        [documentType]: file.name,
+      }));
+      setOpen(true);
     }
   };
 
@@ -68,9 +69,6 @@ export default function StaffDocumentUploadForm({ formData = { documents: [] }, 
 
   return (
     <React.Fragment>
-       {/* <Typography component="h1" variant="h4" align="center">
-        Documents Upload
-      </Typography> */}
       <Grid container spacing={3}>
         <Grid item xs={12} md={6}>
           <Typography variant="subtitle1" className={classes.typography}>Resume / CV :</Typography>

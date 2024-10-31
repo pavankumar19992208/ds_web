@@ -6,50 +6,58 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 
-export default function StaffPersonalInfo() {
-  const [currentAddress, setCurrentAddress] = useState({
-    line1: '',
-    line2: '',
-    city: '',
-    district: '',
-    state: '',
-    pinCode: '',
-  });
-
-  const [permanentAddress, setPermanentAddress] = useState({
-    line1: '',
-    line2: '',
-    city: '',
-    district: '',
-    state: '',
-    pinCode: '',
-  });
-
+export default function StaffPersonalInfo({ formData, setFormData }) {
   const [sameAsCurrent, setSameAsCurrent] = useState(false);
 
-  const handleCurrentAddressChange = (e) => {
+  const handleInputChange = (e, fieldType, addressType = null) => {
     const { name, value } = e.target;
-    setCurrentAddress((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handlePermanentAddressChange = (e) => {
-    const { name, value } = e.target;
-    setPermanentAddress((prev) => ({ ...prev, [name]: value }));
+    if (fieldType === 'personalInfo') {
+      setFormData((prev) => ({
+        ...prev,
+        personalInfo: {
+          ...prev.personalInfo,
+          [name]: value,
+        },
+      }));
+    } else if (fieldType === 'address') {
+      setFormData((prev) => ({
+        ...prev,
+        personalInfo: {
+          ...prev.personalInfo,
+          [addressType]: {
+            ...prev.personalInfo[addressType],
+            [name]: value,
+          },
+        },
+      }));
+    }
   };
 
   const handleCheckboxChange = (e) => {
     setSameAsCurrent(e.target.checked);
     if (e.target.checked) {
-      setPermanentAddress(currentAddress);
+      setFormData((prev) => ({
+        ...prev,
+        personalInfo: {
+          ...prev.personalInfo,
+          permanentAddress: prev.personalInfo.currentAddress,
+        },
+      }));
     } else {
-      setPermanentAddress({
-        line1: '',
-        line2: '',
-        city: '',
-        district: '',
-        state: '',
-        pinCode: '',
-      });
+      setFormData((prev) => ({
+        ...prev,
+        personalInfo: {
+          ...prev.personalInfo,
+          permanentAddress: {
+            line1: '',
+            line2: '',
+            city: '',
+            district: '',
+            state: '',
+            pinCode: '',
+          },
+        },
+      }));
     }
   };
 
@@ -67,6 +75,8 @@ export default function StaffPersonalInfo() {
             label="Full Name"
             fullWidth
             autoComplete="name"
+            value={formData.personalInfo.fullName}
+            onChange={(e) => handleInputChange(e, 'personalInfo')}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -80,6 +90,8 @@ export default function StaffPersonalInfo() {
             InputLabelProps={{
               shrink: true,
             }}
+            value={formData.personalInfo.dob}
+            onChange={(e) => handleInputChange(e, 'personalInfo')}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -90,6 +102,8 @@ export default function StaffPersonalInfo() {
             label="Gender"
             select
             fullWidth
+            value={formData.personalInfo.gender}
+            onChange={(e) => handleInputChange(e, 'personalInfo')}
           >
             <MenuItem value="male">Male</MenuItem>
             <MenuItem value="female">Female</MenuItem>
@@ -104,6 +118,8 @@ export default function StaffPersonalInfo() {
             label="Contact Number"
             fullWidth
             autoComplete="tel"
+            value={formData.personalInfo.contactNumber}
+            onChange={(e) => handleInputChange(e, 'personalInfo')}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -115,6 +131,8 @@ export default function StaffPersonalInfo() {
             type="email"
             fullWidth
             autoComplete="email"
+            value={formData.personalInfo.email}
+            onChange={(e) => handleInputChange(e, 'personalInfo')}
           />
         </Grid>
         <Grid item xs={12}>
@@ -129,8 +147,8 @@ export default function StaffPersonalInfo() {
             name="line1"
             label="Address Line 1"
             fullWidth
-            value={currentAddress.line1}
-            onChange={handleCurrentAddressChange}
+            value={formData.personalInfo.currentAddress.line1}
+            onChange={(e) => handleInputChange(e, 'address', 'currentAddress')}
           />
         </Grid>
         <Grid item xs={12}>
@@ -139,8 +157,8 @@ export default function StaffPersonalInfo() {
             name="line2"
             label="Address Line 2"
             fullWidth
-            value={currentAddress.line2}
-            onChange={handleCurrentAddressChange}
+            value={formData.personalInfo.currentAddress.line2}
+            onChange={(e) => handleInputChange(e, 'address', 'currentAddress')}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -150,8 +168,8 @@ export default function StaffPersonalInfo() {
             name="city"
             label="City"
             fullWidth
-            value={currentAddress.city}
-            onChange={handleCurrentAddressChange}
+            value={formData.personalInfo.currentAddress.city}
+            onChange={(e) => handleInputChange(e, 'address', 'currentAddress')}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -161,8 +179,8 @@ export default function StaffPersonalInfo() {
             name="district"
             label="District"
             fullWidth
-            value={currentAddress.district}
-            onChange={handleCurrentAddressChange}
+            value={formData.personalInfo.currentAddress.district}
+            onChange={(e) => handleInputChange(e, 'address', 'currentAddress')}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -172,8 +190,8 @@ export default function StaffPersonalInfo() {
             name="state"
             label="State"
             fullWidth
-            value={currentAddress.state}
-            onChange={handleCurrentAddressChange}
+            value={formData.personalInfo.currentAddress.state}
+            onChange={(e) => handleInputChange(e, 'address', 'currentAddress')}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -183,8 +201,8 @@ export default function StaffPersonalInfo() {
             name="pinCode"
             label="Pin Code"
             fullWidth
-            value={currentAddress.pinCode}
-            onChange={handleCurrentAddressChange}
+            value={formData.personalInfo.currentAddress.pinCode}
+            onChange={(e) => handleInputChange(e, 'address', 'currentAddress')}
           />
         </Grid>
         <Grid item xs={12}>
@@ -211,8 +229,8 @@ export default function StaffPersonalInfo() {
             name="line1"
             label="Address Line 1"
             fullWidth
-            value={permanentAddress.line1}
-            onChange={handlePermanentAddressChange}
+            value={formData.personalInfo.permanentAddress.line1}
+            onChange={(e) => handleInputChange(e, 'address', 'permanentAddress')}
             disabled={sameAsCurrent}
           />
         </Grid>
@@ -222,8 +240,8 @@ export default function StaffPersonalInfo() {
             name="line2"
             label="Address Line 2"
             fullWidth
-            value={permanentAddress.line2}
-            onChange={handlePermanentAddressChange}
+            value={formData.personalInfo.permanentAddress.line2}
+            onChange={(e) => handleInputChange(e, 'address', 'permanentAddress')}
             disabled={sameAsCurrent}
           />
         </Grid>
@@ -234,8 +252,8 @@ export default function StaffPersonalInfo() {
             name="city"
             label="City"
             fullWidth
-            value={permanentAddress.city}
-            onChange={handlePermanentAddressChange}
+            value={formData.personalInfo.permanentAddress.city}
+            onChange={(e) => handleInputChange(e, 'address', 'permanentAddress')}
             disabled={sameAsCurrent}
           />
         </Grid>
@@ -246,8 +264,8 @@ export default function StaffPersonalInfo() {
             name="district"
             label="District"
             fullWidth
-            value={permanentAddress.district}
-            onChange={handlePermanentAddressChange}
+            value={formData.personalInfo.permanentAddress.district}
+            onChange={(e) => handleInputChange(e, 'address', 'permanentAddress')}
             disabled={sameAsCurrent}
           />
         </Grid>
@@ -258,8 +276,8 @@ export default function StaffPersonalInfo() {
             name="state"
             label="State"
             fullWidth
-            value={permanentAddress.state}
-            onChange={handlePermanentAddressChange}
+            value={formData.personalInfo.permanentAddress.state}
+            onChange={(e) => handleInputChange(e, 'address', 'permanentAddress')}
             disabled={sameAsCurrent}
           />
         </Grid>
@@ -270,8 +288,8 @@ export default function StaffPersonalInfo() {
             name="pinCode"
             label="Pin Code"
             fullWidth
-            value={permanentAddress.pinCode}
-            onChange={handlePermanentAddressChange}
+            value={formData.personalInfo.permanentAddress.pinCode}
+            onChange={(e) => handleInputChange(e, 'address', 'permanentAddress')}
             disabled={sameAsCurrent}
           />
         </Grid>

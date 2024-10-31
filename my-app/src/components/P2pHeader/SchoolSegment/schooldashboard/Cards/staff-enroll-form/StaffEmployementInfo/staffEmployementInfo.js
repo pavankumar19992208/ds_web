@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
 import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
-import Paper from '@material-ui/core/Paper';
-import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
@@ -16,20 +13,6 @@ const useStyles = makeStyles((theme) => ({
   gridContainer: {
     maxWidth: '100%',
     margin: '32px auto',
-  },
-  buttons: {
-    display: 'flex',
-    justifyContent: 'flex-end',
-    marginTop: theme.spacing(3),
-  },
-  button: {
-    marginTop: theme.spacing(3),
-    marginLeft: theme.spacing(1),
-    backgroundColor: '#ff8040', // Change button color
-    color: 'white', // Change text color
-    '&:hover': {
-      backgroundColor: '#faaa72', // Change button color on hover
-    },
   },
   field: {
     marginLeft: theme.spacing(2),
@@ -44,9 +27,9 @@ const employmentTypes = [
   { value: 'Other', label: 'Other' },
 ];
 
-const StaffEmploymentInfo = () => {
+const StaffEmploymentInfo = ({ formData, setFormData }) => {
   const classes = useStyles();
-  const [formValues, setFormValues] = useState({
+  const [formValues, setFormValues] = useState(formData.employmentInfo || {
     joiningDate: '',
     employmentType: '',
     otherEmploymentType: '',
@@ -56,23 +39,16 @@ const StaffEmploymentInfo = () => {
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormValues({ ...formValues, [name]: value });
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    // Handle form submission
-    console.log(formValues);
+    setFormData({ ...formData, employmentInfo: { ...formValues, [name]: value } });
   };
 
   return (
     <div className={classes.mainContainer}>
-      {/* <Typography component="h1" variant="h4" align="center">
-        Staff Employment Information
-      </Typography> */}
-      <form className={classes.formContainer} onSubmit={handleSubmit}>
+      <form className={classes.formContainer}>
         <Grid container spacing={3} className={classes.gridContainer}>
           <Grid item xs={12} sm={6}>
             <TextField
+              id="joiningDate"
               label="Joining Date"
               name="joiningDate"
               type="date"
@@ -88,6 +64,7 @@ const StaffEmploymentInfo = () => {
           </Grid>
           <Grid item xs={12} sm={6}>
             <TextField
+              id="employmentType"
               select
               label="Employment Type"
               name="employmentType"
@@ -105,6 +82,7 @@ const StaffEmploymentInfo = () => {
             </TextField>
             {formValues.employmentType === 'Other' && (
               <TextField
+                id="otherEmploymentType"
                 label="Specify Other Employment Type"
                 name="otherEmploymentType"
                 value={formValues.otherEmploymentType}
@@ -117,6 +95,7 @@ const StaffEmploymentInfo = () => {
           </Grid>
           <Grid item xs={12} sm={6}>
             <TextField
+              id="previousSchool"
               label="Previous School (if applicable)"
               name="previousSchool"
               value={formValues.previousSchool}

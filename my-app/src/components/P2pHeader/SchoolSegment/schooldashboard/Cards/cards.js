@@ -17,7 +17,7 @@ const Cards = ({ studentCount, teacherCount, schoolName, schoolLogo }) => {
     navigate('/fee-due');
   };
 
-  const handleModifySchoolData = () => {
+  const handleUpdateSchoolData = () => {
     navigate('/school-internal-data');
   };
 
@@ -32,7 +32,7 @@ const Cards = ({ studentCount, teacherCount, schoolName, schoolLogo }) => {
         </div>
       </div>
       <div className="card">
-        <h2>Enrolled Teachers</h2>
+        <h2>Enrolled Staff</h2>
         <p className="count">{Math.floor(teacherCount)}</p>
         <div className="button-group">
           <button id='enroll-btn' onClick={handleTeacherEnrollClick}>Enroll</button>
@@ -42,7 +42,7 @@ const Cards = ({ studentCount, teacherCount, schoolName, schoolLogo }) => {
       <div className="card">
         <h2>School Internal Data</h2>
         <div className="button-group">
-          <button id='enroll-btn' onClick={handleModifySchoolData}>Modify</button>
+          <button id='enroll-btn' onClick={handleUpdateSchoolData}>Update</button>
           <button>View</button>
         </div>
       </div>

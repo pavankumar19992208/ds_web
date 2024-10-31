@@ -10,11 +10,10 @@ const useStyles = makeStyles((theme) => ({
   mainContainer: {
     overflow: 'auto',
     maxHeight: '100vh',
-    // paddingTop: theme.spacing(-30), // Reduced top padding
   },
   gridContainer: {
     maxWidth: '100%',
-    margin: '16px auto', // Reduced top margin
+    margin: '16px auto',
   },
   field: {
     marginLeft: theme.spacing(2),
@@ -36,31 +35,27 @@ const positions = [
 
 const grades = Array.from({ length: 10 }, (_, i) => ({ value: i + 1, label: `Class ${i + 1}` }));
 
-const StaffProfessionalInfo = () => {
+const StaffProfessionalInfo = ({ formData, setFormData }) => {
   const classes = useStyles();
-  const [formValues, setFormValues] = useState({
-    position: '',
-    subjectSpecialization: '',
-    grade: '',
-    experience: '',
-    qualification: '',
-    certifications: '',
-  });
+  const [formValues, setFormValues] = useState(formData.professionalInfo);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setFormValues({ ...formValues, [name]: value });
+    const updatedFormValues = { ...formValues, [name]: value };
+    setFormValues(updatedFormValues);
+    setFormData((prevData) => ({
+      ...prevData,
+      professionalInfo: updatedFormValues,
+    }));
   };
 
   return (
     <div className={classes.mainContainer}>
-      {/* <Typography component="h1" variant="h4" align="center">
-        Staff Professional Information
-      </Typography> */}
       <form className={classes.formContainer}>
         <Grid container spacing={3} className={classes.gridContainer}>
           <Grid item xs={12} sm={6}>
             <TextField
+              id="position"
               select
               label="Position / Role"
               name="position"
@@ -79,6 +74,7 @@ const StaffProfessionalInfo = () => {
           </Grid>
           <Grid item xs={12} sm={6}>
             <TextField
+              id="subjectSpecialization"
               label="Subject Specialization"
               name="subjectSpecialization"
               value={formValues.subjectSpecialization}
@@ -90,6 +86,7 @@ const StaffProfessionalInfo = () => {
           </Grid>
           <Grid item xs={12} sm={6}>
             <TextField
+              id="grade"
               select
               label="Grade"
               name="grade"
@@ -108,6 +105,7 @@ const StaffProfessionalInfo = () => {
           </Grid>
           <Grid item xs={12} sm={6}>
             <TextField
+              id="experience"
               label="Years of Teaching Experience"
               name="experience"
               value={formValues.experience}
@@ -120,6 +118,7 @@ const StaffProfessionalInfo = () => {
           </Grid>
           <Grid item xs={12} sm={6}>
             <TextField
+              id="qualification"
               label="Qualification"
               name="qualification"
               value={formValues.qualification}
@@ -131,6 +130,7 @@ const StaffProfessionalInfo = () => {
           </Grid>
           <Grid item xs={12} sm={6}>
             <TextField
+              id="certifications"
               label="Certifications (Teaching / Training)"
               name="certifications"
               value={formValues.certifications}
