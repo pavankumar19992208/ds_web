@@ -208,7 +208,7 @@ const SchoolInternalData = () => {
     <React.Fragment>
       <Navbar schoolName={globalData.data.SCHOOL_NAME} schoolLogo={globalData.data.SCHOOL_LOGO} />
       <main className={`${classes.mainContainer} layout`}>
-      <Sidebar visibleItems={['home', 'updateEnrollment']} hideProfile={true} showTitle={false} />
+      <Sidebar visibleItems={['home']} hideProfile={true} showTitle={false} />
       <Paper className="paper">
           <Typography component="h1" variant="h4" align="center">
             School Information

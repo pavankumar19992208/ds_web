@@ -38,15 +38,35 @@ const grades = Array.from({ length: 10 }, (_, i) => ({ value: i + 1, label: `Cla
 const StaffProfessionalInfo = ({ formData, setFormData }) => {
   const classes = useStyles();
   const [formValues, setFormValues] = useState(formData.professionalInfo);
+  const [errors, setErrors] = useState({});
+
+  const validateField = (name, value) => {
+    let error = '';
+    if (['subjectSpecialization', 'certifications', 'qualification'].includes(name)) {
+      if (!/^[a-zA-Z\s]+$/.test(value)) {
+        error = 'Only alphabets are allowed';
+      }
+    }
+    return error;
+  };
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    const updatedFormValues = { ...formValues, [name]: value };
-    setFormValues(updatedFormValues);
-    setFormData((prevData) => ({
-      ...prevData,
-      professionalInfo: updatedFormValues,
+    const error = validateField(name, value);
+
+    setErrors((prev) => ({
+      ...prev,
+      [name]: error,
     }));
+
+    if (!error) {
+      const updatedFormValues = { ...formValues, [name]: value };
+      setFormValues(updatedFormValues);
+      setFormData((prevData) => ({
+        ...prevData,
+        professionalInfo: updatedFormValues,
+      }));
+    }
   };
 
   return (
@@ -82,6 +102,8 @@ const StaffProfessionalInfo = ({ formData, setFormData }) => {
               fullWidth
               required
               className={classes.field}
+              error={!!errors.subjectSpecialization}
+              helperText={errors.subjectSpecialization}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -111,7 +133,6 @@ const StaffProfessionalInfo = ({ formData, setFormData }) => {
               value={formValues.experience}
               onChange={handleChange}
               fullWidth
-              required
               type="number"
               className={classes.field}
             />
@@ -126,6 +147,8 @@ const StaffProfessionalInfo = ({ formData, setFormData }) => {
               fullWidth
               required
               className={classes.field}
+              error={!!errors.qualification}
+              helperText={errors.qualification}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -137,6 +160,8 @@ const StaffProfessionalInfo = ({ formData, setFormData }) => {
               onChange={handleChange}
               fullWidth
               className={classes.field}
+              error={!!errors.certifications}
+              helperText={errors.certifications}
             />
           </Grid>
         </Grid>

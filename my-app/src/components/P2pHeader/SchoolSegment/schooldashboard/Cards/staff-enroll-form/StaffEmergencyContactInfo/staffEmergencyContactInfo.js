@@ -26,11 +26,35 @@ const StaffEmergencyContactInfo = ({ formData, setFormData }) => {
     emergencyContactNumber: '',
     relationshipToTeacher: '',
   });
+  const [errors, setErrors] = useState({});
+
+  const validateField = (name, value) => {
+    let error = '';
+    if (['emergencyContactName', 'relationshipToTeacher'].includes(name)) {
+      if (!/^[a-zA-Z\s]+$/.test(value)) {
+        error = 'Only alphabets are allowed';
+      }
+    } else if (name === 'emergencyContactNumber') {
+      if (!/^\d+$/.test(value)) {
+        error = 'Only numbers are allowed';
+      }
+    }
+    return error;
+  };
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setFormValues({ ...formValues, [name]: value });
-    setFormData({ ...formData, emergencyContactInfo: { ...formValues, [name]: value } });
+    const error = validateField(name, value);
+
+    setErrors((prev) => ({
+      ...prev,
+      [name]: error,
+    }));
+
+    if (!error) {
+      setFormValues({ ...formValues, [name]: value });
+      setFormData({ ...formData, emergencyContactInfo: { ...formValues, [name]: value } });
+    }
   };
 
   return (
@@ -47,6 +71,8 @@ const StaffEmergencyContactInfo = ({ formData, setFormData }) => {
               fullWidth
               required
               className={classes.field}
+              error={!!errors.emergencyContactName}
+              helperText={errors.emergencyContactName}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -60,6 +86,8 @@ const StaffEmergencyContactInfo = ({ formData, setFormData }) => {
               required
               type="tel"
               className={classes.field}
+              error={!!errors.emergencyContactNumber}
+              helperText={errors.emergencyContactNumber}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -72,6 +100,8 @@ const StaffEmergencyContactInfo = ({ formData, setFormData }) => {
               fullWidth
               required
               className={classes.field}
+              error={!!errors.relationshipToTeacher}
+              helperText={errors.relationshipToTeacher}
             />
           </Grid>
         </Grid>

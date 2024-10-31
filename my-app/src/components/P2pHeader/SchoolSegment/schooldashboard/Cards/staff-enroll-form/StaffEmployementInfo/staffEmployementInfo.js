@@ -35,11 +35,31 @@ const StaffEmploymentInfo = ({ formData, setFormData }) => {
     otherEmploymentType: '',
     previousSchool: '',
   });
+  const [errors, setErrors] = useState({});
+
+  const validateField = (name, value) => {
+    let error = '';
+    if (name === 'previousSchool') {
+      if (!/^[a-zA-Z\s]+$/.test(value)) {
+        error = 'Only alphabets are allowed';
+      }
+    }
+    return error;
+  };
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setFormValues({ ...formValues, [name]: value });
-    setFormData({ ...formData, employmentInfo: { ...formValues, [name]: value } });
+    const error = validateField(name, value);
+
+    setErrors((prev) => ({
+      ...prev,
+      [name]: error,
+    }));
+
+    if (!error) {
+      setFormValues({ ...formValues, [name]: value });
+      setFormData({ ...formData, employmentInfo: { ...formValues, [name]: value } });
+    }
   };
 
   return (
@@ -102,6 +122,8 @@ const StaffEmploymentInfo = ({ formData, setFormData }) => {
               onChange={handleChange}
               fullWidth
               className={classes.field}
+              error={!!errors.previousSchool}
+              helperText={errors.previousSchool}
             />
           </Grid>
         </Grid>

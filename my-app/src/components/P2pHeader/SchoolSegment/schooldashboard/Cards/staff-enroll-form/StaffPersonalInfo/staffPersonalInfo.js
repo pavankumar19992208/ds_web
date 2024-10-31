@@ -8,28 +8,52 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 export default function StaffPersonalInfo({ formData, setFormData }) {
   const [sameAsCurrent, setSameAsCurrent] = useState(false);
+  const [errors, setErrors] = useState({});
+
+  const validateField = (name, value) => {
+    let error = '';
+    if (['fullName', 'city', 'district', 'state'].includes(name)) {
+      if (!/^[a-zA-Z\s]+$/.test(value)) {
+        error = 'Only alphabets are allowed';
+      }
+    } else if (['pinCode', 'contactNumber'].includes(name)) {
+      if (!/^\d+$/.test(value)) {
+        error = 'Only numbers are allowed';
+      }
+    }
+    return error;
+  };
 
   const handleInputChange = (e, fieldType, addressType = null) => {
     const { name, value } = e.target;
-    if (fieldType === 'personalInfo') {
-      setFormData((prev) => ({
-        ...prev,
-        personalInfo: {
-          ...prev.personalInfo,
-          [name]: value,
-        },
-      }));
-    } else if (fieldType === 'address') {
-      setFormData((prev) => ({
-        ...prev,
-        personalInfo: {
-          ...prev.personalInfo,
-          [addressType]: {
-            ...prev.personalInfo[addressType],
+    const error = validateField(name, value);
+
+    setErrors((prev) => ({
+      ...prev,
+      [name]: error,
+    }));
+
+    if (!error) {
+      if (fieldType === 'personalInfo') {
+        setFormData((prev) => ({
+          ...prev,
+          personalInfo: {
+            ...prev.personalInfo,
             [name]: value,
           },
-        },
-      }));
+        }));
+      } else if (fieldType === 'address' && addressType) {
+        setFormData((prev) => ({
+          ...prev,
+          personalInfo: {
+            ...prev.personalInfo,
+            [addressType]: {
+              ...prev.personalInfo[addressType],
+              [name]: value,
+            },
+          },
+        }));
+      }
     }
   };
 
@@ -77,6 +101,8 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
             autoComplete="name"
             value={formData.personalInfo.fullName}
             onChange={(e) => handleInputChange(e, 'personalInfo')}
+            error={!!errors.fullName}
+            helperText={errors.fullName}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -120,11 +146,12 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
             autoComplete="tel"
             value={formData.personalInfo.contactNumber}
             onChange={(e) => handleInputChange(e, 'personalInfo')}
+            error={!!errors.contactNumber}
+            helperText={errors.contactNumber}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
-            required
             id="email"
             name="email"
             label="Email Address"
@@ -170,6 +197,8 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
             fullWidth
             value={formData.personalInfo.currentAddress.city}
             onChange={(e) => handleInputChange(e, 'address', 'currentAddress')}
+            error={!!errors.city}
+            helperText={errors.city}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -181,6 +210,8 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
             fullWidth
             value={formData.personalInfo.currentAddress.district}
             onChange={(e) => handleInputChange(e, 'address', 'currentAddress')}
+            error={!!errors.district}
+            helperText={errors.district}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -192,6 +223,8 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
             fullWidth
             value={formData.personalInfo.currentAddress.state}
             onChange={(e) => handleInputChange(e, 'address', 'currentAddress')}
+            error={!!errors.state}
+            helperText={errors.state}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -203,6 +236,8 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
             fullWidth
             value={formData.personalInfo.currentAddress.pinCode}
             onChange={(e) => handleInputChange(e, 'address', 'currentAddress')}
+            error={!!errors.pinCode}
+            helperText={errors.pinCode}
           />
         </Grid>
         <Grid item xs={12}>
@@ -255,6 +290,8 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
             value={formData.personalInfo.permanentAddress.city}
             onChange={(e) => handleInputChange(e, 'address', 'permanentAddress')}
             disabled={sameAsCurrent}
+            error={!!errors.city}
+            helperText={errors.city}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -267,6 +304,8 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
             value={formData.personalInfo.permanentAddress.district}
             onChange={(e) => handleInputChange(e, 'address', 'permanentAddress')}
             disabled={sameAsCurrent}
+            error={!!errors.district}
+            helperText={errors.district}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -279,6 +318,8 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
             value={formData.personalInfo.permanentAddress.state}
             onChange={(e) => handleInputChange(e, 'address', 'permanentAddress')}
             disabled={sameAsCurrent}
+            error={!!errors.state}
+            helperText={errors.state}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -291,6 +332,8 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
             value={formData.personalInfo.permanentAddress.pinCode}
             onChange={(e) => handleInputChange(e, 'address', 'permanentAddress')}
             disabled={sameAsCurrent}
+            error={!!errors.pinCode}
+            helperText={errors.pinCode}
           />
         </Grid>
       </Grid>

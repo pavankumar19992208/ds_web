@@ -21,16 +21,36 @@ const useStyles = makeStyles((theme) => ({
 
 const StaffAdditionalInfo = ({ formData, setFormData }) => {
   const classes = useStyles();
+  const [errors, setErrors] = useState({});
+
+  const validateField = (name, value) => {
+    let error = '';
+    if (['languagesKnown', 'interests', 'availabilityOfExtraCirricularActivities'].includes(name)) {
+      if (!/^[a-zA-Z\s]+$/.test(value)) {
+        error = 'Only alphabets are allowed';
+      }
+    }
+    return error;
+  };
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      additionalInfo: {
-        ...prevData.additionalInfo,
-        [name]: value,
-      },
+    const error = validateField(name, value);
+
+    setErrors((prev) => ({
+      ...prev,
+      [name]: error,
     }));
+
+    if (!error) {
+      setFormData((prevData) => ({
+        ...prevData,
+        additionalInfo: {
+          ...prevData.additionalInfo,
+          [name]: value,
+        },
+      }));
+    }
   };
 
   return (
@@ -47,6 +67,8 @@ const StaffAdditionalInfo = ({ formData, setFormData }) => {
               fullWidth
               required
               className={classes.field}
+              error={!!errors.languagesKnown}
+              helperText={errors.languagesKnown}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -57,8 +79,9 @@ const StaffAdditionalInfo = ({ formData, setFormData }) => {
               value={formData.additionalInfo.interests}
               onChange={handleChange}
               fullWidth
-              required
               className={classes.field}
+              error={!!errors.interests}
+              helperText={errors.interests}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -69,8 +92,9 @@ const StaffAdditionalInfo = ({ formData, setFormData }) => {
               value={formData.additionalInfo.availabilityOfExtraCirricularActivities}
               onChange={handleChange}
               fullWidth
-              required
               className={classes.field}
+              error={!!errors.availabilityOfExtraCirricularActivities}
+              helperText={errors.availabilityOfExtraCirricularActivities}
             />
           </Grid>
         </Grid>
