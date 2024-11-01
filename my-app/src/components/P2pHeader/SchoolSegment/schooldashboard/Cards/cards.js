@@ -47,7 +47,7 @@ const Cards = ({ studentCount, teacherCount, schoolName, schoolLogo }) => {
         </div>
       </div>
       <div className="card">
-        <h2>Teacher Payroll</h2>
+        <h2>Staff Payroll</h2>
         <div className="button-group">
           <button id='enroll-btn' onClick={handleFeeDue}>Details</button>
         </div>
