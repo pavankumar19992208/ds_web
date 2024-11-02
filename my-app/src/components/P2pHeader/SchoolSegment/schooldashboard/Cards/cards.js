@@ -13,8 +13,8 @@ const Cards = ({ studentCount, teacherCount, schoolName, schoolLogo }) => {
     navigate('/teacher-enroll');
   };
 
-  const handleFeeDue = () => {
-    navigate('/fee-due');
+  const handleStaffPayroll = () => {
+    navigate('/staff-payroll');
   };
 
   const handleUpdateSchoolData = () => {
@@ -49,7 +49,7 @@ const Cards = ({ studentCount, teacherCount, schoolName, schoolLogo }) => {
       <div className="card">
         <h2>Staff Payroll</h2>
         <div className="button-group">
-          <button id='enroll-btn' onClick={handleFeeDue}>Details</button>
+          <button id='enroll-btn' onClick={handleStaffPayroll}>Details</button>
         </div>
       </div>
       <div className="card">
@@ -62,7 +62,7 @@ const Cards = ({ studentCount, teacherCount, schoolName, schoolLogo }) => {
       <div className="card">
         <h2>Class Timetables</h2>
         <div className="button-group">
-          <button id='enroll-btn' onClick={handleFeeDue}>Schedule</button>
+          <button id='enroll-btn'>Schedule</button>
           <button>View</button>
         </div>
       </div>

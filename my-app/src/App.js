@@ -9,10 +9,11 @@ import SchoolDashboard from './components/P2pHeader/SchoolSegment/schooldashboar
 import TeacherEnrollForm from './components/P2pHeader/SchoolSegment/schooldashboard/Cards/staff-enroll-form/StaffPrimaryForm/staffPrimaryForm';
 import StudentEnrollForm from './components/P2pHeader/SchoolSegment/schooldashboard/Cards/student-enroll-form/PrimaryForm/primaryForm';
 import StaffPrimaryForm from './components/P2pHeader/SchoolSegment/schooldashboard/Cards/staff-enroll-form/StaffPrimaryForm/staffPrimaryForm';
-import QualificationForm from './components/P2pHeader/SchoolSegment/schooldashboard/Cards/staff-enroll-form/StaffProfessionalInfo/staffProfessionalInfo';
+// import QualificationForm from './components/P2pHeader/SchoolSegment/schooldashboard/Cards/staff-enroll-form/StaffProfessionalInfo/staffProfessionalInfo';
 import AttachDocument from './components/P2pHeader/SchoolSegment/schooldashboard/Sidebar/attach-document/attachDocument';
 import SchoolInternalData from './components/P2pHeader/SchoolSegment/schooldashboard/Cards/school-internal-data/schoolInternalData';
 import CareerGuidance from './components/P2pHeader/SchoolSegment/schooldashboard/Sidebar/careerGuidance/careerGuidance';
+import StaffPayroll from './components/P2pHeader/SchoolSegment/schooldashboard/Cards/staff-payroll/staffPayroll';
 
 function App() {
   return (
@@ -27,11 +28,12 @@ function App() {
           <Route path="/teacher-enroll" element={<TeacherEnrollForm />} />
           <Route path="/student-enroll" element={<StudentEnrollForm />} />
           <Route path="/enroll/details" element={<StaffPrimaryForm />} />
-          <Route path="/enroll/qualification" element={<QualificationForm />} />
+          {/* <Route path="/enroll/qualification" element={<QualificationForm />} /> */}
           <Route path="/attach-document" element={<AttachDocument />} />
           <Route path="/career-guidance" element={<CareerGuidance />} />
 
           <Route path="/school-internal-data" element={<SchoolInternalData />} />
+          <Route path="/staff-payroll" element={<StaffPayroll />} />
         </Routes>
       </Router>
     </GlobalStateProvider>
