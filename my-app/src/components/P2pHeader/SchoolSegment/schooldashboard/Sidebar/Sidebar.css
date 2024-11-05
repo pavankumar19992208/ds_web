@@ -1,8 +1,8 @@
 
 .sidebar {
-    padding: 1%;
+  padding: 1%;
   width: 40vh;
-  background-color: hsl(220, 35%, 97%);;  
+  background-color: hsl(220, 35%, 97%);
   height: 100vh;
   position: fixed;
   left: 0px;
@@ -11,7 +11,7 @@
   border-right: 1px solid hsla(220, 20%, 80%, 0.4);
   z-index: 1000;
   transition: width 0.3s ease-in-out;
-
+  box-shadow: 3px 0 12px rgba(0, 0, 0, 0.1); /* Add box shadow to the right side */
 }
 .sidebar_d {
   padding: 1%;

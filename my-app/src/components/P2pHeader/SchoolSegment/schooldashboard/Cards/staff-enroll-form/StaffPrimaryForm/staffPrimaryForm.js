@@ -1,9 +1,6 @@
 import React, { useState, useContext } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
-import Stepper from "@material-ui/core/Stepper";
-import Step from "@material-ui/core/Step";
-import StepLabel from "@material-ui/core/StepLabel";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import StaffPersonalInfo from "../StaffPersonalInfo/staffPersonalInfo";
@@ -16,6 +13,180 @@ import Sidebar from "../../../Sidebar/Sidebar";
 import Navbar from "../../../Navbar/Navbar";
 import BaseUrl from "../../../../../../../config";
 import { GlobalStateContext } from "../../../../../../../GlobalStateContext";
+import Stack from '@mui/material/Stack';
+import Stepper from '@mui/material/Stepper';
+import Step from '@mui/material/Step';
+import StepLabel from '@mui/material/StepLabel';
+import Check from '@mui/icons-material/Check';
+import { PiBagSimpleFill } from "react-icons/pi";
+import { BsPersonWorkspace } from "react-icons/bs";
+import { IoCall } from "react-icons/io5";
+import { RiFolderUploadFill } from "react-icons/ri";
+import { FaAddressCard } from "react-icons/fa6";
+import { MdAddCircle } from "react-icons/md";
+import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector';
+import { styled } from '@mui/material/styles';
+import PropTypes from 'prop-types';
+
+const QontoConnector = styled(StepConnector)(({ theme }) => ({
+  [`&.${stepConnectorClasses.alternativeLabel}`]: {
+    top: 10,
+    left: 'calc(-50% + 16px)',
+    right: 'calc(50% + 16px)',
+  },
+  [`&.${stepConnectorClasses.active}`]: {
+    [`& .${stepConnectorClasses.line}`]: {
+      borderColor: '#784af4',
+    },
+  },
+  [`&.${stepConnectorClasses.completed}`]: {
+    [`& .${stepConnectorClasses.line}`]: {
+      borderColor: '#784af4',
+    },
+  },
+  [`& .${stepConnectorClasses.line}`]: {
+    borderColor: '#eaeaf0',
+    borderTopWidth: 3,
+    borderRadius: 1,
+    ...theme.applyStyles('dark', {
+      borderColor: theme.palette.grey[800],
+    }),
+  },
+}));
+
+const QontoStepIconRoot = styled('div')(({ theme }) => ({
+  color: '#eaeaf0',
+  display: 'flex',
+  height: 22,
+  alignItems: 'center',
+  '& .QontoStepIcon-completedIcon': {
+    color: '#784af4',
+    zIndex: 1,
+    fontSize: 18,
+  },
+  '& .QontoStepIcon-circle': {
+    width: 8,
+    height: 8,
+    borderRadius: '50%',
+    backgroundColor: 'currentColor',
+  },
+  ...theme.applyStyles('dark', {
+    color: theme.palette.grey[700],
+  }),
+  variants: [
+    {
+      props: ({ ownerState }) => ownerState.active,
+      style: {
+        color: '#784af4',
+      },
+    },
+  ],
+}));
+
+function QontoStepIcon(props) {
+  const { active, completed, className } = props;
+
+  return (
+    <QontoStepIconRoot ownerState={{ active }} className={className}>
+      {completed ? (
+        <Check className="QontoStepIcon-completedIcon" />
+      ) : (
+        <div className="QontoStepIcon-circle" />
+      )}
+    </QontoStepIconRoot>
+  );
+}
+
+QontoStepIcon.propTypes = {
+  active: PropTypes.bool,
+  className: PropTypes.string,
+  completed: PropTypes.bool,
+};
+
+const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
+  [`&.${stepConnectorClasses.alternativeLabel}`]: {
+    top: 15,
+  },
+  [`&.${stepConnectorClasses.active}`]: {
+    [`& .${stepConnectorClasses.line}`]: {
+      backgroundImage:
+      'linear-gradient(136deg, rgb(255 255 255) 0%, rgb(33 155 196) 50%, rgb(138, 35, 135) 100%)',
+    },
+  },
+  [`&.${stepConnectorClasses.completed}`]: {
+    [`& .${stepConnectorClasses.line}`]: {
+      backgroundImage:
+      'linear-gradient(136deg, rgb(255 255 255) 0%, rgb(33 155 196) 50%, rgb(138, 35, 135) 100%)',
+    },
+  },
+  [`& .${stepConnectorClasses.line}`]: {
+    height: 3,
+    border: 0,
+    backgroundColor: '#eaeaf0',
+    borderRadius: 1,
+    ...theme.applyStyles('dark', {
+      backgroundColor: theme.palette.grey[800],
+    }),
+  },
+}));
+
+const ColorlibStepIconRoot = styled('div')(({ theme }) => ({
+  backgroundColor: '#ccc',
+  zIndex: 1,
+  color: '#fff',
+  width: 30, // Decreased size
+  height: 30, // Decreased size
+  display: 'flex',
+  borderRadius: '50%',
+  justifyContent: 'center',
+  alignItems: 'center',
+  ...theme.applyStyles('dark', {
+    backgroundColor: theme.palette.grey[700],
+  }),
+  variants: [
+    {
+      props: ({ ownerState }) => ownerState.active,
+      style: {
+        backgroundImage:
+        'linear-gradient(136deg, rgb(255 255 255) 0%, rgb(33 155 196) 50%, rgb(138, 35, 135) 100%)',
+        boxShadow: '0 4px 10px 0 rgba(0,0,0,.25)',
+      },
+    },
+    {
+      props: ({ ownerState }) => ownerState.completed,
+      style: {
+        backgroundImage:
+        'linear-gradient(136deg, rgb(255 255 255) 0%, rgb(33 155 196) 50%, rgb(138, 35, 135) 100%)',
+      },
+    },
+  ],
+}));
+
+function ColorlibStepIcon(props) {
+  const { active, completed, className } = props;
+
+  const icons = {
+    1: <FaAddressCard />,
+    2: <PiBagSimpleFill />,
+    3: <BsPersonWorkspace />,
+    4: <IoCall />,
+    5: <RiFolderUploadFill />,
+    6: <MdAddCircle />,
+  };
+
+  return (
+    <ColorlibStepIconRoot ownerState={{ completed, active }} className={className}>
+      {icons[String(props.icon)]}
+    </ColorlibStepIconRoot>
+  );
+}
+
+ColorlibStepIcon.propTypes = {
+  active: PropTypes.bool,
+  className: PropTypes.string,
+  completed: PropTypes.bool,
+  icon: PropTypes.node,
+};
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -39,6 +210,9 @@ const useStyles = makeStyles((theme) => ({
     padding: "16px",
     marginTop: "80px",
     overFlow: "auto",
+  },
+  stepperContainer: {
+    marginTop: theme.spacing(4), // Adjust margin-top
   },
   stepper: {
     padding: theme.spacing(3, 0, 5),
@@ -289,6 +463,40 @@ export default function StaffPrimaryForm() {
     setActiveStep(activeStep - 1);
   };
 
+  const handleStepClick = (step) => {
+    if (step < activeStep) {
+      setActiveStep(step);
+      return;
+    }
+
+    let isValid = true;
+    switch (activeStep) {
+      case 0:
+        isValid = validatePersonalInfo();
+        break;
+      case 1:
+        isValid = validateProfessionalInfo();
+        break;
+      case 2:
+        isValid = validateEmploymentInfo();
+        break;
+      case 3:
+        isValid = validateEmergencyContactInfo();
+        break;
+      case 4:
+        isValid = validateDocumentUpload();
+        break;
+      default:
+        break;
+    }
+
+    if (isValid) {
+      setActiveStep(step);
+    } else {
+      alert("Please fill out all required fields before proceeding.");
+    }
+  };
+
   const handleEnrollMore = () => {
     setActiveStep(0);
   };
@@ -368,13 +576,15 @@ export default function StaffPrimaryForm() {
           <Typography component="h1" variant="h4" align="center">
             Staff Enroll Form
           </Typography>
-          <Stepper activeStep={activeStep} className={classes.stepper}>
-            {steps.map((label) => (
-              <Step key={label}>
-                <StepLabel>{label}</StepLabel>
-              </Step>
-            ))}
-          </Stepper>
+          <Stack sx={{ width: '100%' }} spacing={4} className={classes.stepperContainer}>
+            <Stepper alternativeLabel activeStep={activeStep} connector={<ColorlibConnector />}>
+              {steps.map((label, index) => (
+                <Step key={label} onClick={() => handleStepClick(index)}>
+                  <StepLabel StepIconComponent={ColorlibStepIcon}>{label}</StepLabel>
+                </Step>
+              ))}
+            </Stepper>
+          </Stack>
           <React.Fragment>
             {activeStep === steps.length ? (
               <React.Fragment>

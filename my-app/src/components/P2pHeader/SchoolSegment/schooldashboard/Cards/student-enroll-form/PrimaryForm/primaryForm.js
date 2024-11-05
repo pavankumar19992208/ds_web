@@ -1,8 +1,5 @@
 import React, { useState, useContext } from 'react';
 import Paper from '@material-ui/core/Paper';
-import Stepper from '@material-ui/core/Stepper';
-import Step from '@material-ui/core/Step';
-import StepLabel from '@material-ui/core/StepLabel';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Table from '@material-ui/core/Table';
@@ -31,6 +28,185 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import IconButton from '@material-ui/core/IconButton';
 import BaseUrl from '../../../../../../../config';
+import Stack from '@mui/material/Stack';
+import Stepper from '@mui/material/Stepper';
+import Step from '@mui/material/Step';
+import StepLabel from '@mui/material/StepLabel';
+import Check from '@mui/icons-material/Check';
+import SettingsIcon from '@mui/icons-material/Settings';
+import { FaAddressCard } from "react-icons/fa6";
+import { RiParentFill } from "react-icons/ri";
+import { HiMiniAcademicCap } from "react-icons/hi2";
+import { RiFolderUploadFill } from "react-icons/ri";
+import GroupAddIcon from '@mui/icons-material/GroupAdd';
+import VideoLabelIcon from '@mui/icons-material/VideoLabel';
+import { MdOutlinePayment } from "react-icons/md";
+import { MdRateReview } from "react-icons/md";
+import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector';
+import PropTypes from 'prop-types';
+import { styled } from '@mui/material/styles';
+
+const QontoConnector = styled(StepConnector)(({ theme }) => ({
+  [`&.${stepConnectorClasses.alternativeLabel}`]: {
+    top: 10,
+    left: 'calc(-50% + 16px)',
+    right: 'calc(50% + 16px)',
+  },
+  [`&.${stepConnectorClasses.active}`]: {
+    [`& .${stepConnectorClasses.line}`]: {
+      borderColor: '#784af4',
+    },
+  },
+  [`&.${stepConnectorClasses.completed}`]: {
+    [`& .${stepConnectorClasses.line}`]: {
+      borderColor: '#784af4',
+    },
+  },
+  [`& .${stepConnectorClasses.line}`]: {
+    borderColor: '#eaeaf0',
+    borderTopWidth: 3,
+    borderRadius: 1,
+    ...theme.applyStyles('dark', {
+      borderColor: theme.palette.grey[800],
+    }),
+  },
+}));
+
+const QontoStepIconRoot = styled('div')(({ theme }) => ({
+  color: '#eaeaf0',
+  display: 'flex',
+  height: 22,
+  alignItems: 'center',
+  '& .QontoStepIcon-completedIcon': {
+    color: '#784af4',
+    zIndex: 1,
+    fontSize: 18,
+  },
+  '& .QontoStepIcon-circle': {
+    width: 8,
+    height: 8,
+    borderRadius: '50%',
+    backgroundColor: 'currentColor',
+  },
+  ...theme.applyStyles('dark', {
+    color: theme.palette.grey[700],
+  }),
+  variants: [
+    {
+      props: ({ ownerState }) => ownerState.active,
+      style: {
+        color: '#784af4',
+      },
+    },
+  ],
+}));
+
+function QontoStepIcon(props) {
+  const { active, completed, className } = props;
+
+  return (
+    <QontoStepIconRoot ownerState={{ active }} className={className}>
+      {completed ? (
+        <Check className="QontoStepIcon-completedIcon" />
+      ) : (
+        <div className="QontoStepIcon-circle" />
+      )}
+    </QontoStepIconRoot>
+  );
+}
+
+QontoStepIcon.propTypes = {
+  active: PropTypes.bool,
+  className: PropTypes.string,
+  completed: PropTypes.bool,
+};
+
+const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
+  [`&.${stepConnectorClasses.alternativeLabel}`]: {
+    top: 15,
+  },
+  [`&.${stepConnectorClasses.active}`]: {
+    [`& .${stepConnectorClasses.line}`]: {
+      backgroundImage:
+        'linear-gradient( 95deg,rgb(242,113,33) 0%,rgb(233,64,87) 50%,rgb(138,35,135) 100%)',
+    },
+  },
+  [`&.${stepConnectorClasses.completed}`]: {
+    [`& .${stepConnectorClasses.line}`]: {
+      backgroundImage:
+        'linear-gradient( 95deg,rgb(242,113,33) 0%,rgb(233,64,87) 50%,rgb(138,35,135) 100%)',
+    },
+  },
+  [`& .${stepConnectorClasses.line}`]: {
+    height: 3,
+    border: 0,
+    backgroundColor: '#eaeaf0',
+    borderRadius: 1,
+    ...theme.applyStyles('dark', {
+      backgroundColor: theme.palette.grey[800],
+    }),
+  },
+}));
+
+const ColorlibStepIconRoot = styled('div')(({ theme }) => ({
+  backgroundColor: '#ccc',
+  zIndex: 1,
+  color: '#fff',
+  width: 30,
+  height: 30,
+  display: 'flex',
+  borderRadius: '50%',
+  justifyContent: 'center',
+  alignItems: 'center',
+  ...theme.applyStyles('dark', {
+    backgroundColor: theme.palette.grey[700],
+  }),
+  variants: [
+    {
+      props: ({ ownerState }) => ownerState.active,
+      style: {
+        backgroundImage:
+          'linear-gradient( 136deg, rgb(242,113,33) 0%, rgb(233,64,87) 50%, rgb(138,35,135) 100%)',
+        boxShadow: '0 4px 10px 0 rgba(0,0,0,.25)',
+      },
+    },
+    {
+      props: ({ ownerState }) => ownerState.completed,
+      style: {
+        backgroundImage:
+          'linear-gradient( 136deg, rgb(242,113,33) 0%, rgb(233,64,87) 50%, rgb(138,35,135) 100%)',
+      },
+    },
+  ],
+}));
+
+function ColorlibStepIcon(props) {
+  const { active, completed, className } = props;
+
+  const icons = {
+    1: <FaAddressCard />,
+    2: <RiParentFill />,
+    3: <HiMiniAcademicCap />,
+    4: <RiFolderUploadFill />,
+    5: <MdOutlinePayment />,
+    6: <MdRateReview />,
+  };
+
+  return (
+    <ColorlibStepIconRoot ownerState={{ completed, active }} className={className}>
+      {icons[String(props.icon)]}
+    </ColorlibStepIconRoot>
+  );
+}
+
+ColorlibStepIcon.propTypes = {
+  active: PropTypes.bool,
+  className: PropTypes.string,
+  completed: PropTypes.bool,
+  icon: PropTypes.node,
+};
+
+const steps = ['Student Info', 'Guardian Info', 'Academic & Medical Details', 'Upload Documents', 'Payment', 'Review & Submit'];
 
 const useStyles = makeStyles((theme) => ({
   formContainer: {
@@ -62,9 +238,12 @@ const useStyles = makeStyles((theme) => ({
     color: 'red',
     fontSize: '1.2rem',
   },
+  documentsGrid: {
+    width: '80%', // Decrease the width of the uploaded documents grid
+    overflow: 'hidden', // Eliminate the scrollbar
+  },
 }));
 
-const steps = ['Student Info', 'Guardian Info', 'Academic \n & Medical Details', 'Upload Documents', 'Payment', 'Review \n & Submit'];
 const personalInfoKeys = ['StudentName', 'DOB', 'Gender', 'Photo', 'Grade', 'PreviousSchool', 'languages', 'Religion', 'Category', 'Nationality', 'AadharNumber', 'Password'];
 const guardianInfoKeys = ['MotherName', 'FatherName', 'GuardianName', 'MobileNumber', 'Email', 'EmergencyContact', 'ParentOccupation', 'ParentQualification'];
 const academicInfoKeys = ['PreviousPercentage', 'BloodGroup', 'MedicalDisability'];
@@ -176,7 +355,7 @@ function getStepContent(step, formData, setFormData, handleDocumentClick, expand
                 </TableBody>
               </Table>
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={6} >
               <Typography variant="h6" className={classes.reviewSectionTitle}>Uploaded Documents</Typography>
               <Table>
                 <TableBody>
@@ -374,7 +553,7 @@ export default function EnrollForm() {
     });
   };
 
-    const handleSubmit = async () => {
+  const handleSubmit = async () => {
     console.log('Form submitted:', formData);
   
     // Upload documents to Firebase and collect URLs
@@ -495,13 +674,15 @@ export default function EnrollForm() {
               <Typography variant="h6" style={{ fontSize: '1rem' }}>School ID : {globalData.data.SCHOOL_ID}</Typography>
             </Grid>
           </Grid>
-          <Stepper activeStep={activeStep} className="stepper">
-            {steps.map((label, index) => (
-              <Step key={label} onClick={() => handleStepClick(index)}>
-                <StepLabel>{label}</StepLabel>
-              </Step>
-            ))}
-          </Stepper>
+          <Stack sx={{ width: '100%' }} spacing={4}>
+            <Stepper alternativeLabel activeStep={activeStep} connector={<ColorlibConnector />}>
+              {steps.map((label, index) => (
+                <Step key={label} onClick={() => handleStepClick(index)}>
+                  <StepLabel StepIconComponent={ColorlibStepIcon}>{label}</StepLabel>
+                </Step>
+              ))}
+            </Stepper>
+          </Stack>
           <React.Fragment>
             {activeStep === steps.length ? (
               <React.Fragment>

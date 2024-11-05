@@ -41,7 +41,7 @@ export default function Events() {
       <div id='items'>
         <Accordion id='itemlist' expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
           <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
-            <Typography sx={{ fontSize: '0.9rem' }}>Event #1</Typography>
+            <Typography sx={{ fontSize: '0.9rem', fontWeight: '600' }}>Event #1</Typography>
           </AccordionSummary>
           <AccordionDetails>
             <Typography sx={{ fontSize: '0.775rem' }}>
@@ -51,7 +51,7 @@ export default function Events() {
         </Accordion>
         <Accordion id='itemlist' expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
           <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
-            <Typography sx={{ fontSize: '0.9rem' }}>Event #2</Typography>
+            <Typography sx={{ fontSize: '0.9rem', fontWeight: '600' }}>Event #2</Typography>
           </AccordionSummary>
           <AccordionDetails>
             <Typography sx={{ fontSize: '0.775rem' }}>
@@ -61,7 +61,7 @@ export default function Events() {
         </Accordion>
         <Accordion id='itemlist' expanded={expanded === 'panel3'} onChange={handleChange('panel3')}>
           <AccordionSummary aria-controls="panel3d-content" id="panel3d-header">
-            <Typography sx={{ fontSize: '0.9rem' }}>Event #3</Typography>
+            <Typography sx={{ fontSize: '0.9rem', fontWeight: '600' }}>Event #3</Typography>
           </AccordionSummary>
           <AccordionDetails>
             <Typography sx={{ fontSize: '0.775rem' }}>
@@ -71,7 +71,7 @@ export default function Events() {
         </Accordion>
         <Accordion id='itemlist' expanded={expanded === 'panel4'} onChange={handleChange('panel4')}>
           <AccordionSummary aria-controls="panel4d-content" id="panel4d-header">
-            <Typography sx={{ fontSize: '0.9rem' }}>Event #4</Typography>
+            <Typography sx={{ fontSize: '0.9rem', fontWeight: '600' }}>Event #4</Typography>
           </AccordionSummary>
           <AccordionDetails>
             <Typography sx={{ fontSize: '0.775rem' }}>
@@ -81,7 +81,7 @@ export default function Events() {
         </Accordion>
         <Accordion id='itemlist' expanded={expanded === 'panel5'} onChange={handleChange('panel5')}>
           <AccordionSummary aria-controls="panel5d-content" id="panel5d-header">
-            <Typography sx={{ fontSize: '0.9rem' }}>Event #5</Typography>
+            <Typography sx={{ fontSize: '0.9rem', fontWeight: '600' }}>Event #5</Typography>
           </AccordionSummary>
           <AccordionDetails>
             <Typography sx={{ fontSize: '0.775rem' }}>

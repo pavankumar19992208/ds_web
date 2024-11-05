@@ -24,7 +24,7 @@ const Cards = ({ studentCount, staffCount, schoolName, schoolLogo }) => {
   return (
     <div className="cards-container">
       <div className="card">
-        <h2>Enrolled Students</h2>
+        <h2>Student Enrollment</h2>
         <p className="count">{Math.floor(studentCount)}</p>
         <div className="button-group">
           <button id='enroll-btn' onClick={handleStudentEnrollClick}>Enroll</button>
@@ -32,7 +32,7 @@ const Cards = ({ studentCount, staffCount, schoolName, schoolLogo }) => {
         </div>
       </div>
       <div className="card">
-        <h2>Enrolled Staff</h2>
+        <h2>Staff Enrollment</h2>
         <p className="count">{Math.floor(staffCount)}</p>
         <div className="button-group">
           <button id='enroll-btn' onClick={handleStaffEnrollClick}>Enroll</button>

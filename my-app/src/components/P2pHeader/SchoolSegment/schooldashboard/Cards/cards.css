@@ -17,6 +17,8 @@
     height: 110px; 
     text-align: center;
     position: relative;
+    box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.1); /* Add box shadow to the right side */
+
   }
   
   .card h2 {

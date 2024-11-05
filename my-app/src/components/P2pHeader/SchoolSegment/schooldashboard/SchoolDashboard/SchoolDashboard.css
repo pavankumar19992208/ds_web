@@ -1,11 +1,15 @@
 body, html {
   overflow-x: hidden;
   /* background-image: url('./img.jpg'); */
+  /* height: 100vh; */
+
   background-size: cover;
   /* background-color: rgb(235, 235, 235); */
-  background-color: #fcfcfc;
+  background-color: #fff;
 } 
 .homepage {
+  background: linear-gradient(to right, #ffffff, #edf3f7) !important; /* Gradient from light pink to a lighter shade */
+
   position: absolute;
   left: 40vh;
   display: flex;
