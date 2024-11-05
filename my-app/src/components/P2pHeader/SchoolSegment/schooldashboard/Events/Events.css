@@ -1,6 +1,6 @@
 #card {
   position: relative;
-  width: 72%;
+  width: 73.5%;
 height: 40vh; /* Set a maximum height for the card */
   overflow-y: auto; /* Enable vertical scrolling */
   padding: 0 10px;
@@ -25,7 +25,7 @@ height: 40vh; /* Set a maximum height for the card */
   box-sizing: border-box;
   margin-bottom: 10px;
   border-radius: 12px;
-  width: 60%;
+  width: 59%;
   z-index: 1000;
   height: 40px; /* Increase the height */
 }

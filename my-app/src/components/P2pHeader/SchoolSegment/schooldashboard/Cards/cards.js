@@ -2,15 +2,15 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './cards.css';
 
-const Cards = ({ studentCount, teacherCount, schoolName, schoolLogo }) => {
+const Cards = ({ studentCount, staffCount, schoolName, schoolLogo }) => {
   const navigate = useNavigate();
 
   const handleStudentEnrollClick = () => {
     navigate('/student-enroll');
   };
 
-  const handleTeacherEnrollClick = () => {
-    navigate('/teacher-enroll');
+  const handleStaffEnrollClick = () => {
+    navigate('/staff-enroll');
   };
 
   const handleStaffPayroll = () => {
@@ -33,9 +33,9 @@ const Cards = ({ studentCount, teacherCount, schoolName, schoolLogo }) => {
       </div>
       <div className="card">
         <h2>Enrolled Staff</h2>
-        <p className="count">{Math.floor(teacherCount)}</p>
+        <p className="count">{Math.floor(staffCount)}</p>
         <div className="button-group">
-          <button id='enroll-btn' onClick={handleTeacherEnrollClick}>Enroll</button>
+          <button id='enroll-btn' onClick={handleStaffEnrollClick}>Enroll</button>
           <button>Details</button>
         </div>
       </div>

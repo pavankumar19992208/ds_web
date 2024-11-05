@@ -3,6 +3,8 @@ import { Card, CardContent, Typography, Box } from '@material-ui/core';
 import Navbar from '../../Navbar/Navbar';
 import Sidebar from '../../Sidebar/Sidebar';
 import AttachDocumentStudent from '../attach-document/attach-document-student/attachDocumentStudent'; // Import the form component
+import { GlobalStateContext } from '../../../../../../GlobalStateContext';
+
 import './attachDocument.css'; // Import the CSS file
 
 const AttachDocument = () => {
@@ -12,9 +14,12 @@ const AttachDocument = () => {
     setShowForm(true);
   };
 
+  const { globalData } = React.useContext(GlobalStateContext);
+
+
   return (
     <div>
-      <Navbar />
+      <Navbar schoolName={globalData.data.SCHOOL_NAME} schoolLogo={globalData.data.SCHOOL_LOGO} />
       <Sidebar visibleItems={['home', 'attachDocument', 'subjectAllocation', 'attendanceTracking', 'leaveApprovals', 'academicPerformance', 'teacherAlert']} />
       <Box className="attach-document-container">
         <Card className="card" onClick={handleStudentCardClick}>

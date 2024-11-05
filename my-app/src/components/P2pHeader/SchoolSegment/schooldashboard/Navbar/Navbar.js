@@ -5,7 +5,7 @@ import { Event, Notifications, ExitToApp } from '@material-ui/icons';
 import { GlobalStateContext } from '../../../../../GlobalStateContext';
 import './Navbar.css';
 
-const Navbar = ({ schoolName, schoolLogo }) => {
+const Navbar = ({ schoolName, schoolLogo, establishmentYear, establishmentID, schoolID, email, contactNumber }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const { setGlobalData } = useContext(GlobalStateContext);
@@ -80,6 +80,23 @@ const Navbar = ({ schoolName, schoolLogo }) => {
             <Avatar id='profile-avatar' alt="School Logo" src={schoolLogo} />
             <Typography id='profile-name' variant="h6" style={{ marginLeft: '10px' }}>
               {schoolName}
+            </Typography>
+          </div>
+                    <div className="school-details" style={{ padding: '10px' }}>
+            <Typography variant="body2" style={{ marginTop: '16px', marginBottom: '16px' }}>
+              <medium>Establishment Year:</medium> {establishmentYear}
+            </Typography>
+            <Typography variant="body2" style={{ marginBottom: '16px' }}>
+              <medium>Establishment ID:</medium> {establishmentID}
+            </Typography>
+            <Typography variant="body2" style={{ marginBottom: '16px' }}>
+              <medium>School ID:</medium> {schoolID}
+            </Typography>
+            <Typography variant="body2" style={{ marginBottom: '16px' }}>
+              <medium>Email:</medium> {email}
+            </Typography>
+            <Typography variant="body2" style={{ marginBottom: '16px' }}>
+              <medium>Contact Number:</medium> {contactNumber}
             </Typography>
           </div>
         </Box>

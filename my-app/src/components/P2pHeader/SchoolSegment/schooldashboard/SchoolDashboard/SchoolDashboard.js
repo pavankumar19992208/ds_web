@@ -4,23 +4,23 @@ import Navbar from '../Navbar/Navbar';
 import Sidebar from '../Sidebar/Sidebar';
 import Events from '../Events/Events';
 import Cards from '../Cards/cards';
-import './HomePage.css';
+import './SchoolDashboard.css';
 
 const SchoolDashboard = () => {
   const { globalData } = useContext(GlobalStateContext);
 
   const [studentCount, setStudentCount] = useState(0);
-  const [teacherCount, setTeacherCount] = useState(0);
+  const [staffCount, setStaffCount] = useState(0);
 
   useEffect(() => {
     if (!globalData) return;
 
     const targetStudentCount = 150;
-    const targetTeacherCount = 20;
+    const targetStaffCount = 20;
     const duration = 1000; // Duration of the animation in milliseconds
     const interval = 10; // Interval in milliseconds
     const incrementStudent = targetStudentCount / (duration / interval);
-    const incrementTeacher = targetTeacherCount / (duration / interval);
+    const incrementStaff = targetStaffCount / (duration / interval);
     console.log(globalData);
 
     const studentInterval = setInterval(() => {
@@ -33,19 +33,19 @@ const SchoolDashboard = () => {
       });
     }, interval);
 
-    const teacherInterval = setInterval(() => {
-      setTeacherCount((prevCount) => {
-        if (prevCount + incrementTeacher >= targetTeacherCount) {
-          clearInterval(teacherInterval);
-          return targetTeacherCount;
+    const staffInterval = setInterval(() => {
+      setStaffCount((prevCount) => {
+        if (prevCount + incrementStaff >= targetStaffCount) {
+          clearInterval(staffInterval);
+          return targetStaffCount;
         }
-        return prevCount + incrementTeacher;
+        return prevCount + incrementStaff;
       });
     }, interval);
 
     return () => {
       clearInterval(studentInterval);
-      clearInterval(teacherInterval);
+      clearInterval(staffInterval);
     };
   }, [globalData]);
 
@@ -58,7 +58,7 @@ const SchoolDashboard = () => {
       <Navbar schoolName={globalData.data.SCHOOL_NAME} schoolLogo={globalData.data.SCHOOL_LOGO} />
       <Sidebar visibleItems={['home', 'attachDocument', 'subjectAllocation', 'attendanceTracking', 'leaveApprovals', 'academicPerformance','teacherAlert', 'eventPlanning', 'careerGuidance', 'inventoryManagement', ]} showTitle={true} />
       <main className="main-content">
-        <Cards schoolName={globalData.data.SCHOOL_NAME} schoolLogo={globalData.data.SCHOOL_LOGO} studentCount={studentCount} teacherCount={teacherCount} />
+        <Cards schoolName={globalData.data.SCHOOL_NAME} schoolLogo={globalData.data.SCHOOL_LOGO} studentCount={studentCount} staffCount={staffCount} />
       </main>
       <Events />
     </div>

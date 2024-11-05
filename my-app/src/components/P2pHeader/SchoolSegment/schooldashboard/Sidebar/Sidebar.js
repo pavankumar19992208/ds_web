@@ -69,8 +69,8 @@ const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true }) =
             <ListItem
               button className="list-item" sx={selectedItem === 'home' ? selectedListItemStyle : listItemHoverStyle} onClick={navigateToHomepage} style={selectedItem === 'home' ? { pointerEvents: 'none' } : {}}
             >
-              <Home  />
-              {!isPrimaryFormOpen && showTitle && <ListItemText primary="Home" className="list-item-text" sx={{ marginLeft: 2 }} />}
+              <Home  size={20}/>
+              {!isPrimaryFormOpen && showTitle && <ListItemText primary="Home" className="list-item-text"/>}
             </ListItem>
           </Tooltip>
         )}
@@ -82,72 +82,72 @@ const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true }) =
               sx={selectedItem === 'attachDocument' ? selectedListItemStyle : listItemHoverStyle}
               onClick={navigateToAttachDocument}
             >
-              <CgAttachment size={21} />
-              {!isPrimaryFormOpen && showTitle && <ListItemText primary="Attach Document" className="list-item-text" sx={{ marginLeft: 2 }} />}
+              <CgAttachment size={20} />
+              {!isPrimaryFormOpen && showTitle && <ListItemText primary="Attach Document" className="list-item-text"/>}
             </ListItem>
           </Tooltip>
         )}
         {visibleItems.includes('subjectAllocation') && (
           <Tooltip title="Subject Allocation" placement="right">
             <ListItem button className="list-item" sx={listItemHoverStyle}>
-              <MdTopic size={22} />
-              {!isPrimaryFormOpen && showTitle && <ListItemText primary="Subject Allocation" className="list-item-text" sx={{ marginLeft: 2 }} />}
+              <MdTopic size={20} />
+              {!isPrimaryFormOpen && showTitle && <ListItemText primary="Subject Allocation" className="list-item-text"/>}
             </ListItem>
           </Tooltip>
         )}
         {visibleItems.includes('attendanceTracking') && (
           <Tooltip title="Attendance Tracking" placement="right">
             <ListItem button className="list-item" sx={listItemHoverStyle}>
-              <PiMonitorFill size={22} />
-              {!isPrimaryFormOpen && showTitle && <ListItemText primary="Attendance Tracking" className="list-item-text" sx={{ marginLeft: 2 }} />}
+              <PiMonitorFill size={20} />
+              {!isPrimaryFormOpen && showTitle && <ListItemText primary="Attendance Tracking" className="list-item-text"/>}
             </ListItem>
           </Tooltip>
         )}
         {visibleItems.includes('leaveApprovals') && (
           <Tooltip title="Leave Approvals" placement="right">
             <ListItem button className="list-item" sx={listItemHoverStyle}>
-              <BsPersonFillCheck size={22} />
-              {!isPrimaryFormOpen && showTitle && <ListItemText primary="Leave Approvals" className="list-item-text" sx={{ marginLeft: 2 }} />}
+              <BsPersonFillCheck size={20} />
+              {!isPrimaryFormOpen && showTitle && <ListItemText primary="Leave Approvals" className="list-item-text" />}
             </ListItem>
           </Tooltip>
         )}
         {visibleItems.includes('academicPerformance') && (
           <Tooltip title="Academic Performance" placement="right">
             <ListItem button className="list-item" sx={listItemHoverStyle}>
-              <TrendingUp sx={{ marginRight: 2 }} />
-              {!isPrimaryFormOpen && showTitle && <ListItemText primary="Academic Performance" className="list-item-text" />}
+              <TrendingUp size={18}/>
+              {!isPrimaryFormOpen && showTitle && <ListItemText primary="Academic Performance" className="list-item-text"/>}
             </ListItem>
           </Tooltip>
         )}
         {visibleItems.includes('teacherAlert') && (
           <Tooltip title="Teacher Alert" placement="right">
             <ListItem button className="list-item" sx={listItemHoverStyle}>
-              <IoIosAlert size={22} />
-              {!isPrimaryFormOpen && showTitle && <ListItemText primary="Teacher Alert" className="list-item-text" sx={{ marginLeft: 2 }} />}
+              <IoIosAlert size={20} />
+              {!isPrimaryFormOpen && showTitle && <ListItemText primary="Teacher Alert" className="list-item-text"/>}
             </ListItem>
           </Tooltip>
         )}
         {visibleItems.includes('eventPlanning') && (
           <Tooltip title="Event Planning" placement="right">
             <ListItem button className="list-item" sx={listItemHoverStyle}>
-              <BiSolidCalendarEdit size={22} />
-              {!isPrimaryFormOpen && showTitle && <ListItemText primary="Event Planning" className="list-item-text" sx={{ marginLeft: 2 }} />}
+              <BiSolidCalendarEdit size={20} />
+              {!isPrimaryFormOpen && showTitle && <ListItemText primary="Event Planning" className="list-item-text"/>}
             </ListItem>
           </Tooltip>
         )}
         {visibleItems.includes('careerGuidance') && (
           <Tooltip title="Career Guidance" placement="right">
             <ListItem button className="list-item" sx={listItemHoverStyle} onClick={navigateToCareerGuidance}>
-              <RiFlightTakeoffFill size={22} />
-              {!isPrimaryFormOpen && showTitle && <ListItemText primary="Career Guidance" className="list-item-text" sx={{ marginLeft: 2 }} />}
+              <RiFlightTakeoffFill size={20} />
+              {!isPrimaryFormOpen && showTitle && <ListItemText primary="Career Guidance" className="list-item-text"/>}
             </ListItem>
           </Tooltip>
         )}
         {visibleItems.includes('updateEnrollment') && (
           <Tooltip title="Update Enrollment" placement="right">
             <ListItem button className="list-item" sx={listItemHoverStyle} onClick={navigateToUpdateEnrollment}>
-              <FaUserEdit size={22} />
-              {!isPrimaryFormOpen && showTitle && <ListItemText primary="Update Enrollment" className="list-item-text" sx={{ marginLeft: 2 }} />}
+              <FaUserEdit size={20} />
+              {!isPrimaryFormOpen && showTitle && <ListItemText primary="Update Enrollment" className="list-item-text"/>}
             </ListItem>
           </Tooltip>
         )}
