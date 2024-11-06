@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import List from '@mui/material/List';
@@ -17,8 +17,8 @@ import { FaUserEdit } from "react-icons/fa"; // Import the new icon
 import { MdInventory } from "react-icons/md";
 import './Sidebar.css'; // Import the CSS file
 
-const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true }) => {
-  const [selectedItem, setSelectedItem] = useState('');
+const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true, selectedItem: initialSelectedItem }) => {
+  const [selectedItem, setSelectedItem] = useState(initialSelectedItem || '');
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -69,7 +69,7 @@ const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true }) =
             <ListItem
               button className="list-item" sx={selectedItem === 'home' ? selectedListItemStyle : listItemHoverStyle} onClick={navigateToHomepage} style={selectedItem === 'home' ? { pointerEvents: 'none' } : {}}
             >
-              <Home  size={20}/>
+              <Home size={20}/>
               {!isPrimaryFormOpen && showTitle && <ListItemText primary="Home" className="list-item-text"/>}
             </ListItem>
           </Tooltip>
@@ -160,6 +160,7 @@ const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true }) =
           </Tooltip>
         )}
       </List>
+     
     </Box>
   );
 };

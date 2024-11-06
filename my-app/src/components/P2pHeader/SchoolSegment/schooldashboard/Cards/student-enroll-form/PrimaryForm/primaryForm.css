@@ -32,6 +32,8 @@
 .stepper .MuiStepLabel-label {
   white-space: pre-line;
 }
+
+
 @media (min-width: 1024px){
   .layout {
     left: 70px;

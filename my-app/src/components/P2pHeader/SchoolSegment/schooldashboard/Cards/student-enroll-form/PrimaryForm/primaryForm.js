@@ -128,13 +128,13 @@ const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.active}`]: {
     [`& .${stepConnectorClasses.line}`]: {
       backgroundImage:
-        'linear-gradient( 95deg,rgb(242,113,33) 0%,rgb(233,64,87) 50%,rgb(138,35,135) 100%)',
+      'linear-gradient(136deg, rgb(255 255 255) 0%, rgb(33 155 196) 50%, rgb(138, 35, 135) 100%)',
     },
   },
   [`&.${stepConnectorClasses.completed}`]: {
     [`& .${stepConnectorClasses.line}`]: {
       backgroundImage:
-        'linear-gradient( 95deg,rgb(242,113,33) 0%,rgb(233,64,87) 50%,rgb(138,35,135) 100%)',
+      'linear-gradient(136deg, rgb(255 255 255) 0%, rgb(33 155 196) 50%, rgb(138, 35, 135) 100%)',
     },
   },
   [`& .${stepConnectorClasses.line}`]: {
@@ -166,7 +166,7 @@ const ColorlibStepIconRoot = styled('div')(({ theme }) => ({
       props: ({ ownerState }) => ownerState.active,
       style: {
         backgroundImage:
-          'linear-gradient( 136deg, rgb(242,113,33) 0%, rgb(233,64,87) 50%, rgb(138,35,135) 100%)',
+        'linear-gradient(136deg, rgb(255 255 255) 0%, rgb(33 155 196) 50%, rgb(138, 35, 135) 100%)',
         boxShadow: '0 4px 10px 0 rgba(0,0,0,.25)',
       },
     },
@@ -174,7 +174,7 @@ const ColorlibStepIconRoot = styled('div')(({ theme }) => ({
       props: ({ ownerState }) => ownerState.completed,
       style: {
         backgroundImage:
-          'linear-gradient( 136deg, rgb(242,113,33) 0%, rgb(233,64,87) 50%, rgb(138,35,135) 100%)',
+        'linear-gradient(136deg, rgb(255 255 255) 0%, rgb(33 155 196) 50%, rgb(138, 35, 135) 100%)',
       },
     },
   ],
@@ -659,8 +659,7 @@ export default function EnrollForm() {
 
   return (
     <React.Fragment>
-      <Navbar schoolName={globalData.data.SCHOOL_NAME} schoolLogo={globalData.data.SCHOOL_LOGO} />
-      <main className="layout">
+      <Navbar schoolName={globalData.data.SCHOOL_NAME} schoolLogo={globalData.data.SCHOOL_LOGO} />      <main className="layout">
         <Sidebar visibleItems={['home', 'updateEnrollment']} hideProfile={true} showTitle={false} />
         <Paper className="paper">
           <Typography component="h1" variant="h4" align="center">
@@ -675,7 +674,7 @@ export default function EnrollForm() {
             </Grid>
           </Grid>
           <Stack sx={{ width: '100%' }} spacing={4}>
-            <Stepper alternativeLabel activeStep={activeStep} connector={<ColorlibConnector />}>
+            <Stepper alternativeLabel activeStep={activeStep} connector={<ColorlibConnector />} style={{ marginTop: '20px' }}>
               {steps.map((label, index) => (
                 <Step key={label} onClick={() => handleStepClick(index)}>
                   <StepLabel StepIconComponent={ColorlibStepIcon}>{label}</StepLabel>

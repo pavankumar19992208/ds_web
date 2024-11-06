@@ -9,9 +9,9 @@ body, html {
 } 
 .homepage {
   background: linear-gradient(to right, #ffffff, #edf3f7) !important; /* Gradient from light pink to a lighter shade */
-
-  position: absolute;
-  left: 40vh;
+  overflow: hidden;
+  position: relative;
+  left: 0vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -24,6 +24,8 @@ body, html {
 
 .main-content {
     margin: 70px 0 20px;
+    position: relative;
+    left: 20vh;
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
@@ -33,6 +35,22 @@ body, html {
   width: 100%;
  
 }
+
+.school-id-box {
+  position: fixed;
+  bottom: 40px;
+  left: 22px;
+  background-color: #ffffff;
+  padding: 12px 8px;
+  border-radius: 8px;
+  box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.1);
+  font-size: 14px;
+  color: #333;
+  width: 200px;
+  text-align: center;
+  z-index: 1000;
+}
+
 
 
 @media (max-width: 1024px) {

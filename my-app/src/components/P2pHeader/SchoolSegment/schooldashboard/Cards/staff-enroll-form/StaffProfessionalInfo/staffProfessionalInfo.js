@@ -3,6 +3,10 @@ import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
 import { makeStyles } from '@material-ui/core/styles';
+import FormControl from '@material-ui/core/FormControl';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 
 const useStyles = makeStyles((theme) => ({
   formContainer: {},
@@ -34,9 +38,23 @@ const positions = [
 
 const grades = Array.from({ length: 10 }, (_, i) => ({ value: i + 1, label: `Class ${i + 1}` }));
 
+const subjects = [
+  'Mathematics',
+  'Science',
+  'English',
+  'History',
+  'Geography',
+  'Physics',
+  'Chemistry',
+  'Biology',
+  'Computer Science',
+  'Physical Education',
+];
+
 const StaffProfessionalInfo = ({ formData, setFormData }) => {
   const classes = useStyles();
   const [formValues, setFormValues] = useState(formData.professionalInfo);
+  const [selectedSubjects, setSelectedSubjects] = useState(formData.professionalInfo.subjectSpecialization || []);
   const [errors, setErrors] = useState({});
 
   const validateField = (name, value) => {
@@ -49,25 +67,45 @@ const StaffProfessionalInfo = ({ formData, setFormData }) => {
     return error;
   };
 
-   const handleChange = (event) => {
+  const handleChange = (event) => {
     const { name, value } = event.target;
     let error = validateField(name, value);
-  
+
     // Show error if the field is empty
     if (!value) {
       error = 'This field is required';
     }
-  
+
     setErrors((prev) => ({
       ...prev,
       [name]: error,
     }));
-  
+
     const updatedFormValues = { ...formValues, [name]: value };
     setFormValues(updatedFormValues);
     setFormData((prevData) => ({
       ...prevData,
       professionalInfo: updatedFormValues,
+    }));
+  };
+
+  const handleSubjectChange = (event) => {
+    const { value, checked } = event.target;
+    let updatedSubjects = [...selectedSubjects];
+
+    if (checked) {
+      updatedSubjects.push(value);
+    } else {
+      updatedSubjects = updatedSubjects.filter((subject) => subject !== value);
+    }
+
+    setSelectedSubjects(updatedSubjects);
+    setFormData((prevData) => ({
+      ...prevData,
+      professionalInfo: {
+        ...prevData.professionalInfo,
+        subjectSpecialization: updatedSubjects,
+      },
     }));
   };
 
@@ -94,20 +132,7 @@ const StaffProfessionalInfo = ({ formData, setFormData }) => {
               ))}
             </TextField>
           </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              id="subjectSpecialization"
-              label="Subject Specialization"
-              name="subjectSpecialization"
-              value={formValues.subjectSpecialization}
-              onChange={handleChange}
-              fullWidth
-              required
-              className={classes.field}
-              error={!!errors.subjectSpecialization}
-              helperText={errors.subjectSpecialization}
-            />
-          </Grid>
+          
           <Grid item xs={12} sm={6}>
             <TextField
               id="grade"
@@ -154,6 +179,29 @@ const StaffProfessionalInfo = ({ formData, setFormData }) => {
             />
           </Grid>
           <Grid item xs={12} sm={6}>
+            <FormControl component="fieldset" className={classes.field}>
+              <label>Subject Specialization</label>
+              <FormGroup>
+                <Grid container spacing={1}>
+                  {subjects.map((subject) => (
+                    <Grid item xs={6} key={subject}>
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={selectedSubjects.includes(subject)}
+                            onChange={handleSubjectChange}
+                            value={subject}
+                          />
+                        }
+                        label={subject}
+                      />
+                    </Grid>
+                  ))}
+                </Grid>
+              </FormGroup>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12} sm={6}>
             <TextField
               id="certifications"
               label="Certifications (Teaching / Training)"
@@ -166,6 +214,7 @@ const StaffProfessionalInfo = ({ formData, setFormData }) => {
               helperText={errors.certifications}
             />
           </Grid>
+          
         </Grid>
       </form>
     </div>

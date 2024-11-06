@@ -1,5 +1,6 @@
 import React, { useState, useContext } from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import Grid from '@material-ui/core/Grid';
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
@@ -212,7 +213,9 @@ const useStyles = makeStyles((theme) => ({
     overFlow: "auto",
   },
   stepperContainer: {
-    marginTop: theme.spacing(4), // Adjust margin-top
+    marginTop: theme.spacing(3), // Adjust margin-top
+    marginBottom: theme.spacing(2), // Adjust margin-top
+
   },
   stepper: {
     padding: theme.spacing(3, 0, 5),
@@ -508,6 +511,7 @@ export default function StaffPrimaryForm() {
     }
 
     const payload = {
+      SchoolId: globalData.data.SCHOOL_ID,
       fullName: formData.personalInfo.fullName,
       dob: formData.personalInfo.dob,
       gender: formData.personalInfo.gender,
@@ -572,10 +576,19 @@ export default function StaffPrimaryForm() {
           hideProfile={true}
           showTitle={false}
         />
+       
         <Paper className={classes.paper}>
           <Typography component="h1" variant="h4" align="center">
             Staff Enroll Form
           </Typography>
+          <Grid container spacing={3}>
+            <Grid item xs={12} sm={6} style={{ marginTop: '20px', marginBottom: '12px' }}>
+              <Typography variant="h6" style={{ fontSize: '1rem' }}>{globalData.data.SCHOOL_NAME}</Typography>
+            </Grid>
+            <Grid item xs={12} sm={6} style={{ textAlign: 'right', marginTop: '16px' }}>
+              <Typography variant="h6" style={{ fontSize: '1rem' }}>School ID : {globalData.data.SCHOOL_ID}</Typography>
+            </Grid>
+          </Grid>
           <Stack sx={{ width: '100%' }} spacing={4} className={classes.stepperContainer}>
             <Stepper alternativeLabel activeStep={activeStep} connector={<ColorlibConnector />}>
               {steps.map((label, index) => (

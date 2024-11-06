@@ -1,12 +1,13 @@
 #card {
   position: relative;
-  width: 73.5%;
-height: 40vh; /* Set a maximum height for the card */
+  width: 60.7%;
+height: 35vh; /* Set a maximum height for the card */
   overflow-y: auto; /* Enable vertical scrolling */
   padding: 0 10px;
   border: 1px solid hsla(220, 20%, 80%, 0.4); /* Optional: Add a border for better visual separation */
   border-radius: 12px; 
   margin-bottom: 30px;
+  margin-top: 20px;
   background-color: #fff;
 
 }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
@@ -21,31 +21,9 @@ const useStyles = makeStyles((theme) => ({
 
 const StaffAdditionalInfo = ({ formData, setFormData }) => {
   const classes = useStyles();
-  const [errors, setErrors] = useState({});
-
-  const validateField = (name, value) => {
-    let error = '';
-    if (['languagesKnown', 'interests', 'availabilityOfExtraCirricularActivities'].includes(name)) {
-      if (!/^[a-zA-Z\s]+$/.test(value)) {
-        error = 'Only alphabets are allowed';
-      }
-    }
-    return error;
-  };
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    let error = validateField(name, value);
-
-    // Show error if the field is empty
-    if (!value) {
-      error = 'This field is required';
-    }
-
-    setErrors((prev) => ({
-      ...prev,
-      [name]: error,
-    }));
 
     setFormData((prevData) => ({
       ...prevData,
@@ -68,10 +46,7 @@ const StaffAdditionalInfo = ({ formData, setFormData }) => {
               value={formData.additionalInfo.languagesKnown}
               onChange={handleChange}
               fullWidth
-              required
               className={classes.field}
-              error={!!errors.languagesKnown}
-              helperText={errors.languagesKnown}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -83,8 +58,6 @@ const StaffAdditionalInfo = ({ formData, setFormData }) => {
               onChange={handleChange}
               fullWidth
               className={classes.field}
-              error={!!errors.interests}
-              helperText={errors.interests}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -96,8 +69,6 @@ const StaffAdditionalInfo = ({ formData, setFormData }) => {
               onChange={handleChange}
               fullWidth
               className={classes.field}
-              error={!!errors.availabilityOfExtraCirricularActivities}
-              helperText={errors.availabilityOfExtraCirricularActivities}
             />
           </Grid>
         </Grid>
