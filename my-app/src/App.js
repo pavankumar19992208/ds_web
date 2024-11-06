@@ -14,6 +14,8 @@ import AttachDocument from './components/P2pHeader/SchoolSegment/schooldashboard
 import SchoolInternalData from './components/P2pHeader/SchoolSegment/schooldashboard/Cards/school-internal-data/schoolInternalData';
 import CareerGuidance from './components/P2pHeader/SchoolSegment/schooldashboard/Sidebar/careerGuidance/careerGuidance';
 import StaffPayroll from './components/P2pHeader/SchoolSegment/schooldashboard/Cards/staff-payroll/staffPayroll';
+import SubjectAllocation from './components/P2pHeader/SchoolSegment/schooldashboard/Sidebar/subject-allocation/subjectAllocation';
+
 
 function App() {
   return (
@@ -31,9 +33,9 @@ function App() {
           {/* <Route path="/enroll/qualification" element={<QualificationForm />} /> */}
           <Route path="/attach-document" element={<AttachDocument />} />
           <Route path="/career-guidance" element={<CareerGuidance />} />
-
           <Route path="/school-internal-data" element={<SchoolInternalData />} />
           <Route path="/staff-payroll" element={<StaffPayroll />} />
+          <Route path="/subject-allocation" element={<SubjectAllocation/>}/>
         </Routes>
       </Router>
     </GlobalStateProvider>

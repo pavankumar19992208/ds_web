@@ -1,0 +1,92 @@
+/* subjectAllocation.css */
+.subject-allocation-container {
+    background: linear-gradient(to right, #ffffff, #edf3f7) !important; /* Gradient from light pink to a lighter shade */
+
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.subject-allocation-content {
+  display: flex;
+  flex: 1;
+}
+
+.content {
+
+  flex: 1;
+  padding: 20px;
+  overflow: auto;
+  border: 1px solid hsla(220, 20%, 80%, 0.4);
+  box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.1); 
+  width: 75%;
+  height: 80vh;
+  border-radius: 12px;
+  position: absolute;
+  left: 44vh;
+  top:72px;
+}
+
+.school-id-box {
+    position: fixed;
+    bottom: 40px;
+    left: 22px;
+    background-color: #ffffff;
+    padding: 12px 8px;
+    border-radius: 8px;
+    box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.1);
+    font-size: 14px;
+    color: #333;
+    width: 200px;
+    text-align: center;
+    z-index: 1000;
+  }
+  
+
+  .button-container {
+    position: absolute;
+  top: 20px;
+  left: 20px;
+    display: flex;
+    gap: 10px;
+  }
+  
+  .select-button {
+    padding: 12px 24px;
+    background-color: #fff;
+    color: rgb(48, 48, 48);
+    border: 1px solid hsla(220, 20%, 80%, 0.8);
+
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  /* .select-button:hover {
+    background-color: #444444;
+
+  } */
+
+  .teacher-list {
+    margin-top: 60px;
+    width: 80%;
+  }
+  
+  .teacher-list h3 {
+    margin-bottom: 10px;
+  }
+  
+  .teacher-list ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .teacher-list li {
+    padding: 5px 0;
+    border-bottom: 1px solid #ccc;
+  }
+
+  .subject-allocation-content {
+    position: relative;
+  }
+  

@@ -1,5 +1,4 @@
 import React, { useState, useContext } from "react";
-import { makeStyles } from "@material-ui/core/styles";
 import Grid from '@material-ui/core/Grid';
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
@@ -28,6 +27,7 @@ import { MdAddCircle } from "react-icons/md";
 import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector';
 import { styled } from '@mui/material/styles';
 import PropTypes from 'prop-types';
+import './staffPrimaryInfo.css';
 
 const QontoConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {
@@ -189,51 +189,6 @@ ColorlibStepIcon.propTypes = {
   icon: PropTypes.node,
 };
 
-const useStyles = makeStyles((theme) => ({
-  appBar: {
-    position: "relative",
-  },
-  layout: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "flex-start",
-    height: "100vh",
-    width: "100%",
-    padding: theme.spacing(2),
-    overflow: "auto",
-    position: "absolute",
-  },
-  paper: {
-    width: "100%",
-    maxWidth: "1000px",
-    margin: "24px",
-    padding: "16px",
-    marginTop: "80px",
-    overFlow: "auto",
-  },
-  stepperContainer: {
-    marginTop: theme.spacing(3), // Adjust margin-top
-    marginBottom: theme.spacing(2), // Adjust margin-top
-
-  },
-  stepper: {
-    padding: theme.spacing(3, 0, 5),
-  },
-  buttons: {
-    display: "flex",
-    justifyContent: "flex-end",
-  },
-  button: {
-    marginTop: theme.spacing(3),
-    marginLeft: theme.spacing(1),
-    backgroundColor: "#ff8040",
-    color: "white",
-    "&:hover": {
-      backgroundColor: "#faaa72",
-    },
-  },
-}));
 
 const steps = [
   "Personal details",
@@ -282,7 +237,6 @@ function getStepContent(step, formData, setFormData) {
 }
 
 export default function StaffPrimaryForm() {
-  const classes = useStyles();
   const [activeStep, setActiveStep] = useState(0);
   const { globalData } = useContext(GlobalStateContext);
   const [formData, setFormData] = useState({
@@ -570,14 +524,14 @@ export default function StaffPrimaryForm() {
         schoolName={globalData.data.SCHOOL_NAME}
         schoolLogo={globalData.data.SCHOOL_LOGO}
       />
-      <main className={classes.layout}>
+      <main className="layout">
         <Sidebar
           visibleItems={["home", "updateEnrollment"]}
           hideProfile={true}
           showTitle={false}
         />
        
-        <Paper className={classes.paper}>
+        <Paper className="paper">
           <Typography component="h1" variant="h4" align="center">
             Staff Enroll Form
           </Typography>
@@ -589,7 +543,7 @@ export default function StaffPrimaryForm() {
               <Typography variant="h6" style={{ fontSize: '1rem' }}>School ID : {globalData.data.SCHOOL_ID}</Typography>
             </Grid>
           </Grid>
-          <Stack sx={{ width: '100%' }} spacing={4} className={classes.stepperContainer}>
+          <Stack sx={{ width: '100%' }} spacing={4} className="stepperContainer">
             <Stepper alternativeLabel activeStep={activeStep} connector={<ColorlibConnector />}>
               {steps.map((label, index) => (
                 <Step key={label} onClick={() => handleStepClick(index)}>
@@ -605,11 +559,11 @@ export default function StaffPrimaryForm() {
                   Submitted successfully
                 </Typography>
                 <Typography variant="subtitle1">Enjoy your journey</Typography>
-                <div className={classes.buttons}>
+                <div className="buttons">
                   <Button
                     variant="contained"
                     onClick={handleEnrollMore}
-                    className={classes.button}
+                    className="button"
                   >
                     Enroll More
                   </Button>
@@ -618,9 +572,9 @@ export default function StaffPrimaryForm() {
             ) : (
               <React.Fragment>
                 {getStepContent(activeStep, formData, setFormData)}
-                <div className={classes.buttons}>
+                <div className="buttons">
                   {activeStep !== 0 && (
-                    <Button onClick={handleBack} className={classes.button}>
+                    <Button onClick={handleBack} className="button">
                       Back
                     </Button>
                   )}
@@ -631,7 +585,7 @@ export default function StaffPrimaryForm() {
                         ? handleSubmit
                         : handleNext
                     }
-                    className={classes.button}
+                    className="button"
                   >
                     {activeStep === steps.length - 1 ? "Submit" : "Next"}
                   </Button>

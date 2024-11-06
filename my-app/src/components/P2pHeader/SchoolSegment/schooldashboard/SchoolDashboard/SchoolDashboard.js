@@ -12,6 +12,8 @@ const SchoolDashboard = () => {
   const [studentCount, setStudentCount] = useState(0);
   const [staffCount, setStaffCount] = useState(0);
 
+  
+
   useEffect(() => {
     if (!globalData) return;
 

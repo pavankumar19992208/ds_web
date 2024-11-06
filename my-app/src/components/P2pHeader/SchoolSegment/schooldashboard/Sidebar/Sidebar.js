@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import List from '@mui/material/List';
@@ -23,8 +23,17 @@ const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true, sel
   const location = useLocation();
 
   useEffect(() => {
-    if (location.pathname === '/') {
-      setSelectedItem('home');
+    const pathToItemMap = {
+      '/': 'school_dashboard',
+      '/attach-document': 'attachDocument',
+      '/career-guidance': 'careerGuidance',
+      '/update-enrollment': 'updateEnrollment',
+      '/subject-allocation': 'subjectAllocation',
+      // Add other paths as needed
+    };
+    const currentItem = pathToItemMap[location.pathname];
+    if (currentItem) {
+      setSelectedItem(currentItem);
     }
   }, [location.pathname]);
 
@@ -46,6 +55,11 @@ const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true, sel
   const navigateToUpdateEnrollment = () => {
     navigate('/update-enrollment');
     setSelectedItem('updateEnrollment');
+  };
+
+  const navigateToSubjectAllocation = () => {
+    navigate('/subject-allocation');
+    setSelectedItem('subjectAllocation');
   };
 
   const listItemHoverStyle = {
@@ -89,7 +103,12 @@ const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true, sel
         )}
         {visibleItems.includes('subjectAllocation') && (
           <Tooltip title="Subject Allocation" placement="right">
-            <ListItem button className="list-item" sx={listItemHoverStyle}>
+            <ListItem
+              button
+              className="list-item"
+              sx={selectedItem === 'subjectAllocation' ? selectedListItemStyle : listItemHoverStyle}
+              onClick={navigateToSubjectAllocation}
+            >
               <MdTopic size={20} />
               {!isPrimaryFormOpen && showTitle && <ListItemText primary="Subject Allocation" className="list-item-text"/>}
             </ListItem>
@@ -160,7 +179,6 @@ const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true, sel
           </Tooltip>
         )}
       </List>
-     
     </Box>
   );
 };

@@ -2,7 +2,6 @@ import React, { useState, useContext } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
-import MenuItem from '@material-ui/core/MenuItem';
 import Paper from '@material-ui/core/Paper';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -14,6 +13,7 @@ import Sidebar from '../../Sidebar/Sidebar';
 import { GlobalStateContext } from '../../../../../../GlobalStateContext';
 import './schoolInternalData.css';
 import BaseUrl from '../../../../../../config';
+import MenuItem from '@material-ui/core/MenuItem';
 
 const useStyles = makeStyles((theme) => ({
   formContainer: {},
@@ -76,14 +76,14 @@ const useStyles = makeStyles((theme) => ({
 
 const SchoolInternalData = () => {
   const classes = useStyles();
+  const { globalData, setGlobalData } = useContext(GlobalStateContext);
   const [state, setState] = useState('');
   const [schoolType, setSchoolType] = useState('');
   const [curriculum, setCurriculum] = useState('');
   const [otherCurriculum, setOtherCurriculum] = useState('');
   const [gradeLevel1, setGradeLevel1] = useState('');
   const [gradeLevel2, setGradeLevel2] = useState('');
-  const [subjects, setSubjects] = useState([]);
-  const [otherSubject, setOtherSubject] = useState('');
+  const [subjects, setSubjects] = useState(['']);
   const [medium, setMedium] = useState('');
   const [academicYearStart, setAcademicYearStart] = useState('');
   const [academicYearEnd, setAcademicYearEnd] = useState('');
@@ -95,10 +95,26 @@ const SchoolInternalData = () => {
   const [assessmentCriteria, setAssessmentCriteria] = useState('');
   const [otherAssessmentCriteria, setOtherAssessmentCriteria] = useState('');
   const [feeStructure, setFeeStructure] = useState([{ feeType: '', amount: '' }]);
-  const { globalData } = useContext(GlobalStateContext);
 
   const handleStateChange = (event) => {
     setState(event.target.value);
+  };
+
+  const handleSubjectChange = (index, value) => {
+    const newSubjects = [...subjects];
+    newSubjects[index] = value;
+    setSubjects(newSubjects);
+  };
+
+  const addSubject = () => {
+    setSubjects([...subjects, '']);
+  };
+
+  const deleteSubject = (index) => {
+    if (subjects.length > 1) {
+      const newSubjects = subjects.filter((_, i) => i !== index);
+      setSubjects(newSubjects);
+    }
   };
 
   const handleExtraProgramChange = (index, value) => {
@@ -153,7 +169,6 @@ const SchoolInternalData = () => {
       GradeLevelFrom: gradeLevel1,
       GradeLevelTo: gradeLevel2,
       Subjects: subjects,
-      OtherSubject: otherSubject,
       Medium: medium,
       AcademicYearStart: academicYearStart,
       AcademicYearEnd: academicYearEnd,
@@ -185,6 +200,12 @@ const SchoolInternalData = () => {
 
       const data = await response.json();
       console.log('Form data sent to backend successfully:', data);
+
+      // Update global state with subjects
+      setGlobalData((prevData) => ({
+        ...prevData,
+        subjects: payload.Subjects,
+      }));
     } catch (error) {
       console.error('Error sending form data to backend:', error);
     }
@@ -208,8 +229,8 @@ const SchoolInternalData = () => {
     <React.Fragment>
       <Navbar schoolName={globalData.data.SCHOOL_NAME} schoolLogo={globalData.data.SCHOOL_LOGO} />
       <main className={`${classes.mainContainer} layout`}>
-      <Sidebar visibleItems={['home']} hideProfile={true} showTitle={false} />
-      <Paper className="paper">
+        <Sidebar visibleItems={['home']} hideProfile={true} showTitle={false} />
+        <Paper className="paper">
           <Typography component="h1" variant="h4" align="center">
             School Information
           </Typography>
@@ -217,7 +238,7 @@ const SchoolInternalData = () => {
             <Grid item xs={12} sm={6} style={{ marginTop: '24px' }}>
               <Typography variant="h6" style={{ fontSize: '1rem' }}>{globalData.data.SCHOOL_NAME}</Typography>
             </Grid>
-            <Grid item xs={12} sm={6} style={{ textAlign: 'right', marginTop: '24px'}}>
+            <Grid item xs={12} sm={6} style={{ textAlign: 'right', marginTop: '24px' }}>
               <Typography variant="h6" style={{ fontSize: '1rem' }}>School ID: {globalData.data.SCHOOL_ID}</Typography>
             </Grid>
           </Grid>
@@ -288,41 +309,6 @@ const SchoolInternalData = () => {
                   fullWidth
                   value={otherCurriculum}
                   onChange={(e) => setOtherCurriculum(e.target.value)}
-                />
-              )}
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                required
-                id="subjects"
-                name="subjects"
-                label="List of Subjects Taught"
-                select
-                fullWidth
-                value={subjects}
-                onChange={(e) => setSubjects(e.target.value)}
-                SelectProps={{
-                  multiple: true,
-                }}
-                className={classes.field}
-              >
-                <MenuItem value="telugu">Telugu</MenuItem>
-                <MenuItem value="hindi">Hindi</MenuItem>
-                <MenuItem value="english">English</MenuItem>
-                <MenuItem value="maths">Maths</MenuItem>
-                <MenuItem value="science">Science</MenuItem>
-                <MenuItem value="biology">Biology</MenuItem>
-                <MenuItem value="other">Other</MenuItem>
-              </TextField>
-              {subjects.includes('other') && (
-                <TextField
-                  required
-                  id="otherSubject"
-                  name="otherSubject"
-                  label="Specify Other Subject"
-                  fullWidth
-                  value={otherSubject}
-                  onChange={(e) => setOtherSubject(e.target.value)}
                 />
               )}
             </Grid>
@@ -402,6 +388,36 @@ const SchoolInternalData = () => {
                   onChange={(e) => setOtherAssessmentCriteria(e.target.value)}
                 />
               )}
+            </Grid>
+
+            <Grid item xs={12} sm={12}>
+              <Typography variant="h6" className={classes.extraCircularProgramsTitle}>Subjects Taught :</Typography>
+              {subjects.map((subject, index) => (
+                <Grid container spacing={1} key={index}>
+                  <Grid item xs={9}>
+                    <TextField
+                      required
+                      id={`subject${index}`}
+                      name={`subject${index}`}
+                      label={`Subject ${index + 1}`}
+                      fullWidth
+                      value={subject}
+                      onChange={(e) => handleSubjectChange(index, e.target.value)}
+                      className={classes.field}
+                    />
+                  </Grid>
+                  <Grid item xs={1}>
+                    <IconButton onClick={() => deleteSubject(index)} disabled={subjects.length === 1}>
+                      <DeleteIcon />
+                    </IconButton>
+                  </Grid>
+                  <Grid item xs={1}>
+                    <IconButton onClick={addSubject}>
+                      <AddIcon />
+                    </IconButton>
+                  </Grid>
+                </Grid>
+              ))}
             </Grid>
 
             <Grid item xs={12}>
@@ -503,110 +519,110 @@ const SchoolInternalData = () => {
                   className={classes.field}
                 />
               </Grid>
-              <Grid item xs={6}>
-                <TextField
-                  required
-                  id="schoolTimingTo"
-                  name="schoolTimingTo"
-                  label="School Timing To"
-                  type="time"
-                  fullWidth
-                  value={schoolTimingTo}
-                  onChange={(e) => setSchoolTimingTo(e.target.value)}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  className={classes.field}
-                />
+                <Grid item xs={6}>
+                  <TextField
+                    required
+                    id="schoolTimingTo"
+                    name="schoolTimingTo"
+                    label="School Timing To"
+                    type="time"
+                    fullWidth
+                    value={schoolTimingTo}
+                    onChange={(e) => setSchoolTimingTo(e.target.value)}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    className={classes.field}
+                  />
+                </Grid>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Typography variant="h6" className={classes.extraCircularProgramsTitle}>Extra Curricular Programs :</Typography>
+                {extraPrograms.map((program, index) => (
+                  <Grid container spacing={1} key={index}>
+                    <Grid item xs={9}>
+                      <TextField
+                        required
+                        id={`extraProgram${index}`}
+                        name={`extraProgram${index}`}
+                        label={`Program ${index + 1}`}
+                        fullWidth
+                        value={program}
+                        onChange={(e) => handleExtraProgramChange(index, e.target.value)}
+                        className={classes.field}
+                      />
+                      
+                    </Grid>
+                    <Grid item xs={1}>
+                      <IconButton onClick={() => deleteExtraProgram(index)}>
+                        <DeleteIcon />
+                      </IconButton>
+                    </Grid>
+                    <Grid item xs={1}>
+                      <IconButton onClick={addExtraProgram}>
+                        <AddIcon />
+                      </IconButton>
+                    </Grid>
+                  </Grid>
+                ))}
+              </Grid>
+  
+              <Grid item xs={12} sm={6}>
+                <Typography variant="h6" className={classes.feeStructureTitle}>Fee Structure :</Typography>
+                {feeStructure.map((fee, index) => (
+                  <Grid container spacing={1} key={index}>
+                    <Grid item xs={4}>
+                      <TextField
+                        required
+                        id={`feeType${index}`}
+                        name={`feeType${index}`}
+                        label="Fee Type"
+                        fullWidth
+                        value={fee.feeType}
+                        onChange={(e) => handleFeeStructureChange(index, 'feeType', e.target.value)}
+                        className={classes.feeTypeTitle}
+                      />
+                    </Grid>
+                    <Grid item xs={4}>
+                      <TextField
+                        required
+                        id={`amount${index}`}
+                        name={`amount${index}`}
+                        label="Amount"
+                        fullWidth
+                        value={fee.amount}
+                        onChange={(e) => handleFeeStructureChange(index, 'amount', e.target.value)}
+                        inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+                        error={isNaN(fee.amount)}
+                        helperText={isNaN(fee.amount) ? 'Please enter a valid number' : ''}
+                      />
+                    </Grid>
+                    <Grid item xs={1}>
+                      <IconButton onClick={() => deleteFeeStructure(index)}>
+                        <DeleteIcon />
+                      </IconButton>
+                    </Grid>
+                    <Grid item xs={1}>
+                      <IconButton onClick={addFeeStructure}>
+                        <AddIcon />
+                      </IconButton>
+                    </Grid>
+                  </Grid>
+                ))}
+                <Typography variant="h6" className={classes.totalAmount}>
+                  Total Amount: ₹{calculateTotalAmount()}
+                </Typography>
               </Grid>
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <Typography variant="h6" className={classes.extraCircularProgramsTitle}>Extra Curricular Programs :</Typography>
-              {extraPrograms.map((program, index) => (
-                <Grid container spacing={1} key={index}>
-                  <Grid item xs={9}>
-                    <TextField
-                      required
-                      id={`extraProgram${index}`}
-                      name={`extraProgram${index}`}
-                      label={`Program ${index + 1}`}
-                      fullWidth
-                      value={program}
-                      onChange={(e) => handleExtraProgramChange(index, e.target.value)}
-                      className={classes.field}
-                    />
-                    
-                  </Grid>
-                  <Grid item xs={1}>
-                    <IconButton onClick={() => deleteExtraProgram(index)}>
-                      <DeleteIcon />
-                    </IconButton>
-                  </Grid>
-                  <Grid item xs={1}>
-                    <IconButton onClick={addExtraProgram}>
-                      <AddIcon />
-                    </IconButton>
-                  </Grid>
-                </Grid>
-              ))}
-            </Grid>
-
-            <Grid item xs={12} sm={6}>
-              <Typography variant="h6" className={classes.feeStructureTitle}>Fee Structure :</Typography>
-              {feeStructure.map((fee, index) => (
-                <Grid container spacing={1} key={index}>
-                  <Grid item xs={4}>
-                    <TextField
-                      required
-                      id={`feeType${index}`}
-                      name={`feeType${index}`}
-                      label="Fee Type"
-                      fullWidth
-                      value={fee.feeType}
-                      onChange={(e) => handleFeeStructureChange(index, 'feeType', e.target.value)}
-                      className={classes.feeTypeTitle}
-                    />
-                  </Grid>
-                  <Grid item xs={4}>
-                    <TextField
-                      required
-                      id={`amount${index}`}
-                      name={`amount${index}`}
-                      label="Amount"
-                      fullWidth
-                      value={fee.amount}
-                      onChange={(e) => handleFeeStructureChange(index, 'amount', e.target.value)}
-                      inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
-                      error={isNaN(fee.amount)}
-                      helperText={isNaN(fee.amount) ? 'Please enter a valid number' : ''}
-                    />
-                  </Grid>
-                  <Grid item xs={1}>
-                    <IconButton onClick={() => deleteFeeStructure(index)}>
-                      <DeleteIcon />
-                    </IconButton>
-                  </Grid>
-                  <Grid item xs={1}>
-                    <IconButton onClick={addFeeStructure}>
-                      <AddIcon />
-                    </IconButton>
-                  </Grid>
-                </Grid>
-              ))}
-              <Typography variant="h6" className={classes.totalAmount}>
-                Total Amount: ₹{calculateTotalAmount()}
-              </Typography>
-            </Grid>
-          </Grid>
-          <div className={classes.buttons}>
-            <Button variant="contained" color="primary" className={classes.button} onClick={handleSubmit}>
-              Submit
-            </Button>
-          </div>
-        </Paper>
-      </main>
-    </React.Fragment>
-  );
+            <div className={classes.buttons}>
+              <Button variant="contained" color="primary" className={classes.button} onClick={handleSubmit}>
+                Submit
+              </Button>
+            </div>
+          </Paper>
+        </main>
+      </React.Fragment>
+    );
 };
 
 export default SchoolInternalData;

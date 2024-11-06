@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
+import { GlobalStateContext } from '../../../../../../../GlobalStateContext';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -38,21 +39,9 @@ const positions = [
 
 const grades = Array.from({ length: 10 }, (_, i) => ({ value: i + 1, label: `Class ${i + 1}` }));
 
-const subjects = [
-  'Mathematics',
-  'Science',
-  'English',
-  'History',
-  'Geography',
-  'Physics',
-  'Chemistry',
-  'Biology',
-  'Computer Science',
-  'Physical Education',
-];
-
 const StaffProfessionalInfo = ({ formData, setFormData }) => {
   const classes = useStyles();
+  const { globalData } = useContext(GlobalStateContext);
   const [formValues, setFormValues] = useState(formData.professionalInfo);
   const [selectedSubjects, setSelectedSubjects] = useState(formData.professionalInfo.subjectSpecialization || []);
   const [errors, setErrors] = useState({});
@@ -180,10 +169,10 @@ const StaffProfessionalInfo = ({ formData, setFormData }) => {
           </Grid>
           <Grid item xs={12} sm={6}>
             <FormControl component="fieldset" className={classes.field}>
-              <label>Subject Specialization</label>
+              <label>Subject Specialization :</label>
               <FormGroup>
                 <Grid container spacing={1}>
-                  {subjects.map((subject) => (
+                  {globalData.subjects && globalData.subjects.map((subject) => (
                     <Grid item xs={6} key={subject}>
                       <FormControlLabel
                         control={
