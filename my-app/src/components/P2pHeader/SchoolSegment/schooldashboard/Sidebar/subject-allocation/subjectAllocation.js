@@ -78,13 +78,13 @@ const SubjectAllocation = () => {
         <Sidebar visibleItems={['home', 'attachDocument', 'subjectAllocation', 'attendanceTracking', 'leaveApprovals', 'academicPerformance', 'teacherAlert', 'eventPlanning', 'careerGuidance', 'inventoryManagement']} />
         <main className="content">
           <div className="button-container">
-            <Select value={selectedGrade} onChange={handleGradeChange} displayEmpty>
+            <Select className="custom-select" value={selectedGrade} onChange={handleGradeChange} displayEmpty>
               <MenuItem value="Select Grade">Select Grade</MenuItem>
               {Array.from({ length: 12 }, (_, i) => (
                 <MenuItem key={i + 1} value={`Class-${i + 1}`}>{`Class-${i + 1}`}</MenuItem>
               ))}
             </Select>
-            <Select value={selectedSubject} onChange={handleSubjectChange} displayEmpty>
+            <Select className="custom-select" value={selectedSubject} onChange={handleSubjectChange} displayEmpty>
               <MenuItem value="Select Subject">Select Subject</MenuItem>
               {['Math', 'Science', 'English', 'History', 'Geography'].map((subject, index) => (
                 <MenuItem key={index} value={subject}>{subject}</MenuItem>
@@ -119,7 +119,7 @@ const SubjectAllocation = () => {
               <Grid container spacing={2} className="allotted-teachers-cards">
                 {Object.keys(allottedTeachers).map((grade) => (
                   <Grid item xs={12} sm={6} md={4} key={grade}>
-                    <Card className="allotted-teacher-card" sx={{ width: 240, height: 270 }}>
+                    <Card className="allotted-teacher-card custom-card" sx={{ width: 240, height: 268 }}>
                       <CardContent>
                         <Box display="flex" justifyContent="space-between" alignItems="center">
                           <Typography variant="h5">{grade}</Typography>
@@ -147,7 +147,7 @@ const SubjectAllocation = () => {
             </Grid>
           </Grid>
           <Box position="absolute" bottom={16} left={16}>
-            <Button variant="contained" color="primary">
+            <Button className="custom-submit-button" >
               Submit
             </Button>
           </Box>
