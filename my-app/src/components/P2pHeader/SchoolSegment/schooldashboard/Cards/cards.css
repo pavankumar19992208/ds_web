@@ -86,11 +86,9 @@
   }
   
 
-  @media (max-width: 1024px) {
+  /* @media (max-width: 1024px) {
     .card {
       padding: 12px;
-      /* width: 220px;
-      height: 100px;  */
     }
     .card h2 {
       font-size: 16px;
@@ -105,6 +103,129 @@
     }
     
     
+  } */
+
+    /* Extra small devices (phones, less than 576px) */
+  @media (max-width: 575.98px) {
+    /* Your styles for extra small devices */
   }
   
+  /* Small devices (tablets, 576px and up) */
+  @media (min-width: 576px) and (max-width: 767.98px) {
+    /* Your styles for small devices */
+  }
+  
+  /* Medium devices (landscape tablets, 768px and up) */
+  @media (min-width: 768px) and (max-width: 991.98px) {
+    /* Your styles for medium devices */
+  }
+  
+  /* Large devices (laptops/desktops, 992px and up) */
+  @media (min-width: 992px) and (max-width: 1199.98px) {
+    /* Your styles for large devices */
+    .card{
+      width: 220px !important;
+      height: 96px;
+      padding: 12px 0px;
+    }
+    .button-group {
+      width: 80%;
+      gap: 8px;
+      bottom: 14px;
+    } 
+    .card .count{
+      font-size: 16px;
+    }
+    .card button{
+      padding: 2px 16px;
+      font-size: 12px;
+    }   
+  }
+  
+  /* Extra large devices (large laptops and desktops, 1200px and up) */
+  @media (min-width: 1200px) {
+    /* Your styles for extra large devices */
+  }
+  
+  /* Large screens (desktops) */
+/* @media (max-width: 1440px) {
+  .cards-container {
+    grid-template-columns: repeat(3, 1fr); 
+    grid-template-rows: repeat(2, auto); 
+  }
+} */
+
+/* Medium screens (laptops) */
+/* @media (max-width: 1024px) {
+  .cards-container {
+    grid-template-columns: repeat(2, 1fr); 
+    grid-template-rows: repeat(3, auto); 
+  }
+
+  .card {
+    padding: 12px;
+  }
+
+  .card h2 {
+    font-size: 16px;
+  }
+
+  .card .count {
+    font-size: 18px;
+  }
+
+  .card button {
+    padding: 2px 16px;
+  }
+} */
+
+/* Small screens (tablets) */
+/* @media (max-width: 768px) {
+  .cards-container {
+    grid-template-columns: 1fr; 
+    grid-template-rows: repeat(6, auto); 
+  }
+
+  .card {
+    padding: 8px;
+    height: auto;
+  }
+
+  .card h2 {
+    font-size: 18px;
+  }
+
+  .card .count {
+    font-size: 20px;
+  }
+
+  .card button {
+    padding: 4px 12px;
+  }
+} */
+
+/* Extra small screens (mobile) */
+/* @media (max-width: 480px) {
+  .cards-container {
+    grid-template-columns: 1fr; 
+    grid-template-rows: repeat(6, auto); 
+  }
+
+  .card {
+    padding: 4px;
+    height: auto;
+  }
+
+  .card h2 {
+    font-size: 16px;
+  }
+
+  .card .count {
+    font-size: 18px;
+  }
+
+  .card button {
+    padding: 2px 8px;
+  }
+} */
   

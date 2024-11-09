@@ -1,4 +1,3 @@
-
 .sidebar {
   padding: 1%;
   width: 40vh;
@@ -13,51 +12,81 @@
   transition: width 0.3s ease-in-out;
   box-shadow: 3px 0 12px rgba(0, 0, 0, 0.1); /* Add box shadow to the right side */
 }
+
 .sidebar_d {
   padding: 1%;
   width: 54px !important;
-background-color: hsl(220, 35%, 97%);;  
-height: 100vh;
-position: fixed;
-left: 0px;
-top: 50px;
-overflow-y: auto;
-border-right: 1px solid hsla(220, 20%, 80%, 0.4);
-z-index: 1000;
-transition: width 0.3s ease-in-out;
-display: flex;
-flex-direction: row;
-justify-content: center;
-
-
+  background-color: hsl(220, 35%, 97%);
+  height: 100vh;
+  position: fixed;
+  left: 0px;
+  top: 50px;
+  overflow-y: auto;
+  border-right: 1px solid hsla(220, 20%, 80%, 0.4);
+  z-index: 1000;
+  transition: width 0.3s ease-in-out;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 }
+
 .sidebar_d .list-item {
   display: flex;
   justify-content: center;
 }
 
 .list-item {
-    margin-bottom: 6px;
-    border-radius: 12px; 
-    padding: 6px 12px !important;
-    font-size: 10px !important;
+  margin-bottom: 6px;
+  border-radius: 12px;
+  padding: 6px 12px !important;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.list-item:hover {
+  background-color: #0E5E9D50;
+}
+
+.selected-list-item {
+  background-color: #0E5E9D60;
 }
 
 .list-item-text {
   margin-left: 20px;
 }
 
+
+
+
 @media (max-width: 1024px) {
   .sidebar {
     padding: 1%;
-    background-color: #f4f4f4;  
+    background-color: #f4f4f4;
     height: 120vh;
     position: fixed;
     left: 0;
     top: 50px;
     overflow-y: auto;
-    width: 220px !important;
- 
+    width: 200px !important;
   }
-
 }
+
+  /* Large devices (laptops/desktops, 992px and up) */
+  @media (min-width: 992px) and (max-width: 1199.98px) {
+    /* Your styles for large devices */
+    .sidebar{
+      height: 100vh;
+      width: 36vh !important;
+      top: 40px;
+
+
+    }
+    .list-item{
+      padding: 2px 8px !important;
+    }
+    .list-item-text {
+      margin-left: 16px;
+    }
+    .icons{
+      font-size: 20px !important;
+    }
+  }

@@ -133,3 +133,26 @@
     width: 30px;
     height: 30px;
 } */
+
+ /* Large devices (laptops/desktops, 992px and up) */
+ @media (min-width: 992px) and (max-width: 1199.98px) {
+  #navbar{
+    height: 44px;
+  }
+  #profile-avatar {
+    width: 80px;
+    height: 80px;
+  }
+  #name{
+    font-size: 14px;
+  }
+  .navbar-left Button{
+    padding: 6px 16px;
+  }
+  #icon, #logout_icon {
+    width: 34px;
+    height: 34px;
+  }
+
+  
+}

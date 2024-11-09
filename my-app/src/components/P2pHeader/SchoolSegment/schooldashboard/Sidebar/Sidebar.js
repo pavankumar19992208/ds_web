@@ -62,29 +62,17 @@ const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true, sel
     setSelectedItem('subjectAllocation');
   };
 
-  const listItemHoverStyle = {
-    transition: 'background-color 0.3s ease-in-out',
-    '&:hover': {
-      backgroundColor: '#0E5E9D50',
-    },
-  };
-
-  const selectedListItemStyle = {
-    backgroundColor: '#0E5E9D60',
-  };
-
   const isPrimaryFormOpen = location.pathname.includes('primaryForm');
 
   return (
-    <Box className={showTitle ? "sidebar" : "sidebar_d"} sx={{ width: isPrimaryFormOpen ? '60px' : '240px', justifyContent: 'center' }}>
+    <Box className={showTitle ? "sidebar" : "sidebar_d"} style={{ width: isPrimaryFormOpen ? '60px' : '240px', justifyContent: 'center' }}>
       <List component="nav">
         {visibleItems.includes('home') && (
           <Tooltip title="Home" placement="right">
             <ListItem
-              button className="list-item" sx={selectedItem === 'home' ? selectedListItemStyle : listItemHoverStyle} onClick={navigateToHomepage} style={selectedItem === 'home' ? { pointerEvents: 'none' } : {}}
-            >
-              <Home size={20}/>
-              {!isPrimaryFormOpen && showTitle && <ListItemText primary="Home" className="list-item-text"/>}
+              button className={`list-item ${selectedItem === 'home' ? 'selected-list-item' : ''}`} onClick={navigateToHomepage} style={selectedItem === 'home' ? { pointerEvents: 'none' } : {}}>
+              <Home size={20} className='icons'/>
+              {!isPrimaryFormOpen && showTitle && <ListItemText primary="Home" className="list-item-text"  />}
             </ListItem>
           </Tooltip>
         )}
@@ -92,12 +80,11 @@ const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true, sel
           <Tooltip title="Attach Document" placement="right">
             <ListItem
               button
-              className="list-item"
-              sx={selectedItem === 'attachDocument' ? selectedListItemStyle : listItemHoverStyle}
+              className={`list-item ${selectedItem === 'attachDocument' ? 'selected-list-item' : ''}`}
               onClick={navigateToAttachDocument}
             >
               <CgAttachment size={20} />
-              {!isPrimaryFormOpen && showTitle && <ListItemText primary="Attach Document" className="list-item-text"/>}
+              {!isPrimaryFormOpen && showTitle && <ListItemText primary="Attach Document" className="list-item-text" />}
             </ListItem>
           </Tooltip>
         )}
@@ -105,8 +92,7 @@ const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true, sel
           <Tooltip title="Subject Allocation" placement="right">
             <ListItem
               button
-              className="list-item"
-              sx={selectedItem === 'subjectAllocation' ? selectedListItemStyle : listItemHoverStyle}
+              className={`list-item ${selectedItem === 'subjectAllocation' ? 'selected-list-item' : ''}`}
               onClick={navigateToSubjectAllocation}
             >
               <MdTopic size={20} />
@@ -116,7 +102,7 @@ const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true, sel
         )}
         {visibleItems.includes('attendanceTracking') && (
           <Tooltip title="Attendance Tracking" placement="right">
-            <ListItem button className="list-item" sx={listItemHoverStyle}>
+            <ListItem button className="list-item">
               <PiMonitorFill size={20} />
               {!isPrimaryFormOpen && showTitle && <ListItemText primary="Attendance Tracking" className="list-item-text"/>}
             </ListItem>
@@ -124,7 +110,7 @@ const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true, sel
         )}
         {visibleItems.includes('leaveApprovals') && (
           <Tooltip title="Leave Approvals" placement="right">
-            <ListItem button className="list-item" sx={listItemHoverStyle}>
+            <ListItem button className="list-item">
               <BsPersonFillCheck size={20} />
               {!isPrimaryFormOpen && showTitle && <ListItemText primary="Leave Approvals" className="list-item-text" />}
             </ListItem>
@@ -132,7 +118,7 @@ const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true, sel
         )}
         {visibleItems.includes('academicPerformance') && (
           <Tooltip title="Academic Performance" placement="right">
-            <ListItem button className="list-item" sx={listItemHoverStyle}>
+            <ListItem button className="list-item">
               <TrendingUp size={18}/>
               {!isPrimaryFormOpen && showTitle && <ListItemText primary="Academic Performance" className="list-item-text"/>}
             </ListItem>
@@ -140,7 +126,7 @@ const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true, sel
         )}
         {visibleItems.includes('teacherAlert') && (
           <Tooltip title="Teacher Alert" placement="right">
-            <ListItem button className="list-item" sx={listItemHoverStyle}>
+            <ListItem button className="list-item">
               <IoIosAlert size={20} />
               {!isPrimaryFormOpen && showTitle && <ListItemText primary="Teacher Alert" className="list-item-text"/>}
             </ListItem>
@@ -148,7 +134,7 @@ const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true, sel
         )}
         {visibleItems.includes('eventPlanning') && (
           <Tooltip title="Event Planning" placement="right">
-            <ListItem button className="list-item" sx={listItemHoverStyle}>
+            <ListItem button className="list-item">
               <BiSolidCalendarEdit size={20} />
               {!isPrimaryFormOpen && showTitle && <ListItemText primary="Event Planning" className="list-item-text"/>}
             </ListItem>
@@ -156,7 +142,7 @@ const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true, sel
         )}
         {visibleItems.includes('careerGuidance') && (
           <Tooltip title="Career Guidance" placement="right">
-            <ListItem button className="list-item" sx={listItemHoverStyle} onClick={navigateToCareerGuidance}>
+            <ListItem button className="list-item" onClick={navigateToCareerGuidance}>
               <RiFlightTakeoffFill size={20} />
               {!isPrimaryFormOpen && showTitle && <ListItemText primary="Career Guidance" className="list-item-text"/>}
             </ListItem>
@@ -164,7 +150,7 @@ const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true, sel
         )}
         {visibleItems.includes('updateEnrollment') && (
           <Tooltip title="Update Enrollment" placement="right">
-            <ListItem button className="list-item" sx={listItemHoverStyle} onClick={navigateToUpdateEnrollment}>
+            <ListItem button className="list-item" onClick={navigateToUpdateEnrollment}>
               <FaUserEdit size={20} />
               {!isPrimaryFormOpen && showTitle && <ListItemText primary="Update Enrollment" className="list-item-text"/>}
             </ListItem>
@@ -172,9 +158,9 @@ const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true, sel
         )}
         {visibleItems.includes('inventoryManagement') && (
           <Tooltip title="Inventory Management" placement="right">
-            <ListItem button className="list-item" sx={listItemHoverStyle}>
-              <MdInventory size={22} />
-              {!isPrimaryFormOpen && showTitle && <ListItemText primary="Inventory Management" className="list-item-text" sx={{ marginLeft: 2 }} />}
+            <ListItem button className="list-item">
+              <MdInventory size={20} />
+              {!isPrimaryFormOpen && showTitle && <ListItemText primary="Inventory Management" className="list-item-text"/>}
             </ListItem>
           </Tooltip>
         )}

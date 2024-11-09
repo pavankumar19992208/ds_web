@@ -52,15 +52,17 @@ body, html {
 }
 
 
-
-@media (max-width: 1024px) {
-  .homepage {
-    left: 25%;
-    
-     }
-  .main-content {
-    margin-top: 100px;
-
-}  
+ /* Large devices (laptops/desktops, 992px and up) */
+ @media (min-width: 992px) and (max-width: 1199.98px) {
+  .main-content{
+    left: 20vh;
+  }
+  .school-id-box{
+    bottom: 14px;
+    left: 14px;
+    width: 180px;
+    padding: 10px 12px;
+    font-size: 14px;
+  }
   
 }

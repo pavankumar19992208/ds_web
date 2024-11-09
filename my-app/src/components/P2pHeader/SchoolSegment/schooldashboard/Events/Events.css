@@ -9,14 +9,11 @@ height: 35vh; /* Set a maximum height for the card */
   margin-bottom: 30px;
   margin-top: 20px;
   background-color: #fff;
-
 }
-/* Events.css */
 
 #items{
   margin-top: 50px;
 }
-
 
 .news-section {
   position: fixed;
@@ -73,7 +70,7 @@ height: 35vh; /* Set a maximum height for the card */
   background: #555;
 }
 
-@media(max-width: 1024px){
+/* @media(max-width: 1024px){
   #card {
     width: 94%;
     margin-bottom: 0px;
@@ -92,5 +89,28 @@ height: 35vh; /* Set a maximum height for the card */
   }
   #items{
     margin-top: 40px;
+  }
+} */
+
+ /* Large devices (laptops/desktops, 992px and up) */
+ @media (min-width: 992px) and (max-width: 1199.98px) {
+  /* Your styles for large devices */
+  #items{
+    margin-top: 36px;
+  }
+  #card{
+    width: 69%;
+  }
+  .news-section{
+    /* width: 684px; */
+    width: 69%;
+    height: 32px;
+    font-size: 14px;
+    border-radius: 8px;
+  }
+  .news-label{
+    height: 36px;
+    font-size: 12px;
+    line-height: 32px;
   }
 }
