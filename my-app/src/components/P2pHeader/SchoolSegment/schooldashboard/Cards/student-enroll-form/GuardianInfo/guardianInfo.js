@@ -13,23 +13,35 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '1rem',
     marginTop: theme.spacing(3),
     marginBottom: theme.spacing(1),
+    fontFamily: '"Urbanist", sans-serif',
+    fontOpticalSizing: 'auto',
+    fontWeight: 500 ,
   },
   contactTitle: {
     color: '#3f51b5',
     fontSize: '1rem',
     marginTop: theme.spacing(5),
     marginBottom: theme.spacing(1),
+    fontFamily: '"Urbanist", sans-serif',
+    fontOpticalSizing: 'auto',
+    fontWeight: 500 ,
   },
   addressTitle: {
     color: '#3f51b5',
     fontSize: '1rem',
     marginTop: theme.spacing(5),
     marginBottom: theme.spacing(1),
+    fontFamily: '"Urbanist", sans-serif',
+    fontOpticalSizing: 'auto',
+    fontWeight: 500 ,
   },
   formControlLabel: {
     marginLeft: theme.spacing(2),
   },
   textField: {
+    fontFamily: '"Urbanist", sans-serif',
+    fontOpticalSizing: 'auto',
+    fontWeight: 500 ,
     marginLeft: theme.spacing(2),
     width: '92%',
   },
@@ -91,12 +103,12 @@ export default function GuardianInfoForm({ formData, setFormData }) {
     let isValid = true;
 
     if (['FatherName', 'MotherName', 'GuardianName'].includes(name)) {
-      isValid = validateAlphabets(value);
+      isValid = validateAlphabets(value) || value === '';
     } else if (['MobileNumber', 'EmergencyContact'].includes(name)) {
-      isValid = validateNumbers(value);
+      isValid = validateNumbers(value) || value === '';
     }
     // else if (name === 'Email') {
-    //   isValid = validateEmail(value);
+    //   isValid = validateEmail(value) || value === '';
     // }
 
     if (isValid) {

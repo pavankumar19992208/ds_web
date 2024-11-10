@@ -5,10 +5,21 @@ import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import { makeStyles } from '@material-ui/core/styles';
+import './staffPersonalInfo.css';
+
+const useStyles = makeStyles((theme) => ({
+  fieldMargin: {
+    marginLeft: theme.spacing(2), // Add left margin to all fields
+    marginRight: theme.spacing(2), // Add right margin to all fields
+    width: '92%', // Set the width of all fields to 92%
+  },
+}));
 
 export default function StaffPersonalInfo({ formData, setFormData }) {
   const [sameAsCurrent, setSameAsCurrent] = useState(false);
   const [errors, setErrors] = useState({});
+  const classes = useStyles();
 
   const validateField = (name, value) => {
     let error = '';
@@ -90,8 +101,8 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
 
   return (
     <React.Fragment>
-      <Typography variant="h6" gutterBottom>
-        Personal details
+      <Typography variant="h6"  className='heading' style={{marginBottom:'26px', marginTop:'12px'}}>
+        Personal details :
       </Typography>
       <Grid container spacing={3}>
         <Grid item xs={12}>
@@ -106,6 +117,7 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
             onChange={(e) => handleInputChange(e, 'personalInfo')}
             error={!!errors.fullName}
             helperText={errors.fullName}
+            className={`${classes.fieldMargin} heading`}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -116,6 +128,7 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
             label="Date of Birth"
             type="date"
             fullWidth
+            className={`${classes.fieldMargin} heading`}
             InputLabelProps={{
               shrink: true,
             }}
@@ -131,6 +144,7 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
             label="Gender"
             select
             fullWidth
+            className={`${classes.fieldMargin} heading`}
             value={formData.personalInfo.gender}
             onChange={(e) => handleInputChange(e, 'personalInfo')}
           >
@@ -146,6 +160,7 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
             name="contactNumber"
             label="Contact Number"
             fullWidth
+            className={`${classes.fieldMargin} heading`}
             autoComplete="tel"
             value={formData.personalInfo.contactNumber}
             onChange={(e) => handleInputChange(e, 'personalInfo')}
@@ -160,14 +175,15 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
             label="Email Address"
             type="email"
             fullWidth
+            className={`${classes.fieldMargin} heading`}
             autoComplete="email"
             value={formData.personalInfo.email}
             onChange={(e) => handleInputChange(e, 'personalInfo')}
           />
         </Grid>
         <Grid item xs={12}>
-          <Typography variant="h6" gutterBottom>
-            Current Address
+          <Typography variant="h6"  className='heading' style={{marginBottom:'0px', marginTop:'12px'}}>
+            Current Address :
           </Typography>
         </Grid>
         <Grid item xs={12}>
@@ -177,6 +193,7 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
             name="line1"
             label="Address Line 1"
             fullWidth
+            className={`${classes.fieldMargin} heading`}
             value={formData.personalInfo.currentAddress.line1}
             onChange={(e) => handleInputChange(e, 'address', 'currentAddress')}
           />
@@ -187,6 +204,7 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
             name="line2"
             label="Address Line 2"
             fullWidth
+            className={`${classes.fieldMargin} heading`}
             value={formData.personalInfo.currentAddress.line2}
             onChange={(e) => handleInputChange(e, 'address', 'currentAddress')}
           />
@@ -198,6 +216,7 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
             name="city"
             label="City"
             fullWidth
+            className={`${classes.fieldMargin} heading`}
             value={formData.personalInfo.currentAddress.city}
             onChange={(e) => handleInputChange(e, 'address', 'currentAddress')}
             error={!!errors.city}
@@ -211,6 +230,7 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
             name="district"
             label="District"
             fullWidth
+            className={`${classes.fieldMargin} heading`}
             value={formData.personalInfo.currentAddress.district}
             onChange={(e) => handleInputChange(e, 'address', 'currentAddress')}
             error={!!errors.district}
@@ -224,6 +244,7 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
             name="state"
             label="State"
             fullWidth
+            className={`${classes.fieldMargin} heading`}
             value={formData.personalInfo.currentAddress.state}
             onChange={(e) => handleInputChange(e, 'address', 'currentAddress')}
             error={!!errors.state}
@@ -237,6 +258,7 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
             name="pinCode"
             label="Pin Code"
             fullWidth
+            className={`${classes.fieldMargin} heading`}
             value={formData.personalInfo.currentAddress.pinCode}
             onChange={(e) => handleInputChange(e, 'address', 'currentAddress')}
             error={!!errors.pinCode}
@@ -250,14 +272,15 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
                 checked={sameAsCurrent}
                 onChange={handleCheckboxChange}
                 color="primary"
-              />
+                className= 'heading'
+                />
             }
             label="Same as Current Address"
           />
         </Grid>
         <Grid item xs={12}>
-          <Typography variant="h6" gutterBottom>
-            Permanent Address
+          <Typography variant="h6" className='heading' style={{ marginTop:'12px'}}>
+            Permanent Address :
           </Typography>
         </Grid>
         <Grid item xs={12}>
@@ -267,6 +290,7 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
             name="line1"
             label="Address Line 1"
             fullWidth
+            className={`${classes.fieldMargin} heading`}
             value={formData.personalInfo.permanentAddress.line1}
             onChange={(e) => handleInputChange(e, 'address', 'permanentAddress')}
             disabled={sameAsCurrent}
@@ -278,6 +302,7 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
             name="line2"
             label="Address Line 2"
             fullWidth
+            className={`${classes.fieldMargin} heading`}
             value={formData.personalInfo.permanentAddress.line2}
             onChange={(e) => handleInputChange(e, 'address', 'permanentAddress')}
             disabled={sameAsCurrent}
@@ -290,6 +315,7 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
             name="city"
             label="City"
             fullWidth
+            className={`${classes.fieldMargin} heading`}
             value={formData.personalInfo.permanentAddress.city}
             onChange={(e) => handleInputChange(e, 'address', 'permanentAddress')}
             disabled={sameAsCurrent}
@@ -304,6 +330,7 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
             name="district"
             label="District"
             fullWidth
+            className={`${classes.fieldMargin} heading`}
             value={formData.personalInfo.permanentAddress.district}
             onChange={(e) => handleInputChange(e, 'address', 'permanentAddress')}
             disabled={sameAsCurrent}
@@ -318,6 +345,7 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
             name="state"
             label="State"
             fullWidth
+            className={`${classes.fieldMargin} heading`}
             value={formData.personalInfo.permanentAddress.state}
             onChange={(e) => handleInputChange(e, 'address', 'permanentAddress')}
             disabled={sameAsCurrent}
@@ -332,6 +360,7 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
             name="pinCode"
             label="Pin Code"
             fullWidth
+            className={`${classes.fieldMargin} heading`}
             value={formData.personalInfo.permanentAddress.pinCode}
             onChange={(e) => handleInputChange(e, 'address', 'permanentAddress')}
             disabled={sameAsCurrent}

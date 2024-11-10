@@ -221,7 +221,9 @@ const useStyles = makeStyles((theme) => ({
   nextButton: {
     backgroundColor: '#0E5E9D',
     color: '#fff',
-    fontWeight: '500',
+    fontFamily: '"Urbanist", sans-serif',
+    fontOpticalSizing: 'auto',
+    fontWeight: 500 ,
     '&:hover': {
       backgroundColor: '#0E5E9D60',
       color:'#374441',
@@ -231,12 +233,19 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.primary.main,
     fontSize: '1.5rem',
     textAlign: 'center',
-    marginTop: theme.spacing(0),
+    marginTop: theme.spacing(3),
     marginBottom: theme.spacing(3),
+    fontFamily: '"Urbanist", sans-serif',
+    fontOpticalSizing: 'auto',
+    fontWeight: 500 ,
+    textDecoration: 'underline',
   },
   reviewSectionTitle: {
     color: 'red',
     fontSize: '1.2rem',
+    fontFamily: '"Urbanist", sans-serif',
+    fontOpticalSizing: 'auto',
+    fontWeight: 500 ,
   },
   documentsGrid: {
     width: '80%', // Decrease the width of the uploaded documents grid
@@ -284,7 +293,8 @@ function getStepContent(step, formData, setFormData, handleDocumentClick, expand
                               {expandedDoc === key ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                             </IconButton>
                             {expandedDoc === key && (
-                              <img src={formData.personalInfo.Photo} alt="User's uploaded photo" style={{ width: '100%' }} />                            )}
+                              <img src={formData.personalInfo.Photo} alt="User's uploaded photo" style={{ width: '100%' }} />
+                            )}
                           </div>
                         ) : (
                           typeof formData.personalInfo[key] === 'object' ? JSON.stringify(formData.personalInfo[key]) : formData.personalInfo[key] || ''
@@ -362,7 +372,7 @@ function getStepContent(step, formData, setFormData, handleDocumentClick, expand
                   {formData.documents.map((doc, index) => (
                     <React.Fragment key={index}>
                       <TableRow>
-                        <TableCell>{doc.name}</TableCell>
+                        <TableCell>{doc.name.length > 10 ? `${doc.name.substring(0, 10)}...` : doc.name}</TableCell>
                         <TableCell>{doc.type}</TableCell>
                         <TableCell>
                           <IconButton onClick={() => setExpandedDoc(expandedDoc === index ? null : index)}>
@@ -659,18 +669,19 @@ export default function EnrollForm() {
 
   return (
     <React.Fragment>
-      <Navbar schoolName={globalData.data.SCHOOL_NAME} schoolLogo={globalData.data.SCHOOL_LOGO} />      <main className="layout">
+      <Navbar schoolName={globalData.data.SCHOOL_NAME} schoolLogo={globalData.data.SCHOOL_LOGO} />      
+      <main className="layout">
         <Sidebar visibleItems={['home', 'updateEnrollment']} hideProfile={true} showTitle={false} />
         <Paper className="paper">
-          <Typography component="h1" variant="h4" align="center">
+          <Typography component="h1" variant="h4" align="center" className='headline'>
             Student's Enroll Form
           </Typography>
           <Grid container spacing={3}>
             <Grid item xs={12} sm={6} style={{ marginTop: '20px', marginBottom: '12px' }}>
-              <Typography variant="h6" style={{ fontSize: '1rem' }}>{globalData.data.SCHOOL_NAME}</Typography>
+              <Typography variant="h6" className='school-name' style={{ fontSize: '1rem' }}>{globalData.data.SCHOOL_NAME}</Typography>
             </Grid>
             <Grid item xs={12} sm={6} style={{ textAlign: 'right', marginTop: '16px' }}>
-              <Typography variant="h6" style={{ fontSize: '1rem' }}>School ID : {globalData.data.SCHOOL_ID}</Typography>
+              <Typography variant="h6" className='school-id' style={{ fontSize: '1rem' }}>School ID : {globalData.data.SCHOOL_ID}</Typography>
             </Grid>
           </Grid>
           <Stack sx={{ width: '100%' }} spacing={4}>
@@ -713,7 +724,7 @@ export default function EnrollForm() {
                   <Button
                     variant="contained"
                     onClick={activeStep === steps.length - 1 ? handleSubmit : handleNext}
-                    className={`${classes.button} ${classes.nextButton}`}
+                    className={`${classes.button} ${classes.nextButton} urbanist-font`}
                   >
                     {activeStep === steps.length - 1 ? 'Verify and Submit' : 'Next'}
                   </Button>

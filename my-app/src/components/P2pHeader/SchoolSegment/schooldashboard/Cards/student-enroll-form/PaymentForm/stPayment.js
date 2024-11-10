@@ -11,10 +11,16 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(1),
     color: "#3f51b5",
     fontSize: '1rem',
+    fontFamily: '"Urbanist", sans-serif',
+    fontOpticalSizing: 'auto',
+    fontWeight: 500 ,
   },
   textField: {
     marginLeft: theme.spacing(2),
     width: '92%',
+    fontFamily: '"Urbanist", sans-serif',
+    fontOpticalSizing: 'auto',
+    fontWeight: 500 ,
   },
 }));
 
@@ -29,7 +35,7 @@ export default function StudentPaymentForm({ formData, setFormData }) {
     let isValid = true;
 
     if (name === 'Amount') {
-      isValid = validateNumbers(value);
+      isValid = validateNumbers(value) || value === '';
     }
 
     if (isValid) {

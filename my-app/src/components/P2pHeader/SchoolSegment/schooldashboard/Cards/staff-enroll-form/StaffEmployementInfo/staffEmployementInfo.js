@@ -86,7 +86,7 @@ const StaffEmploymentInfo = ({ formData, setFormData }) => {
               InputLabelProps={{
                 shrink: true,
               }}
-              className={classes.field}
+              className={`${classes.field} urbanist-font`}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -99,7 +99,7 @@ const StaffEmploymentInfo = ({ formData, setFormData }) => {
               onChange={handleChange}
               fullWidth
               required
-              className={classes.field}
+              className={`${classes.field} urbanist-font`}
             >
               {employmentTypes.map((option) => (
                 <MenuItem key={option.value} value={option.value}>
@@ -116,7 +116,7 @@ const StaffEmploymentInfo = ({ formData, setFormData }) => {
                 onChange={handleChange}
                 fullWidth
                 required
-                className={classes.field}
+                className={`${classes.field} urbanist-font`}
               />
             )}
           </Grid>
@@ -128,7 +128,7 @@ const StaffEmploymentInfo = ({ formData, setFormData }) => {
               value={formValues.previousSchool}
               onChange={handleChange}
               fullWidth
-              className={classes.field}
+              className={`${classes.field} urbanist-font`}
               error={!!errors.previousSchool}
               helperText={errors.previousSchool}
             />

@@ -77,8 +77,10 @@
       height: 100vh;
       width: 36vh !important;
       top: 40px;
-
-
+    }
+    .sidebar_d{
+      width: 36px !important;
+      top: 40px;
     }
     .list-item{
       padding: 2px 8px !important;

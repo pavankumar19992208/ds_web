@@ -77,7 +77,7 @@ const StaffEmergencyContactInfo = ({ formData, setFormData }) => {
               onChange={handleChange}
               fullWidth
               required
-              className={classes.field}
+              className={`${classes.field} urbanist-font`}
               error={!!errors.emergencyContactName}
               helperText={errors.emergencyContactName}
             />
@@ -92,7 +92,7 @@ const StaffEmergencyContactInfo = ({ formData, setFormData }) => {
               fullWidth
               required
               type="tel"
-              className={classes.field}
+              className={`${classes.field} urbanist-font`}
               error={!!errors.emergencyContactNumber}
               helperText={errors.emergencyContactNumber}
             />
@@ -106,7 +106,7 @@ const StaffEmergencyContactInfo = ({ formData, setFormData }) => {
               onChange={handleChange}
               fullWidth
               required
-              className={classes.field}
+              className={`${classes.field} urbanist-font`}
               error={!!errors.relationshipToTeacher}
               helperText={errors.relationshipToTeacher}
             />

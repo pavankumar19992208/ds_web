@@ -71,7 +71,7 @@ export default function StaffDocumentUploadForm({ formData = { documents: [] }, 
     <React.Fragment>
       <Grid container spacing={3}>
         <Grid item xs={12} md={6}>
-          <Typography variant="subtitle1" className={classes.typography}>Resume / CV :</Typography>
+          <Typography variant="subtitle1" className={`${classes.typography} urbanist-font`}>Resume / CV :</Typography>
           <TextField
             required
             type="file"
@@ -81,9 +81,9 @@ export default function StaffDocumentUploadForm({ formData = { documents: [] }, 
             fullWidth
             InputLabelProps={{ shrink: true }}
             onChange={(event) => handleDocumentUpload(event, 'resume')}
-            className={classes.textField}
+            className={`${classes.textField} urbanist-font`}
           />
-          {fileNames.resume && <Typography variant="body2" className={classes.typography}>{fileNames.resume}</Typography>}
+          {fileNames.resume && <Typography variant="body2" className={`${classes.typography} urbanist-font`}>{fileNames.resume}</Typography>}
         </Grid>
         <Grid item xs={12} md={6}>
           <Typography variant="subtitle1" className={classes.typography}>Photo ID :</Typography>
@@ -96,12 +96,12 @@ export default function StaffDocumentUploadForm({ formData = { documents: [] }, 
             fullWidth
             InputLabelProps={{ shrink: true }}
             onChange={(event) => handleDocumentUpload(event, 'photoID')}
-            className={classes.textField}
+            className={`${classes.textField} urbanist-font`}
           />
-          {fileNames.photoID && <Typography variant="body2" className={classes.typography}>{fileNames.photoID}</Typography>}
+          {fileNames.photoID && <Typography variant="body2" className={`${classes.typography} urbanist-font`}>{fileNames.photoID}</Typography>}
         </Grid>
         <Grid item xs={12} md={6}>
-          <Typography variant="subtitle1" className={classes.typography}>Educational Certificates (optional) :</Typography>
+          <Typography variant="subtitle1" className={`${classes.typography} urbanist-font`}>Educational Certificates (optional) :</Typography>
           <TextField
             type="file"
             id="educationalCertificates"
@@ -110,9 +110,9 @@ export default function StaffDocumentUploadForm({ formData = { documents: [] }, 
             fullWidth
             InputLabelProps={{ shrink: true }}
             onChange={(event) => handleDocumentUpload(event, 'educationalCertificates')}
-            className={classes.textField}
+            className={`${classes.textField} urbanist-font`}
           />
-          {fileNames.educationalCertificates && <Typography variant="body2" className={classes.typography}>{fileNames.educationalCertificates}</Typography>}
+          {fileNames.educationalCertificates && <Typography variant="body2" className={`${classes.typography} urbanist-font`}>{fileNames.educationalCertificates}</Typography>}
         </Grid>
       </Grid>
       <Dialog open={open} onClose={handleClose}>

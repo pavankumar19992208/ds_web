@@ -28,24 +28,16 @@
   margin-top: 80px; /* theme.spacing(10) */
   overflow: auto; /* Allow scrolling within the form */
 }
+.headline{
+  font-size: 2rem !important;
+  font-family: 'Urbanist', sans-serif !important;
+  font-optical-sizing: auto !important;
+  font-weight: 700 !important;
+  font-style: normal !important;
+}
 
 .stepper .MuiStepLabel-label {
   white-space: pre-line;
-}
-
-
-@media (min-width: 1024px){
-  .layout {
-    left: 70px;
-  }
-
-}
-@media (min-width: 600px) {
-  .paper {
-    margin-top: 80px; /* theme.spacing(10) */
-    margin-bottom: 48px; /* theme.spacing(6) */
-    padding: 24px; /* theme.spacing(3) */
-  }
 }
 
 .stepper {
@@ -67,3 +59,12 @@
 .button:hover {
   background-color: #faaa72; /* Change button color on hover */
 }
+
+  /* Large devices (laptops/desktops, 992px and up) */
+  @media (min-width: 992px) and (max-width: 1199.98px) {
+    /* Your styles for large devices */
+    .layout{
+      width: 90%;
+      left: 10vh;
+    }
+  }

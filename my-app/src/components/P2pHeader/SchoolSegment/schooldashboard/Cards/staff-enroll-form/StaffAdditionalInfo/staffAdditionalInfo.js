@@ -46,7 +46,7 @@ const StaffAdditionalInfo = ({ formData, setFormData }) => {
               value={formData.additionalInfo.languagesKnown}
               onChange={handleChange}
               fullWidth
-              className={classes.field}
+              className={`${classes.field} urbanist-font`}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -57,7 +57,7 @@ const StaffAdditionalInfo = ({ formData, setFormData }) => {
               value={formData.additionalInfo.interests}
               onChange={handleChange}
               fullWidth
-              className={classes.field}
+              className={`${classes.field} urbanist-font`}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -68,7 +68,7 @@ const StaffAdditionalInfo = ({ formData, setFormData }) => {
               value={formData.additionalInfo.availabilityOfExtraCirricularActivities}
               onChange={handleChange}
               fullWidth
-              className={classes.field}
+              className={`${classes.field} urbanist-font`}
             />
           </Grid>
         </Grid>

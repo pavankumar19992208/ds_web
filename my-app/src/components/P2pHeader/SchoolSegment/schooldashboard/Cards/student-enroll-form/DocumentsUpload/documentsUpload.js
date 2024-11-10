@@ -15,10 +15,16 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(2),
     marginBottom: theme.spacing(1),
     color: '#3f51b5',
+    fontFamily: '"Urbanist", sans-serif',
+    fontOpticalSizing: 'auto',
+    fontWeight: 500 ,
   },
   textField: {
     marginLeft: theme.spacing(2),
     width: '92%',
+    fontFamily: '"Urbanist", sans-serif',
+    fontOpticalSizing: 'auto',
+    fontWeight: 500 ,
   },
 }));
 

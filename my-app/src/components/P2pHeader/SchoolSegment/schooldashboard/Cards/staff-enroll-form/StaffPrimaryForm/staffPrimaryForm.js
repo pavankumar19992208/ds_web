@@ -27,6 +27,7 @@ import { MdAddCircle } from "react-icons/md";
 import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector';
 import { styled } from '@mui/material/styles';
 import PropTypes from 'prop-types';
+import { makeStyles } from '@material-ui/core/styles';
 import './staffPrimaryInfo.css';
 
 const QontoConnector = styled(StepConnector)(({ theme }) => ({
@@ -199,6 +200,14 @@ const steps = [
   "Additional Fields",
 ];
 
+const useStyles = makeStyles((theme) => ({
+  formContainer: {
+    overflow: 'hidden', // Ensure the container grows based on its content
+    maxHeight: 'none', // Remove the maximum height restriction
+    height: 'auto', // Ensure the height adjusts automatically
+  },
+}));
+
 function getStepContent(step, formData, setFormData) {
   switch (step) {
     case 0:
@@ -206,6 +215,7 @@ function getStepContent(step, formData, setFormData) {
         <StaffPersonalInfo
           formData={formData}
           setFormData={setFormData}
+          className="formContainer" 
         />
       );
     case 1:
@@ -375,22 +385,22 @@ export default function StaffPrimaryForm() {
     return isValid;
   };
 
-  const validateAdditionalInfo = () => {
-    const { additionalInfo } = formData;
-    const requiredFields = ['languagesKnown'];
-    let isValid = true;
-    let newErrors = {};
+  // const validateAdditionalInfo = () => {
+  //   const { additionalInfo } = formData;
+  //   const requiredFields = ['languagesKnown'];
+  //   let isValid = true;
+  //   let newErrors = {};
 
-    requiredFields.forEach((field) => {
-      if (!additionalInfo[field]) {
-        isValid = false;
-        newErrors[field] = 'This field is required';
-      }
-    });
+  //   requiredFields.forEach((field) => {
+  //     if (!additionalInfo[field]) {
+  //       isValid = false;
+  //       newErrors[field] = 'This field is required';
+  //     }
+  //   });
 
-    setErrors(newErrors);
-    return isValid;
-  };
+  //   setErrors(newErrors);
+  //   return isValid;
+  // };
 
   const handleNext = () => {
     if (activeStep === 0 && !validatePersonalInfo()) {
@@ -459,10 +469,10 @@ export default function StaffPrimaryForm() {
   };
 
   const handleSubmit = async () => {
-    if (!validateAdditionalInfo()) {
-      alert("Please fill out all required fields in Additional Fields.");
-      return;
-    }
+    // if (!validateAdditionalInfo()) {
+    //   alert("Please fill out all required fields in Additional Fields.");
+    //   return;
+    // }
 
     const payload = {
       SchoolId: globalData.data.SCHOOL_ID,
@@ -531,16 +541,16 @@ export default function StaffPrimaryForm() {
           showTitle={false}
         />
        
-        <Paper className="paper">
-          <Typography component="h1" variant="h4" align="center">
+        <Paper className="paper" sx={{ padding: 3 }}>
+          <Typography component="h1" variant="h4" align="center" className="staff-enroll-title">
             Staff Enroll Form
           </Typography>
           <Grid container spacing={3}>
             <Grid item xs={12} sm={6} style={{ marginTop: '20px', marginBottom: '12px' }}>
-              <Typography variant="h6" style={{ fontSize: '1rem' }}>{globalData.data.SCHOOL_NAME}</Typography>
+              <Typography variant="h6" className="school-name" style={{ fontSize: '1rem' }}>{globalData.data.SCHOOL_NAME}</Typography>
             </Grid>
             <Grid item xs={12} sm={6} style={{ textAlign: 'right', marginTop: '16px' }}>
-              <Typography variant="h6" style={{ fontSize: '1rem' }}>School ID : {globalData.data.SCHOOL_ID}</Typography>
+              <Typography variant="h6" className="school-id" style={{ fontSize: '1rem' }}>School ID : {globalData.data.SCHOOL_ID}</Typography>
             </Grid>
           </Grid>
           <Stack sx={{ width: '100%' }} spacing={4} className="stepperContainer">

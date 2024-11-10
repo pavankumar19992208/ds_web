@@ -11,16 +11,25 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '1rem',
     marginTop: theme.spacing(2),
     marginBottom: theme.spacing(1),
+    fontFamily: '"Urbanist", sans-serif',
+    fontOpticalSizing: 'auto',
+    fontWeight: 500 ,
   },
   medicalTitle: {
     color: '#3f51b5',
     fontSize: '1rem',
     marginTop: theme.spacing(4),
     marginBottom: theme.spacing(1),
+    fontFamily: '"Urbanist", sans-serif',
+    fontOpticalSizing: 'auto',
+    fontWeight: 500 ,
   },
   textField: {
     marginLeft: theme.spacing(2),
     width: '92%',
+    fontFamily: '"Urbanist", sans-serif',
+    fontOpticalSizing: 'auto',
+    fontWeight: 500 ,
   },
 }));
 
@@ -49,7 +58,6 @@ export default function AcademicInfoForm({ formData, setFormData }) {
         <Grid item xs={12} md={6}>
           <TextField
             select
-            required
             id="PreviousClass"
             name="PreviousClass"
             label="Previous Class"
@@ -68,7 +76,6 @@ export default function AcademicInfoForm({ formData, setFormData }) {
         </Grid>
         <Grid item xs={12} md={6}>
           <TextField
-            required
             id="PreviousPercentage"
             name="PreviousPercentage"
             label="Percentage of Previous Class"

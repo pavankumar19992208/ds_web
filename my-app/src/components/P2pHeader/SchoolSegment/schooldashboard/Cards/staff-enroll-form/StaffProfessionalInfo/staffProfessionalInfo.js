@@ -1,5 +1,4 @@
-import React, { useContext, useState } from 'react';
-import { GlobalStateContext } from '../../../../../../../GlobalStateContext';
+import React, { useState } from 'react';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -39,16 +38,31 @@ const positions = [
 
 const grades = Array.from({ length: 10 }, (_, i) => ({ value: i + 1, label: `Class ${i + 1}` }));
 
+const subjects = [
+  'Mathematics',
+  'Science',
+  'English',
+  'History',
+  'Geography',
+  'Physics',
+  'Chemistry',
+  'Biology',
+  'Computer Science',
+  'Physical Education',
+];
+
 const StaffProfessionalInfo = ({ formData, setFormData }) => {
   const classes = useStyles();
-  const { globalData } = useContext(GlobalStateContext);
-  const [formValues, setFormValues] = useState(formData.professionalInfo);
+  const [formValues, setFormValues] = useState({
+    ...formData.professionalInfo,
+    position: formData.professionalInfo.position || [],
+  });
   const [selectedSubjects, setSelectedSubjects] = useState(formData.professionalInfo.subjectSpecialization || []);
   const [errors, setErrors] = useState({});
 
   const validateField = (name, value) => {
     let error = '';
-    if (['subjectSpecialization', 'certifications', 'qualification'].includes(name)) {
+    if (['certifications', 'qualification'].includes(name)) {
       if (!/^[a-zA-Z\s]+$/.test(value)) {
         error = 'Only alphabets are allowed';
       }
@@ -78,6 +92,29 @@ const StaffProfessionalInfo = ({ formData, setFormData }) => {
     }));
   };
 
+  const handlePositionChange = (event) => {
+    const { value, checked } = event.target;
+    let updatedPositions = [...formValues.position];
+
+    if (checked) {
+      updatedPositions.push(value);
+    } else {
+      updatedPositions = updatedPositions.filter((position) => position !== value);
+    }
+
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      position: updatedPositions,
+    }));
+    setFormData((prevData) => ({
+      ...prevData,
+      professionalInfo: {
+        ...prevData.professionalInfo,
+        position: updatedPositions,
+      },
+    }));
+  };
+
   const handleSubjectChange = (event) => {
     const { value, checked } = event.target;
     let updatedSubjects = [...selectedSubjects];
@@ -102,24 +139,51 @@ const StaffProfessionalInfo = ({ formData, setFormData }) => {
     <div className={classes.mainContainer}>
       <form className={classes.formContainer}>
         <Grid container spacing={3} className={classes.gridContainer}>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              id="position"
-              select
-              label="Position / Role"
-              name="position"
-              value={formValues.position}
-              onChange={handleChange}
-              fullWidth
-              required
-              className={classes.field}
-            >
-              {positions.map((option) => (
-                <MenuItem key={option.value} value={option.value} className={classes.menuItem}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
+          <Grid item xs={12} sm={12}>
+            <FormControl component="fieldset" className={`${classes.field} urbanist-font`} style={{marginBottom:'0px'}}>
+              <label style={{marginBottom:'12px'}}>Position / Role :</label>
+              <FormGroup>
+                <Grid container spacing={1}>
+                  {positions.map((option) => (
+                    <Grid item key={option.value}>
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={formValues.position.includes(option.value)}
+                            onChange={handlePositionChange}
+                            value={option.value}
+                          />
+                        }
+                        label={option.label}
+                      />
+                    </Grid>
+                  ))}
+                </Grid>
+              </FormGroup>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12} sm={12}>
+            <FormControl component="fieldset" className={`${classes.field} urbanist-font`} >
+              <label>Subject Specialization :</label>
+              <FormGroup style={{marginTop:'20px'}}>
+                <Grid container spacing={0.2}>
+                  {subjects.map((subject) => (
+                    <Grid item xs={4} key={subject}>
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={selectedSubjects.includes(subject)}
+                            onChange={handleSubjectChange}
+                            value={subject}
+                          />
+                        }
+                        label={subject}
+                      />
+                    </Grid>
+                  ))}
+                </Grid>
+              </FormGroup>
+            </FormControl>
           </Grid>
           
           <Grid item xs={12} sm={6}>
@@ -132,7 +196,7 @@ const StaffProfessionalInfo = ({ formData, setFormData }) => {
               onChange={handleChange}
               fullWidth
               required
-              className={classes.field}
+              className={`${classes.field} urbanist-font`}
             >
               {grades.map((option) => (
                 <MenuItem key={option.value} value={option.value} className={classes.menuItem}>
@@ -150,7 +214,7 @@ const StaffProfessionalInfo = ({ formData, setFormData }) => {
               onChange={handleChange}
               fullWidth
               type="number"
-              className={classes.field}
+              className={`${classes.field} urbanist-font`}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -162,34 +226,12 @@ const StaffProfessionalInfo = ({ formData, setFormData }) => {
               onChange={handleChange}
               fullWidth
               required
-              className={classes.field}
+              className={`${classes.field} urbanist-font`}
               error={!!errors.qualification}
               helperText={errors.qualification}
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
-            <FormControl component="fieldset" className={classes.field}>
-              <label>Subject Specialization :</label>
-              <FormGroup>
-                <Grid container spacing={1}>
-                  {globalData.subjects && globalData.subjects.map((subject) => (
-                    <Grid item xs={6} key={subject}>
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={selectedSubjects.includes(subject)}
-                            onChange={handleSubjectChange}
-                            value={subject}
-                          />
-                        }
-                        label={subject}
-                      />
-                    </Grid>
-                  ))}
-                </Grid>
-              </FormGroup>
-            </FormControl>
-          </Grid>
+
           <Grid item xs={12} sm={6}>
             <TextField
               id="certifications"
@@ -198,11 +240,12 @@ const StaffProfessionalInfo = ({ formData, setFormData }) => {
               value={formValues.certifications}
               onChange={handleChange}
               fullWidth
-              className={classes.field}
+              className={`${classes.field} urbanist-font`}
               error={!!errors.certifications}
               helperText={errors.certifications}
             />
           </Grid>
+
           
         </Grid>
       </form>

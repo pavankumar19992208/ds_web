@@ -75,9 +75,9 @@ export default function DetailsForm({ formData, setFormData }) {
     let isValid = true;
 
     if (['StudentName', 'PreviousSchool', 'Religion', 'Category', 'Nationality'].includes(name)) {
-      isValid = validateAlphabets(value);
+      isValid = validateAlphabets(value) || value === '';
     } else if (name === 'AadharNumber') {
-      isValid = validateNumbers(value);
+      isValid = validateNumbers(value) || value === '';
     }
 
     if (isValid) {
@@ -165,7 +165,7 @@ export default function DetailsForm({ formData, setFormData }) {
       <Grid container spacing={3} className={classes.formContainer}>
         {/* Section 1 */}
         <Grid item xs={12}>
-          <Typography variant="subtitle1" gutterBottom className={`${classes.basicInfoMargin} ${classes.coloredTypography} ${classes.typographyMargin}`}>
+          <Typography variant="subtitle1" gutterBottom className={`${classes.basicInfoMargin} ${classes.coloredTypography} ${classes.typographyMargin} urbanist-font`}>
             Basic Information :
           </Typography>
         </Grid>
@@ -179,7 +179,7 @@ export default function DetailsForm({ formData, setFormData }) {
             autoComplete="name"
             value={formData.personalInfo.StudentName || ''}
             onChange={handleChange}
-            className={`${classes.fieldMargin} ${classes.reducedWidth}`}
+            className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
             error={!!errors.StudentName}
             helperText={errors.StudentName}
           />
@@ -197,7 +197,7 @@ export default function DetailsForm({ formData, setFormData }) {
             }}
             value={formData.personalInfo.DOB || ''}
             onChange={handleChange}
-            className={`${classes.fieldMargin} ${classes.reducedWidth}`}
+            className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
           />
         </Grid>
         {/* >>> */}
@@ -211,7 +211,7 @@ export default function DetailsForm({ formData, setFormData }) {
             fullWidth
             value={formData.personalInfo.Gender || ''}
             onChange={handleChange}
-            className={`${classes.fieldMargin} ${classes.reducedWidth}`}
+            className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
           >
             <MenuItem value="male">Male</MenuItem>
             <MenuItem value="female">Female</MenuItem>
@@ -229,14 +229,14 @@ export default function DetailsForm({ formData, setFormData }) {
               shrink: true,
             }}
             onChange={handleFileChange}
-            className={`${classes.fieldMargin} ${classes.reducedWidth}`}
+            className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
           />
           {fileName && <Typography variant="body2" className={classes.coloredTypography}>{fileName}</Typography>}
         </Grid>
 
         {/* Section 2 */}
         <Grid item xs={12}>
-          <Typography variant="subtitle1" gutterBottom className={`${classes.educationalInfoMargin} ${classes.coloredTypography} ${classes.typographyMargin}`}>
+          <Typography variant="subtitle1" gutterBottom className={`${classes.educationalInfoMargin} ${classes.coloredTypography} ${classes.typographyMargin} urbanist-font`}>
             Educational Information :
           </Typography>
         </Grid>
@@ -250,7 +250,7 @@ export default function DetailsForm({ formData, setFormData }) {
             fullWidth
             value={formData.personalInfo.Grade || ''}
             onChange={handleChange}
-            className={`${classes.fieldMargin} ${classes.reducedWidth}`}
+            className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
           >
             {[...Array(10).keys()].map(i => (
               <MenuItem key={i + 1} value={i + 1}>{i + 1}</MenuItem>
@@ -265,13 +265,13 @@ export default function DetailsForm({ formData, setFormData }) {
             fullWidth
             value={formData.personalInfo.PreviousSchool || ''}
             onChange={handleChange}
-            className={`${classes.fieldMargin} ${classes.reducedWidth}`}
+            className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
             error={!!errors.PreviousSchool}
             helperText={errors.PreviousSchool}
           />
         </Grid>
         <Grid item xs={12}>
-          <Typography variant="subtitle1" gutterBottom className={`${classes.coloredTypography} ${classes.languagesMargin}`}>
+          <Typography variant="subtitle1" gutterBottom className={`${classes.coloredTypography} ${classes.languagesMargin} urbanist-font`}>
             Languages Known :
           </Typography>
           {languages.map((language, index) => (
@@ -284,7 +284,7 @@ export default function DetailsForm({ formData, setFormData }) {
                 fullWidth
                 value={language}
                 onChange={(event) => handleLanguageChange(index, event)}
-                className={`${classes.languageInput} ${classes.fieldMargin} ${classes.reducedWidth}`}
+                className={`${classes.languageInput} ${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
               />
             </div>
           ))}
@@ -304,7 +304,7 @@ export default function DetailsForm({ formData, setFormData }) {
 
         {/* Section 3 */}
         <Grid item xs={12}>
-          <Typography variant="subtitle1" gutterBottom className={`${classes.additionalInfoMargin} ${classes.coloredTypography} ${classes.typographyMargin}`}>
+          <Typography variant="subtitle1" gutterBottom className={`${classes.additionalInfoMargin} ${classes.coloredTypography} ${classes.typographyMargin} urbanist-font`}>
             Additional Information :
           </Typography>
         </Grid>
@@ -316,7 +316,7 @@ export default function DetailsForm({ formData, setFormData }) {
             fullWidth
             value={formData.personalInfo.Religion || ''}
             onChange={handleChange}
-            className={`${classes.fieldMargin} ${classes.reducedWidth}`}
+            className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
             error={!!errors.Religion}
             helperText={errors.Religion}
           />
@@ -329,7 +329,7 @@ export default function DetailsForm({ formData, setFormData }) {
             fullWidth
             value={formData.personalInfo.Category || ''}
             onChange={handleChange}
-            className={`${classes.fieldMargin} ${classes.reducedWidth}`}
+            className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
             error={!!errors.Category}
             helperText={errors.Category}
           />
@@ -342,7 +342,7 @@ export default function DetailsForm({ formData, setFormData }) {
             fullWidth
             value={formData.personalInfo.Nationality || ''}
             onChange={handleChange}
-            className={`${classes.fieldMargin} ${classes.reducedWidth}`}
+            className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
             error={!!errors.Nationality}
             helperText={errors.Nationality}
           />
@@ -356,7 +356,7 @@ export default function DetailsForm({ formData, setFormData }) {
             fullWidth
             value={formData.personalInfo.AadharNumber || ''}
             onChange={handleChange}
-            className={`${classes.fieldMargin} ${classes.reducedWidth}`}
+            className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-fonts`}
             error={!!errors.AadharNumber}
             helperText={errors.AadharNumber}
           />
