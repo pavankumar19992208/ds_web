@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -7,6 +7,7 @@ import FormControl from '@material-ui/core/FormControl';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+import { GlobalStateContext } from '../../../../../../../GlobalStateContext'; // Adjust the import path as needed
 
 const useStyles = makeStyles((theme) => ({
   formContainer: {},
@@ -36,23 +37,9 @@ const positions = [
   { value: 'Head of the Department', label: 'Head of the Department' },
 ];
 
-const grades = Array.from({ length: 10 }, (_, i) => ({ value: i + 1, label: `Class ${i + 1}` }));
-
-const subjects = [
-  'Mathematics',
-  'Science',
-  'English',
-  'History',
-  'Geography',
-  'Physics',
-  'Chemistry',
-  'Biology',
-  'Computer Science',
-  'Physical Education',
-];
-
 const StaffProfessionalInfo = ({ formData, setFormData }) => {
   const classes = useStyles();
+  const { globalData } = useContext(GlobalStateContext);
   const [formValues, setFormValues] = useState({
     ...formData.professionalInfo,
     position: formData.professionalInfo.position || [],
@@ -167,7 +154,7 @@ const StaffProfessionalInfo = ({ formData, setFormData }) => {
               <label>Subject Specialization :</label>
               <FormGroup style={{marginTop:'20px'}}>
                 <Grid container spacing={0.2}>
-                  {subjects.map((subject) => (
+                  {globalData?.subjects?.map((subject) => (
                     <Grid item xs={4} key={subject}>
                       <FormControlLabel
                         control={
@@ -198,7 +185,7 @@ const StaffProfessionalInfo = ({ formData, setFormData }) => {
               required
               className={`${classes.field} urbanist-font`}
             >
-              {grades.map((option) => (
+              {globalData?.grades?.map((option) => (
                 <MenuItem key={option.value} value={option.value} className={classes.menuItem}>
                   {option.label}
                 </MenuItem>

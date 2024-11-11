@@ -49,6 +49,9 @@ body, html {
   width: 200px;
   text-align: center;
   z-index: 1000;
+  font-family: 'Roboto Mono', monospace !important;
+  font-optical-sizing: auto !important;
+  font-weight: 400 !important;
 }
 
 

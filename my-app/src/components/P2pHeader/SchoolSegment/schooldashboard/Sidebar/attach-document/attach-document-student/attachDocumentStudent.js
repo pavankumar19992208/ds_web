@@ -1,9 +1,10 @@
 import React from 'react';
-import { TextField, MenuItem, FormControl, InputLabel, Select, Button } from '@material-ui/core';
+import { TextField, MenuItem, FormControl, InputLabel, Select, Button, IconButton } from '@material-ui/core';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
+import CloseIcon from '@material-ui/icons/Close';
 import './attachDocumentStudent.css'; // Import the CSS file
 
-const AttachDocumentStudent = () => {
+const AttachDocumentStudent = ({ onClose }) => {
   const [formValues, setFormValues] = React.useState({
     admissionNo: '',
     dob: '',
@@ -31,6 +32,9 @@ const AttachDocumentStudent = () => {
   return (
     <div className="page-container">
       <div className="form-container">
+        <IconButton className="close-button" onClick={onClose}>
+          <CloseIcon />
+        </IconButton>
         <form noValidate autoComplete="off">
           <TextField
             label="Admission No"

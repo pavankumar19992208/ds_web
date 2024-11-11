@@ -122,7 +122,7 @@
   .custom-submit-button {
     background-color: #0E5E9D80 !important; /* Example background color */
     color: #000 !important; /* Example text color */
-    border-radius: 8px !important; /* Example border radius */
+    border-radius: 12px !important; /* Example border radius */
     padding: 8px 24px !important; /* Example padding */
     font-size: 16px; /* Example font size */
     transition: background-color 0.3s; /* Example transition for hover effect */
@@ -136,6 +136,62 @@
 
    /* Large devices (laptops/desktops, 992px and up) */
  @media (min-width: 992px) and (max-width: 1199.98px) {
+  .content{
+    width: 69%;
+    top: 60px;
+    left: 42vh;
+    border-radius: 8px;
+  }
+  .button-container{
+    top: 16px;
+    left: 16px;
+    gap: 12px;
+  }
+  .teacher-list{
+    width: 80%;
+    height: 300px;
+    border-radius: 8px;
+    margin-top: 40px;
+  }
+  .custom-select{
+    padding: 2px;
+    font-size: 14px !important;
+    border-radius: 8px !important;
+  }
+  .custom-select .MuiOutlinedInput-notchedOutline {
+    border-radius: 8px !important;
+  }
+  .allotted-teachers-cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, auto);
+    column-gap: 17%;
+  }
+  .custom-card{
+    width: 155% !important;
+    height: 38vh !important;
+  }
+  .grade{
+    margin-bottom: -12px;
+  }
+  .grade-text{
+    font-size: 1.6vw !important;
+    font-weight: bold !important;
+  }
+  .subjects{
+    margin-bottom: -4px;
+  }
+  .subjects-text{
+    font-size:1.4vw !important;
+  }
+  .icons{
+    font-size: 1.6vw !important;
+  }
+  .custom-submit-button{
+    padding: 6px 16px !important;
+    font-size: 14px !important;
+    border-radius: 8px !important;
+  }
   .school-id-box{
     bottom: 14px;
     left: 14px;
@@ -143,5 +199,4 @@
     padding: 10px 12px;
     font-size: 14px;
   }
-  
 }

@@ -14,14 +14,17 @@ const AttachDocument = () => {
     setShowForm(true);
   };
 
-  const { globalData } = React.useContext(GlobalStateContext);
+  const handleCloseForm = () => {
+    setShowForm(false);
+  };
 
+  const { globalData } = React.useContext(GlobalStateContext);
 
   return (
     <div>
       <Navbar schoolName={globalData.data.SCHOOL_NAME} schoolLogo={globalData.data.SCHOOL_LOGO} />
-      <Sidebar visibleItems={['home', 'attachDocument', 'subjectAllocation', 'attendanceTracking', 'leaveApprovals', 'academicPerformance', 'teacherAlert']} />
-      <Box className="attach-document-container">
+      <Sidebar visibleItems={['home', 'attachDocument', 'subjectAllocation', 'attendanceTracking', 'leaveApprovals', 'academicPerformance', 'teacherAlert', 'eventPlanning', 'careerGuidance', 'inventoryManagement']} />
+      <Box className={`attach-document-container ${showForm ? 'show-form' : ''}`}>
         <Card className="card" onClick={handleStudentCardClick}>
           <CardContent>
             <Typography variant="h5" component="div">
@@ -45,7 +48,10 @@ const AttachDocument = () => {
           </CardContent>
         </Card>
       </Box>
-      {showForm && <AttachDocumentStudent />}
+      {showForm && <AttachDocumentStudent onClose={handleCloseForm} />}
+      <div className="school-id-box">
+        School ID: {globalData.data.SCHOOL_ID}
+      </div>
     </div>
   );
 };

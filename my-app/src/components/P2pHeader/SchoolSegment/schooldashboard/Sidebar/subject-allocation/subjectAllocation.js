@@ -121,20 +121,18 @@ const SubjectAllocation = () => {
                   <Grid item xs={12} sm={6} md={4} key={grade}>
                     <Card className="allotted-teacher-card custom-card" sx={{ width: 240, height: 268 }}>
                       <CardContent>
-                        <Box display="flex" justifyContent="space-between" alignItems="center">
-                          <Typography variant="h5">{grade}</Typography>
+                        <Box className='grade' display="flex" justifyContent="space-between" alignItems="center">
+                          <Typography className='grade-text' variant="h5">{grade}</Typography>
                           <IconButton onClick={() => handleCloseCard(grade)}>
-                            <CloseIcon />
+                            <CloseIcon className='icons' />
                           </IconButton>
                         </Box>
                         <Box mt={2}>
                           {Object.keys(allottedTeachers[grade]).map((subject) => (
-                            <Box key={subject} display="flex" alignItems="center">
-                              <Typography>
-                                {subject}: {allottedTeachers[grade][subject]}
-                              </Typography>
+                            <Box className='subjects' key={subject} display="flex" alignItems="center" justifyContent="space-between">
+                              <Typography className='subjects-text'>{subject}: {allottedTeachers[grade][subject]}</Typography>
                               <IconButton onClick={() => handleDeleteSubjectTeacher(grade, subject)}>
-                                <DeleteIcon fontSize="small" />
+                                <DeleteIcon className='icons'/>
                               </IconButton>
                             </Box>
                           ))}
