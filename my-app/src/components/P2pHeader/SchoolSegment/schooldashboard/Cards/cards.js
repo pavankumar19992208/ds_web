@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GlobalStateContext } from '../../../../../GlobalStateContext';
 import './cards.css';
+import BaseUrl from '../../../../../config';
 
 const Cards = ({ studentCount, staffCount, schoolName, schoolLogo }) => {
   const navigate = useNavigate();
@@ -9,19 +10,28 @@ const Cards = ({ studentCount, staffCount, schoolName, schoolLogo }) => {
   const schoolId = globalData.data.SCHOOL_ID; // Assuming schoolId is stored in globalData
 
   const fetchSchoolInfo = async () => {
-    try {
-      const response = await fetch(`/schoolInfo?SchoolId=${schoolId}`);
-      const text = await response.text(); // Read the response as text
-      if (!response.ok) {
-        console.error('Error fetching school info:', text);
-        throw new Error('Failed to fetch school info');
+      try {
+          const response = await fetch(`${BaseUrl}/schoolinfo`, {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ SchoolId: schoolId }),
+          });
+  
+          if (!response.ok) {
+              const text = await response.text(); // Read the response as text
+              console.error('Error fetching school info:', text);
+              throw new Error('Failed to fetch school info');
+          }
+  
+          const data = await response.json(); // Parse the response as JSON
+          setGlobalData(prevData => ({ ...prevData, schoolInfo: data.data }));
+          console.log("globalData", globalData);
+          navigate('/staff-enroll');
+      } catch (error) {
+          console.error('Error fetching school info:', error);
       }
-      const data = JSON.parse(text); // Parse the text as JSON
-      setGlobalData(prevData => ({ ...prevData, schoolInfo: data }));
-      navigate('/staff-enroll');
-    } catch (error) {
-      console.error('Error fetching school info:', error);
-    }
   };
 
   const handleStudentEnrollClick = () => {
