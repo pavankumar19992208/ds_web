@@ -1,16 +1,35 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { GlobalStateContext } from '../../../../../GlobalStateContext';
 import './cards.css';
 
 const Cards = ({ studentCount, staffCount, schoolName, schoolLogo }) => {
   const navigate = useNavigate();
+  const { globalData, setGlobalData } = useContext(GlobalStateContext);
+  const schoolId = globalData.data.SCHOOL_ID; // Assuming schoolId is stored in globalData
+
+  const fetchSchoolInfo = async () => {
+    try {
+      const response = await fetch(`/schoolInfo?SchoolId=${schoolId}`);
+      const text = await response.text(); // Read the response as text
+      if (!response.ok) {
+        console.error('Error fetching school info:', text);
+        throw new Error('Failed to fetch school info');
+      }
+      const data = JSON.parse(text); // Parse the text as JSON
+      setGlobalData(prevData => ({ ...prevData, schoolInfo: data }));
+      navigate('/staff-enroll');
+    } catch (error) {
+      console.error('Error fetching school info:', error);
+    }
+  };
 
   const handleStudentEnrollClick = () => {
     navigate('/student-enroll');
   };
 
   const handleStaffEnrollClick = () => {
-    navigate('/staff-enroll');
+    fetchSchoolInfo();
   };
 
   const handleStaffPayroll = () => {

@@ -7,7 +7,7 @@ import FormControl from '@material-ui/core/FormControl';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-import { GlobalStateContext } from '../../../../../../../GlobalStateContext'; // Adjust the import path as needed
+import { GlobalStateContext } from '../../../../../../../GlobalStateContext';
 
 const useStyles = makeStyles((theme) => ({
   formContainer: {},
@@ -37,9 +37,8 @@ const positions = [
   { value: 'Head of the Department', label: 'Head of the Department' },
 ];
 
-const StaffProfessionalInfo = ({ formData, setFormData }) => {
+const StaffProfessionalInfo = ({ formData, setFormData, schoolInfo }) => {
   const classes = useStyles();
-  const { globalData } = useContext(GlobalStateContext);
   const [formValues, setFormValues] = useState({
     ...formData.professionalInfo,
     position: formData.professionalInfo.position || [],
@@ -154,7 +153,7 @@ const StaffProfessionalInfo = ({ formData, setFormData }) => {
               <label>Subject Specialization :</label>
               <FormGroup style={{marginTop:'20px'}}>
                 <Grid container spacing={0.2}>
-                  {globalData?.subjects?.map((subject) => (
+                  {schoolInfo.subjects?.map((subject) => (
                     <Grid item xs={4} key={subject}>
                       <FormControlLabel
                         control={
@@ -185,7 +184,7 @@ const StaffProfessionalInfo = ({ formData, setFormData }) => {
               required
               className={`${classes.field} urbanist-font`}
             >
-              {globalData?.grades?.map((option) => (
+              {schoolInfo.grades?.map((option) => (
                 <MenuItem key={option.value} value={option.value} className={classes.menuItem}>
                   {option.label}
                 </MenuItem>
@@ -232,8 +231,6 @@ const StaffProfessionalInfo = ({ formData, setFormData }) => {
               helperText={errors.certifications}
             />
           </Grid>
-
-          
         </Grid>
       </form>
     </div>

@@ -208,7 +208,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function getStepContent(step, formData, setFormData) {
+function getStepContent(step, formData, setFormData, schoolInfo) {
   switch (step) {
     case 0:
       return (
@@ -249,6 +249,7 @@ function getStepContent(step, formData, setFormData) {
 export default function StaffPrimaryForm() {
   const [activeStep, setActiveStep] = useState(0);
   const { globalData } = useContext(GlobalStateContext);
+  const schoolInfo = globalData.schoolInfo || {};
   const [formData, setFormData] = useState({
     personalInfo: {
       fullName: "",
@@ -540,7 +541,6 @@ export default function StaffPrimaryForm() {
           hideProfile={true}
           showTitle={false}
         />
-       
         <Paper className="paper" sx={{ padding: 3 }}>
           <Typography component="h1" variant="h4" align="center" className="staff-enroll-title">
             Staff Enroll Form
@@ -581,7 +581,7 @@ export default function StaffPrimaryForm() {
               </React.Fragment>
             ) : (
               <React.Fragment>
-                {getStepContent(activeStep, formData, setFormData)}
+                {getStepContent(activeStep, formData, setFormData, schoolInfo)}
                 <div className="buttons">
                   {activeStep !== 0 && (
                     <Button onClick={handleBack} className="button">
