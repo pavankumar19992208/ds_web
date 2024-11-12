@@ -1,7 +1,7 @@
 // config.js
 
 // Define the base URL for the backend
-const BaseUrl = 'https://0e20-2406-b400-d1-ea60-3cac-edfe-acc4-3d62.ngrok-free.app';
+const BaseUrl = 'https://680a-223-196-193-20.ngrok-free.app';
 
 // Export the base URL so it can be used in other files
 export default BaseUrl;
