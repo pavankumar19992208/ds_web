@@ -212,7 +212,60 @@ const SchoolInternalData = () => {
     }, 0);
   };
 
+  const validateForm = () => {
+    if (!schoolType || !curriculum || !medium || !academicYearStart || !academicYearEnd || !schoolTimingFrom || !schoolTimingTo || !examPattern || !assessmentCriteria || !numberOfTerms || !gradeLevel1 || !gradeLevel2) {
+      alert('Please fill out all required fields.');
+      return false;
+    }
+
+    if (curriculum === 'stateboard' && !state) {
+      alert('Please select a state.');
+      return false;
+    }
+
+    if (curriculum === 'other' && !otherCurriculum) {
+      alert('Please specify the other curriculum.');
+      return false;
+    }
+
+    if (examPattern === 'other' && !otherExamPattern) {
+      alert('Please specify the other exam pattern.');
+      return false;
+    }
+
+    if (assessmentCriteria === 'other' && !otherAssessmentCriteria) {
+      alert('Please specify the other assessment criteria.');
+      return false;
+    }
+
+    if (subjects.some(subject => !subject)) {
+      alert('Please fill out all subjects.');
+      return false;
+    }
+
+    if (feeStructure.some(fee => !fee.feeType || !fee.amount)) {
+      alert('Please fill out all fee structures.');
+      return false;
+    }
+
+    if (teachingStaff.some(staff => !staff)) {
+      alert('Please fill out all teaching staff.');
+      return false;
+    }
+
+    if (nonTeachingStaff.some(staff => !staff)) {
+      alert('Please fill out all non-teaching staff.');
+      return false;
+    }
+
+    return true;
+  };
+
   const handleSubmit = async () => {
+    if (!validateForm()) {
+      return;
+    }
+
     const totalAmount = calculateTotalAmount();
     const payload = {
       SchoolId: globalData.data.SCHOOL_ID,
@@ -699,7 +752,6 @@ const SchoolInternalData = () => {
                           <Grid container spacing={1} key={index}>
                             <Grid item xs={9}>
                               <TextField
-                                required
                                 id={`extraProgram${index}`}
                                 name={`extraProgram${index}`}
                                 label={`Program ${index + 1}`}
