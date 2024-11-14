@@ -295,7 +295,7 @@ const SchoolInternalData = () => {
     console.log('Payload to be sent:', payload);
 
     try {
-      const response = await fetch(`${BaseUrl}/schoolInternalData`, {
+      const response = await fetch(`${BaseUrl}/schooldata`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
