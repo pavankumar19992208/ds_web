@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -8,6 +8,7 @@ import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import { GlobalStateContext } from '../../../../../../../GlobalStateContext';
+import BaseUrl from '../../../../../../../config';
 
 const useStyles = makeStyles((theme) => ({
   formContainer: {},
@@ -37,14 +38,53 @@ const positions = [
   { value: 'Head of the Department', label: 'Head of the Department' },
 ];
 
-const StaffProfessionalInfo = ({ formData, setFormData, schoolInfo }) => {
+const StaffProfessionalInfo = ({ formData, setFormData }) => {
   const classes = useStyles();
+  const { globalData } = useContext(GlobalStateContext);
+  const [schoolInfo, setSchoolInfo] = useState({ Subjects: [], Grades: [] });
   const [formValues, setFormValues] = useState({
     ...formData.professionalInfo,
     position: formData.professionalInfo.position || [],
   });
   const [selectedSubjects, setSelectedSubjects] = useState(formData.professionalInfo.subjectSpecialization || []);
   const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    const fetchSchoolInfo = async () => {
+      try {
+        const response = await fetch(`${BaseUrl}/schoolinfo`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ SchoolId: globalData.data.SCHOOL_ID }),
+        });
+  
+        if (!response.ok) {
+          const text = await response.text();
+          console.error('Error fetching school info:', text);
+          throw new Error('Failed to fetch school info');
+        }
+  
+        const data = await response.json();
+        console.log('Fetched school info:', data);
+  
+        // Process grades from gradeLevelFrom and gradeLevelTo
+        const Grades = [];
+        for (let i = data.data.GradeLevelFrom; i <= data.data.GradeLevelTo; i++) {
+          Grades.push({ value: i, label: `Grade ${i}` });
+        }
+        console.log('Grades:', Grades); // Print grades to console
+  
+        setSchoolInfo({ Subjects: data.data.Subjects, Grades });
+        console.log('Updated schoolInfo state:', { Subjects: data.data.Subjects, Grades }); // Log updated state
+      } catch (error) {
+        console.error('Error fetching school info:', error);
+      }
+    };
+  
+    fetchSchoolInfo();
+  }, [globalData.data.SCHOOL_ID]);
 
   const validateField = (name, value) => {
     let error = '';
@@ -60,7 +100,6 @@ const StaffProfessionalInfo = ({ formData, setFormData, schoolInfo }) => {
     const { name, value } = event.target;
     let error = validateField(name, value);
 
-    // Show error if the field is empty
     if (!value) {
       error = 'This field is required';
     }
@@ -153,7 +192,7 @@ const StaffProfessionalInfo = ({ formData, setFormData, schoolInfo }) => {
               <label>Subject Specialization :</label>
               <FormGroup style={{marginTop:'20px'}}>
                 <Grid container spacing={0.2}>
-                  {schoolInfo.subjects?.map((subject) => (
+                  {schoolInfo.Subjects && schoolInfo.Subjects.length > 0 ? schoolInfo.Subjects.map((subject) => (
                     <Grid item xs={4} key={subject}>
                       <FormControlLabel
                         control={
@@ -166,31 +205,31 @@ const StaffProfessionalInfo = ({ formData, setFormData, schoolInfo }) => {
                         label={subject}
                       />
                     </Grid>
-                  ))}
+                  )) : <p>No subjects available</p>}
                 </Grid>
               </FormGroup>
             </FormControl>
           </Grid>
           
           <Grid item xs={12} sm={6}>
-            <TextField
-              id="grade"
-              select
-              label="Grade"
-              name="grade"
-              value={formValues.grade}
-              onChange={handleChange}
-              fullWidth
-              required
-              className={`${classes.field} urbanist-font`}
-            >
-              {schoolInfo.grades?.map((option) => (
-                <MenuItem key={option.value} value={option.value} className={classes.menuItem}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Grid>
+          <TextField
+            id="grade"
+            select
+            label="Grade"
+            name="grade"
+            value={formValues.grade}
+            onChange={handleChange}
+            fullWidth
+            required
+            className={`${classes.field} urbanist-font`}
+          >
+            {schoolInfo.Grades && schoolInfo.Grades.length > 0 ? schoolInfo.Grades.map((option) => (
+              <MenuItem key={option.value} value={option.value} className={classes.menuItem}>
+                {option.label}
+              </MenuItem>
+            )) : <MenuItem disabled>No grades available</MenuItem>}
+          </TextField>
+        </Grid>
           <Grid item xs={12} sm={6}>
             <TextField
               id="experience"
