@@ -18,16 +18,24 @@ import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import Check from '@mui/icons-material/Check';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+import IconButton from '@material-ui/core/IconButton';
 import { PiBagSimpleFill } from "react-icons/pi";
 import { BsPersonWorkspace } from "react-icons/bs";
 import { IoCall } from "react-icons/io5";
 import { RiFolderUploadFill } from "react-icons/ri";
 import { FaAddressCard } from "react-icons/fa6";
 import { MdAddCircle } from "react-icons/md";
+import { MdRateReview } from "react-icons/md";
 import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector';
 import { styled } from '@mui/material/styles';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableRow from '@material-ui/core/TableRow';
 import './staffPrimaryInfo.css';
 
 const QontoConnector = styled(StepConnector)(({ theme }) => ({
@@ -174,6 +182,7 @@ function ColorlibStepIcon(props) {
     4: <IoCall />,
     5: <RiFolderUploadFill />,
     6: <MdAddCircle />,
+    7: <MdRateReview />,
   };
 
   return (
@@ -190,15 +199,7 @@ ColorlibStepIcon.propTypes = {
   icon: PropTypes.node,
 };
 
-
-const steps = [
-  "Personal details",
-  "Professional Details",
-  "Employment Details",
-  "Emergency Contact Info",
-  "Documents Upload",
-  "Additional Fields",
-];
+const steps = ["Personal details", "Professional Details", "Employment Details", "Emergency Contact Info", "Documents Upload", "Additional Fields", "Review & Submit"];
 
 const useStyles = makeStyles((theme) => ({
   formContainer: {
@@ -206,24 +207,45 @@ const useStyles = makeStyles((theme) => ({
     maxHeight: 'none', // Remove the maximum height restriction
     height: 'auto', // Ensure the height adjusts automatically
   },
+  reviewTitle: {
+    color: theme.palette.primary.main,
+    fontSize: '1.5rem',
+    textAlign: 'center',
+    marginTop: theme.spacing(3),
+    marginBottom: theme.spacing(3),
+    fontFamily: '"Urbanist", sans-serif',
+    fontOpticalSizing: 'auto',
+    fontWeight: 500 ,
+    textDecoration: 'underline',
+  },
+  reviewSectionTitle: {
+    color: 'red',
+    fontSize: '1.2rem',
+    fontFamily: '"Urbanist", sans-serif',
+    fontOpticalSizing: 'auto',
+    fontWeight: 500 ,
+  },
+  documentsGrid: {
+    width: '80%', // Decrease the width of the uploaded documents grid
+    overflow: 'hidden', // Eliminate the scrollbar
+  },
 }));
 
-function getStepContent(step, formData, setFormData, schoolInfo) {
+const personalInfoKeys = ['fullName', 'dob', 'gender', 'contactNumber', 'email'];
+const professionalInfoKeys = ['position', 'subjectSpecialization', 'grade', 'experience', 'qualification'];
+const employmentInfoKeys = ['joiningDate', 'employmentType', 'previousSchool'];
+const emergencyContactInfoKeys = ['emergencyContactName', 'emergencyContactNumber', 'relationshipToTeacher'];
+const additionalInfoKeys = ['languagesKnown', 'interests', 'availabilityOfExtraCirricularActivities'];
+
+function getStepContent(step, formData, setFormData, schoolInfo, expandedDoc, setExpandedDoc, classes) {
   switch (step) {
     case 0:
       return (
-        <StaffPersonalInfo
-          formData={formData}
-          setFormData={setFormData}
-          className="formContainer" 
-        />
+        <StaffPersonalInfo formData={formData} setFormData={setFormData} className="formContainer"/>
       );
     case 1:
       return (
-        <ProfessionalDetailsForm
-          formData={formData}
-          setFormData={setFormData}
-        />
+        <ProfessionalDetailsForm formData={formData} setFormData={setFormData}/>
       );
     case 2:
       return (
@@ -241,18 +263,130 @@ function getStepContent(step, formData, setFormData, schoolInfo) {
       return (
         <AdditionalFieldsForm formData={formData} setFormData={setFormData} />
       );
+    case 6:
+      return (
+        <div>
+          <Typography variant="h6" gutterBottom className={classes.reviewTitle}>
+            Review Your Details
+          </Typography>
+          <Grid container spacing={3}>
+            <Grid item xs={12} sm={6}>
+              <Typography variant="h6" className={classes.reviewSectionTitle}>Personal details</Typography>
+              <Table>
+                <TableBody>
+                  {personalInfoKeys.map((key) => (
+                    <TableRow key={key}>
+                      <TableCell>{key}</TableCell>
+                      <TableCell>{formData.personalInfo[key] || ''}</TableCell>
+                    </TableRow>
+                  ))}
+                  {formData.personalInfo.profilePic && (
+                    <TableRow>
+                      <TableCell>Profile Picture</TableCell>
+                      <TableCell>
+                        <img src={formData.personalInfo.profilePic} alt="Profile" style={{ width: '100px', height: '100px', borderRadius: '50%' }} />
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Typography variant="h6" className={classes.reviewSectionTitle}>Professional Info</Typography>
+              <Table>
+                <TableBody>
+                  {professionalInfoKeys.map((key) => (
+                    <TableRow key={key}>
+                      <TableCell>{key}</TableCell>
+                      <TableCell>{formData.professionalInfo[key] || ''}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Typography variant="h6" className={classes.reviewSectionTitle}>Employment Info</Typography>
+              <Table>
+                <TableBody>
+                  {employmentInfoKeys.map((key) => (
+                    <TableRow key={key}>
+                      <TableCell>{key}</TableCell>
+                      <TableCell>{formData.employmentInfo[key] || ''}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Typography variant="h6" className={classes.reviewSectionTitle}>Emergency Contact Info</Typography>
+              <Table>
+                <TableBody>
+                  {emergencyContactInfoKeys.map((key) => (
+                    <TableRow key={key}>
+                      <TableCell>{key}</TableCell>
+                      <TableCell>{formData.emergencyContactInfo[key] || ''}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Typography variant="h6" className={classes.reviewSectionTitle}>Additional Info</Typography>
+              <Table>
+                <TableBody>
+                  {additionalInfoKeys.map((key) => (
+                    <TableRow key={key}>
+                      <TableCell>{key}</TableCell>
+                      <TableCell>{formData.additionalInfo[key] || ''}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Typography variant="h6" className={classes.reviewSectionTitle}>Uploaded Documents</Typography>
+              <Table>
+                <TableBody>
+                  {formData.documents.map((doc, index) => (
+                    <React.Fragment key={index}>
+                      <TableRow>
+                        <TableCell>{doc.name.length > 10 ? `${doc.name.substring(0, 10)}...` : doc.name}</TableCell>
+                        <TableCell>{doc.type}</TableCell>
+                        <TableCell>
+                          <IconButton onClick={() => setExpandedDoc(expandedDoc === index ? null : index)}>
+                            {expandedDoc === index ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                      {expandedDoc === index && (
+                        <TableRow>
+                          <TableCell colSpan={3}>
+                            <img src={doc.url} alt={doc.name} style={{ width: '100%' }} />
+                          </TableCell>
+                        </TableRow>
+                      )}
+                    </React.Fragment>
+                  ))}
+                </TableBody>
+              </Table>
+            </Grid>
+          </Grid>
+        </div>
+      );
     default:
       throw new Error("Unknown step");
   }
 }
 
 export default function StaffPrimaryForm() {
+  const classes = useStyles();
   const [activeStep, setActiveStep] = useState(0);
   const { globalData } = useContext(GlobalStateContext);
   const schoolInfo = globalData.schoolInfo || {};
   const [formData, setFormData] = useState({
     personalInfo: {
       fullName: "",
+      profilepic: "",
       dob: "",
       gender: "",
       contactNumber: "",
@@ -301,6 +435,7 @@ export default function StaffPrimaryForm() {
     documents: [],
   });
   const [errors, setErrors] = useState({});
+  const [expandedDoc, setExpandedDoc] = useState(null);
 
   const validatePersonalInfo = () => {
     const { personalInfo } = formData;
@@ -386,23 +521,6 @@ export default function StaffPrimaryForm() {
     return isValid;
   };
 
-  // const validateAdditionalInfo = () => {
-  //   const { additionalInfo } = formData;
-  //   const requiredFields = ['languagesKnown'];
-  //   let isValid = true;
-  //   let newErrors = {};
-
-  //   requiredFields.forEach((field) => {
-  //     if (!additionalInfo[field]) {
-  //       isValid = false;
-  //       newErrors[field] = 'This field is required';
-  //     }
-  //   });
-
-  //   setErrors(newErrors);
-  //   return isValid;
-  // };
-
   const handleNext = () => {
     if (activeStep === 0 && !validatePersonalInfo()) {
       alert("Please fill out all required fields in Personal Details.");
@@ -478,6 +596,7 @@ export default function StaffPrimaryForm() {
     const payload = {
       SchoolId: globalData.data.SCHOOL_ID,
       fullName: formData.personalInfo.fullName,
+      profilepic: formData.personalInfo.profilePic,
       dob: formData.personalInfo.dob,
       gender: formData.personalInfo.gender,
       contactNumber: formData.personalInfo.contactNumber,
@@ -581,7 +700,7 @@ export default function StaffPrimaryForm() {
               </React.Fragment>
             ) : (
               <React.Fragment>
-                {getStepContent(activeStep, formData, setFormData, schoolInfo)}
+                {getStepContent(activeStep, formData, setFormData, schoolInfo, expandedDoc, setExpandedDoc, classes)}
                 <div className="buttons">
                   {activeStep !== 0 && (
                     <Button onClick={handleBack} className="button">

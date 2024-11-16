@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
@@ -6,6 +6,9 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { makeStyles } from '@material-ui/core/styles';
+import { storage } from '../../../../../../connections/firebase'; // Adjust the import path as necessary
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+
 import './staffPersonalInfo.css';
 
 const useStyles = makeStyles((theme) => ({
@@ -35,20 +38,38 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
     return error;
   };
 
+  const handleProfilePicUpload = async (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const storageRef = ref(storage, `profile_pictures/${file.name}`);
+      await uploadBytes(storageRef, file);
+      const fileURL = await getDownloadURL(storageRef);
+
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        personalInfo: {
+          ...prevFormData.personalInfo,
+          profilePic: fileURL,
+          profilePicName: file.name,
+        },
+      }));
+    }
+  };
+
   const handleInputChange = (e, fieldType, addressType = null) => {
     const { name, value } = e.target;
     let error = validateField(name, value);
-  
+
     // Show error if the field is empty
     if (!value) {
       error = 'This field is required';
     }
-  
+
     setErrors((prev) => ({
       ...prev,
       [name]: error,
     }));
-  
+
     if (fieldType === 'personalInfo') {
       setFormData((prev) => ({
         ...prev,
@@ -101,11 +122,11 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
 
   return (
     <React.Fragment>
-      <Typography variant="h6"  className='heading' style={{marginBottom:'26px', marginTop:'12px'}}>
+      <Typography variant="h6" className='heading' style={{marginBottom:'26px', marginTop:'12px'}}>
         Personal details :
       </Typography>
       <Grid container spacing={3}>
-        <Grid item xs={12}>
+        <Grid item xs={12} sm={6}>
           <TextField
             required
             id="fullName"
@@ -119,6 +140,20 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
             helperText={errors.fullName}
             className={`${classes.fieldMargin} heading`}
           />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <TextField
+            required
+            id="profilePic"
+            name="profilePic"
+            label="Profile Picture"
+            type="file"
+            fullWidth
+            className={`${classes.fieldMargin} heading`}
+            InputLabelProps={{ shrink: true }}
+            onChange={handleProfilePicUpload}
+          />
+          {formData.personalInfo.profilePicName && <Typography variant="body2" className={`${classes.fieldMargin} heading`}>{formData.personalInfo.profilePicName}</Typography>}
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
@@ -182,7 +217,7 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
           />
         </Grid>
         <Grid item xs={12}>
-          <Typography variant="h6"  className='heading' style={{marginBottom:'0px', marginTop:'12px'}}>
+          <Typography variant="h6" className='heading' style={{marginBottom:'0px', marginTop:'12px'}}>
             Current Address :
           </Typography>
         </Grid>
@@ -272,8 +307,8 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
                 checked={sameAsCurrent}
                 onChange={handleCheckboxChange}
                 color="primary"
-                className= 'heading'
-                />
+                className='heading'
+              />
             }
             label="Same as Current Address"
           />

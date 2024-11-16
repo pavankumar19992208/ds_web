@@ -71,11 +71,17 @@ const StaffProfessionalInfo = ({ formData, setFormData }) => {
   
         // Process grades from gradeLevelFrom and gradeLevelTo
         const Grades = [];
-        for (let i = data.data.GradeLevelFrom; i <= data.data.GradeLevelTo; i++) {
-          Grades.push({ value: i, label: `Grade ${i}` });
+        const gradeLevelFrom = parseInt(data.data.GradeLevelFrom.match(/\d+/)[0], 10);
+        const gradeLevelTo = parseInt(data.data.GradeLevelTo.match(/\d+/)[0], 10);
+        
+        console.log('GradeLevelFrom:', gradeLevelFrom); // Print grade level from to console
+        console.log('GradeLevelTo:', gradeLevelTo); // Print grade level to to console
+        
+        for (let i = gradeLevelFrom; i <= gradeLevelTo; i++) {
+          Grades.push({ value: i, label: `Class ${i}` });
         }
+        
         console.log('Grades:', Grades); // Print grades to console
-  
         setSchoolInfo({ Subjects: data.data.Subjects, Grades });
         console.log('Updated schoolInfo state:', { Subjects: data.data.Subjects, Grades }); // Log updated state
       } catch (error) {

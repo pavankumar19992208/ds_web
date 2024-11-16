@@ -12,7 +12,7 @@ const SubjectAllocation = () => {
   const [selectedGrade, setSelectedGrade] = useState('Select Grade');
   const [selectedSubject, setSelectedSubject] = useState('Select Subject');
   const [teachers, setTeachers] = useState([]);
-  const [selectedTeacher, setSelectedTeacher] = useState(null);
+  const [selectedTeacher, setSelectedTeacher] = useState({});
   const [allottedTeachers, setAllottedTeachers] = useState({});
 
   const handleGradeChange = (event) => {
@@ -23,18 +23,24 @@ const SubjectAllocation = () => {
     setSelectedSubject(event.target.value);
   };
 
-  const handleTeacherChange = (event) => {
+  const handleTeacherChange = (event, grade, subject) => {
     const teacherName = event.target.value;
-    if (Object.keys(allottedTeachers).length >= 6 && !allottedTeachers[selectedGrade]) {
+    if (Object.keys(allottedTeachers).length >= 6 && !allottedTeachers[grade]) {
       alert('You can only allot teachers to 6 classes at a time');
       return;
     }
-    setSelectedTeacher(teacherName);
+    setSelectedTeacher((prev) => ({
+      ...prev,
+      [grade]: {
+        ...prev[grade],
+        [subject]: teacherName,
+      },
+    }));
     setAllottedTeachers((prev) => ({
       ...prev,
-      [selectedGrade]: {
-        ...prev[selectedGrade],
-        [selectedSubject]: teacherName,
+      [grade]: {
+        ...prev[grade],
+        [subject]: teacherName,
       },
     }));
   };
@@ -103,8 +109,8 @@ const SubjectAllocation = () => {
                           control={
                             <Checkbox
                               value={teacher.name}
-                              checked={selectedTeacher === teacher.name}
-                              onChange={handleTeacherChange}
+                              checked={selectedTeacher[selectedGrade]?.[selectedSubject] === teacher.name}
+                              onChange={(e) => handleTeacherChange(e, selectedGrade, selectedSubject)}
                             />
                           }
                           label={teacher.name}
