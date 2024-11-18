@@ -1,9 +1,7 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Checkbox from '@mui/material/Checkbox';
 import CssBaseline from '@mui/material/CssBaseline';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import FormLabel from '@mui/material/FormLabel';
 import FormControl from '@mui/material/FormControl';
 import TextField from '@mui/material/TextField';
@@ -56,10 +54,24 @@ export default function SignIn(props) {
   const [mobileErrorMessage, setMobileErrorMessage] = React.useState('');
   const [otpError, setOtpError] = React.useState(false);
   const [otpErrorMessage, setOtpErrorMessage] = React.useState('');
+  const [resendEnabled, setResendEnabled] = React.useState(false);
+  const [seconds, setSeconds] = React.useState(15);
+  const [timerActive, setTimerActive] = React.useState(false);
+  const [otpSent, setOtpSent] = React.useState(false);
+
+  React.useEffect(() => {
+    if (timerActive && seconds > 0) {
+      const timer = setTimeout(() => setSeconds(seconds - 1), 1000);
+      return () => clearTimeout(timer);
+    } else if (seconds === 0) {
+      setResendEnabled(true);
+      setTimerActive(false);
+    }
+  }, [seconds, timerActive]);
 
   const handleSubmit = (event) => {
+    event.preventDefault();
     if (mobileError || otpError) {
-      event.preventDefault();
       return;
     }
     const data = new FormData(event.currentTarget);
@@ -67,6 +79,16 @@ export default function SignIn(props) {
       mobile: data.get('mobile'),
       otp: data.get('otp'),
     });
+
+    if (!otpSent) {
+      setOtpSent(true);
+      setResendEnabled(false);
+      setSeconds(15);
+      setTimerActive(true);
+    } else {
+      // Add logic to confirm OTP here
+      console.log('OTP confirmed');
+    }
   };
 
   const validateInputs = () => {
@@ -94,6 +116,13 @@ export default function SignIn(props) {
     }
 
     return isValid;
+  };
+
+  const handleResend = () => {
+    setResendEnabled(false);
+    setSeconds(15);
+    setTimerActive(true);
+    // Add logic to resend OTP here
   };
 
   return (
@@ -158,17 +187,20 @@ export default function SignIn(props) {
                 color={otpError ? 'error' : 'primary'}
               />
             </FormControl>
-            <FormControlLabel
-              control={<Checkbox value="resend" color="primary" />}
-              label="Resend OTP"
-            />
+            <Button
+              onClick={handleResend}
+              disabled={!resendEnabled}
+              variant="text"
+            >
+              Resend OTP {resendEnabled ? '' : `(${seconds}s)`}
+            </Button>
             <Button
               type="submit"
               fullWidth
               variant="contained"
               onClick={validateInputs}
             >
-              Send OTP
+              {otpSent ? 'Confirm OTP' : 'Send OTP'}
             </Button>
           </Box>
         </Card>

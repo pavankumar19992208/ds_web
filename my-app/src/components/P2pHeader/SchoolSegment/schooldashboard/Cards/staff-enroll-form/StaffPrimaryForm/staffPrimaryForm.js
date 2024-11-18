@@ -232,7 +232,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const personalInfoKeys = ['fullName', 'dob', 'gender', 'contactNumber', 'email'];
-const professionalInfoKeys = ['position', 'subjectSpecialization', 'grade', 'experience', 'qualification'];
+const professionalInfoKeys = ['position', 'experience', 'qualification', 'certifications'];
 const employmentInfoKeys = ['joiningDate', 'employmentType', 'previousSchool'];
 const emergencyContactInfoKeys = ['emergencyContactName', 'emergencyContactNumber', 'relationshipToTeacher'];
 const additionalInfoKeys = ['languagesKnown', 'interests', 'availabilityOfExtraCirricularActivities'];
@@ -299,6 +299,19 @@ function getStepContent(step, formData, setFormData, schoolInfo, expandedDoc, se
                     <TableRow key={key}>
                       <TableCell>{key}</TableCell>
                       <TableCell>{formData.professionalInfo[key] || ''}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Typography variant="h6" className={classes.reviewSectionTitle}>Subject Specialization</Typography>
+              <Table>
+                <TableBody>
+                  {formData.professionalInfo.grades.map((grade, index) => (
+                    <TableRow key={index}>
+                      <TableCell>{`Class ${grade.value}`}</TableCell>
+                      <TableCell>{(grade.subjects || []).join(', ')}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -409,9 +422,9 @@ export default function StaffPrimaryForm() {
       },
     },
     professionalInfo: {
-      position: "",
+      position: [],
       subjectSpecialization: "",
-      grade: "",
+      grade: [],
       experience: "",
       qualification: "",
       certifications: "",
@@ -526,10 +539,10 @@ export default function StaffPrimaryForm() {
       alert("Please fill out all required fields in Personal Details.");
       return;
     }
-    if (activeStep === 1 && !validateProfessionalInfo()) {
-      alert("Please fill out all required fields in Professional Details.");
-      return;
-    }
+    // if (activeStep === 1 && !validateProfessionalInfo()) {
+    //   alert("Please fill out all required fields in Professional Details.");
+    //   return;
+    // }
     if (activeStep === 2 && !validateEmploymentInfo()) {
       alert("Please fill out all required fields in Employment Details.");
       return;
@@ -593,43 +606,61 @@ export default function StaffPrimaryForm() {
     //   return;
     // }
 
-    const payload = {
-      SchoolId: globalData.data.SCHOOL_ID,
-      fullName: formData.personalInfo.fullName,
-      profilepic: formData.personalInfo.profilePic,
-      dob: formData.personalInfo.dob,
-      gender: formData.personalInfo.gender,
-      contactNumber: formData.personalInfo.contactNumber,
-      email: formData.personalInfo.email,
-      currentAddress: formData.personalInfo.currentAddress,
-      permanentAddress: formData.personalInfo.permanentAddress,
-      position: formData.professionalInfo.position,
-      subjectSpecialization: formData.professionalInfo.subjectSpecialization,
-      grade: formData.professionalInfo.grade,
-      experience: formData.professionalInfo.experience,
-      qualification: formData.professionalInfo.qualification,
-      certifications: formData.professionalInfo.certifications,
-      joiningDate: formData.employmentInfo.joiningDate,
-      employmentType: formData.employmentInfo.employmentType,
-      otherEmploymentType: formData.employmentInfo.otherEmploymentType,
-      previousSchool: formData.employmentInfo.previousSchool,
-      emergencyContactName: formData.emergencyContactInfo.emergencyContactName,
-      emergencyContactNumber: formData.emergencyContactInfo.emergencyContactNumber,
-      relationshipToTeacher: formData.emergencyContactInfo.relationshipToTeacher,
-      languagesKnown: formData.additionalInfo.languagesKnown,
-      interests: formData.additionalInfo.interests,
-      availabilityOfExtraCirricularActivities: formData.additionalInfo.availabilityOfExtraCirricularActivities,
-      documents: formData.documents.reduce((acc, doc) => {
-        acc[doc.type] = doc.url;
-        return acc;
-      }, {}),
-    };
+                 const gradeMapping = {
+              1: 'Class 1',
+              2: 'Class 2',
+              3: 'Class 3',
+              4: 'Class 4',
+              5: 'Class 5',
+              6: 'Class 6',
+              7: 'Class 7',
+              8: 'Class 8',
+              9: 'Class 9',
+              10: 'Class 10',
+              11: 'Class 11',
+              12: 'Class 12',
+            };
+            
+            const payload = {
+              SchoolId: globalData.data.SCHOOL_ID,
+              fullName: formData.personalInfo.fullName,
+              profilepic: formData.personalInfo.profilePic,
+              dob: formData.personalInfo.dob,
+              gender: formData.personalInfo.gender,
+              contactNumber: formData.personalInfo.contactNumber,
+              email: formData.personalInfo.email,
+              currentAddress: formData.personalInfo.currentAddress,
+              permanentAddress: formData.personalInfo.permanentAddress,
+              position: formData.professionalInfo.position,
+              subjectSpecialization: formData.professionalInfo.grades.reduce((acc, grade) => {
+                const gradeText = gradeMapping[grade.value] || `Class ${grade.value}`;
+                acc[gradeText] = grade.subjects || [];
+                return acc;
+              }, {}),
+              experience: formData.professionalInfo.experience,
+              qualification: formData.professionalInfo.qualification,
+              certifications: formData.professionalInfo.certifications,
+              joiningDate: formData.employmentInfo.joiningDate,
+              employmentType: formData.employmentInfo.employmentType,
+              otherEmploymentType: formData.employmentInfo.otherEmploymentType,
+              previousSchool: formData.employmentInfo.previousSchool,
+              emergencyContactName: formData.emergencyContactInfo.emergencyContactName,
+              emergencyContactNumber: formData.emergencyContactInfo.emergencyContactNumber,
+              relationshipToTeacher: formData.emergencyContactInfo.relationshipToTeacher,
+              languagesKnown: formData.additionalInfo.languagesKnown,
+              interests: formData.additionalInfo.interests,
+              availabilityOfExtraCirricularActivities: formData.additionalInfo.availabilityOfExtraCirricularActivities,
+              documents: formData.documents.reduce((acc, doc) => {
+                acc[doc.type] = doc.url;
+                return acc;
+              }, {}),
+            };
 
     // Log payload to console
     console.log("Payload to be sent:", payload);
 
     try {
-      const response = await fetch(`${BaseUrl}/registerstaff`, {
+      const response = await fetch(`${BaseUrl}/registerteacher`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

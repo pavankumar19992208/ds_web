@@ -565,6 +565,19 @@ export default function EnrollForm() {
 
   const handleSubmit = async () => {
     console.log('Form submitted:', formData);
+    
+      // Upload photo to Firebase and collect URL
+  let photoURL = '';
+  if (formData.personalInfo.Photo) {
+    const photoRef = ref(storage, `photos/${formData.personalInfo.PhotoName}`);
+    try {
+      await uploadString(photoRef, formData.personalInfo.Photo, 'data_url');
+      photoURL = await getDownloadURL(photoRef);
+      console.log(`Photo uploaded: ${formData.personalInfo.PhotoName} - URL: ${photoURL}`);
+    } catch (error) {
+      console.error("Error uploading photo: ", error);
+    }
+  }
   
     // Upload documents to Firebase and collect URLs
     const uploadedDocuments = [];
@@ -598,36 +611,36 @@ export default function EnrollForm() {
     // Prepare payload
     const payload = {
       SchoolId: globalData.data.SCHOOL_ID,
-      StudentName: formData.personalInfo.StudentName,
-      DOB: formData.personalInfo.DOB,
-      Gender: formData.personalInfo.Gender,
-      Photo: formData.personalInfo.Photo, // Use the URL of the uploaded photo
-      Grade: formData.personalInfo.Grade,
-      PreviousSchool: formData.personalInfo.PreviousSchool,
-      LanguagesKnown: formData.personalInfo.languages,
-      Religion: formData.personalInfo.Religion,
-      Category: formData.personalInfo.Category,
-      MotherName: formData.guardianInfo.MotherName,
-      FatherName: formData.guardianInfo.FatherName,
-      Nationality: formData.personalInfo.Nationality,
-      AadharNumber: formData.personalInfo.AadharNumber,
-      GuardianName: formData.guardianInfo.GuardianName,
-      MobileNumber: formData.guardianInfo.MobileNumber,
-      Email: formData.guardianInfo.Email,
-      EmergencyContact: formData.guardianInfo.EmergencyContact,
-      CurrentAddress: formData.guardianInfo.currentAddress,
-      PermanentAddress: formData.guardianInfo.permanentAddress,
-      PreviousPercentage: formData.academicInfo.PreviousPercentage,
-      BloodGroup: formData.academicInfo.BloodGroup,
-      MedicalDisability: formData.academicInfo.MedicalDisability,
-      Documents: uploadedDocuments.reduce((acc, doc) => {
+      fullName: formData.personalInfo.fullName,
+      profilepic: formData.personalInfo.profilePic,
+      dob: formData.personalInfo.dob,
+      gender: formData.personalInfo.gender,
+      contactNumber: formData.personalInfo.contactNumber,
+      email: formData.personalInfo.email,
+      currentAddress: formData.personalInfo.currentAddress,
+      permanentAddress: formData.personalInfo.permanentAddress,
+      position: formData.professionalInfo.position,
+      subjectSpecialization: formData.professionalInfo.grades.reduce((acc, grade) => {
+        acc[grade.value] = grade.subjects || [];
+        return acc;
+      }, {}),
+      experience: formData.professionalInfo.experience,
+      qualification: formData.professionalInfo.qualification,
+      certifications: formData.professionalInfo.certifications,
+      joiningDate: formData.employmentInfo.joiningDate,
+      employmentType: formData.employmentInfo.employmentType,
+      otherEmploymentType: formData.employmentInfo.otherEmploymentType,
+      previousSchool: formData.employmentInfo.previousSchool,
+      emergencyContactName: formData.emergencyContactInfo.emergencyContactName,
+      emergencyContactNumber: formData.emergencyContactInfo.emergencyContactNumber,
+      relationshipToTeacher: formData.emergencyContactInfo.relationshipToTeacher,
+      languagesKnown: formData.additionalInfo.languagesKnown,
+      interests: formData.additionalInfo.interests,
+      availabilityOfExtraCirricularActivities: formData.additionalInfo.availabilityOfExtraCirricularActivities,
+      documents: formData.documents.reduce((acc, doc) => {
         acc[doc.type] = doc.url;
         return acc;
       }, {}),
-      PaymentDetails,
-      Password: formData.personalInfo.Password,
-      ParentOccupation: formData.guardianInfo.ParentOccupation,
-      ParentQualification: formData.guardianInfo.ParentQualification,
     };
   
     // Log payload to console
