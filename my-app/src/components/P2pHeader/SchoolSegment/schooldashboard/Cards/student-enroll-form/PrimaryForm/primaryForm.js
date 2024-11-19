@@ -36,6 +36,7 @@ import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector
 import PropTypes from 'prop-types';
 import { styled } from '@mui/material/styles';
 import BaseUrl from '../../../../../../../config';
+import HashLoader from 'react-spinners/HashLoader';
 
 const QontoConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {
@@ -320,6 +321,7 @@ export default function EnrollForm() {
   const [showDocuments, setShowDocuments] = useState(false);
   const [expandedDoc, setExpandedDoc] = useState(null);
   const [successDialogOpen, setSuccessDialogOpen] = useState(false);
+  const [loading, setLoading] = useState(false); // Add loading state
 
   const validateStep = () => {
     if (activeStep === 0) {
@@ -404,22 +406,22 @@ export default function EnrollForm() {
     setSuccessDialogOpen(false);
   };
 
-    const handleSubmit = async () => {
+  const handleSubmit = async () => {
     console.log('Form submitted:', formData);
-  
+
     // Upload photo to Firebase and collect URL
-    let photoURL = '';
-    if (formData.personalInfo.Photo) {
+    let photoURL = formData.personalInfo.Photo;
+    if (photoURL && photoURL.startsWith('data:image/')) {
       const photoRef = ref(storage, `photos/${formData.personalInfo.PhotoName}`);
       try {
-        await uploadString(photoRef, formData.personalInfo.Photo, 'data_url');
+        await uploadString(photoRef, photoURL, 'data_url');
         photoURL = await getDownloadURL(photoRef);
         console.log(`Photo uploaded: ${formData.personalInfo.PhotoName} - URL: ${photoURL}`);
       } catch (error) {
         console.error("Error uploading photo: ", error);
       }
     }
-  
+
     // Upload documents to Firebase and collect URLs
     const uploadedDocuments = [];
     for (const doc of formData.documents) {
@@ -437,7 +439,7 @@ export default function EnrollForm() {
         console.error("Error uploading document: ", error);
       }
     }
-  
+
     // Prepare PaymentDetails based on selected payment method
     const { PaymentMethod, Amount, TransactionId, BankTransfer } = formData.paymentInfo;
     let PaymentDetails = { PaymentMethod };
@@ -448,14 +450,14 @@ export default function EnrollForm() {
     } else if (PaymentMethod === 'bankTransfer') {
       PaymentDetails = { ...PaymentDetails, BankTransfer };
     }
-  
+
     // Prepare payload
     const payload = {
       SchoolId: globalData.data.SCHOOL_ID,
       StudentName: formData.personalInfo.StudentName,
       DOB: formData.personalInfo.DOB,
       Gender: formData.personalInfo.Gender,
-      Photo: formData.personalInfo.Photo, // Use the URL of the uploaded photo
+      Photo: photoURL, // Use the URL of the uploaded photo
       Grade: formData.personalInfo.Grade,
       PreviousSchool: formData.personalInfo.PreviousSchool,
       LanguagesKnown: formData.personalInfo.languages,
@@ -479,145 +481,158 @@ export default function EnrollForm() {
         return acc;
       }, {}),
       PaymentDetails,
-      Password: formData.personalInfo.Password,
+      // Password: formData.personalInfo.Password,
       ParentOccupation: formData.guardianInfo.ParentOccupation,
       ParentQualification: formData.guardianInfo.ParentQualification,
     };
-  
+
     // Log payload to console
     console.log('Payload to be sent:', payload);
-  
-    // Send formData and uploadedDocuments to backend
-    try {
-      const response = await fetch(`${BaseUrl}/registerstudent`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-      });
-  
-      if (!response.ok) {
-        throw new Error('Form submission failed');
-      }
-  
-      const data = await response.json();
-      console.log('Form data sent to backend successfully:', data);
-  
-      // Clear local storage after successful submission
-      localStorage.removeItem('uploadedDocuments');
-  
-      // Open success dialog
-      setSuccessDialogOpen(true);
-    } catch (error) {
-      console.error('Error sending form data to backend:', error);
+      
+          // Send formData and uploadedDocuments to backend
+          try {
+            const response = await fetch(`${BaseUrl}/registerstudent`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(payload),
+            });
+      
+            if (!response.ok) {
+              throw new Error('Form submission failed');
+            }
+      
+            const data = await response.json();
+            console.log('Form data sent to backend successfully:', data);
+      
+            // Clear local storage after successful submission
+            localStorage.removeItem('uploadedDocuments');
+      
+            // Open success dialog
+            setSuccessDialogOpen(true);
+          } catch (error) {
+            console.error('Error sending form data to backend:', error);
+          }
+        };
+      
+      const handleDocumentClick = (doc) => {
+        setSelectedDoc(doc);
+        setOpen(true);
+      };
+      
+            const handleClose = () => {
+        setOpen(false);
+      };
+      
+      const handleSuccessClose = () => {
+        setSuccessDialogOpen(false);
+        window.location.href = '/school_dashboard'; // Redirect to school dashboard
+      };
+      
+      return (
+        <React.Fragment>
+          <Navbar schoolName={globalData.data.SCHOOL_NAME} schoolLogo={globalData.data.SCHOOL_LOGO} />
+          <main className="layout">
+            <Sidebar visibleItems={['home', 'updateEnrollment']} hideProfile={true} showTitle={false} />
+            <Paper className="paper">
+              <Typography component="h1" variant="h4" align="center" className='headline'>
+                Student's Enroll Form
+              </Typography>
+              <Grid container spacing={3}>
+                <Grid item xs={12} sm={6} style={{ marginTop: '20px', marginBottom: '12px' }}>
+                  <Typography variant="h6" className='school-name' style={{ fontSize: '1rem' }}>{globalData.data.SCHOOL_NAME}</Typography>
+                </Grid>
+                <Grid item xs={12} sm={6} style={{ textAlign: 'right', marginTop: '16px' }}>
+                  <Typography variant="h6" className='school-id' style={{ fontSize: '1rem' }}>School ID : {globalData.data.SCHOOL_ID}</Typography>
+                </Grid>
+              </Grid>
+              <Stack sx={{ width: '100%' }} spacing={4}>
+                <Stepper alternativeLabel activeStep={activeStep} connector={<ColorlibConnector />} style={{ marginTop: '20px' }}>
+                  {steps.map((label, index) => (
+                    <Step key={label} onClick={() => handleStepClick(index)}>
+                      <StepLabel StepIconComponent={ColorlibStepIcon}>{label}</StepLabel>
+                    </Step>
+                  ))}
+                </Stepper>
+              </Stack>
+              <React.Fragment>
+                {activeStep === steps.length ? (
+                  <React.Fragment>
+                    <Typography variant="h5" gutterBottom>
+                      Submitted successfully
+                    </Typography>
+                    <Typography variant="subtitle1">
+                      Enjoy your journey
+                    </Typography>
+                    <div className="buttons">
+                      <Button
+                        variant="contained"
+                        onClick={handleEnrollMore}
+                        className={classes.button}
+                      >
+                        Enroll More
+                      </Button>
+                    </div>
+                  </React.Fragment>
+                ) : (
+                  <React.Fragment>
+                    {getStepContent(activeStep, formData, setFormData, handleDocumentClick, expandedDoc, setExpandedDoc, classes)}
+                    <div className="buttons">
+                      {activeStep !== 0 && (
+                        <Button onClick={handleBack} className={classes.button}>
+                          Back
+                        </Button>
+                      )}
+                      <Button
+                        variant="contained"
+                        onClick={activeStep === steps.length - 1 ? handleSubmit : handleNext}
+                        className={`${classes.button} ${classes.nextButton} urbanist-font`}
+                      >
+                        {activeStep === steps.length - 1 ? 'Verify and Submit' : 'Next'}
+                      </Button>
+                    </div>
+                  </React.Fragment>
+                )}
+              </React.Fragment>
+            </Paper>
+          </main>
+          <Dialog open={open} onClose={handleClose}>
+            <DialogTitle>Document Content</DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                {selectedDoc ? (
+                  <div>
+                    <Typography variant="h6">{selectedDoc.name}</Typography>
+                    <img src={selectedDoc.data} alt={selectedDoc.name} style={{ width: '100%' }} />
+                  </div>
+                ) : (
+                  'No document selected'
+                )}
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleClose} color="primary">
+                Close
+              </Button>
+            </DialogActions>
+          </Dialog>
+          <Dialog open={successDialogOpen} onClose={handleSuccessClose}>
+            <DialogTitle>Success</DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                The form has been successfully submitted.
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleSuccessClose} color="primary">
+                Close
+              </Button>
+              <Button onClick={handleEnrollMore} color="primary">
+                Enroll More
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </React.Fragment>
+      );
     }
-  };
-  
-  // Add the success dialog to the JSX
-  return (
-    <React.Fragment>
-      <Navbar schoolName={globalData.data.SCHOOL_NAME} schoolLogo={globalData.data.SCHOOL_LOGO} />
-      <main className="layout">
-        <Sidebar visibleItems={['home', 'updateEnrollment']} hideProfile={true} showTitle={false} />
-        <Paper className="paper">
-          <Typography component="h1" variant="h4" align="center" className='headline'>
-            Student's Enroll Form
-          </Typography>
-          <Grid container spacing={3}>
-            <Grid item xs={12} sm={6} style={{ marginTop: '20px', marginBottom: '12px' }}>
-              <Typography variant="h6" className='school-name' style={{ fontSize: '1rem' }}>{globalData.data.SCHOOL_NAME}</Typography>
-            </Grid>
-            <Grid item xs={12} sm={6} style={{ textAlign: 'right', marginTop: '16px' }}>
-              <Typography variant="h6" className='school-id' style={{ fontSize: '1rem' }}>School ID : {globalData.data.SCHOOL_ID}</Typography>
-            </Grid>
-          </Grid>
-          <Stack sx={{ width: '100%' }} spacing={4}>
-            <Stepper alternativeLabel activeStep={activeStep} connector={<ColorlibConnector />} style={{ marginTop: '20px' }}>
-              {steps.map((label, index) => (
-                <Step key={label} onClick={() => handleStepClick(index)}>
-                  <StepLabel StepIconComponent={ColorlibStepIcon}>{label}</StepLabel>
-                </Step>
-              ))}
-            </Stepper>
-          </Stack>
-          <React.Fragment>
-            {activeStep === steps.length ? (
-              <React.Fragment>
-                <Typography variant="h5" gutterBottom>
-                  Submitted successfully
-                </Typography>
-                <Typography variant="subtitle1">
-                  Enjoy your journey
-                </Typography>
-                <div className="buttons">
-                  <Button
-                    variant="contained"
-                    onClick={handleEnrollMore}
-                    className={classes.button}
-                  >
-                    Enroll More
-                  </Button>
-                </div>
-              </React.Fragment>
-            ) : (
-              <React.Fragment>
-                {getStepContent(activeStep, formData, setFormData, handleDocumentClick, expandedDoc, setExpandedDoc, classes)}
-                <div className="buttons">
-                  {activeStep !== 0 && (
-                    <Button onClick={handleBack} className={classes.button}>
-                      Back
-                    </Button>
-                  )}
-                  <Button
-                    variant="contained"
-                    onClick={activeStep === steps.length - 1 ? handleSubmit : handleNext}
-                    className={`${classes.button} ${classes.nextButton} urbanist-font`}
-                  >
-                    {activeStep === steps.length - 1 ? 'Verify and Submit' : 'Next'}
-                  </Button>
-                </div>
-              </React.Fragment>
-            )}
-          </React.Fragment>
-        </Paper>
-      </main>
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Document Content</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            {selectedDoc ? (
-              <div>
-                <Typography variant="h6">{selectedDoc.name}</Typography>
-                <img src={selectedDoc.data} alt={selectedDoc.name} style={{ width: '100%' }} />
-              </div>
-            ) : (
-              'No document selected'
-            )}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            Close
-          </Button>
-        </DialogActions>
-      </Dialog>
-      <Dialog open={successDialogOpen} onClose={() => setSuccessDialogOpen(false)}>
-        <DialogTitle>Success</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            The form has been successfully submitted.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setSuccessDialogOpen(false)} color="primary">
-            Close
-          </Button>
-          <Button onClick={handleEnrollMore} color="primary">
-            Enroll More
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </React.Fragment>
-  );
-}
