@@ -1,0 +1,104 @@
+@keyframes moveLeftToRight {
+    0% {
+        transform: translateX(0);
+    }
+    50% {
+        transform: translateX(-30px); /* Adjust the distance as needed */
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+
+.academic-year {
+    position: absolute;
+    right: 0px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    z-index: 3;
+    height: auto;
+    transition: right 0.3s ease; /* Add transition for smooth effect */
+}
+
+.academic-year .icon {
+    margin-right: 32px; /* Adjust this value as needed */
+    font-size: 40px;
+    z-index: 3;
+    cursor: pointer; /* Change cursor to pointer on hover */
+    transition: margin-right 0.3s ease, transform 0.3s ease; /* Add transition for smooth effect */
+    animation: moveLeftToRight 1s  ; /* Add moveLeftToRight animation */
+    animation-iteration-count: 2;
+}
+.academic-year .container p{
+    justify-self: center;
+    margin-top: 200px;
+    color: #fff;
+    font-family: 'Urbanist', sans-serif !important;
+    font-optical-sizing: auto !important;
+    font-weight: 700 !important;
+    font-style: normal !important;
+    font-size: 1.1rem;
+
+}
+.academic-year .container input {
+    justify-self: center;
+    margin-top: 48px !important;
+
+}
+.academic-year .container button {
+    justify-self: center;
+
+}
+.academic-year .container {
+    display: none; /* Initially hide the container */
+    position: absolute;
+    right: 0;
+    top: -50vh;
+    width: 500px;
+    height: 100vh;
+    background-color: #0E5E9D;
+    border-left: 1px solid hsla(220, 20%, 80%, 0.4);
+    box-shadow: 0 3px 20px rgba(0, 0, 0, 0.3) !important; /* Add box shadow to the right side */
+     padding: 20px; /* Adjust padding as needed */
+    transition: right 0.5s ease; /* Add transition for smooth effect */
+
+
+}
+
+.academic-year.open .container {
+    display: block; /* Show the container when open */
+    right: 0px; /* Adjust this value as needed */
+    flex-direction: column;
+
+}
+
+.academic-year.open .icon {
+    
+    margin-right: 480px; /* Move the icon to the left when open */
+    transform: rotate(180deg); /* Rotate the icon to the right */
+    animation: none; /* Remove moveLeftToRight animation */
+}
+
+.academic-year .container input {
+    display: block;
+    margin: 10px 0;
+    padding: 16px;
+    border-radius: 8px;
+    width: 260px;
+    border: 1px solid hsla(220, 20%, 80%, 0.4);
+
+}
+
+.academic-year .container button {
+    display: block;
+    margin: 10px 0;
+    padding: 10px 28px;
+    
+    cursor: pointer;
+    border-radius: 12px;
+    border: 1px solid hsla(220, 20%, 80%, 0.4);
+
+}
+

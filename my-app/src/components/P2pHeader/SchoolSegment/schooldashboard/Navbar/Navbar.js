@@ -5,7 +5,7 @@ import { Event, Notifications, ExitToApp } from '@material-ui/icons';
 import { GlobalStateContext } from '../../../../../GlobalStateContext';
 import './Navbar.css';
 
-const Navbar = ({ schoolName, schoolLogo, establishmentYear, establishmentID, email, contactNumber }) => {
+const Navbar = ({ schoolName, schoolLogo, establishmentYear, establishmentID, email, contactNumber, onStartNewAcademicYear }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const { globalData, setGlobalData } = useContext(GlobalStateContext);
@@ -43,6 +43,9 @@ const Navbar = ({ schoolName, schoolLogo, establishmentYear, establishmentID, em
           </Button>
         </div>
         <div className="navbar-right">
+          <Button className='new-aca-year-btn' style={{ marginLeft: '10px' }} onClick={onStartNewAcademicYear}>
+            Start New Academic Year
+          </Button>
           <IconButton id="icon" onClick={handleMenuOpen}>
             <Event />
           </IconButton>
@@ -61,6 +64,7 @@ const Navbar = ({ schoolName, schoolLogo, establishmentYear, establishmentID, em
             <MenuItem onClick={handleMenuClose}>School Events</MenuItem>
             <MenuItem onClick={handleMenuClose}>Holidays</MenuItem>
           </Menu>
+
           <IconButton id="icon">
             <Notifications />
           </IconButton>

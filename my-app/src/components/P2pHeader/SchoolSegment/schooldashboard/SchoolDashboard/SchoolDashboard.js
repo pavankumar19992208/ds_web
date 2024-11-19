@@ -4,6 +4,7 @@ import Navbar from '../Navbar/Navbar';
 import Sidebar from '../Sidebar/Sidebar';
 import Events from '../Events/Events';
 import Cards from '../Cards/cards';
+import AcademicYear from '../AcademicYear/AcademicYearVerification';
 import './SchoolDashboard.css';
 
 const SchoolDashboard = () => {
@@ -11,8 +12,7 @@ const SchoolDashboard = () => {
 
   const [studentCount, setStudentCount] = useState(0);
   const [staffCount, setStaffCount] = useState(0);
-
-  
+  const [showAcademicYear, setShowAcademicYear] = useState(false); // State to control the visibility of AcademicYear
 
   useEffect(() => {
     if (!globalData) return;
@@ -55,13 +55,26 @@ const SchoolDashboard = () => {
     return <div>Loading...</div>; // Display a loading message or a fallback UI
   }
 
+  const toggleAcademicYear = () => {
+    setShowAcademicYear(!showAcademicYear);
+  };
+
   return (
     <div className="homepage">
-      <Navbar schoolName={globalData.data.SCHOOL_NAME} schoolLogo={globalData.data.SCHOOL_LOGO} />
+      <Navbar 
+        schoolName={globalData.data.SCHOOL_NAME} 
+        schoolLogo={globalData.data.SCHOOL_LOGO} 
+        onStartNewAcademicYear={toggleAcademicYear} // Pass the toggle function as a prop
+      />
       <Sidebar visibleItems={['home', 'attachDocument', 'subjectAllocation', 'attendanceTracking', 'leaveApprovals', 'academicPerformance','teacherAlert', 'eventPlanning', 'careerGuidance', 'inventoryManagement']} showTitle={true} selectedItem="home" />
       <main className="main-content">
         <Cards schoolName={globalData.data.SCHOOL_NAME} schoolLogo={globalData.data.SCHOOL_LOGO} studentCount={studentCount} staffCount={staffCount} />
         <Events />
+               {showAcademicYear && (
+          <div className="academic-year-popup">
+            <AcademicYear open={showAcademicYear} onClose={toggleAcademicYear} />
+          </div>
+        )}
       </main>
       <div className="school-id-box">
         School ID: {globalData.data.SCHOOL_ID}

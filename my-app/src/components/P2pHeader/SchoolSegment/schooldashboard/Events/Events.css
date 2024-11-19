@@ -37,7 +37,7 @@ height: 35vh; /* Set a maximum height for the card */
   font-weight: bold;
   font-size: 14px;
   position: relative;
-  z-index: 1000;
+  z-index: 2;
   height: 40px; /* Match the height of news-section */
   line-height: 40px; /* Center text vertically */
 }

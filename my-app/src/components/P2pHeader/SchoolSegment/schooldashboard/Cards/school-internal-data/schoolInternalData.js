@@ -45,6 +45,12 @@ const useStyles = makeStyles((theme) => ({
     color: '#3f51b5',
     fontSize: '1rem',
   },
+  totalSectionsTitle: {
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(-3),
+    color: '#3f51b5',
+    fontSize: '1rem',
+  },
   academicYearTitle: {
     marginTop: theme.spacing(2),
     color: '#3f51b5',
@@ -113,7 +119,7 @@ const SchoolInternalData = () => {
   const [feeStructure, setFeeStructure] = useState([{ feeType: '', amount: '' }]);
   const [teachingStaff, setTeachingStaff] = useState(['']);
   const [nonTeachingStaff, setNonTeachingStaff] = useState(['']);
-
+  const [sections, setSections] = useState('');
   const handleStateChange = (event) => {
     setState(event.target.value);
   };
@@ -205,6 +211,13 @@ const SchoolInternalData = () => {
     }
   };
 
+  const handleSectionsChange = (level, value) => {
+    setSections({
+      ...sections,
+      [level]: value,
+    });
+  };
+
   const calculateTotalAmount = () => {
     return feeStructure.reduce((total, fee) => {
       const amount = parseFloat(fee.amount) || 0;
@@ -275,6 +288,7 @@ const SchoolInternalData = () => {
       OtherCurriculum: otherCurriculum,
       GradeLevelFrom: gradeLevel1,
       GradeLevelTo: gradeLevel2,
+      SectionsCount: sections,
       Subjects: subjects,
       Medium: medium,
       AcademicYearStart: academicYearStart,
@@ -669,6 +683,26 @@ const SchoolInternalData = () => {
                               <MenuItem key={index} value={level}>{level}</MenuItem>
                             ))}
                           </TextField>
+                        </Grid>
+                      </Grid>
+                      
+                                           <Grid item xs={12}>
+                        <Typography variant="h6" className={`${classes.totalSectionsTitle} urbanist-font`}>Total Sections for Each Class :</Typography>
+                      </Grid>
+                      <Grid container item xs={12} spacing={3}>
+                        <Grid item xs={12}>
+                          <TextField
+                            required
+                            id="sections"
+                            name="sections"
+                            label="Total Sections"
+                            type="number"
+                            fullWidth
+                            value={sections || ''}
+                            onChange={(e) => setSections(e.target.value)}
+                            inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+                            className={`${classes.field} urbanist-font`}
+                          />
                         </Grid>
                       </Grid>
             
