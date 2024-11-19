@@ -245,7 +245,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const personalInfoKeys = ['StudentName', 'DOB', 'Gender', 'Photo', 'Grade', 'PreviousSchool', 'languages', 'Religion', 'Category', 'Nationality', 'AadharNumber', 'Password'];
+const personalInfoKeys = ['StudentName', 'DOB', 'Gender', 'Photo', 'Grade', 'PreviousSchool', 'languages', 'Religion', 'Category', 'Nationality', 'AadharNumber'];
 const guardianInfoKeys = ['MotherName', 'FatherName', 'GuardianName', 'MobileNumber', 'Email', 'EmergencyContact', 'ParentOccupation', 'ParentQualification'];
 const academicInfoKeys = ['PreviousPercentage', 'BloodGroup', 'MedicalDisability'];
 const requiredDocuments = ['aadhar', 'tc', 'rationcard', 'income', 'birth'];
@@ -286,7 +286,7 @@ export default function EnrollForm() {
       Category: '',
       Nationality: '',
       AadharNumber: '',
-      Password: '',
+      // Password: '',
     },
     guardianInfo: {
       MotherName: '',
@@ -373,7 +373,7 @@ export default function EnrollForm() {
         Category: '',
         Nationality: '',
         AadharNumber: '',
-        Password: '',
+        // Password: '',
       },
       guardianInfo: {
         MotherName: '',
@@ -407,6 +407,7 @@ export default function EnrollForm() {
   };
 
   const handleSubmit = async () => {
+    setLoading(true);
     console.log('Form submitted:', formData);
 
     // Upload photo to Firebase and collect URL
@@ -509,11 +510,13 @@ export default function EnrollForm() {
             // Clear local storage after successful submission
             localStorage.removeItem('uploadedDocuments');
       
-            // Open success dialog
-            setSuccessDialogOpen(true);
-          } catch (error) {
-            console.error('Error sending form data to backend:', error);
-          }
+           // Open success dialog
+      setSuccessDialogOpen(true);
+    } catch (error) {
+      console.error('Error sending form data to backend:', error);
+    } finally {
+      setLoading(false);
+    }
         };
       
       const handleDocumentClick = (doc) => {
@@ -526,8 +529,11 @@ export default function EnrollForm() {
       };
       
       const handleSuccessClose = () => {
+        setLoading(true);
         setSuccessDialogOpen(false);
-        window.location.href = '/school_dashboard'; // Redirect to school dashboard
+        setTimeout(() => {
+          window.location.href = '/school_dashboard'; // Redirect to school dashboard
+        }, 1000);
       };
       
       return (
@@ -597,6 +603,11 @@ export default function EnrollForm() {
               </React.Fragment>
             </Paper>
           </main>
+          {loading && (
+            <div className="loaderContainer">
+              <HashLoader color="#ffffff" size={50} />
+            </div>
+          )}
           <Dialog open={open} onClose={handleClose}>
             <DialogTitle>Document Content</DialogTitle>
             <DialogContent>
