@@ -216,7 +216,7 @@ const StaffProfessionalInfo = ({ formData, setFormData }) => {
     <div className={classes.mainContainer}>
       <form className={classes.formContainer}>
         <Grid container spacing={3} className={classes.gridContainer}>
-          <Grid item xs={12} sm={12}>
+        <Grid item xs={12} sm={12}>
             <FormControl component="fieldset" className={`${classes.field} urbanist-font`} style={{ marginBottom: '0px' }}>
               <label style={{ marginBottom: '12px' }}>Position / Role :</label>
               <FormGroup>
@@ -239,14 +239,18 @@ const StaffProfessionalInfo = ({ formData, setFormData }) => {
               </FormGroup>
             </FormControl>
           </Grid>
-
-          <Grid item xs={12}>
-            <label variant="h6" style={{ marginBottom: '12px' }} className={`${classes.field} urbanist-font`} gutterBottom > Grade-wise Subject Selection : </label>
+          <Grid item xs={12} sm={12} style={{ display: 'flex', alignItems: 'center' }}>
+            <label style={{ marginBottom: '12px', marginRight: '8px' }} className={`${classes.field} urbanist-font`} gutterBottom>
+              Grade-wise Subject Selection:
+            </label>
+            <IconButton onClick={addGrade}>
+              <AddIcon />
+            </IconButton>
           </Grid>
-          
+
           {formValues.grades.map((grade, index) => (
             <Grid container spacing={3} key={index}>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={6} >
                 <TextField
                   id={`grade-${index}`}
                   select
@@ -265,7 +269,7 @@ const StaffProfessionalInfo = ({ formData, setFormData }) => {
                   ))}
                 </TextField>
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={6} style={{ display: 'flex', alignItems: 'center' }}>
                 <FormControl className={classes.field}>
                   <InputLabel id={`subject-label-${index}`}>Subjects</InputLabel>
                   <Select
@@ -274,7 +278,7 @@ const StaffProfessionalInfo = ({ formData, setFormData }) => {
                     multiple
                     value={grade.subjects || []}
                     onChange={(e) => handleSubjectChange(e, grade.value)}
-                    input={<OutlinedInput id={`select-multiple-chip-${index}`} label="Subjects" />}
+                    input={<OutlinedInput id={`select-multiple-chip-${index}`} label="Subjects"/>}
                     renderValue={(selected) => (
                       <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                         {selected.map((value) => (
@@ -291,20 +295,12 @@ const StaffProfessionalInfo = ({ formData, setFormData }) => {
                     ))}
                   </Select>
                 </FormControl>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <IconButton onClick={() => deleteGrade(index)}>
+                <IconButton onClick={() => deleteGrade(index)} disabled={formValues.grades.length === 1}>
                   <DeleteIcon />
                 </IconButton>
               </Grid>
             </Grid>
           ))}
-
-          <Grid item xs={12} sm={6}>
-            <IconButton onClick={addGrade}>
-              <AddIcon />
-            </IconButton>
-          </Grid>
 
           <Grid item xs={12} sm={6}>
             <TextField

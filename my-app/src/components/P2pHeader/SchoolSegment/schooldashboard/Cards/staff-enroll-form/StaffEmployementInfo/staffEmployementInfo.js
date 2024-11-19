@@ -90,27 +90,10 @@ const StaffEmploymentInfo = ({ formData, setFormData }) => {
             />
           </Grid>
           <Grid item xs={12} sm={6}>
-            <TextField
-              id="employmentType"
-              select
-              label="Employment Type"
-              name="employmentType"
-              value={formValues.employmentType}
-              onChange={handleChange}
-              fullWidth
-              required
-              className={`${classes.field} urbanist-font`}
-            >
-              {employmentTypes.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
-            {formValues.employmentType === 'Other' && (
+            {formValues.employmentType === 'Other' ? (
               <TextField
                 id="otherEmploymentType"
-                label="Specify Other Employment Type"
+                label="Employment Type"
                 name="otherEmploymentType"
                 value={formValues.otherEmploymentType}
                 onChange={handleChange}
@@ -118,6 +101,24 @@ const StaffEmploymentInfo = ({ formData, setFormData }) => {
                 required
                 className={`${classes.field} urbanist-font`}
               />
+            ) : (
+              <TextField
+                id="employmentType"
+                select
+                label="Employment Type"
+                name="employmentType"
+                value={formValues.employmentType}
+                onChange={handleChange}
+                fullWidth
+                required
+                className={`${classes.field} urbanist-font`}
+              >
+                {employmentTypes.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
             )}
           </Grid>
           <Grid item xs={12} sm={6}>

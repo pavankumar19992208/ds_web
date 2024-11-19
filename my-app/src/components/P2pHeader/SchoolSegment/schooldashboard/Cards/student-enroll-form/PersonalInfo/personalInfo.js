@@ -107,22 +107,26 @@ export default function DetailsForm({ formData, setFormData }) {
       const reader = new FileReader();
       reader.onload = async (e) => {
         const fileData = e.target.result;
-        const storageRef = ref(storage, `photos/${file.name}`);
-        try {
-          await uploadString(storageRef, fileData, 'data_url');
-          const downloadURL = await getDownloadURL(storageRef);
-          setFormData((prevData) => ({
-            ...prevData,
-            personalInfo: {
-              ...prevData.personalInfo,
-              [name]: downloadURL,
-              PhotoName: file.name,
-            },
-          }));
-          setFileName(file.name);
-          console.log(`Photo uploaded: ${file.name} - URL: ${downloadURL}`);
-        } catch (error) {
-          console.error("Error uploading photo: ", error);
+        if (fileData.startsWith('data:image/')) {
+          const storageRef = ref(storage, `photos/${file.name}`);
+          try {
+            await uploadString(storageRef, fileData, 'data_url');
+            const downloadURL = await getDownloadURL(storageRef);
+            setFormData((prevData) => ({
+              ...prevData,
+              personalInfo: {
+                ...prevData.personalInfo,
+                [name]: downloadURL,
+                PhotoName: file.name,
+              },
+            }));
+            setFileName(file.name);
+            console.log(`Photo uploaded: ${file.name} - URL: ${downloadURL}`);
+          } catch (error) {
+            console.error("Error uploading photo: ", error);
+          }
+        } else {
+          console.error("Invalid file format. Please upload an image.");
         }
       };
       reader.readAsDataURL(file);
