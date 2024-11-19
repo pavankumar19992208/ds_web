@@ -642,7 +642,7 @@ export default function StaffPrimaryForm() {
               certifications: formData.professionalInfo.certifications,
               joiningDate: formData.employmentInfo.joiningDate,
               employmentType: formData.employmentInfo.employmentType === 'Other' ? formData.employmentInfo.otherEmploymentType : formData.employmentInfo.employmentType,
-              otherEmploymentType: formData.employmentInfo.otherEmploymentType,
+              // otherEmploymentType: formData.employmentInfo.otherEmploymentType,
               previousSchool: formData.employmentInfo.previousSchool,
               emergencyContactName: formData.emergencyContactInfo.emergencyContactName,
               emergencyContactNumber: formData.emergencyContactInfo.emergencyContactNumber,

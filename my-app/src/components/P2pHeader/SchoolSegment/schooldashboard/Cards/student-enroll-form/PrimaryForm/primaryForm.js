@@ -2,10 +2,6 @@ import React, { useState, useContext } from 'react';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableRow from '@material-ui/core/TableRow';
 import Grid from '@material-ui/core/Grid';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -19,32 +15,27 @@ import DocumentsUpload from '../DocumentsUpload/documentsUpload';
 import PaymentForm from '../PaymentForm/stPayment';
 import Sidebar from '../../../Sidebar/Sidebar';
 import Navbar from '../../../Navbar/Navbar';
+import ReviewForm from '../ReviewForm/reviewForm';
 import './primaryForm.css';
 import { GlobalStateContext } from '../../../../../../../GlobalStateContext';
 import { storage } from '../../../../../../connections/firebase';
 import { ref, uploadString, getDownloadURL } from 'firebase/storage';
 import { makeStyles } from '@material-ui/core/styles';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import ExpandLessIcon from '@material-ui/icons/ExpandLess';
-import IconButton from '@material-ui/core/IconButton';
-import BaseUrl from '../../../../../../../config';
 import Stack from '@mui/material/Stack';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import Check from '@mui/icons-material/Check';
-import SettingsIcon from '@mui/icons-material/Settings';
 import { FaAddressCard } from "react-icons/fa6";
 import { RiParentFill } from "react-icons/ri";
 import { HiMiniAcademicCap } from "react-icons/hi2";
 import { RiFolderUploadFill } from "react-icons/ri";
-import GroupAddIcon from '@mui/icons-material/GroupAdd';
-import VideoLabelIcon from '@mui/icons-material/VideoLabel';
 import { MdOutlinePayment } from "react-icons/md";
 import { MdRateReview } from "react-icons/md";
 import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector';
 import PropTypes from 'prop-types';
 import { styled } from '@mui/material/styles';
+import BaseUrl from '../../../../../../../config';
 
 const QontoConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {
@@ -271,159 +262,7 @@ function getStepContent(step, formData, setFormData, handleDocumentClick, expand
     case 4:
       return <PaymentForm formData={formData} setFormData={setFormData} />;
     case 5:
-      const { PaymentMethod, Amount, TransactionId, BankTransfer } = formData.paymentInfo;
-      return (
-        <div>
-          <Typography variant="h6" gutterBottom className={classes.reviewTitle}>
-            Review Your Details
-          </Typography>
-          <Grid container spacing={3}>
-            <Grid item xs={12} sm={6}>
-              <Typography variant="h6" className={classes.reviewSectionTitle}>Personal details</Typography>
-              <Table>
-                <TableBody>
-                  {personalInfoKeys.map((key) => (
-                    <TableRow key={key}>
-                      <TableCell>{key}</TableCell>
-                      <TableCell>
-                        {key === 'Photo' ? (
-                          <div>
-                            <Typography>{formData.personalInfo.PhotoName}</Typography>
-                            <IconButton onClick={() => setExpandedDoc(expandedDoc === key ? null : key)}>
-                              {expandedDoc === key ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-                            </IconButton>
-                            {expandedDoc === key && (
-                              <img src={formData.personalInfo.Photo} alt="User's uploaded photo" style={{ width: '100%' }} />
-                            )}
-                          </div>
-                        ) : (
-                          typeof formData.personalInfo[key] === 'object' ? JSON.stringify(formData.personalInfo[key]) : formData.personalInfo[key] || ''
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Typography variant="h6" className={classes.reviewSectionTitle}>Guardian Info</Typography>
-              <Table>
-                <TableBody>
-                  {guardianInfoKeys.map((key) => (
-                    <TableRow key={key}>
-                      <TableCell>{key}</TableCell>
-                      <TableCell>
-                        {typeof formData.guardianInfo[key] === 'object' ? JSON.stringify(formData.guardianInfo[key]) : formData.guardianInfo[key] || ''}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </Grid>
-            {formData.guardianInfo.currentAddress && Object.keys(formData.guardianInfo.currentAddress).length > 0 && (
-              <Grid item xs={12} sm={6}>
-                <Typography variant="h6" className={classes.reviewSectionTitle}>Current Address</Typography>
-                <Table>
-                  <TableBody>
-                    {Object.entries(formData.guardianInfo.currentAddress).map(([key, value]) => (
-                      <TableRow key={key}>
-                        <TableCell>{key}</TableCell>
-                        <TableCell>{value}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </Grid>
-            )}
-            {formData.guardianInfo.permanentAddress && Object.keys(formData.guardianInfo.permanentAddress).length > 0 && (
-              <Grid item xs={12} sm={6}>
-                <Typography variant="h6" className={classes.reviewSectionTitle}>Permanent Address</Typography>
-                <Table>
-                  <TableBody>
-                    {Object.entries(formData.guardianInfo.permanentAddress).map(([key, value]) => (
-                      <TableRow key={key}>
-                        <TableCell>{key}</TableCell>
-                        <TableCell>{value}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </Grid>
-            )}
-            <Grid item xs={12} sm={6}>
-              <Typography variant="h6" className={classes.reviewSectionTitle}>Academic & Medical Info</Typography>
-              <Table>
-                <TableBody>
-                  {academicInfoKeys.map((key) => (
-                    <TableRow key={key}>
-                      <TableCell>{key}</TableCell>
-                      <TableCell>
-                        {typeof formData.academicInfo[key] === 'object' ? JSON.stringify(formData.academicInfo[key]) : formData.academicInfo[key] || ''}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </Grid>
-            <Grid item xs={12} sm={6} >
-              <Typography variant="h6" className={classes.reviewSectionTitle}>Uploaded Documents</Typography>
-              <Table>
-                <TableBody>
-                  {formData.documents.map((doc, index) => (
-                    <React.Fragment key={index}>
-                      <TableRow>
-                        <TableCell>{doc.name.length > 10 ? `${doc.name.substring(0, 10)}...` : doc.name}</TableCell>
-                        <TableCell>{doc.type}</TableCell>
-                        <TableCell>
-                          <IconButton onClick={() => setExpandedDoc(expandedDoc === index ? null : index)}>
-                            {expandedDoc === index ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-                          </IconButton>
-                        </TableCell>
-                      </TableRow>
-                      {expandedDoc === index && (
-                        <TableRow>
-                          <TableCell colSpan={3}>
-                            <img src={doc.data} alt={doc.name} style={{ width: '100%' }} />
-                          </TableCell>
-                        </TableRow>
-                      )}
-                    </React.Fragment>
-                  ))}
-                </TableBody>
-              </Table>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Typography variant="h6" className={classes.reviewSectionTitle}>Payment Info</Typography>
-              <Table>
-                <TableBody>
-                  <TableRow>
-                    <TableCell>Payment Method</TableCell>
-                    <TableCell>{PaymentMethod}</TableCell>
-                  </TableRow>
-                  {PaymentMethod === 'cash' && (
-                    <TableRow>
-                      <TableCell>Amount</TableCell>
-                      <TableCell>{Amount}</TableCell>
-                    </TableRow>
-                  )}
-                  {PaymentMethod === 'upi' && (
-                    <TableRow>
-                      <TableCell>Transaction ID</TableCell>
-                      <TableCell>{TransactionId}</TableCell>
-                    </TableRow>
-                  )}
-                  {PaymentMethod === 'bankTransfer' && (
-                    <TableRow>
-                      <TableCell>Bank Transfer</TableCell>
-                      <TableCell>{BankTransfer}</TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </Grid>
-          </Grid>
-        </div>
-      );
+      return <ReviewForm formData={formData} expandedDoc={expandedDoc} setExpandedDoc={setExpandedDoc} classes={classes} />;
     default:
       throw new Error('Unknown step');
   }
@@ -480,6 +319,7 @@ export default function EnrollForm() {
   const [selectedDoc, setSelectedDoc] = useState(null);
   const [showDocuments, setShowDocuments] = useState(false);
   const [expandedDoc, setExpandedDoc] = useState(null);
+  const [successDialogOpen, setSuccessDialogOpen] = useState(false);
 
   const validateStep = () => {
     if (activeStep === 0) {
@@ -561,23 +401,24 @@ export default function EnrollForm() {
       documents: [],
       paymentInfo: {}, // Reset paymentInfo
     });
+    setSuccessDialogOpen(false);
   };
 
-  const handleSubmit = async () => {
+    const handleSubmit = async () => {
     console.log('Form submitted:', formData);
-    
-      // Upload photo to Firebase and collect URL
-  let photoURL = '';
-  if (formData.personalInfo.Photo) {
-    const photoRef = ref(storage, `photos/${formData.personalInfo.PhotoName}`);
-    try {
-      await uploadString(photoRef, formData.personalInfo.Photo, 'data_url');
-      photoURL = await getDownloadURL(photoRef);
-      console.log(`Photo uploaded: ${formData.personalInfo.PhotoName} - URL: ${photoURL}`);
-    } catch (error) {
-      console.error("Error uploading photo: ", error);
+  
+    // Upload photo to Firebase and collect URL
+    let photoURL = '';
+    if (formData.personalInfo.Photo) {
+      const photoRef = ref(storage, `photos/${formData.personalInfo.PhotoName}`);
+      try {
+        await uploadString(photoRef, formData.personalInfo.Photo, 'data_url');
+        photoURL = await getDownloadURL(photoRef);
+        console.log(`Photo uploaded: ${formData.personalInfo.PhotoName} - URL: ${photoURL}`);
+      } catch (error) {
+        console.error("Error uploading photo: ", error);
+      }
     }
-  }
   
     // Upload documents to Firebase and collect URLs
     const uploadedDocuments = [];
@@ -642,7 +483,7 @@ export default function EnrollForm() {
       ParentOccupation: formData.guardianInfo.ParentOccupation,
       ParentQualification: formData.guardianInfo.ParentQualification,
     };
-
+  
     // Log payload to console
     console.log('Payload to be sent:', payload);
   
@@ -665,24 +506,18 @@ export default function EnrollForm() {
   
       // Clear local storage after successful submission
       localStorage.removeItem('uploadedDocuments');
+  
+      // Open success dialog
+      setSuccessDialogOpen(true);
     } catch (error) {
       console.error('Error sending form data to backend:', error);
     }
   };
-
-  const handleDocumentClick = (doc) => {
-    setSelectedDoc(doc);
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-    setSelectedDoc(null);
-  };
-
+  
+  // Add the success dialog to the JSX
   return (
     <React.Fragment>
-      <Navbar schoolName={globalData.data.SCHOOL_NAME} schoolLogo={globalData.data.SCHOOL_LOGO} />      
+      <Navbar schoolName={globalData.data.SCHOOL_NAME} schoolLogo={globalData.data.SCHOOL_LOGO} />
       <main className="layout">
         <Sidebar visibleItems={['home', 'updateEnrollment']} hideProfile={true} showTitle={false} />
         <Paper className="paper">
@@ -764,6 +599,22 @@ export default function EnrollForm() {
         <DialogActions>
           <Button onClick={handleClose} color="primary">
             Close
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog open={successDialogOpen} onClose={() => setSuccessDialogOpen(false)}>
+        <DialogTitle>Success</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            The form has been successfully submitted.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setSuccessDialogOpen(false)} color="primary">
+            Close
+          </Button>
+          <Button onClick={handleEnrollMore} color="primary">
+            Enroll More
           </Button>
         </DialogActions>
       </Dialog>
