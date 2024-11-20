@@ -322,6 +322,8 @@ export default function EnrollForm() {
   const [expandedDoc, setExpandedDoc] = useState(null);
   const [successDialogOpen, setSuccessDialogOpen] = useState(false);
   const [loading, setLoading] = useState(false); // Add loading state
+  const [UserId, setUserId] = useState('');
+  const [Password, setPassword] = useState('');
 
   const validateStep = () => {
     if (activeStep === 0) {
@@ -506,7 +508,8 @@ export default function EnrollForm() {
       
             const data = await response.json();
             console.log('Form data sent to backend successfully:', data);
-      
+            setUserId(data.UserId);
+            setPassword(data.Password);
             // Clear local storage after successful submission
             localStorage.removeItem('uploadedDocuments');
       
@@ -563,25 +566,6 @@ export default function EnrollForm() {
                 </Stepper>
               </Stack>
               <React.Fragment>
-                {activeStep === steps.length ? (
-                  <React.Fragment>
-                    <Typography variant="h5" gutterBottom>
-                      Submitted successfully
-                    </Typography>
-                    <Typography variant="subtitle1">
-                      Enjoy your journey
-                    </Typography>
-                    <div className="buttons">
-                      <Button
-                        variant="contained"
-                        onClick={handleEnrollMore}
-                        className={classes.button}
-                      >
-                        Enroll More
-                      </Button>
-                    </div>
-                  </React.Fragment>
-                ) : (
                   <React.Fragment>
                     {getStepContent(activeStep, formData, setFormData, handleDocumentClick, expandedDoc, setExpandedDoc, classes)}
                     <div className="buttons">
@@ -599,7 +583,6 @@ export default function EnrollForm() {
                       </Button>
                     </div>
                   </React.Fragment>
-                )}
               </React.Fragment>
             </Paper>
           </main>
@@ -607,32 +590,16 @@ export default function EnrollForm() {
             <div className="loaderContainer">
               <HashLoader color="#ffffff" size={50} />
             </div>
-          )}
-          <Dialog open={open} onClose={handleClose}>
-            <DialogTitle>Document Content</DialogTitle>
-            <DialogContent>
-              <DialogContentText>
-                {selectedDoc ? (
-                  <div>
-                    <Typography variant="h6">{selectedDoc.name}</Typography>
-                    <img src={selectedDoc.data} alt={selectedDoc.name} style={{ width: '100%' }} />
-                  </div>
-                ) : (
-                  'No document selected'
-                )}
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={handleClose} color="primary">
-                Close
-              </Button>
-            </DialogActions>
-          </Dialog>
+          )}          
           <Dialog open={successDialogOpen} onClose={handleSuccessClose}>
             <DialogTitle>Success</DialogTitle>
             <DialogContent>
               <DialogContentText>
                 The form has been successfully submitted.
+                <br />
+                User ID: <strong> {UserId} </strong> 
+                <br />
+                Password: <strong> {Password} </strong> 
               </DialogContentText>
             </DialogContent>
             <DialogActions>

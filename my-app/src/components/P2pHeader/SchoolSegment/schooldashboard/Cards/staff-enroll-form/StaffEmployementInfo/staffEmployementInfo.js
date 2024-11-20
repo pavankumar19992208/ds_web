@@ -69,9 +69,21 @@ const StaffEmploymentInfo = ({ formData, setFormData }) => {
     }));
   };
 
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const finalFormValues = { ...formValues };
+    if (formValues.employmentType === 'Other') {
+      finalFormValues.employmentType = formValues.otherEmploymentType;
+    }
+    setFormData((prevData) => ({
+      ...prevData,
+      employmentInfo: finalFormValues,
+    }));
+  };
+
   return (
     <div className={classes.mainContainer}>
-      <form className={classes.formContainer}>
+      <form className={classes.formContainer} onSubmit={handleSubmit}>
         <Grid container spacing={3} className={classes.gridContainer}>
           <Grid item xs={12} sm={6}>
             <TextField
@@ -90,10 +102,27 @@ const StaffEmploymentInfo = ({ formData, setFormData }) => {
             />
           </Grid>
           <Grid item xs={12} sm={6}>
-            {formValues.employmentType === 'Other' ? (
+            <TextField
+              id="employmentType"
+              select
+              label="Employment Type"
+              name="employmentType"
+              value={formValues.employmentType}
+              onChange={handleChange}
+              fullWidth
+              required
+              className={`${classes.field} urbanist-font`}
+            >
+              {employmentTypes.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </TextField>
+            {formValues.employmentType === 'Other' && (
               <TextField
                 id="otherEmploymentType"
-                label="Employment Type"
+                label="Specify Employment Type"
                 name="otherEmploymentType"
                 value={formValues.otherEmploymentType}
                 onChange={handleChange}
@@ -101,24 +130,6 @@ const StaffEmploymentInfo = ({ formData, setFormData }) => {
                 required
                 className={`${classes.field} urbanist-font`}
               />
-            ) : (
-              <TextField
-                id="employmentType"
-                select
-                label="Employment Type"
-                name="employmentType"
-                value={formValues.employmentType}
-                onChange={handleChange}
-                fullWidth
-                required
-                className={`${classes.field} urbanist-font`}
-              >
-                {employmentTypes.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
-                  </MenuItem>
-                ))}
-              </TextField>
             )}
           </Grid>
           <Grid item xs={12} sm={6}>

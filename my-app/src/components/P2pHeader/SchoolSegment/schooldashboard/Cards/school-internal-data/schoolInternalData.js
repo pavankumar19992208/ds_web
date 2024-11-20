@@ -14,6 +14,12 @@ import { GlobalStateContext } from '../../../../../../GlobalStateContext';
 import './schoolInternalData.css';
 import BaseUrl from '../../../../../../config';
 import MenuItem from '@material-ui/core/MenuItem';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogActions from '@material-ui/core/DialogActions';
+import HashLoader from 'react-spinners/HashLoader';
 
 const useStyles = makeStyles((theme) => ({
   formContainer: {},
@@ -120,6 +126,8 @@ const SchoolInternalData = () => {
   const [teachingStaff, setTeachingStaff] = useState(['']);
   const [nonTeachingStaff, setNonTeachingStaff] = useState(['']);
   const [sections, setSections] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [successDialogOpen, setSuccessDialogOpen] = useState(false);
   const handleStateChange = (event) => {
     setState(event.target.value);
   };
@@ -278,6 +286,7 @@ const SchoolInternalData = () => {
     if (!validateForm()) {
       return;
     }
+    setLoading(true); // Set loading to true when the form submission starts
 
     const totalAmount = calculateTotalAmount();
     const payload = {
@@ -329,9 +338,21 @@ const SchoolInternalData = () => {
         ...prevData,
         subjects: payload.Subjects,
       }));
+
+      setSuccessDialogOpen(true);
     } catch (error) {
       console.error('Error sending form data to backend:', error);
+    } finally {
+      setLoading(false);
     }
+  };
+
+  const handleSuccessClose = () => {
+    setSuccessDialogOpen(false);
+  };
+
+  const handleEnrollMore = () => {
+    // Logic for enrolling more
   };
 
   const statesOfIndia = [
@@ -615,7 +636,6 @@ const SchoolInternalData = () => {
               ))}
             </Grid>
             <Grid item xs={12} sm={6}>
-              {/* <Typography variant="h6" className={`${classes.staffRolesHeading} urbanist-font`}>Non-Teaching Staff :</Typography> */}
               {nonTeachingStaff.map((staff, index) => (
                 <Grid container spacing={1} key={index}>
                   <Grid item xs={9}>
@@ -864,6 +884,24 @@ const SchoolInternalData = () => {
                     </div>
                   </Paper>
                 </main>
+                {loading && (
+            <div className="loaderContainer">
+              <HashLoader color="#ffffff" size={50} />
+            </div>
+          )}          
+          <Dialog open={successDialogOpen} onClose={handleSuccessClose}>
+            <DialogTitle>Success</DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                The form has been successfully submitted.
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleSuccessClose} color="primary">
+                OK
+              </Button>
+            </DialogActions>
+          </Dialog>
               </React.Fragment>
             );
 };

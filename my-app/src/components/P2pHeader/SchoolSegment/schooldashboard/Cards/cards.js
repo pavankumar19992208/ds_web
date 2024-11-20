@@ -55,6 +55,10 @@ const Cards = ({ studentCount, staffCount, schoolName, schoolLogo }) => {
     navigate('/school-internal-data');
   };
 
+  const handleClassTimetableSchedule = () => {
+    navigate('/class-timetable');
+  };
+
   return (
     <div className="cards-container">
       <div className="card">
@@ -96,7 +100,7 @@ const Cards = ({ studentCount, staffCount, schoolName, schoolLogo }) => {
       <div className="card">
         <h2>Class Timetables</h2>
         <div className="button-group">
-          <button id='enroll-btn'>Schedule</button>
+          <button id='enroll-btn' onClick={handleClassTimetableSchedule}>Schedule</button>
           <button>View</button>
         </div>
       </div>

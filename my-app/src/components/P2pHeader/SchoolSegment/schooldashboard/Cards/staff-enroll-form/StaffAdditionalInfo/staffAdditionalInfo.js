@@ -29,6 +29,7 @@ const languages = ['Hindi', 'Telugu', 'English', 'Other'];
 const StaffAdditionalInfo = ({ formData, setFormData }) => {
   const classes = useStyles();
   const [selectedLanguages, setSelectedLanguages] = useState(formData.additionalInfo.languagesKnown || []);
+  const [otherLanguage, setOtherLanguage] = useState(formData.additionalInfo.otherLanguage || '');
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -45,11 +46,31 @@ const StaffAdditionalInfo = ({ formData, setFormData }) => {
   const handleLanguageChange = (event) => {
     const { value } = event.target;
     setSelectedLanguages(value);
+
+    if (!value.includes('Other')) {
+      setOtherLanguage('');
+    }
+
     setFormData((prevData) => ({
       ...prevData,
       additionalInfo: {
         ...prevData.additionalInfo,
-        languagesKnown: value,
+        languagesKnown: value.includes('Other') && otherLanguage ? [...value, otherLanguage] : value,
+        otherLanguage: value.includes('Other') ? otherLanguage : '',
+      },
+    }));
+  };
+
+  const handleOtherLanguageChange = (event) => {
+    const { value } = event.target;
+    setOtherLanguage(value);
+
+    setFormData((prevData) => ({
+      ...prevData,
+      additionalInfo: {
+        ...prevData.additionalInfo,
+        otherLanguage: value,
+        languagesKnown: selectedLanguages.includes('Other') ? [...selectedLanguages.filter(lang => lang !== 'Other'), value] : selectedLanguages,
       },
     }));
   };
@@ -88,8 +109,8 @@ const StaffAdditionalInfo = ({ formData, setFormData }) => {
                 id="otherLanguage"
                 label="Other Language"
                 name="otherLanguage"
-                value={formData.additionalInfo.otherLanguage || ''}
-                onChange={handleChange}
+                value={otherLanguage}
+                onChange={handleOtherLanguageChange}
                 fullWidth
                 className={`${classes.field} urbanist-font`}
               />

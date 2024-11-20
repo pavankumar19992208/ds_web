@@ -18,7 +18,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Typography from '@material-ui/core/Typography';
 import { GlobalStateContext } from '../../../../../../../GlobalStateContext';
 import BaseUrl from '../../../../../../../config';
-import { Label } from '@mui/icons-material';
+import HashLoader from 'react-spinners/HashLoader'; // Import the loader component
 
 const useStyles = makeStyles((theme) => ({
   formContainer: {},
@@ -53,26 +53,22 @@ const MenuProps = {
   },
 };
 
-const positions = [
-  { value: 'Teacher', label: 'Teacher' },
-  { value: 'Assistant Teacher', label: 'Assistant Teacher' },
-  { value: 'Head of the Department', label: 'Head of the Department' },
-];
-
 const StaffProfessionalInfo = ({ formData, setFormData }) => {
   const classes = useStyles();
   const { globalData } = useContext(GlobalStateContext);
-  const [schoolInfo, setSchoolInfo] = useState({ Subjects: [], Grades: [] });
+  const [schoolInfo, setSchoolInfo] = useState({ Subjects: [], Grades: [], Positions: [] });
   const [formValues, setFormValues] = useState({
     ...formData.professionalInfo,
     position: formData.professionalInfo.position || [],
     grades: formData.professionalInfo.grades || [],
   });
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(true); // Add loading state
 
   useEffect(() => {
     const fetchSchoolInfo = async () => {
       try {
+        setLoading(true); // Set loading to true before fetching data
         const response = await fetch(`${BaseUrl}/schoolinfo`, {
           method: 'POST',
           headers: {
@@ -98,9 +94,20 @@ const StaffProfessionalInfo = ({ formData, setFormData }) => {
           Grades.push({ value: i, label: `Class ${i}` });
         }
 
-        setSchoolInfo({ Subjects: data.data.Subjects, Grades });
+        const Positions = [
+          ...data.data.TeachingStaff.map((staff) => ({ value: staff, label: staff })),
+          ...data.data.NonTeachingStaff.map((staff) => ({ value: staff, label: staff })),
+        ];
+
+        setSchoolInfo({ 
+          Subjects: data.data.Subjects, 
+          Grades, 
+          Positions 
+        });
       } catch (error) {
         console.error('Error fetching school info:', error);
+      } finally {
+        setLoading(false); // Set loading to false after data is fetched
       }
     };
 
@@ -214,136 +221,143 @@ const StaffProfessionalInfo = ({ formData, setFormData }) => {
 
   return (
     <div className={classes.mainContainer}>
-      <form className={classes.formContainer}>
-        <Grid container spacing={3} className={classes.gridContainer}>
-        <Grid item xs={12} sm={12}>
-            <FormControl component="fieldset" className={`${classes.field} urbanist-font`} style={{ marginBottom: '0px' }}>
-              <label style={{ marginBottom: '12px' }}>Position / Role :</label>
-              <FormGroup>
-                <Grid container spacing={1}>
-                  {positions.map((option) => (
-                    <Grid item key={option.value}>
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={formValues.position.includes(option.value)}
-                            onChange={handlePositionChange}
-                            value={option.value}
-                          />
-                        }
-                        label={option.label}
-                      />
-                    </Grid>
-                  ))}
-                </Grid>
-              </FormGroup>
-            </FormControl>
-          </Grid>
-          <Grid item xs={12} sm={12} style={{ display: 'flex', alignItems: 'center' }}>
-            <label style={{ marginBottom: '12px', marginRight: '8px' }} className={`${classes.field} urbanist-font`} gutterBottom>
-              Grade-wise Subject Selection:
-            </label>
-            <IconButton onClick={addGrade}>
-              <AddIcon />
-            </IconButton>
-          </Grid>
+      {loading && (
+        <div className="loaderContainer">
+          <HashLoader color="#ffffff" size={50} />
+        </div>
+      )}
+      {!loading && (
+        <form className={classes.formContainer}>
+          <Grid container spacing={3} className={classes.gridContainer}>
+            <Grid item xs={12} sm={12}>
+              <FormControl component="fieldset" className={`${classes.field} urbanist-font`} style={{ marginBottom: '0px' }}>
+                <label style={{ marginBottom: '12px' }}>Position / Role :</label>
+                <FormGroup>
+                  <Grid container spacing={1}>
+                    {schoolInfo.Positions.map((option) => (
+                      <Grid item key={option.value}>
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              checked={formValues.position.includes(option.value)}
+                              onChange={handlePositionChange}
+                              value={option.value}
+                            />
+                          }
+                          label={option.label}
+                        />
+                      </Grid>
+                    ))}
+                  </Grid>
+                </FormGroup>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={12} style={{ display: 'flex', alignItems: 'center' }}>
+              <label style={{ marginBottom: '12px', marginRight: '8px' }} className={`${classes.field} urbanist-font`} gutterBottom>
+                Grade-wise Subject Selection:
+              </label>
+              <IconButton onClick={addGrade}>
+                <AddIcon />
+              </IconButton>
+            </Grid>
 
-          {formValues.grades.map((grade, index) => (
-            <Grid container spacing={3} key={index}>
-              <Grid item xs={12} sm={6} >
-                <TextField
-                  id={`grade-${index}`}
-                  select
-                  label="Grade"
-                  name={`grade-${index}`}
-                  value={grade.value}
-                  onChange={(e) => handleGradeChange(e, index)}
-                  fullWidth
-                  required
-                  className={`${classes.field} urbanist-font`}
-                >
-                  {schoolInfo.Grades.map((option) => (
-                    <MenuItem key={option.value} value={option.value} className={classes.menuItem}>
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Grid>
-              <Grid item xs={12} sm={6} style={{ display: 'flex', alignItems: 'center' }}>
-                <FormControl className={classes.field}>
-                  <InputLabel id={`subject-label-${index}`}>Subjects</InputLabel>
-                  <Select
-                    labelId={`subject-label-${index}`}
-                    id={`subject-${index}`}
-                    multiple
-                    value={grade.subjects || []}
-                    onChange={(e) => handleSubjectChange(e, grade.value)}
-                    input={<OutlinedInput id={`select-multiple-chip-${index}`} label="Subjects"/>}
-                    renderValue={(selected) => (
-                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                        {selected.map((value) => (
-                          <Chip key={value} label={value} />
-                        ))}
-                      </Box>
-                    )}
-                    MenuProps={MenuProps}
+            {formValues.grades.map((grade, index) => (
+              <Grid container spacing={3} key={index}>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    id={`grade-${index}`}
+                    select
+                    label="Grade"
+                    name={`grade-${index}`}
+                    value={grade.value}
+                    onChange={(e) => handleGradeChange(e, index)}
+                    fullWidth
+                    required
+                    className={`${classes.field} urbanist-font`}
                   >
-                    {schoolInfo.Subjects.map((subject) => (
-                      <MenuItem key={subject} value={subject}>
-                        {subject}
+                    {schoolInfo.Grades.map((option) => (
+                      <MenuItem key={option.value} value={option.value} className={classes.menuItem}>
+                        {option.label}
                       </MenuItem>
                     ))}
-                  </Select>
-                </FormControl>
-                <IconButton onClick={() => deleteGrade(index)} disabled={formValues.grades.length === 1}>
-                  <DeleteIcon />
-                </IconButton>
+                  </TextField>
+                </Grid>
+                <Grid item xs={12} sm={6} style={{ display: 'flex', alignItems: 'center' }}>
+                  <FormControl className={classes.field}>
+                    <InputLabel id={`subject-label-${index}`}>Subjects</InputLabel>
+                    <Select
+                      labelId={`subject-label-${index}`}
+                      id={`subject-${index}`}
+                      multiple
+                      value={grade.subjects || []}
+                      onChange={(e) => handleSubjectChange(e, grade.value)}
+                      input={<OutlinedInput id={`select-multiple-chip-${index}`} label="Subjects" />}
+                      renderValue={(selected) => (
+                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                          {selected.map((value) => (
+                            <Chip key={value} label={value} />
+                          ))}
+                        </Box>
+                      )}
+                      MenuProps={MenuProps}
+                    >
+                      {schoolInfo.Subjects.map((subject) => (
+                        <MenuItem key={subject} value={subject}>
+                          {subject}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                  <IconButton onClick={() => deleteGrade(index)} disabled={formValues.grades.length === 1}>
+                    <DeleteIcon />
+                  </IconButton>
+                </Grid>
               </Grid>
+            ))}
+
+            <Grid item xs={12} sm={6}>
+              <TextField
+                id="experience"
+                label="Years of Teaching Experience"
+                name="experience"
+                value={formValues.experience}
+                onChange={handleChange}
+                fullWidth
+                type="number"
+                className={`${classes.field} urbanist-font`}
+              />
             </Grid>
-          ))}
+            <Grid item xs={12} sm={6}>
+              <TextField
+                id="qualification"
+                label="Qualification"
+                name="qualification"
+                value={formValues.qualification}
+                onChange={handleChange}
+                fullWidth
+                required
+                className={`${classes.field} urbanist-font`}
+                error={!!errors.qualification}
+                helperText={errors.qualification}
+              />
+            </Grid>
 
-          <Grid item xs={12} sm={6}>
-            <TextField
-              id="experience"
-              label="Years of Teaching Experience"
-              name="experience"
-              value={formValues.experience}
-              onChange={handleChange}
-              fullWidth
-              type="number"
-              className={`${classes.field} urbanist-font`}
-            />
+            <Grid item xs={12} sm={6}>
+              <TextField
+                id="certifications"
+                label="Certifications (Teaching / Training)"
+                name="certifications"
+                value={formValues.certifications}
+                onChange={handleChange}
+                fullWidth
+                className={`${classes.field} urbanist-font`}
+                error={!!errors.certifications}
+                helperText={errors.certifications}
+              />
+            </Grid>
           </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              id="qualification"
-              label="Qualification"
-              name="qualification"
-              value={formValues.qualification}
-              onChange={handleChange}
-              fullWidth
-              required
-              className={`${classes.field} urbanist-font`}
-              error={!!errors.qualification}
-              helperText={errors.qualification}
-            />
-          </Grid>
-
-          <Grid item xs={12} sm={6}>
-            <TextField
-              id="certifications"
-              label="Certifications (Teaching / Training)"
-              name="certifications"
-              value={formValues.certifications}
-              onChange={handleChange}
-              fullWidth
-              className={`${classes.field} urbanist-font`}
-              error={!!errors.certifications}
-              helperText={errors.certifications}
-            />
-          </Grid>
-        </Grid>
-      </form>
+        </form>
+      )}
     </div>
   );
 };
