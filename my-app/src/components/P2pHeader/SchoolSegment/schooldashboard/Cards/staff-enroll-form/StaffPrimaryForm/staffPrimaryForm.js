@@ -330,6 +330,7 @@ export default function StaffPrimaryForm() {
   const [open, setOpen] = useState(false);
   const [selectedDoc, setSelectedDoc] = useState(null);
   const [Password, setPassword] = useState('');
+  const [UserId, setUserId] = useState('');
 
   const validatePersonalInfo = () => {
     const { personalInfo } = formData;
@@ -602,6 +603,7 @@ export default function StaffPrimaryForm() {
       const data = await response.json();
       console.log("Form data sent to backend successfully:", data);
       setPassword(data.password);
+      setUserId(data.userid);
       // Open success dialog
       setSuccessDialogOpen(true);
     } catch (error) {
@@ -729,6 +731,8 @@ export default function StaffPrimaryForm() {
             <DialogContent>
               <DialogContentText>
                 The form has been successfully submitted.
+                <br />
+                UserId: <strong> {UserId} </strong> 
                 <br />
                 Password: <strong> {Password} </strong> 
               </DialogContentText>

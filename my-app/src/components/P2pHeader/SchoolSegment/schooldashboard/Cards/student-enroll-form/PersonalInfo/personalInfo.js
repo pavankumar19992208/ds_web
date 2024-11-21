@@ -100,6 +100,16 @@ export default function DetailsForm({ formData, setFormData }) {
     }
   };
 
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      const { name } = event.target;
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [name]: '',
+      }));
+    }
+  };
+
   const handleFileChange = async (event) => {
     const { name, files } = event.target;
     const file = files[0];
@@ -183,6 +193,7 @@ export default function DetailsForm({ formData, setFormData }) {
             autoComplete="name"
             value={formData.personalInfo.StudentName || ''}
             onChange={handleChange}
+            onKeyDown={handleKeyDown}
             className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
             error={!!errors.StudentName}
             helperText={errors.StudentName}
@@ -201,6 +212,7 @@ export default function DetailsForm({ formData, setFormData }) {
             }}
             value={formData.personalInfo.DOB || ''}
             onChange={handleChange}
+            onKeyDown={handleKeyDown}
             className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
           />
         </Grid>
@@ -215,6 +227,7 @@ export default function DetailsForm({ formData, setFormData }) {
             fullWidth
             value={formData.personalInfo.Gender || ''}
             onChange={handleChange}
+            onKeyDown={handleKeyDown}
             className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
           >
             <MenuItem value="male">Male</MenuItem>
@@ -254,6 +267,7 @@ export default function DetailsForm({ formData, setFormData }) {
             fullWidth
             value={formData.personalInfo.Grade || ''}
             onChange={handleChange}
+            onKeyDown={handleKeyDown}
             className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
           >
             {[...Array(10).keys()].map(i => (
@@ -269,6 +283,7 @@ export default function DetailsForm({ formData, setFormData }) {
             fullWidth
             value={formData.personalInfo.PreviousSchool || ''}
             onChange={handleChange}
+            onKeyDown={handleKeyDown}
             className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
             error={!!errors.PreviousSchool}
             helperText={errors.PreviousSchool}
@@ -288,6 +303,7 @@ export default function DetailsForm({ formData, setFormData }) {
                 fullWidth
                 value={language}
                 onChange={(event) => handleLanguageChange(index, event)}
+                onKeyDown={handleKeyDown}
                 className={`${classes.languageInput} ${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
               />
             </div>
@@ -320,6 +336,7 @@ export default function DetailsForm({ formData, setFormData }) {
             fullWidth
             value={formData.personalInfo.Religion || ''}
             onChange={handleChange}
+            onKeyDown={handleKeyDown}
             className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
             error={!!errors.Religion}
             helperText={errors.Religion}
@@ -333,6 +350,7 @@ export default function DetailsForm({ formData, setFormData }) {
             fullWidth
             value={formData.personalInfo.Category || ''}
             onChange={handleChange}
+            onKeyDown={handleKeyDown}
             className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
             error={!!errors.Category}
             helperText={errors.Category}
@@ -346,6 +364,7 @@ export default function DetailsForm({ formData, setFormData }) {
             fullWidth
             value={formData.personalInfo.Nationality || ''}
             onChange={handleChange}
+            onKeyDown={handleKeyDown}
             className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
             error={!!errors.Nationality}
             helperText={errors.Nationality}
@@ -360,6 +379,7 @@ export default function DetailsForm({ formData, setFormData }) {
             fullWidth
             value={formData.personalInfo.AadharNumber || ''}
             onChange={handleChange}
+            onKeyDown={handleKeyDown}
             className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-fonts`}
             error={!!errors.AadharNumber}
             helperText={errors.AadharNumber}

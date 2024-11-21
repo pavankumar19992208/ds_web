@@ -67,7 +67,7 @@
     background-color: #ddd;
   }
   .class-dropdown {
-    width: 100%;
+    width: 160px;
     padding: 8px;
     border: 1px solid #ddd;
     border-radius: 4px;
@@ -87,7 +87,7 @@
     border: none;
     border-radius: 4px;
     background-color: #fff;
-    font-size: 16px;
+    font-size: 14px;
     text-align: center;
   }
   
