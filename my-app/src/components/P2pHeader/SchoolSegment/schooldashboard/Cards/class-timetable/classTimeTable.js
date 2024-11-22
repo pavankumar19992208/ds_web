@@ -8,6 +8,7 @@ const ClassTimeTable = () => {
     const { globalData } = useContext(GlobalStateContext);
     const [selectedClass, setSelectedClass] = useState('');
     const [timetable, setTimetable] = useState({});
+    const [defaultTimes, setDefaultTimes] = useState({});
 
     const weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     const classes = ["Class 1A", "Class 1B", "Class 2A", "Class 2B", "Class 3A", "Class 3B", "Class 4A", "Class 4B", "Class 5A", "Class 5B", "Class 6A", "Class 6B", "Class 7A", "Class 7B", "Class 8A", "Class 8B", "Class 9A", "Class 9B", "Class 10A", "Class 10B"];
@@ -55,13 +56,23 @@ const ClassTimeTable = () => {
     };
 
     const handleTimeChange = (period, field, value) => {
+        setDefaultTimes(prevDefaultTimes => ({
+            ...prevDefaultTimes,
+            [`period ${period}`]: {
+                ...prevDefaultTimes[`period ${period}`],
+                [field]: value
+            }
+        }));
+
         setTimetable(prevTimetable => {
             const updatedTimetable = { ...prevTimetable };
-            weekdays.forEach(weekday => {
-                updatedTimetable[selectedClass] = updatedTimetable[selectedClass] || {};
-                updatedTimetable[selectedClass][weekday] = updatedTimetable[selectedClass][weekday] || {};
-                updatedTimetable[selectedClass][weekday][`period ${period}`] = updatedTimetable[selectedClass][weekday][`period ${period}`] || {};
-                updatedTimetable[selectedClass][weekday][`period ${period}`][field] = value;
+            classes.forEach(cls => {
+                weekdays.forEach(weekday => {
+                    updatedTimetable[cls] = updatedTimetable[cls] || {};
+                    updatedTimetable[cls][weekday] = updatedTimetable[cls][weekday] || {};
+                    updatedTimetable[cls][weekday][`period ${period}`] = updatedTimetable[cls][weekday][`period ${period}`] || {};
+                    updatedTimetable[cls][weekday][`period ${period}`][field] = value;
+                });
             });
             return updatedTimetable;
         });
@@ -74,20 +85,22 @@ const ClassTimeTable = () => {
     };
 
     const handleUpdate = () => {
-        const allClassesTimetable = classes.reduce((acc, cls) => {
-            acc[cls] = timetable[cls] || {};
-            weekdays.forEach(day => {
-                acc[cls][day] = acc[cls][day] || {};
-                Array.from({ length: 7 }).forEach((_, period) => {
-                    acc[cls][day][`period ${period + 1}`] = acc[cls][day][`period ${period + 1}`] || {};
-                });
+        const selectedClassTimetable = timetable[selectedClass] || {};
+
+        weekdays.forEach(day => {
+            selectedClassTimetable[day] = selectedClassTimetable[day] || {};
+            Array.from({ length: 7 }).forEach((_, period) => {
+                selectedClassTimetable[day][`period ${period + 1}`] = selectedClassTimetable[day][`period ${period + 1}`] || {};
+                selectedClassTimetable[day][`period ${period + 1}`]['from'] = timetable[selectedClass]?.[day]?.[`period ${period + 1}`]?.from || defaultTimes[`period ${period + 1}`]?.from || '';
+                selectedClassTimetable[day][`period ${period + 1}`]['to'] = timetable[selectedClass]?.[day]?.[`period ${period + 1}`]?.to || defaultTimes[`period ${period + 1}`]?.to || '';
             });
-            return acc;
-        }, {});
+        });
 
         const payload = {
             SchoolId: globalData.data.SCHOOL_ID,
-            Timetable: allClassesTimetable
+            Timetable: {
+                [selectedClass]: selectedClassTimetable
+            }
         };
         console.log('Payload to be sent:', payload);
     };
