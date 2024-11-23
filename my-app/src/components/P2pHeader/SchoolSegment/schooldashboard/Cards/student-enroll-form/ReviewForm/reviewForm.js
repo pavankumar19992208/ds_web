@@ -8,6 +8,14 @@ const personalInfoKeys = ['StudentName', 'DOB', 'Gender', 'Photo', 'Grade', 'Pre
 const guardianInfoKeys = ['MotherName', 'FatherName', 'GuardianName', 'MobileNumber', 'Email', 'EmergencyContact', 'ParentOccupation', 'ParentQualification'];
 const academicInfoKeys = ['PreviousPercentage', 'BloodGroup', 'MedicalDisability'];
 
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = date.getFullYear();
+  return `${day}-${month}-${year}`;
+};
+
 function ReviewForm({ formData, expandedDoc, setExpandedDoc, classes }) {
   return (
     <div>
@@ -35,6 +43,8 @@ function ReviewForm({ formData, expandedDoc, setExpandedDoc, classes }) {
                       </div>
                     ) : key === 'languagesKnown' ? (
                       formData.personalInfo.languagesKnown ? formData.personalInfo.languagesKnown.join(', ') : ''
+                    ) : key === 'DOB' ? (
+                      formatDate(formData.personalInfo.DOB)
                     ) : (
                       typeof formData.personalInfo[key] === 'object' ? JSON.stringify(formData.personalInfo[key]) : formData.personalInfo[key] || ''
                     )}
