@@ -444,7 +444,7 @@ export default function EnrollForm() {
       SchoolId: globalData.data.SCHOOL_ID,
       StudentName: formData.personalInfo.StudentName,
       DOB: formData.personalInfo.DOB,
-      Gender: formData.personalInfo.Gender,
+      Gender: formData.personalInfo.Gender === 'other' ? formData.personalInfo.otherGender : formData.personalInfo.Gender,
       Photo: photoURL, // Use the URL of the uploaded photo
       Grade: formData.personalInfo.Grade,
       PreviousSchool: formData.personalInfo.PreviousSchool,
@@ -469,7 +469,7 @@ export default function EnrollForm() {
         return acc;
       }, {}),
       ParentOccupation: formData.guardianInfo.ParentOccupation,
-      ParentQualification: formData.guardianInfo.ParentQualification,
+      ParentQualification: formData.guardianInfo.ParentQualification === 'Other' ? formData.guardianInfo.otherQualification : formData.guardianInfo.ParentQualification,
     };
 
     // Log payload to console

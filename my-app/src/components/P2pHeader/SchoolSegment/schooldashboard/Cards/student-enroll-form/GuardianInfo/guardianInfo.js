@@ -48,8 +48,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const validateAlphabets = (value) => /^[A-Za-z\s]*$/.test(value);
-const validateOccupation = (value) => /^[A-Za-z\s.,-]*$/.test(value);
 const validateNumbers = (value) => /^[0-9]{0,10}$/.test(value);
+const validateOtherQualification = (value) => /^[A-Za-z\s.,-]*$/.test(value);
 
 export default function GuardianInfoForm({ formData, setFormData }) {
   const classes = useStyles();
@@ -71,6 +71,7 @@ export default function GuardianInfoForm({ formData, setFormData }) {
   });
   const [sameAddress, setSameAddress] = useState(formData.guardianInfo.sameAddress || false);
   const [errors, setErrors] = useState({});
+  const [otherQualification, setOtherQualification] = useState(formData.guardianInfo.otherQualification || '');
 
   useEffect(() => {
     setFormData((prevData) => ({
@@ -153,15 +154,15 @@ export default function GuardianInfoForm({ formData, setFormData }) {
     let isValid = true;
     let errorMessage = '';
   
-    if (['FatherName', 'MotherName', 'GuardianName'].includes(name)) {
+    if (['FatherName', 'MotherName', 'GuardianName', 'ParentOccupation'].includes(name)) {
       isValid = validateAlphabets(value) || value === '';
       errorMessage = 'Invalid alphabetic input';
-    } else if (name === 'ParentOccupation') {
-      isValid = validateOccupation(value) || value === '';
-      errorMessage = 'Invalid input (only alphabets, spaces, periods, commas, and hyphens allowed)';
-    } else if (['MobileNumber', 'EmergencyContact'].includes(name)) {
+    }
+     else if (['MobileNumber', 'EmergencyContact'].includes(name)) {
       isValid = validateNumbers(value) && value.length <= 10;
       errorMessage = 'Phone number must be 10 digits';
+    } else if (name === 'ParentQualification' && value === 'Other') {
+      setOtherQualification('');
     }
   
     if (isValid) {
@@ -180,6 +181,29 @@ export default function GuardianInfoForm({ formData, setFormData }) {
       setErrors((prevErrors) => ({
         ...prevErrors,
         [name]: errorMessage,
+      }));
+    }
+  };
+
+  const handleOtherQualificationChange = (event) => {
+    const { value } = event.target;
+    if (validateOtherQualification(value)) {
+      setOtherQualification(value);
+      setFormData((prevData) => ({
+        ...prevData,
+        guardianInfo: {
+          ...prevData.guardianInfo,
+          otherQualification: value,
+        },
+      }));
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        otherQualification: '',
+      }));
+    } else {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        otherQualification: 'Invalid input (only alphabets, spaces, periods, commas, and hyphens allowed)',
       }));
     }
   };
@@ -298,6 +322,19 @@ export default function GuardianInfoForm({ formData, setFormData }) {
               </MenuItem>
             ))}
           </TextField>
+          {formData.guardianInfo.ParentQualification === 'Other' && (
+            <TextField
+              id="otherQualification"
+              name="otherQualification"
+              label="Please specify"
+              fullWidth
+              value={otherQualification}
+              onChange={handleOtherQualificationChange}
+              className={classes.textField}
+              error={!!errors.otherQualification}
+              helperText={errors.otherQualification}
+            />
+          )}
         </Grid>
       </Grid>
 

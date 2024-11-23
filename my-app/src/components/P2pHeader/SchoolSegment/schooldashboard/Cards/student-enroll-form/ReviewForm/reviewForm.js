@@ -45,6 +45,8 @@ function ReviewForm({ formData, expandedDoc, setExpandedDoc, classes }) {
                       formData.personalInfo.languagesKnown ? formData.personalInfo.languagesKnown.join(', ') : ''
                     ) : key === 'DOB' ? (
                       formatDate(formData.personalInfo.DOB)
+                    ) : key === 'Gender' && formData.personalInfo.Gender === 'other' ? (
+                      formData.personalInfo.otherGender
                     ) : (
                       typeof formData.personalInfo[key] === 'object' ? JSON.stringify(formData.personalInfo[key]) : formData.personalInfo[key] || ''
                     )}
@@ -62,7 +64,11 @@ function ReviewForm({ formData, expandedDoc, setExpandedDoc, classes }) {
                 <TableRow key={key}>
                   <TableCell>{key}</TableCell>
                   <TableCell>
-                    {typeof formData.guardianInfo[key] === 'object' ? JSON.stringify(formData.guardianInfo[key]) : formData.guardianInfo[key] || ''}
+                    {key === 'ParentQualification' && formData.guardianInfo.ParentQualification === 'Other' ? (
+                      formData.guardianInfo.otherQualification
+                    ) : (
+                      typeof formData.guardianInfo[key] === 'object' ? JSON.stringify(formData.guardianInfo[key]) : formData.guardianInfo[key] || ''
+                    )}
                   </TableCell>
                 </TableRow>
               ))}

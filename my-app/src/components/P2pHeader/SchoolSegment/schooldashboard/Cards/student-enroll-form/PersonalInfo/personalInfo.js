@@ -55,6 +55,7 @@ export default function DetailsForm({ formData, setFormData }) {
   const [errors, setErrors] = useState({});
   const [selectedLanguages, setSelectedLanguages] = useState(formData.personalInfo.languagesKnown || []);
   const [otherLanguage, setOtherLanguage] = useState(formData.personalInfo.otherLanguage || '');
+  const [otherGender, setOtherGender] = useState(formData.personalInfo.otherGender || '');
   const languages = ['Hindi', 'Telugu', 'English', 'Other'];
 
   useEffect(() => {
@@ -204,6 +205,18 @@ export default function DetailsForm({ formData, setFormData }) {
     }));
   };
 
+  const handleOtherGenderChange = (event) => {
+    const { value } = event.target;
+    setOtherGender(value);
+    setFormData((prevData) => ({
+      ...prevData,
+      personalInfo: {
+        ...prevData.personalInfo,
+        otherGender: value,
+      },
+    }));
+  };
+
   return (
     <React.Fragment>
       <Grid container spacing={3} className={classes.formContainer}>
@@ -267,6 +280,17 @@ export default function DetailsForm({ formData, setFormData }) {
             <MenuItem value="female">Female</MenuItem>
             <MenuItem value="other">Other</MenuItem>
           </TextField>
+          {formData.personalInfo.Gender === 'other' && (
+            <TextField
+              id="otherGender"
+              name="otherGender"
+              label="Please specify"
+              fullWidth
+              value={otherGender}
+              onChange={handleOtherGenderChange}
+              className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
+            />
+          )}
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
