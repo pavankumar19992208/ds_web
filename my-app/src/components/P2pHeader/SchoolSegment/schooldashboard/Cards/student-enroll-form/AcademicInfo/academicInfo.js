@@ -33,18 +33,36 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const validateAlphabets = (value) => /^[A-Za-z\s]+$/.test(value);
+const validatePercentage = (value) => /^[0-9]{0,3}$/.test(value);
+
 export default function AcademicInfoForm({ formData, setFormData }) {
   const classes = useStyles();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      academicInfo: {
-        ...prevData.academicInfo,
-        [name]: value,
-      },
-    }));
+    let isValid = true;
+    let errorMessage = '';
+
+    if (name === 'PreviousPercentage') {
+      isValid = validatePercentage(value);
+      errorMessage = 'Invalid percentage input';
+    } else if (name === 'MedicalDisability') {
+      isValid = validateAlphabets(value);
+      errorMessage = 'Invalid alphabetic input';
+    }
+
+    if (isValid) {
+      setFormData((prevData) => ({
+        ...prevData,
+        academicInfo: {
+          ...prevData.academicInfo,
+          [name]: value,
+        },
+      }));
+    } else {
+      alert(errorMessage);
+    }
   };
 
   const bloodGroups = ['A+', 'A-', 'O+', 'O-', 'AB+', 'AB-', 'Rh+', 'Rh-'];
@@ -78,7 +96,7 @@ export default function AcademicInfoForm({ formData, setFormData }) {
           <TextField
             id="PreviousPercentage"
             name="PreviousPercentage"
-            label="Percentage of Previous Class"
+            label="Percentage of Previous Class (Optional)"
             fullWidth
             autoComplete="previous-percentage"
             value={formData.academicInfo.PreviousPercentage || ''}
@@ -116,7 +134,7 @@ export default function AcademicInfoForm({ formData, setFormData }) {
           <TextField
             id="MedicalDisability"
             name="MedicalDisability"
-            label="Medical Disability"
+            label="Medical Disability (Optional)"
             fullWidth
             autoComplete="medicaldisability"
             value={formData.academicInfo.MedicalDisability || ''}

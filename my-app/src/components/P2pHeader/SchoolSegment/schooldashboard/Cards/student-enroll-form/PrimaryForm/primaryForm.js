@@ -12,7 +12,7 @@ import DetailsForm from '../PersonalInfo/personalInfo';
 import GuardianInfoForm from '../GuardianInfo/guardianInfo';
 import AcademicInfoForm from '../AcademicInfo/academicInfo';
 import DocumentsUpload from '../DocumentsUpload/documentsUpload';
-import PaymentForm from '../PaymentForm/stPayment';
+
 import Sidebar from '../../../Sidebar/Sidebar';
 import Navbar from '../../../Navbar/Navbar';
 import ReviewForm from '../ReviewForm/reviewForm';
@@ -30,7 +30,6 @@ import { FaAddressCard } from "react-icons/fa6";
 import { RiParentFill } from "react-icons/ri";
 import { HiMiniAcademicCap } from "react-icons/hi2";
 import { RiFolderUploadFill } from "react-icons/ri";
-import { MdOutlinePayment } from "react-icons/md";
 import { MdRateReview } from "react-icons/md";
 import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector';
 import PropTypes from 'prop-types';
@@ -180,8 +179,7 @@ function ColorlibStepIcon(props) {
     2: <RiParentFill />,
     3: <HiMiniAcademicCap />,
     4: <RiFolderUploadFill />,
-    5: <MdOutlinePayment />,
-    6: <MdRateReview />,
+    5: <MdRateReview />,
   };
 
   return (
@@ -198,7 +196,7 @@ ColorlibStepIcon.propTypes = {
   icon: PropTypes.node,
 };
 
-const steps = ['Student Info', 'Guardian Info', 'Academic & Medical Details', 'Upload Documents', 'Payment', 'Review & Submit'];
+const steps = ['Student Info', 'Guardian Info', 'Academic & Medical Details', 'Upload Documents', 'Review & Submit'];
 
 const useStyles = makeStyles((theme) => ({
   formContainer: {
@@ -261,8 +259,6 @@ function getStepContent(step, formData, setFormData, handleDocumentClick, expand
     case 3:
       return <DocumentsUpload formData={formData} setFormData={setFormData} />;
     case 4:
-      return <PaymentForm formData={formData} setFormData={setFormData} />;
-    case 5:
       return <ReviewForm formData={formData} expandedDoc={expandedDoc} setExpandedDoc={setExpandedDoc} classes={classes} />;
     default:
       throw new Error('Unknown step');
@@ -314,7 +310,7 @@ export default function EnrollForm() {
     },
     academicInfo: {},
     documents: [],
-    paymentInfo: {}, // Add paymentInfo to formData
+    
   });
   const [open, setOpen] = useState(false);
   const [selectedDoc, setSelectedDoc] = useState(null);
@@ -334,9 +330,7 @@ export default function EnrollForm() {
       return MotherName && FatherName && ParentOccupation && ParentQualification && EmergencyContact && MobileNumber &&
         currentAddress.line1 && currentAddress.city && currentAddress.district && currentAddress.state && currentAddress.pincode &&
         permanentAddress.line1 && permanentAddress.city && permanentAddress.district && permanentAddress.state && permanentAddress.pincode;
-    } else if (activeStep === 3) {
-      return requiredDocuments.every(docType => formData.documents.some(doc => doc.type === docType));
-    }
+    } 
     return true;
   };
 
@@ -403,7 +397,7 @@ export default function EnrollForm() {
       },
       academicInfo: {},
       documents: [],
-      paymentInfo: {}, // Reset paymentInfo
+      
     });
     setSuccessDialogOpen(false);
   };
@@ -443,16 +437,7 @@ export default function EnrollForm() {
       }
     }
 
-    // Prepare PaymentDetails based on selected payment method
-    const { PaymentMethod, Amount, TransactionId, BankTransfer } = formData.paymentInfo;
-    let PaymentDetails = { PaymentMethod };
-    if (PaymentMethod === 'cash') {
-      PaymentDetails = { ...PaymentDetails, Amount };
-    } else if (PaymentMethod === 'upi') {
-      PaymentDetails = { ...PaymentDetails, TransactionId };
-    } else if (PaymentMethod === 'bankTransfer') {
-      PaymentDetails = { ...PaymentDetails, BankTransfer };
-    }
+
 
     // Prepare payload
     const payload = {
@@ -463,7 +448,7 @@ export default function EnrollForm() {
       Photo: photoURL, // Use the URL of the uploaded photo
       Grade: formData.personalInfo.Grade,
       PreviousSchool: formData.personalInfo.PreviousSchool,
-      LanguagesKnown: formData.personalInfo.languages,
+      LanguagesKnown: formData.personalInfo.languagesKnown,
       Religion: formData.personalInfo.Religion,
       Category: formData.personalInfo.Category,
       MotherName: formData.guardianInfo.MotherName,
@@ -483,8 +468,6 @@ export default function EnrollForm() {
         acc[doc.type] = doc.url;
         return acc;
       }, {}),
-      PaymentDetails,
-      // Password: formData.personalInfo.Password,
       ParentOccupation: formData.guardianInfo.ParentOccupation,
       ParentQualification: formData.guardianInfo.ParentQualification,
     };

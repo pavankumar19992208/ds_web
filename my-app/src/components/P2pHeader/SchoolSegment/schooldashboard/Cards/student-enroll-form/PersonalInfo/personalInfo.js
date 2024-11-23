@@ -3,9 +3,10 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
-import IconButton from '@material-ui/core/IconButton';
-import AddIcon from '@material-ui/icons/Add';
-import DeleteIcon from '@material-ui/icons/Delete';
+import Select from '@mui/material/Select';
+import InputLabel from '@mui/material/InputLabel';
+import ListItemText from '@mui/material/ListItemText';
+import FormControl from '@mui/material/FormControl';
 import { makeStyles } from '@material-ui/core/styles';
 import { storage } from '../../../../../../../components/connections/firebase';
 import { ref, uploadString, getDownloadURL } from 'firebase/storage';
@@ -14,18 +15,6 @@ import './personalInfo.css';
 const useStyles = makeStyles((theme) => ({
   formContainer: {
     // Removed overflow and maxHeight to fit content naturally
-  },
-  languageField: {
-    display: 'flex',
-    alignItems: 'center',
-  },
-  languageInput: {
-    flexGrow: 1,
-    marginRight: theme.spacing(1),
-  },
-  iconContainer: {
-    display: 'flex',
-    alignItems: 'center',
   },
   basicInfoMargin: {
     marginBottom: theme.spacing(-3), // Adjust the value as needed
@@ -52,19 +41,21 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(3),
     marginBottom: theme.spacing(-2),
   },
-  languagesMargin:{
+  languagesMargin: {
     marginBottom: theme.spacing(2),
   },
 }));
 
 const validateAlphabets = (value) => /^[A-Za-z\s]+$/.test(value);
-const validateNumbers = (value) => /^[0-9]+$/.test(value);
+const validateNumbers = (value) => /^[0-9]{0,12}$/.test(value);
 
 export default function DetailsForm({ formData, setFormData }) {
   const classes = useStyles();
-  const [languages, setLanguages] = useState(formData.personalInfo.languages || ['']);
   const [fileName, setFileName] = useState(formData.personalInfo.PhotoName || '');
   const [errors, setErrors] = useState({});
+  const [selectedLanguages, setSelectedLanguages] = useState(formData.personalInfo.languagesKnown || []);
+  const [otherLanguage, setOtherLanguage] = useState(formData.personalInfo.otherLanguage || '');
+  const languages = ['Hindi', 'Telugu', 'English', 'Other'];
 
   useEffect(() => {
     setFileName(formData.personalInfo.PhotoName || '');
@@ -95,9 +86,19 @@ export default function DetailsForm({ formData, setFormData }) {
     } else {
       setErrors((prevErrors) => ({
         ...prevErrors,
-        [name]: `Invalid ${name === 'AadharNumber' ? 'number' : 'alphabetic'} input`,
+        [name]: `Invalid ${name === 'AadharNumber' ? 'Aadhar number (must be 12 digits)' : 'alphabetic'} input`,
       }));
     }
+
+    // Clear errors for all other fields
+    Object.keys(errors).forEach((key) => {
+      if (key !== name) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          [key]: '',
+        }));
+      }
+    });
   };
 
   const handleKeyDown = (event) => {
@@ -108,6 +109,14 @@ export default function DetailsForm({ formData, setFormData }) {
         [name]: '',
       }));
     }
+  };
+
+  const handleBlur = (event) => {
+    const { name } = event.target;
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: '',
+    }));
   };
 
   const handleFileChange = async (event) => {
@@ -143,35 +152,56 @@ export default function DetailsForm({ formData, setFormData }) {
     }
   };
 
-  const handleLanguageChange = (index, event) => {
-    const newLanguages = [...languages];
-    newLanguages[index] = event.target.value;
-    setLanguages(newLanguages);
+  const handleLanguageChange = (event) => {
+    const { value } = event.target;
+    setSelectedLanguages(value);
+  
+    if (!value.includes('Other')) {
+      setOtherLanguage('');
+    }
+  
+    const updatedLanguages = value.includes('Other') && otherLanguage ? [...value, otherLanguage] : value;
+  
     setFormData((prevData) => ({
       ...prevData,
       personalInfo: {
         ...prevData.personalInfo,
-        languages: newLanguages,
+        languagesKnown: updatedLanguages,
+        otherLanguage: value.includes('Other') ? otherLanguage : '',
       },
     }));
   };
 
-  const addLanguageField = () => {
-    setLanguages([...languages, '']);
-  };
+  const handleOtherLanguageChange = (event) => {
+    const { value } = event.target;
+    if (validateAlphabets(value) || value === '') {
+      setOtherLanguage(value);
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        otherLanguage: '',
+      }));
 
-  const deleteLanguageField = (index) => {
-    if (languages.length > 1) {
-      const newLanguages = languages.filter((_, i) => i !== index);
-      setLanguages(newLanguages);
       setFormData((prevData) => ({
         ...prevData,
         personalInfo: {
           ...prevData.personalInfo,
-          languages: newLanguages,
+          otherLanguage: value,
+          languagesKnown: selectedLanguages.includes('Other') ? [...selectedLanguages.filter(lang => lang !== 'Other'), value] : selectedLanguages,
         },
       }));
+    } else {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        otherLanguage: 'Invalid alphabetic input',
+      }));
     }
+  };
+
+  const handleOtherLanguageBlur = () => {
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      otherLanguage: '',
+    }));
   };
 
   return (
@@ -194,6 +224,7 @@ export default function DetailsForm({ formData, setFormData }) {
             value={formData.personalInfo.StudentName || ''}
             onChange={handleChange}
             onKeyDown={handleKeyDown}
+            onBlur={handleBlur}
             className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
             error={!!errors.StudentName}
             helperText={errors.StudentName}
@@ -213,6 +244,7 @@ export default function DetailsForm({ formData, setFormData }) {
             value={formData.personalInfo.DOB || ''}
             onChange={handleChange}
             onKeyDown={handleKeyDown}
+            onBlur={handleBlur}
             className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
           />
         </Grid>
@@ -228,6 +260,7 @@ export default function DetailsForm({ formData, setFormData }) {
             value={formData.personalInfo.Gender || ''}
             onChange={handleChange}
             onKeyDown={handleKeyDown}
+            onBlur={handleBlur}
             className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
           >
             <MenuItem value="male">Male</MenuItem>
@@ -268,6 +301,7 @@ export default function DetailsForm({ formData, setFormData }) {
             value={formData.personalInfo.Grade || ''}
             onChange={handleChange}
             onKeyDown={handleKeyDown}
+            onBlur={handleBlur}
             className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
           >
             {[...Array(10).keys()].map(i => (
@@ -284,49 +318,58 @@ export default function DetailsForm({ formData, setFormData }) {
             value={formData.personalInfo.PreviousSchool || ''}
             onChange={handleChange}
             onKeyDown={handleKeyDown}
+            onBlur={handleBlur}
             className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
             error={!!errors.PreviousSchool}
             helperText={errors.PreviousSchool}
           />
         </Grid>
-        <Grid item xs={12}>
-          <Typography variant="subtitle1" gutterBottom className={`${classes.coloredTypography} ${classes.languagesMargin} urbanist-font`}>
-            Languages Known :
-          </Typography>
-          {languages.map((language, index) => (
-            <div key={index} className={classes.languageField}>
-              <TextField
-                required
-                id={`LanguagesKnown-${index}`}
-                name={`LanguagesKnown-${index}`}
-                label={`Language ${index + 1}`}
-                fullWidth
-                value={language}
-                onChange={(event) => handleLanguageChange(index, event)}
-                onKeyDown={handleKeyDown}
-                className={`${classes.languageInput} ${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
-              />
-            </div>
-          ))}
-          <div className={classes.iconContainer}>
-            <IconButton onClick={addLanguageField} color="primary">
-              <AddIcon />
-            </IconButton>
-            <IconButton
-              onClick={() => deleteLanguageField(languages.length - 1)}
-              color="secondary"
-              disabled={languages.length === 1}
-            >
-              <DeleteIcon />
-            </IconButton>
-          </div>
-        </Grid>
-
         {/* Section 3 */}
         <Grid item xs={12}>
           <Typography variant="subtitle1" gutterBottom className={`${classes.additionalInfoMargin} ${classes.coloredTypography} ${classes.typographyMargin} urbanist-font`}>
             Additional Information :
           </Typography>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <FormControl fullWidth variant="standard" className={`${classes.field} urbanist-font`}>
+            <InputLabel className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`} id="languagesKnown-label">Languages Known</InputLabel>
+            <Select
+              labelId="languagesKnown-label"
+              id="languagesKnown"
+              multiple
+              value={selectedLanguages}
+              onChange={handleLanguageChange}
+              className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
+              renderValue={(selected) => selected.join(', ')}
+            >
+              {languages.map((language) => (
+                <MenuItem
+                  key={language}
+                  value={language}
+                  style={{
+                    backgroundColor: selectedLanguages.includes(language) ? '#0E5E9D60' : 'transparent',
+                  }}
+                >
+                  <ListItemText primary={language} />
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          {selectedLanguages.includes('Other') && (
+            <TextField
+              id="otherLanguage"
+              label="Other Language"
+              name="otherLanguage"
+              value={otherLanguage}
+              onChange={handleOtherLanguageChange}
+              onKeyDown={handleKeyDown}
+              onBlur={handleOtherLanguageBlur}
+              fullWidth
+              className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
+              error={!!errors.otherLanguage}
+              helperText={errors.otherLanguage}
+            />
+          )}
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
@@ -337,6 +380,7 @@ export default function DetailsForm({ formData, setFormData }) {
             value={formData.personalInfo.Religion || ''}
             onChange={handleChange}
             onKeyDown={handleKeyDown}
+            onBlur={handleBlur}
             className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
             error={!!errors.Religion}
             helperText={errors.Religion}
@@ -351,6 +395,7 @@ export default function DetailsForm({ formData, setFormData }) {
             value={formData.personalInfo.Category || ''}
             onChange={handleChange}
             onKeyDown={handleKeyDown}
+            onBlur={handleBlur}
             className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
             error={!!errors.Category}
             helperText={errors.Category}
@@ -365,6 +410,7 @@ export default function DetailsForm({ formData, setFormData }) {
             value={formData.personalInfo.Nationality || ''}
             onChange={handleChange}
             onKeyDown={handleKeyDown}
+            onBlur={handleBlur}
             className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
             error={!!errors.Nationality}
             helperText={errors.Nationality}
@@ -376,11 +422,13 @@ export default function DetailsForm({ formData, setFormData }) {
             id="AadharNumber"
             name="AadharNumber"
             label="Aadhar Number"
+            type="text" // Ensure the type is set to text
             fullWidth
             value={formData.personalInfo.AadharNumber || ''}
             onChange={handleChange}
             onKeyDown={handleKeyDown}
-            className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-fonts`}
+            onBlur={handleBlur}
+            className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
             error={!!errors.AadharNumber}
             helperText={errors.AadharNumber}
           />

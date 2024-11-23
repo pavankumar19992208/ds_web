@@ -47,13 +47,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const validateAlphabets = (value) => /^[A-Za-z\s]+$/.test(value);
-const validateNumbers = (value) => /^[0-9]+$/.test(value);
-// const validateEmail = (value) => /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value);
+const validateAlphabets = (value) => /^[A-Za-z\s]*$/.test(value);
+const validateOccupation = (value) => /^[A-Za-z\s.,-]*$/.test(value);
+const validateNumbers = (value) => /^[0-9]{0,10}$/.test(value);
 
 export default function GuardianInfoForm({ formData, setFormData }) {
   const classes = useStyles();
-  const [sameAddress, setSameAddress] = useState(false);
   const [currentAddress, setCurrentAddress] = useState(formData.guardianInfo.currentAddress || {
     line1: '',
     line2: '',
@@ -70,6 +69,7 @@ export default function GuardianInfoForm({ formData, setFormData }) {
     state: '',
     pincode: ''
   });
+  const [sameAddress, setSameAddress] = useState(formData.guardianInfo.sameAddress || false);
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
@@ -79,9 +79,10 @@ export default function GuardianInfoForm({ formData, setFormData }) {
         ...prevData.guardianInfo,
         currentAddress,
         permanentAddress,
+        sameAddress,
       },
     }));
-  }, [currentAddress, permanentAddress, setFormData]);
+  }, [currentAddress, permanentAddress, sameAddress, setFormData]);
 
   const handleCheckboxChange = (event) => {
     setSameAddress(event.target.checked);
@@ -92,25 +93,77 @@ export default function GuardianInfoForm({ formData, setFormData }) {
 
   const handleCurrentAddressChange = (event) => {
     const { id, value } = event.target;
-    setCurrentAddress((prev) => ({ ...prev, [id]: value }));
-    if (sameAddress) {
+    let isValid = true;
+    let errorMessage = '';
+  
+    if (['city', 'district', 'state'].includes(id)) {
+      isValid = validateAlphabets(value);
+      errorMessage = 'Invalid alphabetic input';
+    } else if (id === 'pincode') {
+      isValid = validateNumbers(value);
+      errorMessage = 'Invalid numeric input';
+    }
+  
+    if (isValid) {
+      setCurrentAddress((prev) => ({ ...prev, [id]: value }));
+      if (sameAddress) {
+        setPermanentAddress((prev) => ({ ...prev, [id]: value }));
+      }
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [id]: '',
+      }));
+    } else {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [id]: errorMessage,
+      }));
+    }
+  };
+
+  const handlePermanentAddressChange = (event) => {
+    const { id, value } = event.target;
+    let isValid = true;
+    let errorMessage = '';
+  
+    if (['city', 'district', 'state'].includes(id)) {
+      isValid = validateAlphabets(value);
+      errorMessage = 'Invalid alphabetic input';
+    } else if (id === 'pincode') {
+      isValid = validateNumbers(value);
+      errorMessage = 'Invalid numeric input';
+    }
+  
+    if (isValid) {
       setPermanentAddress((prev) => ({ ...prev, [id]: value }));
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [id]: '',
+      }));
+    } else {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [id]: errorMessage,
+      }));
     }
   };
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     let isValid = true;
-
+    let errorMessage = '';
+  
     if (['FatherName', 'MotherName', 'GuardianName'].includes(name)) {
       isValid = validateAlphabets(value) || value === '';
+      errorMessage = 'Invalid alphabetic input';
+    } else if (name === 'ParentOccupation') {
+      isValid = validateOccupation(value) || value === '';
+      errorMessage = 'Invalid input (only alphabets, spaces, periods, commas, and hyphens allowed)';
     } else if (['MobileNumber', 'EmergencyContact'].includes(name)) {
-      isValid = validateNumbers(value) || value === '';
+      isValid = validateNumbers(value) && value.length <= 10;
+      errorMessage = 'Phone number must be 10 digits';
     }
-    // else if (name === 'Email') {
-    //   isValid = validateEmail(value) || value === '';
-    // }
-
+  
     if (isValid) {
       setFormData((prevData) => ({
         ...prevData,
@@ -126,9 +179,27 @@ export default function GuardianInfoForm({ formData, setFormData }) {
     } else {
       setErrors((prevErrors) => ({
         ...prevErrors,
-        [name]: `Invalid ${name === 'Email' ? 'email' : name === 'MobileNumber' || name === 'EmergencyContact' ? 'number' : 'alphabetic'} input`,
+        [name]: errorMessage,
       }));
     }
+  };
+
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      const { name, id } = event.target;
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [name || id]: '',
+      }));
+    }
+  };
+
+  const handleBlur = (event) => {
+    const { name, id } = event.target;
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name || id]: '',
+    }));
   };
 
   const qualifications = ['Matriculation', '12th or Diploma', 'Graduation', 'Post Graduation', 'Other'];
@@ -149,6 +220,8 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             autoComplete="fathers-name"
             value={formData.guardianInfo.FatherName || ''}
             onChange={handleInputChange}
+            onKeyDown={handleKeyDown}
+            onBlur={handleBlur}
             className={classes.textField}
             error={!!errors.FatherName}
             helperText={errors.FatherName}
@@ -164,6 +237,8 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             autoComplete="mothers-name"
             value={formData.guardianInfo.MotherName || ''}
             onChange={handleInputChange}
+            onKeyDown={handleKeyDown}
+            onBlur={handleBlur}
             className={classes.textField}
             error={!!errors.MotherName}
             helperText={errors.MotherName}
@@ -178,6 +253,8 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             autoComplete="guardian"
             value={formData.guardianInfo.GuardianName || ''}
             onChange={handleInputChange}
+            onKeyDown={handleKeyDown}
+            onBlur={handleBlur}
             className={classes.textField}
             error={!!errors.GuardianName}
             helperText={errors.GuardianName}
@@ -193,7 +270,11 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             autoComplete="parent-occupation"
             value={formData.guardianInfo.ParentOccupation || ''}
             onChange={handleInputChange}
+            onKeyDown={handleKeyDown}
+            onBlur={handleBlur}
             className={classes.textField}
+            error={!!errors.ParentOccupation}
+            helperText={errors.ParentOccupation}
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -207,6 +288,8 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             autoComplete="parent-qualification"
             value={formData.guardianInfo.ParentQualification || ''}
             onChange={handleInputChange}
+            onKeyDown={handleKeyDown}
+            onBlur={handleBlur}
             className={classes.textField}
           >
             {qualifications.map((qualification) => (
@@ -232,6 +315,8 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             autoComplete="phone-number"
             value={formData.guardianInfo.MobileNumber || ''}
             onChange={handleInputChange}
+            onKeyDown={handleKeyDown}
+            onBlur={handleBlur}
             className={classes.textField}
             error={!!errors.MobileNumber}
             helperText={errors.MobileNumber}
@@ -247,6 +332,8 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             autoComplete="email"
             value={formData.guardianInfo.Email || ''}
             onChange={handleInputChange}
+            onKeyDown={handleKeyDown}
+            onBlur={handleBlur}
             className={classes.textField}
             error={!!errors.Email}
             helperText={errors.Email}
@@ -262,6 +349,8 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             autoComplete="emergency-contact-number"
             value={formData.guardianInfo.EmergencyContact || ''}
             onChange={handleInputChange}
+            onKeyDown={handleKeyDown}
+            onBlur={handleBlur}
             className={classes.textField}
             error={!!errors.EmergencyContact}
             helperText={errors.EmergencyContact}
@@ -282,7 +371,11 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             autoComplete="address-line1"
             value={currentAddress.line1}
             onChange={handleCurrentAddressChange}
+            onKeyDown={handleKeyDown}
+            onBlur={handleBlur}
             className={classes.textField}
+            error={!!errors.line1}
+            helperText={errors.line1}
           />
         </Grid>
         <Grid item xs={12}>
@@ -293,7 +386,11 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             autoComplete="address-line2"
             value={currentAddress.line2}
             onChange={handleCurrentAddressChange}
+            onKeyDown={handleKeyDown}
+            onBlur={handleBlur}
             className={classes.textField}
+            error={!!errors.line2}
+            helperText={errors.line2}
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -305,7 +402,11 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             autoComplete="address-city"
             value={currentAddress.city}
             onChange={handleCurrentAddressChange}
+            onKeyDown={handleKeyDown}
+            onBlur={handleBlur}
             className={classes.textField}
+            error={!!errors.city}
+            helperText={errors.city}
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -317,7 +418,11 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             autoComplete="address-district"
             value={currentAddress.district}
             onChange={handleCurrentAddressChange}
+            onKeyDown={handleKeyDown}
+            onBlur={handleBlur}
             className={classes.textField}
+            error={!!errors.district}
+            helperText={errors.district}
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -329,7 +434,11 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             autoComplete="address-state"
             value={currentAddress.state}
             onChange={handleCurrentAddressChange}
+            onKeyDown={handleKeyDown}
+            onBlur={handleBlur}
             className={classes.textField}
+            error={!!errors.state}
+            helperText={errors.state}
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -341,7 +450,11 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             autoComplete="address-pincode"
             value={currentAddress.pincode}
             onChange={handleCurrentAddressChange}
+            onKeyDown={handleKeyDown}
+            onBlur={handleBlur}
             className={classes.textField}
+            error={!!errors.pincode}
+            helperText={errors.pincode}
           />
         </Grid>
       </Grid>
@@ -370,8 +483,13 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             fullWidth
             autoComplete="address-line1"
             value={permanentAddress.line1}
-            onChange={(e) => setPermanentAddress({ ...permanentAddress, line1: e.target.value })}
+            onChange={handlePermanentAddressChange}
+            onKeyDown={handleKeyDown}
+            onBlur={handleBlur}
             className={classes.textField}
+            error={!!errors.line1}
+            helperText={errors.line1}
+            disabled={sameAddress}
           />
         </Grid>
         <Grid item xs={12}>
@@ -381,8 +499,13 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             fullWidth
             autoComplete="address-line2"
             value={permanentAddress.line2}
-            onChange={(e) => setPermanentAddress({ ...permanentAddress, line2: e.target.value })}
+            onChange={handlePermanentAddressChange}
+            onKeyDown={handleKeyDown}
+            onBlur={handleBlur}
             className={classes.textField}
+            error={!!errors.line2}
+            helperText={errors.line2}
+            disabled={sameAddress}
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -393,8 +516,13 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             fullWidth
             autoComplete="address-city"
             value={permanentAddress.city}
-            onChange={(e) => setPermanentAddress({ ...permanentAddress, city: e.target.value })}
+            onChange={handlePermanentAddressChange}
+            onKeyDown={handleKeyDown}
+            onBlur={handleBlur}
             className={classes.textField}
+            error={!!errors.city}
+            helperText={errors.city}
+            disabled={sameAddress}
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -405,8 +533,13 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             fullWidth
             autoComplete="address-district"
             value={permanentAddress.district}
-            onChange={(e) => setPermanentAddress({ ...permanentAddress, district: e.target.value })}
+            onChange={handlePermanentAddressChange}
+            onKeyDown={handleKeyDown}
+            onBlur={handleBlur}
             className={classes.textField}
+            error={!!errors.district}
+            helperText={errors.district}
+            disabled={sameAddress}
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -417,8 +550,13 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             fullWidth
             autoComplete="address-state"
             value={permanentAddress.state}
-            onChange={(e) => setPermanentAddress({ ...permanentAddress, state: e.target.value })}
+            onChange={handlePermanentAddressChange}
+            onKeyDown={handleKeyDown}
+            onBlur={handleBlur}
             className={classes.textField}
+            error={!!errors.state}
+            helperText={errors.state}
+            disabled={sameAddress}
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -429,8 +567,13 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             fullWidth
             autoComplete="address-pincode"
             value={permanentAddress.pincode}
-            onChange={(e) => setPermanentAddress({ ...permanentAddress, pincode: e.target.value })}
+            onChange={handlePermanentAddressChange}
+            onKeyDown={handleKeyDown}
+            onBlur={handleBlur}
             className={classes.textField}
+            error={!!errors.pincode}
+            helperText={errors.pincode}
+            disabled={sameAddress}
           />
         </Grid>
       </Grid>
