@@ -4,13 +4,19 @@ import { Typography, Grid, Table, TableBody, TableRow, TableCell, IconButton } f
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 
-const personalInfoKeys = ['StudentName', 'DOB', 'Gender', 'Photo', 'Grade', 'PreviousSchool', 'languages', 'Religion', 'Category', 'Nationality', 'AadharNumber'];
+const personalInfoKeys = ['StudentName', 'DOB', 'Gender', 'Photo', 'Grade', 'PreviousSchool', 'languagesKnown', 'Religion', 'Category', 'Nationality', 'AadharNumber'];
 const guardianInfoKeys = ['MotherName', 'FatherName', 'GuardianName', 'MobileNumber', 'Email', 'EmergencyContact', 'ParentOccupation', 'ParentQualification'];
 const academicInfoKeys = ['PreviousPercentage', 'BloodGroup', 'MedicalDisability'];
 
-function ReviewForm({ formData, expandedDoc, setExpandedDoc, classes }) {
-  const { PaymentMethod, Amount, TransactionId, BankTransfer } = formData.paymentInfo;
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = date.getFullYear();
+  return `${day}-${month}-${year}`;
+};
 
+function ReviewForm({ formData, expandedDoc, setExpandedDoc, classes }) {
   return (
     <div>
       <Typography variant="h6" gutterBottom className={classes.reviewTitle}>
@@ -35,6 +41,12 @@ function ReviewForm({ formData, expandedDoc, setExpandedDoc, classes }) {
                           <img src={formData.personalInfo.Photo} alt="User's uploaded photo" style={{ width: '100%' }} />
                         )}
                       </div>
+                    ) : key === 'languagesKnown' ? (
+                      formData.personalInfo.languagesKnown ? formData.personalInfo.languagesKnown.join(', ') : ''
+                    ) : key === 'DOB' ? (
+                      formatDate(formData.personalInfo.DOB)
+                    ) : key === 'Gender' && formData.personalInfo.Gender === 'other' ? (
+                      formData.personalInfo.otherGender
                     ) : (
                       typeof formData.personalInfo[key] === 'object' ? JSON.stringify(formData.personalInfo[key]) : formData.personalInfo[key] || ''
                     )}
@@ -52,7 +64,11 @@ function ReviewForm({ formData, expandedDoc, setExpandedDoc, classes }) {
                 <TableRow key={key}>
                   <TableCell>{key}</TableCell>
                   <TableCell>
-                    {typeof formData.guardianInfo[key] === 'object' ? JSON.stringify(formData.guardianInfo[key]) : formData.guardianInfo[key] || ''}
+                    {key === 'ParentQualification' && formData.guardianInfo.ParentQualification === 'Other' ? (
+                      formData.guardianInfo.otherQualification
+                    ) : (
+                      typeof formData.guardianInfo[key] === 'object' ? JSON.stringify(formData.guardianInfo[key]) : formData.guardianInfo[key] || ''
+                    )}
                   </TableCell>
                 </TableRow>
               ))}
@@ -104,7 +120,7 @@ function ReviewForm({ formData, expandedDoc, setExpandedDoc, classes }) {
             </TableBody>
           </Table>
         </Grid>
-        <Grid item xs={12} sm={6} >
+        <Grid item xs={12} sm={6}>
           <Typography variant="h6" className={classes.reviewSectionTitle}>Uploaded Documents</Typography>
           <Table>
             <TableBody>
@@ -128,35 +144,6 @@ function ReviewForm({ formData, expandedDoc, setExpandedDoc, classes }) {
                   )}
                 </React.Fragment>
               ))}
-            </TableBody>
-          </Table>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Typography variant="h6" className={classes.reviewSectionTitle}>Payment Info</Typography>
-          <Table>
-            <TableBody>
-              <TableRow>
-                <TableCell>Payment Method</TableCell>
-                <TableCell>{PaymentMethod}</TableCell>
-              </TableRow>
-              {PaymentMethod === 'cash' && (
-                <TableRow>
-                  <TableCell>Amount</TableCell>
-                  <TableCell>{Amount}</TableCell>
-                </TableRow>
-              )}
-              {PaymentMethod === 'upi' && (
-                <TableRow>
-                  <TableCell>Transaction ID</TableCell>
-                  <TableCell>{TransactionId}</TableCell>
-                </TableRow>
-              )}
-              {PaymentMethod === 'bankTransfer' && (
-                <TableRow>
-                  <TableCell>Bank Transfer</TableCell>
-                  <TableCell>{BankTransfer}</TableCell>
-                </TableRow>
-              )}
             </TableBody>
           </Table>
         </Grid>
