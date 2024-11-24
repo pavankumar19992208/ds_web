@@ -37,6 +37,8 @@ import { styled } from '@mui/material/styles';
 import BaseUrl from '../../../../../../../config';
 import HashLoader from 'react-spinners/HashLoader';
 
+const validateEmail = (value) => /^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(value);
+
 const QontoConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {
     top: 10,
@@ -306,7 +308,8 @@ export default function EnrollForm() {
         pincode: ''
       },
       EmergencyContact: '',
-      MobileNumber: ''
+      MobileNumber: '',
+      Email: '',
     },
     academicInfo: {},
     documents: [],
@@ -326,10 +329,11 @@ export default function EnrollForm() {
       const { StudentName, DOB, Gender, Grade, AadharNumber } = formData.personalInfo;
       return StudentName && DOB && Gender && Grade && AadharNumber;
     } else if (activeStep === 1) {
-      const { MotherName, FatherName, ParentOccupation, ParentQualification, currentAddress, permanentAddress, EmergencyContact, MobileNumber } = formData.guardianInfo;
+      const { MotherName, FatherName, ParentOccupation, ParentQualification, currentAddress, permanentAddress, EmergencyContact, MobileNumber, Email } = formData.guardianInfo;
       return MotherName && FatherName && ParentOccupation && ParentQualification && EmergencyContact && MobileNumber &&
         currentAddress.line1 && currentAddress.city && currentAddress.district && currentAddress.state && currentAddress.pincode &&
-        permanentAddress.line1 && permanentAddress.city && permanentAddress.district && permanentAddress.state && permanentAddress.pincode;
+        permanentAddress.line1 && permanentAddress.city && permanentAddress.district && permanentAddress.state && permanentAddress.pincode &&
+        validateEmail(Email);
     } 
     return true;
   };
@@ -393,7 +397,8 @@ export default function EnrollForm() {
           pincode: ''
         },
         EmergencyContact: '',
-        MobileNumber: ''
+        MobileNumber: '',
+        Email: '',
       },
       academicInfo: {},
       documents: [],

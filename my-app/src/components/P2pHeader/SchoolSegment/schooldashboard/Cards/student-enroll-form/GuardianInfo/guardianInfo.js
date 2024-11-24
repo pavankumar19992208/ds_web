@@ -50,6 +50,7 @@ const useStyles = makeStyles((theme) => ({
 const validateAlphabets = (value) => /^[A-Za-z\s]*$/.test(value);
 const validateNumbers = (value) => /^[0-9]{0,10}$/.test(value);
 const validateOtherQualification = (value) => /^[A-Za-z\s.,-]*$/.test(value);
+const validateEmail = (value) => value.endsWith('@gmail.com');
 
 export default function GuardianInfoForm({ formData, setFormData }) {
   const classes = useStyles();
@@ -157,22 +158,28 @@ export default function GuardianInfoForm({ formData, setFormData }) {
     if (['FatherName', 'MotherName', 'GuardianName', 'ParentOccupation'].includes(name)) {
       isValid = validateAlphabets(value) || value === '';
       errorMessage = 'Invalid alphabetic input';
-    }
-     else if (['MobileNumber', 'EmergencyContact'].includes(name)) {
-      isValid = validateNumbers(value) && value.length <= 10;
-      errorMessage = 'Phone number must be 10 digits';
+    } else if (['MobileNumber', 'EmergencyContact'].includes(name)) {
+      isValid = validateNumbers(value);
+      if (value.length !== 10) {
+        isValid = false;
+        errorMessage = 'Phone number must be 10 digits';
+      }
+    } else if (name === 'Email') {
+      isValid = validateEmail(value);
+      errorMessage = 'Email must end with @gmail.com';
     } else if (name === 'ParentQualification' && value === 'Other') {
       setOtherQualification('');
     }
   
+    setFormData((prevData) => ({
+      ...prevData,
+      guardianInfo: {
+        ...prevData.guardianInfo,
+        [name]: value,
+      },
+    }));
+  
     if (isValid) {
-      setFormData((prevData) => ({
-        ...prevData,
-        guardianInfo: {
-          ...prevData.guardianInfo,
-          [name]: value,
-        },
-      }));
       setErrors((prevErrors) => ({
         ...prevErrors,
         [name]: '',
@@ -360,22 +367,22 @@ export default function GuardianInfoForm({ formData, setFormData }) {
           />
         </Grid>
         <Grid item xs={12} md={6}>
-          <TextField
-            required
-            id="Email"
-            name="Email"
-            label="Email"
-            fullWidth
-            autoComplete="email"
-            value={formData.guardianInfo.Email || ''}
-            onChange={handleInputChange}
-            onKeyDown={handleKeyDown}
-            onBlur={handleBlur}
-            className={classes.textField}
-            error={!!errors.Email}
-            helperText={errors.Email}
-          />
-        </Grid>
+  <TextField
+    required
+    id="Email"
+    name="Email"
+    label="Email"
+    fullWidth
+    autoComplete="email"
+    value={formData.guardianInfo.Email || ''}
+    onChange={handleInputChange}
+    onKeyDown={handleKeyDown}
+    onBlur={handleBlur}
+    className={classes.textField}
+    error={!!errors.Email}
+    helperText={errors.Email}
+  />
+</Grid>
         <Grid item xs={12} md={6}>
           <TextField
             required

@@ -65,32 +65,42 @@ export default function DetailsForm({ formData, setFormData }) {
   const handleChange = (event) => {
     const { name, value } = event.target;
     let isValid = true;
-
+  
     if (['StudentName', 'PreviousSchool', 'Religion', 'Category', 'Nationality'].includes(name)) {
       isValid = validateAlphabets(value) || value === '';
     } else if (name === 'AadharNumber') {
-      isValid = validateNumbers(value) || value === '';
+      isValid = /^[0-9]*$/.test(value); // Ensure only numbers are entered
+      if (value.length > 12) {
+        isValid = false;
+      }
     }
-
-    if (isValid) {
+  
+    if (isValid || name === 'AadharNumber') {
       setFormData((prevData) => ({
         ...prevData,
         personalInfo: {
           ...prevData.personalInfo,
-          [name]: value,
+          [name]: typeof value === 'string' ? value.slice(0, 12) : value, // Ensure value is a string before slicing
         },
       }));
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        [name]: '',
-      }));
+      if (name === 'AadharNumber' && value.length !== 12) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          [name]: 'Aadhar number must be 12 digits',
+        }));
+      } else {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          [name]: '',
+        }));
+      }
     } else {
       setErrors((prevErrors) => ({
         ...prevErrors,
         [name]: `Invalid ${name === 'AadharNumber' ? 'Aadhar number (must be 12 digits)' : 'alphabetic'} input`,
       }));
     }
-
+  
     // Clear errors for all other fields
     Object.keys(errors).forEach((key) => {
       if (key !== name) {
@@ -452,9 +462,15 @@ export default function DetailsForm({ formData, setFormData }) {
             onChange={handleChange}
             onKeyDown={handleKeyDown}
             onBlur={handleBlur}
+            onKeyPress={(event) => {
+              if (!/[0-9]/.test(event.key)) {
+                event.preventDefault();
+              }
+            }}
             className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
             error={!!errors.AadharNumber}
             helperText={errors.AadharNumber}
+            inputProps={{ maxLength: 12, pattern: "[0-9]*" }} // Restrict input to numbers only
           />
         </Grid>
       </Grid>
