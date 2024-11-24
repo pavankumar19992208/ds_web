@@ -1,15 +1,18 @@
-import React, { useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GlobalStateContext } from '../../../../../GlobalStateContext';
 import './cards.css';
 import BaseUrl from '../../../../../config';
+import HashLoader from 'react-spinners/HashLoader';
 
 const Cards = ({ studentCount, staffCount, schoolName, schoolLogo }) => {
   const navigate = useNavigate();
   const { globalData, setGlobalData } = useContext(GlobalStateContext);
   const schoolId = globalData.data.SCHOOL_ID; // Assuming schoolId is stored in globalData
+  const [loading, setLoading] = useState(false);
 
   const fetchSchoolInfo = async () => {
+      setLoading(true);
       try {
           const response = await fetch(`${BaseUrl}/schoolinfo`, {
               method: 'POST',
@@ -31,6 +34,8 @@ const Cards = ({ studentCount, staffCount, schoolName, schoolLogo }) => {
           navigate('/staff-enroll');
       } catch (error) {
           console.error('Error fetching school info:', error);
+      } finally {
+          setLoading(false);
       }
   };
 
@@ -48,6 +53,10 @@ const Cards = ({ studentCount, staffCount, schoolName, schoolLogo }) => {
 
   const handleUpdateSchoolData = () => {
     navigate('/school-internal-data');
+  };
+
+  const handleClassTimetableSchedule = () => {
+    navigate('/class-timetable');
   };
 
   return (
@@ -91,10 +100,15 @@ const Cards = ({ studentCount, staffCount, schoolName, schoolLogo }) => {
       <div className="card">
         <h2>Class Timetables</h2>
         <div className="button-group">
-          <button id='enroll-btn'>Schedule</button>
+          <button id='enroll-btn' onClick={handleClassTimetableSchedule}>Schedule</button>
           <button>View</button>
         </div>
       </div>
+      {loading && (
+        <div className="loaderContainer">
+          <HashLoader color="#ffffff" size={50} />
+        </div>
+      )}
     </div>
   );
 };

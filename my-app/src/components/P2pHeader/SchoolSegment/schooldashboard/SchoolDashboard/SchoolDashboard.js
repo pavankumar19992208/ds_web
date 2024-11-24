@@ -5,6 +5,7 @@ import Sidebar from '../Sidebar/Sidebar';
 import Events from '../Events/Events';
 import Cards from '../Cards/cards';
 import AcademicYear from '../AcademicYear/AcademicYearVerification';
+import HashLoader from 'react-spinners/HashLoader';
 import './SchoolDashboard.css';
 
 const SchoolDashboard = () => {
@@ -13,6 +14,7 @@ const SchoolDashboard = () => {
   const [studentCount, setStudentCount] = useState(0);
   const [staffCount, setStaffCount] = useState(0);
   const [showAcademicYear, setShowAcademicYear] = useState(false); // State to control the visibility of AcademicYear
+  const [loading, setLoading] = useState(true); // State to control the loader
 
   useEffect(() => {
     if (!globalData) return;
@@ -45,14 +47,20 @@ const SchoolDashboard = () => {
       });
     }, interval);
 
+    setLoading(false); // Set loading to false once data is loaded
+
     return () => {
       clearInterval(studentInterval);
       clearInterval(staffInterval);
     };
   }, [globalData]);
 
-  if (!globalData) {
-    return <div>Loading...</div>; // Display a loading message or a fallback UI
+  if (loading || !globalData) {
+    return (
+      <div className="loaderContainer">
+        <HashLoader color="#ffffff" size={50} />
+      </div>
+    ); // Display loader while loading
   }
 
   const toggleAcademicYear = () => {
@@ -70,7 +78,7 @@ const SchoolDashboard = () => {
       <main className="main-content">
         <Cards schoolName={globalData.data.SCHOOL_NAME} schoolLogo={globalData.data.SCHOOL_LOGO} studentCount={studentCount} staffCount={staffCount} />
         <Events />
-               {showAcademicYear && (
+        {showAcademicYear && (
           <div className="academic-year-popup">
             <AcademicYear open={showAcademicYear} onClose={toggleAcademicYear} />
           </div>

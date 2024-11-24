@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { GlobalStateContext } from '../../../GlobalStateContext';
 import '../../popups/LoginPopup.css'; // Update the path as necessary
 import BaseUrl from '../../../config';
+import HashLoader from 'react-spinners/HashLoader';
+import './SchoolLogin.css';
 
 const SchoolLogin = () => {
     let navigate = useNavigate();
@@ -10,8 +12,10 @@ const SchoolLogin = () => {
     const [schoolId, setSchoolId] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const handleLogin = async () => {
+        setLoading(true);
         try {
             const response = await fetch(`${BaseUrl}/sch_login`, {
                 method: 'POST',
@@ -31,6 +35,8 @@ const SchoolLogin = () => {
             navigate('/school_dashboard');
         } catch (error) {
             setError('Invalid school ID or password');
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -61,10 +67,17 @@ const SchoolLogin = () => {
                             />
                         </div>
                         {error && <div className="error">{error}</div>}
-                        <button onClick={handleLogin} className="loginButton">Login</button>
+                        <button onClick={handleLogin} className="loginButton" disabled={loading}>
+                            {loading ? 'Logging in...' : 'Login'}
+                        </button>
                     </div>
                 </div>
             </div>
+            {loading && (
+                <div className="loaderContainer">
+                    <HashLoader color="#ffffff" size={50} />
+                </div>
+            )}
         </div>
     );
 };

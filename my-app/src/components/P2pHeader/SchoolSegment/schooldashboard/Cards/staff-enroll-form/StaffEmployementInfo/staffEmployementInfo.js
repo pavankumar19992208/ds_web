@@ -69,9 +69,21 @@ const StaffEmploymentInfo = ({ formData, setFormData }) => {
     }));
   };
 
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const finalFormValues = { ...formValues };
+    if (formValues.employmentType === 'Other') {
+      finalFormValues.employmentType = formValues.otherEmploymentType;
+    }
+    setFormData((prevData) => ({
+      ...prevData,
+      employmentInfo: finalFormValues,
+    }));
+  };
+
   return (
     <div className={classes.mainContainer}>
-      <form className={classes.formContainer}>
+      <form className={classes.formContainer} onSubmit={handleSubmit}>
         <Grid container spacing={3} className={classes.gridContainer}>
           <Grid item xs={12} sm={6}>
             <TextField
@@ -110,7 +122,7 @@ const StaffEmploymentInfo = ({ formData, setFormData }) => {
             {formValues.employmentType === 'Other' && (
               <TextField
                 id="otherEmploymentType"
-                label="Specify Other Employment Type"
+                label="Specify Employment Type"
                 name="otherEmploymentType"
                 value={formValues.otherEmploymentType}
                 onChange={handleChange}

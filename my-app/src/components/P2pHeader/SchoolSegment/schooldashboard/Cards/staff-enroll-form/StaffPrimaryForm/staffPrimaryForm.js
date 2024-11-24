@@ -18,10 +18,13 @@ import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import Check from '@mui/icons-material/Check';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import ExpandLessIcon from '@material-ui/icons/ExpandLess';
-import IconButton from '@material-ui/core/IconButton';
 import { PiBagSimpleFill } from "react-icons/pi";
+import ReviewForm from '../StaffReviewForm/staffReviewForm';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Dialog from '@material-ui/core/Dialog';
 import { BsPersonWorkspace } from "react-icons/bs";
 import { IoCall } from "react-icons/io5";
 import { RiFolderUploadFill } from "react-icons/ri";
@@ -32,11 +35,9 @@ import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector
 import { styled } from '@mui/material/styles';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableRow from '@material-ui/core/TableRow';
-import './staffPrimaryInfo.css';
+import HashLoader from 'react-spinners/HashLoader';
+import './staffPrimaryForm.css';
+
 
 const QontoConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {
@@ -231,12 +232,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const personalInfoKeys = ['fullName', 'dob', 'gender', 'contactNumber', 'email'];
-const professionalInfoKeys = ['position', 'experience', 'qualification', 'certifications'];
-const employmentInfoKeys = ['joiningDate', 'employmentType', 'previousSchool'];
-const emergencyContactInfoKeys = ['emergencyContactName', 'emergencyContactNumber', 'relationshipToTeacher'];
-const additionalInfoKeys = ['languagesKnown', 'interests', 'availabilityOfExtraCirricularActivities'];
-
 function getStepContent(step, formData, setFormData, schoolInfo, expandedDoc, setExpandedDoc, classes) {
   switch (step) {
     case 0:
@@ -265,126 +260,7 @@ function getStepContent(step, formData, setFormData, schoolInfo, expandedDoc, se
       );
     case 6:
       return (
-        <div>
-          <Typography variant="h6" gutterBottom className={classes.reviewTitle}>
-            Review Your Details
-          </Typography>
-          <Grid container spacing={3}>
-            <Grid item xs={12} sm={6}>
-              <Typography variant="h6" className={classes.reviewSectionTitle}>Personal details</Typography>
-              <Table>
-                <TableBody>
-                  {personalInfoKeys.map((key) => (
-                    <TableRow key={key}>
-                      <TableCell>{key}</TableCell>
-                      <TableCell>{formData.personalInfo[key] || ''}</TableCell>
-                    </TableRow>
-                  ))}
-                  {formData.personalInfo.profilePic && (
-                    <TableRow>
-                      <TableCell>Profile Picture</TableCell>
-                      <TableCell>
-                        <img src={formData.personalInfo.profilePic} alt="Profile" style={{ width: '100px', height: '100px', borderRadius: '50%' }} />
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Typography variant="h6" className={classes.reviewSectionTitle}>Professional Info</Typography>
-              <Table>
-                <TableBody>
-                  {professionalInfoKeys.map((key) => (
-                    <TableRow key={key}>
-                      <TableCell>{key}</TableCell>
-                      <TableCell>{formData.professionalInfo[key] || ''}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Typography variant="h6" className={classes.reviewSectionTitle}>Subject Specialization</Typography>
-              <Table>
-                <TableBody>
-                  {formData.professionalInfo.grades.map((grade, index) => (
-                    <TableRow key={index}>
-                      <TableCell>{`Class ${grade.value}`}</TableCell>
-                      <TableCell>{(grade.subjects || []).join(', ')}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Typography variant="h6" className={classes.reviewSectionTitle}>Employment Info</Typography>
-              <Table>
-                <TableBody>
-                  {employmentInfoKeys.map((key) => (
-                    <TableRow key={key}>
-                      <TableCell>{key}</TableCell>
-                      <TableCell>{formData.employmentInfo[key] || ''}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Typography variant="h6" className={classes.reviewSectionTitle}>Emergency Contact Info</Typography>
-              <Table>
-                <TableBody>
-                  {emergencyContactInfoKeys.map((key) => (
-                    <TableRow key={key}>
-                      <TableCell>{key}</TableCell>
-                      <TableCell>{formData.emergencyContactInfo[key] || ''}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Typography variant="h6" className={classes.reviewSectionTitle}>Additional Info</Typography>
-              <Table>
-                <TableBody>
-                  {additionalInfoKeys.map((key) => (
-                    <TableRow key={key}>
-                      <TableCell>{key}</TableCell>
-                      <TableCell>{formData.additionalInfo[key] || ''}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Typography variant="h6" className={classes.reviewSectionTitle}>Uploaded Documents</Typography>
-              <Table>
-                <TableBody>
-                  {formData.documents.map((doc, index) => (
-                    <React.Fragment key={index}>
-                      <TableRow>
-                        <TableCell>{doc.name.length > 10 ? `${doc.name.substring(0, 10)}...` : doc.name}</TableCell>
-                        <TableCell>{doc.type}</TableCell>
-                        <TableCell>
-                          <IconButton onClick={() => setExpandedDoc(expandedDoc === index ? null : index)}>
-                            {expandedDoc === index ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-                          </IconButton>
-                        </TableCell>
-                      </TableRow>
-                      {expandedDoc === index && (
-                        <TableRow>
-                          <TableCell colSpan={3}>
-                            <img src={doc.url} alt={doc.name} style={{ width: '100%' }} />
-                          </TableCell>
-                        </TableRow>
-                      )}
-                    </React.Fragment>
-                  ))}
-                </TableBody>
-              </Table>
-            </Grid>
-          </Grid>
-        </div>
+        <ReviewForm formData={formData} expandedDoc={expandedDoc} setExpandedDoc={setExpandedDoc} classes={classes} />
       );
     default:
       throw new Error("Unknown step");
@@ -441,7 +317,7 @@ export default function StaffPrimaryForm() {
       relationshipToTeacher: "",
     },
     additionalInfo: {
-      languagesKnown: "",
+      languagesKnown: [],
       interests: "",
       availabilityOfExtraCirricularActivities: "",
     },
@@ -449,6 +325,12 @@ export default function StaffPrimaryForm() {
   });
   const [errors, setErrors] = useState({});
   const [expandedDoc, setExpandedDoc] = useState(null);
+  const [successDialogOpen, setSuccessDialogOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [selectedDoc, setSelectedDoc] = useState(null);
+  const [Password, setPassword] = useState('');
+  const [UserId, setUserId] = useState('');
 
   const validatePersonalInfo = () => {
     const { personalInfo } = formData;
@@ -596,69 +478,115 @@ export default function StaffPrimaryForm() {
     }
   };
 
-  const handleEnrollMore = () => {
+   const handleEnrollMore = () => {
+    setFormData({
+      personalInfo: {
+        fullName: "",
+        profilepic: "",
+        dob: "",
+        gender: "",
+        contactNumber: "",
+        email: "",
+        currentAddress: {
+          line1: "",
+          line2: "",
+          city: "",
+          district: "",
+          state: "",
+          pinCode: "",
+        },
+        permanentAddress: {
+          line1: "",
+          line2: "",
+          city: "",
+          district: "",
+          state: "",
+          pinCode: "",
+        },
+      },
+      professionalInfo: {
+        position: [],
+        subjectSpecialization: "",
+        grade: [],
+        experience: "",
+        qualification: "",
+        certifications: "",
+      },
+      employmentInfo: {
+        joiningDate: "",
+        employmentType: "",
+        otherEmploymentType: "",
+        previousSchool: "",
+      },
+      emergencyContactInfo: {
+        emergencyContactName: "",
+        emergencyContactNumber: "",
+        relationshipToTeacher: "",
+      },
+      additionalInfo: {
+        languagesKnown: "",
+        interests: "",
+        availabilityOfExtraCirricularActivities: "",
+      },
+      documents: [],
+    });
     setActiveStep(0);
+    setSuccessDialogOpen(false);
   };
 
   const handleSubmit = async () => {
-    // if (!validateAdditionalInfo()) {
-    //   alert("Please fill out all required fields in Additional Fields.");
-    //   return;
-    // }
+    setLoading(true); // Start the loader
+  
+    const gradeMapping = {
+      1: 'Class 1',
+      2: 'Class 2',
+      3: 'Class 3',
+      4: 'Class 4',
+      5: 'Class 5',
+      6: 'Class 6',
+      7: 'Class 7',
+      8: 'Class 8',
+      9: 'Class 9',
+      10: 'Class 10',
+      11: 'Class 11',
+      12: 'Class 12',
+    };
+  
+        const payload = {
+      SchoolId: globalData.data.SCHOOL_ID,
+      fullName: formData.personalInfo.fullName,
+      profilepic: formData.personalInfo.profilePic,
+      dob: formData.personalInfo.dob,
+      gender: formData.personalInfo.gender,
+      contactNumber: formData.personalInfo.contactNumber,
+      email: formData.personalInfo.email,
+      currentAddress: formData.personalInfo.currentAddress,
+      permanentAddress: formData.personalInfo.permanentAddress,
+      position: formData.professionalInfo.position.filter(pos => pos !== ''),
+      subjectSpecialization: formData.professionalInfo.grades.reduce((acc, grade) => {
+        const gradeText = gradeMapping[grade.value] || `Class ${grade.value}`;
+        acc[gradeText] = grade.subjects || [];
+        return acc;
+      }, {}),
+      experience: formData.professionalInfo.experience,
+      qualification: formData.professionalInfo.qualification,
+      certifications: formData.professionalInfo.certifications,
+      joiningDate: formData.employmentInfo.joiningDate,
+      employmentType: formData.employmentInfo.employmentType === 'Other' ? formData.employmentInfo.otherEmploymentType : formData.employmentInfo.employmentType,
+      previousSchool: formData.employmentInfo.previousSchool,
+      emergencyContactName: formData.emergencyContactInfo.emergencyContactName,
+      emergencyContactNumber: formData.emergencyContactInfo.emergencyContactNumber,
+      relationshipToTeacher: formData.emergencyContactInfo.relationshipToTeacher,
+      languagesKnown: formData.additionalInfo.languagesKnown,
+      interests: formData.additionalInfo.interests,
+      availabilityOfExtraCirricularActivities: formData.additionalInfo.availabilityOfExtraCirricularActivities,
+      documents: formData.documents.reduce((acc, doc) => {
+        acc[doc.type] = doc.url;
+        return acc;
+      }, {}),
+    };
 
-                 const gradeMapping = {
-              1: 'Class 1',
-              2: 'Class 2',
-              3: 'Class 3',
-              4: 'Class 4',
-              5: 'Class 5',
-              6: 'Class 6',
-              7: 'Class 7',
-              8: 'Class 8',
-              9: 'Class 9',
-              10: 'Class 10',
-              11: 'Class 11',
-              12: 'Class 12',
-            };
-            
-            const payload = {
-              SchoolId: globalData.data.SCHOOL_ID,
-              fullName: formData.personalInfo.fullName,
-              profilepic: formData.personalInfo.profilePic,
-              dob: formData.personalInfo.dob,
-              gender: formData.personalInfo.gender,
-              contactNumber: formData.personalInfo.contactNumber,
-              email: formData.personalInfo.email,
-              currentAddress: formData.personalInfo.currentAddress,
-              permanentAddress: formData.personalInfo.permanentAddress,
-              position: formData.professionalInfo.position,
-              subjectSpecialization: formData.professionalInfo.grades.reduce((acc, grade) => {
-                const gradeText = gradeMapping[grade.value] || `Class ${grade.value}`;
-                acc[gradeText] = grade.subjects || [];
-                return acc;
-              }, {}),
-              experience: formData.professionalInfo.experience,
-              qualification: formData.professionalInfo.qualification,
-              certifications: formData.professionalInfo.certifications,
-              joiningDate: formData.employmentInfo.joiningDate,
-              employmentType: formData.employmentInfo.employmentType,
-              otherEmploymentType: formData.employmentInfo.otherEmploymentType,
-              previousSchool: formData.employmentInfo.previousSchool,
-              emergencyContactName: formData.emergencyContactInfo.emergencyContactName,
-              emergencyContactNumber: formData.emergencyContactInfo.emergencyContactNumber,
-              relationshipToTeacher: formData.emergencyContactInfo.relationshipToTeacher,
-              languagesKnown: formData.additionalInfo.languagesKnown,
-              interests: formData.additionalInfo.interests,
-              availabilityOfExtraCirricularActivities: formData.additionalInfo.availabilityOfExtraCirricularActivities,
-              documents: formData.documents.reduce((acc, doc) => {
-                acc[doc.type] = doc.url;
-                return acc;
-              }, {}),
-            };
-
-    // Log payload to console
-    console.log("Payload to be sent:", payload);
-
+    console.log('Payload to be sent:', payload);
     try {
       const response = await fetch(`${BaseUrl}/registerteacher`, {
         method: "POST",
@@ -667,16 +595,34 @@ export default function StaffPrimaryForm() {
         },
         body: JSON.stringify(payload),
       });
-
+  
       if (!response.ok) {
         throw new Error("Form submission failed");
       }
-
+  
       const data = await response.json();
       console.log("Form data sent to backend successfully:", data);
+      setPassword(data.password);
+      setUserId(data.userid);
+      // Open success dialog
+      setSuccessDialogOpen(true);
     } catch (error) {
-      console.error("Error sending form data to backend:", error);
+      console.error('Error sending form data to backend:', error);
+    } finally {
+      setLoading(false); // Stop the loader after the dialog is opened
     }
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+  
+  const handleSuccessClose = () => {
+    setLoading(true);
+    setSuccessDialogOpen(false);
+    setTimeout(() => {
+      window.location.href = '/school_dashboard'; // Redirect to school dashboard
+    }, 1000);
   };
 
   return (
@@ -755,6 +701,51 @@ export default function StaffPrimaryForm() {
           </React.Fragment>
         </Paper>
       </main>
+      {loading && (
+            <div className="loaderContainer">
+              <HashLoader color="#ffffff" size={50} />
+            </div>
+          )}
+          <Dialog open={open} onClose={handleClose}>
+            <DialogTitle>Document Content</DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                {selectedDoc ? (
+                  <div>
+                    <Typography variant="h6">{selectedDoc.name}</Typography>
+                    <img src={selectedDoc.data} alt={selectedDoc.name} style={{ width: '100%' }} />
+                  </div>
+                ) : (
+                  'No document selected'
+                )}
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleClose} color="primary">
+                Close
+              </Button>
+            </DialogActions>
+          </Dialog>
+          <Dialog open={successDialogOpen} onClose={handleSuccessClose}>
+            <DialogTitle>Success</DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                The form has been successfully submitted.
+                <br />
+                UserId: <strong> {UserId} </strong> 
+                <br />
+                Password: <strong> {Password} </strong> 
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleSuccessClose} color="primary">
+                Close
+              </Button>
+              <Button onClick={handleEnrollMore} color="primary">
+                Enroll More
+              </Button>
+            </DialogActions>
+          </Dialog>
     </React.Fragment>
   );
 }
