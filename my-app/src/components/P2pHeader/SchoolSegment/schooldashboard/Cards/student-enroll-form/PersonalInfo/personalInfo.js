@@ -62,42 +62,41 @@ export default function DetailsForm({ formData, setFormData }) {
     setFileName(formData.personalInfo.PhotoName || '');
   }, [formData.personalInfo.PhotoName]);
 
-  const handleChange = (event) => {
+   const handleChange = (event) => {
     const { name, value } = event.target;
     let isValid = true;
+    let errorMessage = '';
   
     if (['StudentName', 'PreviousSchool', 'Religion', 'Category', 'Nationality'].includes(name)) {
       isValid = validateAlphabets(value) || value === '';
+      errorMessage = 'Invalid alphabetic input';
     } else if (name === 'AadharNumber') {
       isValid = /^[0-9]*$/.test(value); // Ensure only numbers are entered
-      if (value.length > 12) {
+      if (!isValid) {
+        errorMessage = 'Aadhar number must contain only digits';
+      } else if (value.length > 12) {
         isValid = false;
+        errorMessage = 'Aadhar number must be 12 digits';
       }
     }
   
-    if (isValid || name === 'AadharNumber') {
-      setFormData((prevData) => ({
-        ...prevData,
-        personalInfo: {
-          ...prevData.personalInfo,
-          [name]: typeof value === 'string' ? value.slice(0, 12) : value, // Ensure value is a string before slicing
-        },
+    setFormData((prevData) => ({
+      ...prevData,
+      personalInfo: {
+        ...prevData.personalInfo,
+        [name]: value,
+      },
+    }));
+  
+    if (isValid) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [name]: '',
       }));
-      if (name === 'AadharNumber' && value.length !== 12) {
-        setErrors((prevErrors) => ({
-          ...prevErrors,
-          [name]: 'Aadhar number must be 12 digits',
-        }));
-      } else {
-        setErrors((prevErrors) => ({
-          ...prevErrors,
-          [name]: '',
-        }));
-      }
     } else {
       setErrors((prevErrors) => ({
         ...prevErrors,
-        [name]: `Invalid ${name === 'AadharNumber' ? 'Aadhar number (must be 12 digits)' : 'alphabetic'} input`,
+        [name]: errorMessage,
       }));
     }
   
@@ -166,13 +165,13 @@ export default function DetailsForm({ formData, setFormData }) {
   const handleLanguageChange = (event) => {
     const { value } = event.target;
     setSelectedLanguages(value);
-  
+
     if (!value.includes('Other')) {
       setOtherLanguage('');
     }
-  
+
     const updatedLanguages = value.includes('Other') && otherLanguage ? [...value, otherLanguage] : value;
-  
+
     setFormData((prevData) => ({
       ...prevData,
       personalInfo: {
@@ -215,16 +214,28 @@ export default function DetailsForm({ formData, setFormData }) {
     }));
   };
 
-  const handleOtherGenderChange = (event) => {
+   const handleOtherGenderChange = (event) => {
     const { value } = event.target;
-    setOtherGender(value);
-    setFormData((prevData) => ({
-      ...prevData,
-      personalInfo: {
-        ...prevData.personalInfo,
-        otherGender: value,
-      },
-    }));
+    if (validateAlphabets(value) || value === '') {
+      setOtherGender(value);
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        otherGender: '',
+      }));
+  
+      setFormData((prevData) => ({
+        ...prevData,
+        personalInfo: {
+          ...prevData.personalInfo,
+          otherGender: value,
+        },
+      }));
+    } else {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        otherGender: 'Invalid alphabetic input',
+      }));
+    }
   };
 
   return (
@@ -290,15 +301,19 @@ export default function DetailsForm({ formData, setFormData }) {
             <MenuItem value="female">Female</MenuItem>
             <MenuItem value="other">Other</MenuItem>
           </TextField>
-          {formData.personalInfo.Gender === 'other' && (
+                    {formData.personalInfo.Gender === 'other' && (
             <TextField
               id="otherGender"
               name="otherGender"
               label="Please specify"
+              onBlur={handleBlur}
+              onKeyDown={handleKeyDown}
               fullWidth
               value={otherGender}
               onChange={handleOtherGenderChange}
               className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
+              error={!!errors.otherGender}
+              helperText={errors.otherGender}
             />
           )}
         </Grid>
@@ -462,11 +477,6 @@ export default function DetailsForm({ formData, setFormData }) {
             onChange={handleChange}
             onKeyDown={handleKeyDown}
             onBlur={handleBlur}
-            onKeyPress={(event) => {
-              if (!/[0-9]/.test(event.key)) {
-                event.preventDefault();
-              }
-            }}
             className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
             error={!!errors.AadharNumber}
             helperText={errors.AadharNumber}
