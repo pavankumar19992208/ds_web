@@ -99,10 +99,10 @@ export default function GuardianInfoForm({ formData, setFormData }) {
     let errorMessage = '';
   
     if (['city', 'district', 'state'].includes(id)) {
-      isValid = validateAlphabets(value);
+      isValid = validateAlphabets(value) || value === '';
       errorMessage = 'Invalid alphabetic input';
     } else if (id === 'pincode') {
-      isValid = validateNumbers(value);
+      isValid = validateNumbers(value) || value === '';
       errorMessage = 'Invalid numeric input';
     }
   
@@ -123,16 +123,16 @@ export default function GuardianInfoForm({ formData, setFormData }) {
     }
   };
 
-  const handlePermanentAddressChange = (event) => {
+   const handlePermanentAddressChange = (event) => {
     const { id, value } = event.target;
     let isValid = true;
     let errorMessage = '';
   
     if (['city', 'district', 'state'].includes(id)) {
-      isValid = validateAlphabets(value);
+      isValid = validateAlphabets(value) || value === '';
       errorMessage = 'Invalid alphabetic input';
     } else if (id === 'pincode') {
-      isValid = validateNumbers(value);
+      isValid = validateNumbers(value) || value === '';
       errorMessage = 'Invalid numeric input';
     }
   
@@ -159,13 +159,13 @@ export default function GuardianInfoForm({ formData, setFormData }) {
       isValid = validateAlphabets(value) || value === '';
       errorMessage = 'Invalid alphabetic input';
     } else if (['MobileNumber', 'EmergencyContact'].includes(name)) {
-      isValid = validateNumbers(value);
-      if (value.length !== 10) {
+      isValid = validateNumbers(value) || value === '';
+      if (value.length !== 10 && value !== '') {
         isValid = false;
         errorMessage = 'Phone number must be 10 digits';
       }
     } else if (name === 'Email') {
-      isValid = validateEmail(value);
+      isValid = validateEmail(value) || value === '';
       errorMessage = 'Email must end with @gmail.com';
     } else if (name === 'ParentQualification' && value === 'Other') {
       setOtherQualification('');
@@ -215,24 +215,28 @@ export default function GuardianInfoForm({ formData, setFormData }) {
     }
   };
 
-  const handleKeyDown = (event) => {
-    if (event.key === 'Enter') {
-      const { name, id } = event.target;
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        [name || id]: '',
-      }));
+  // const handleKeyDown = (event) => {
+  //   if (event.key === 'Enter') {
+  //     const { name, id } = event.target;
+  //     setErrors((prevErrors) => ({
+  //       ...prevErrors,
+  //       [name || id]: '',
+  //     }));
+  //   }
+  // };
+
+  // const handleBlur = (event) => {
+  //   const { name, id } = event.target;
+  //   setErrors((prevErrors) => ({
+  //     ...prevErrors,
+  //     [name || id]: '',
+  //   }));
+  // };
+  const handleKeyPress = (event) => {
+    if (!/[0-9]/.test(event.key)) {
+      event.preventDefault();
     }
   };
-
-  const handleBlur = (event) => {
-    const { name, id } = event.target;
-    setErrors((prevErrors) => ({
-      ...prevErrors,
-      [name || id]: '',
-    }));
-  };
-
   const qualifications = ['Matriculation', '12th or Diploma', 'Graduation', 'Post Graduation', 'Other'];
 
   return (
@@ -251,8 +255,8 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             autoComplete="fathers-name"
             value={formData.guardianInfo.FatherName || ''}
             onChange={handleInputChange}
-            onKeyDown={handleKeyDown}
-            onBlur={handleBlur}
+            // onKeyDown={handleKeyDown}
+            // onBlur={handleBlur}
             className={classes.textField}
             error={!!errors.FatherName}
             helperText={errors.FatherName}
@@ -268,8 +272,8 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             autoComplete="mothers-name"
             value={formData.guardianInfo.MotherName || ''}
             onChange={handleInputChange}
-            onKeyDown={handleKeyDown}
-            onBlur={handleBlur}
+            // onKeyDown={handleKeyDown}
+            // onBlur={handleBlur}
             className={classes.textField}
             error={!!errors.MotherName}
             helperText={errors.MotherName}
@@ -284,8 +288,8 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             autoComplete="guardian"
             value={formData.guardianInfo.GuardianName || ''}
             onChange={handleInputChange}
-            onKeyDown={handleKeyDown}
-            onBlur={handleBlur}
+            // onKeyDown={handleKeyDown}
+            // onBlur={handleBlur}
             className={classes.textField}
             error={!!errors.GuardianName}
             helperText={errors.GuardianName}
@@ -301,8 +305,8 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             autoComplete="parent-occupation"
             value={formData.guardianInfo.ParentOccupation || ''}
             onChange={handleInputChange}
-            onKeyDown={handleKeyDown}
-            onBlur={handleBlur}
+            // onKeyDown={handleKeyDown}
+            // onBlur={handleBlur}
             className={classes.textField}
             error={!!errors.ParentOccupation}
             helperText={errors.ParentOccupation}
@@ -319,8 +323,8 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             autoComplete="parent-qualification"
             value={formData.guardianInfo.ParentQualification || ''}
             onChange={handleInputChange}
-            onKeyDown={handleKeyDown}
-            onBlur={handleBlur}
+            // onKeyDown={handleKeyDown}
+            // onBlur={handleBlur}
             className={classes.textField}
           >
             {qualifications.map((qualification) => (
@@ -359,11 +363,13 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             autoComplete="phone-number"
             value={formData.guardianInfo.MobileNumber || ''}
             onChange={handleInputChange}
-            onKeyDown={handleKeyDown}
-            onBlur={handleBlur}
+            onKeyPress={handleKeyPress}
+            // onKeyDown={handleKeyDown}
+            // onBlur={handleBlur}
             className={classes.textField}
             error={!!errors.MobileNumber}
             helperText={errors.MobileNumber}
+            inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -376,8 +382,8 @@ export default function GuardianInfoForm({ formData, setFormData }) {
     autoComplete="email"
     value={formData.guardianInfo.Email || ''}
     onChange={handleInputChange}
-    onKeyDown={handleKeyDown}
-    onBlur={handleBlur}
+    // onKeyDown={handleKeyDown}
+    // onBlur={handleBlur}
     className={classes.textField}
     error={!!errors.Email}
     helperText={errors.Email}
@@ -393,11 +399,13 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             autoComplete="emergency-contact-number"
             value={formData.guardianInfo.EmergencyContact || ''}
             onChange={handleInputChange}
-            onKeyDown={handleKeyDown}
-            onBlur={handleBlur}
+            onKeyPress={handleKeyPress}
+            // onKeyDown={handleKeyDown}
+            // onBlur={handleBlur}
             className={classes.textField}
             error={!!errors.EmergencyContact}
             helperText={errors.EmergencyContact}
+            inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
           />
         </Grid>
       </Grid>
@@ -415,8 +423,8 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             autoComplete="address-line1"
             value={currentAddress.line1}
             onChange={handleCurrentAddressChange}
-            onKeyDown={handleKeyDown}
-            onBlur={handleBlur}
+            // onKeyDown={handleKeyDown}
+            // onBlur={handleBlur}
             className={classes.textField}
             error={!!errors.line1}
             helperText={errors.line1}
@@ -430,8 +438,8 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             autoComplete="address-line2"
             value={currentAddress.line2}
             onChange={handleCurrentAddressChange}
-            onKeyDown={handleKeyDown}
-            onBlur={handleBlur}
+            // onKeyDown={handleKeyDown}
+            // onBlur={handleBlur}
             className={classes.textField}
             error={!!errors.line2}
             helperText={errors.line2}
@@ -446,8 +454,8 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             autoComplete="address-city"
             value={currentAddress.city}
             onChange={handleCurrentAddressChange}
-            onKeyDown={handleKeyDown}
-            onBlur={handleBlur}
+            // onKeyDown={handleKeyDown}
+            // onBlur={handleBlur}
             className={classes.textField}
             error={!!errors.city}
             helperText={errors.city}
@@ -462,8 +470,8 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             autoComplete="address-district"
             value={currentAddress.district}
             onChange={handleCurrentAddressChange}
-            onKeyDown={handleKeyDown}
-            onBlur={handleBlur}
+            // onKeyDown={handleKeyDown}
+            // onBlur={handleBlur}
             className={classes.textField}
             error={!!errors.district}
             helperText={errors.district}
@@ -478,8 +486,8 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             autoComplete="address-state"
             value={currentAddress.state}
             onChange={handleCurrentAddressChange}
-            onKeyDown={handleKeyDown}
-            onBlur={handleBlur}
+            // onKeyDown={handleKeyDown}
+            // onBlur={handleBlur}
             className={classes.textField}
             error={!!errors.state}
             helperText={errors.state}
@@ -494,8 +502,8 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             autoComplete="address-pincode"
             value={currentAddress.pincode}
             onChange={handleCurrentAddressChange}
-            onKeyDown={handleKeyDown}
-            onBlur={handleBlur}
+            // onKeyDown={handleKeyDown}
+            // onBlur={handleBlur}
             className={classes.textField}
             error={!!errors.pincode}
             helperText={errors.pincode}
@@ -528,8 +536,8 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             autoComplete="address-line1"
             value={permanentAddress.line1}
             onChange={handlePermanentAddressChange}
-            onKeyDown={handleKeyDown}
-            onBlur={handleBlur}
+            // onKeyDown={handleKeyDown}
+            // onBlur={handleBlur}
             className={classes.textField}
             error={!!errors.line1}
             helperText={errors.line1}
@@ -544,8 +552,8 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             autoComplete="address-line2"
             value={permanentAddress.line2}
             onChange={handlePermanentAddressChange}
-            onKeyDown={handleKeyDown}
-            onBlur={handleBlur}
+            // onKeyDown={handleKeyDown}
+            // onBlur={handleBlur}
             className={classes.textField}
             error={!!errors.line2}
             helperText={errors.line2}
@@ -561,8 +569,8 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             autoComplete="address-city"
             value={permanentAddress.city}
             onChange={handlePermanentAddressChange}
-            onKeyDown={handleKeyDown}
-            onBlur={handleBlur}
+            // onKeyDown={handleKeyDown}
+            // onBlur={handleBlur}
             className={classes.textField}
             error={!!errors.city}
             helperText={errors.city}
@@ -578,8 +586,8 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             autoComplete="address-district"
             value={permanentAddress.district}
             onChange={handlePermanentAddressChange}
-            onKeyDown={handleKeyDown}
-            onBlur={handleBlur}
+            // onKeyDown={handleKeyDown}
+            // onBlur={handleBlur}
             className={classes.textField}
             error={!!errors.district}
             helperText={errors.district}
@@ -595,8 +603,8 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             autoComplete="address-state"
             value={permanentAddress.state}
             onChange={handlePermanentAddressChange}
-            onKeyDown={handleKeyDown}
-            onBlur={handleBlur}
+            // onKeyDown={handleKeyDown}
+            // onBlur={handleBlur}
             className={classes.textField}
             error={!!errors.state}
             helperText={errors.state}
@@ -612,8 +620,8 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             autoComplete="address-pincode"
             value={permanentAddress.pincode}
             onChange={handlePermanentAddressChange}
-            onKeyDown={handleKeyDown}
-            onBlur={handleBlur}
+            // onKeyDown={handleKeyDown}
+            // onBlur={handleBlur}
             className={classes.textField}
             error={!!errors.pincode}
             helperText={errors.pincode}

@@ -334,12 +334,94 @@ export default function EnrollForm() {
         currentAddress.line1 && currentAddress.city && currentAddress.district && currentAddress.state && currentAddress.pincode &&
         permanentAddress.line1 && permanentAddress.city && permanentAddress.district && permanentAddress.state && permanentAddress.pincode &&
         validateEmail(Email);
-    } 
+    } else if (activeStep === 2) {
+      const {  BloodGroup } = formData.academicInfo;
+      return BloodGroup;
+    }
     return true;
   };
 
+  const validateForm = () => {
+    const errors = {};
+
+    // Validate personal info
+    if (!formData.personalInfo.StudentName) {
+      errors.StudentName = 'Student Name is required';
+    }
+    if (!formData.personalInfo.DOB) {
+      errors.DOB = 'Date of Birth is required';
+    }
+    if (!formData.personalInfo.Gender) {
+      errors.Gender = 'Gender is required';
+    }
+    if (!formData.personalInfo.Grade) {
+      errors.Grade = 'Grade is required';
+    }
+    if (!formData.personalInfo.AadharNumber) {
+      errors.AadharNumber = 'Aadhar Number is required';
+    }
+
+    // Validate guardian info
+    if (activeStep === 1) {
+      if (!formData.guardianInfo.MotherName) {
+        errors.MotherName = 'Mother Name is required';
+      }
+      if (!formData.guardianInfo.FatherName) {
+        errors.FatherName = 'Father Name is required';
+      }
+      if (!formData.guardianInfo.ParentOccupation) {
+        errors.ParentOccupation = 'Parent Occupation is required';
+      }
+      if (!formData.guardianInfo.ParentQualification) {
+        errors.ParentQualification = 'Parent Qualification is required';
+      }
+      if (!formData.guardianInfo.EmergencyContact) {
+        errors.EmergencyContact = 'Emergency Contact is required';
+      }
+      if (!formData.guardianInfo.MobileNumber) {
+        errors.MobileNumber = 'Mobile Number is required';
+      }
+      if (!validateEmail(formData.guardianInfo.Email)) {
+        errors.Email = 'Invalid Email';
+      }
+      if (!formData.guardianInfo.currentAddress.line1) {
+        errors.currentAddressLine1 = 'Current Address Line 1 is required';
+      }
+      if (!formData.guardianInfo.currentAddress.city) {
+        errors.currentAddressCity = 'Current Address City is required';
+      }
+      if (!formData.guardianInfo.currentAddress.district) {
+        errors.currentAddressDistrict = 'Current Address District is required';
+      }
+      if (!formData.guardianInfo.currentAddress.state) {
+        errors.currentAddressState = 'Current Address State is required';
+      }
+      if (!formData.guardianInfo.currentAddress.pincode) {
+        errors.currentAddressPincode = 'Current Address Pincode is required';
+      }
+      if (!formData.guardianInfo.permanentAddress.line1) {
+        errors.permanentAddressLine1 = 'Permanent Address Line 1 is required';
+      }
+      if (!formData.guardianInfo.permanentAddress.city) {
+        errors.permanentAddressCity = 'Permanent Address City is required';
+      }
+      if (!formData.guardianInfo.permanentAddress.district) {
+        errors.permanentAddressDistrict = 'Permanent Address District is required';
+      }
+      if (!formData.guardianInfo.permanentAddress.state) {
+        errors.permanentAddressState = 'Permanent Address State is required';
+      }
+      if (!formData.guardianInfo.permanentAddress.pincode) {
+        errors.permanentAddressPincode = 'Permanent Address Pincode is required';
+      }
+    }
+
+    return errors;
+  };
+
   const handleNext = () => {
-    if (!validateStep()) {
+    const errors = validateForm();
+    if (Object.keys(errors).length > 0) {
       alert('Please fill all required fields.');
       return;
     }
@@ -350,13 +432,13 @@ export default function EnrollForm() {
     setActiveStep(activeStep - 1);
   };
 
-  const handleStepClick = (step) => {
-    if (step <= activeStep || validateStep()) {
-      setActiveStep(step);
-    } else {
-      alert('Please fill all required fields.');
-    }
-  };
+  // const handleStepClick = (step) => {
+  //   if (step <= activeStep || validateStep()) {
+  //     setActiveStep(step);
+  //   } else {
+  //     alert('Please fill all required fields.');
+  //   }
+  // };
 
   const handleEnrollMore = () => {
     setActiveStep(0);
@@ -547,7 +629,7 @@ export default function EnrollForm() {
               <Stack sx={{ width: '100%' }} spacing={4}>
                 <Stepper alternativeLabel activeStep={activeStep} connector={<ColorlibConnector />} style={{ marginTop: '20px' }}>
                   {steps.map((label, index) => (
-                    <Step key={label} onClick={() => handleStepClick(index)}>
+                    <Step key={label}>
                       <StepLabel StepIconComponent={ColorlibStepIcon}>{label}</StepLabel>
                     </Step>
                   ))}
@@ -583,7 +665,7 @@ export default function EnrollForm() {
             <DialogTitle>Success</DialogTitle>
             <DialogContent>
               <DialogContentText>
-                The form has been successfully submitted.
+                The form has been submitted successfully.
                 <br />
                 User ID: <strong> {UserId} </strong> 
                 <br />

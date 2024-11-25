@@ -65,7 +65,7 @@ export default function AcademicInfoForm({ formData, setFormData }) {
     }
   };
 
-  const bloodGroups = ['A+', 'A-', 'O+', 'O-', 'AB+', 'AB-', 'Rh+', 'Rh-'];
+  const bloodGroups = ['A+', 'A-', 'O+', 'O-', 'B+', 'B-', 'AB+', 'AB-', 'Rh+', 'Rh-'];
 
   return (
     <React.Fragment>
