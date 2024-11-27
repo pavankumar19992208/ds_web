@@ -4,11 +4,10 @@ import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
 import { makeStyles } from '@material-ui/core/styles';
 import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
 import Chip from '@material-ui/core/Chip';
 import Box from '@material-ui/core/Box';
 import InputLabel from '@material-ui/core/InputLabel';
-import OutlinedInput from '@material-ui/core/OutlinedInput';
+import Input from '@material-ui/core/Input';
 import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -18,12 +17,13 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Typography from '@material-ui/core/Typography';
 import { GlobalStateContext } from '../../../../../../../GlobalStateContext';
 import BaseUrl from '../../../../../../../config';
-import HashLoader from 'react-spinners/HashLoader'; // Import the loader component
+import HashLoader from 'react-spinners/HashLoader';
+import Autocomplete from '@material-ui/lab/Autocomplete'; // Import Autocomplete component
 
 const useStyles = makeStyles((theme) => ({
   formContainer: {},
   mainContainer: {
-    overflow: 'auto',
+    overflow: 'hidden',
     maxHeight: '100vh',
   },
   gridContainer: {
@@ -34,11 +34,31 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: theme.spacing(2),
     width: '92%',
   },
+  gradeSpecialization: {
+    marginBottom: '10px',
+  },
+  gradeField: {
+    marginLeft: theme.spacing(3.5),
+    width: '90%',
+  },
   menuItem: {
     backgroundColor: '#f0f0f0',
     '&:hover': {
       backgroundColor: '#d0d0d0',
     },
+  },
+  chip: {
+    height: '20px',
+  },
+  chipBox: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: theme.spacing(1),
+  },
+  addIconContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
 }));
 
@@ -50,6 +70,14 @@ const MenuProps = {
       maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
       width: 250,
     },
+    anchorOrigin: {
+      vertical: 'bottom',
+      horizontal: 'left',
+    },
+    transformOrigin: {
+      vertical: 'top',
+      horizontal: 'left',
+    },
   },
 };
 
@@ -57,18 +85,19 @@ const StaffProfessionalInfo = ({ formData, setFormData }) => {
   const classes = useStyles();
   const { globalData } = useContext(GlobalStateContext);
   const [schoolInfo, setSchoolInfo] = useState({ Subjects: [], Grades: [], Positions: [] });
+  const qualifications = ['Matriculation', '12th or Diploma', 'Graduation', 'Post Graduation', 'Other'];
   const [formValues, setFormValues] = useState({
     ...formData.professionalInfo,
     position: formData.professionalInfo.position || [],
-    grades: formData.professionalInfo.grades || [],
+    grades: formData.professionalInfo.grades && formData.professionalInfo.grades.length > 0 ? formData.professionalInfo.grades : [{ value: '', subjects: [] }],
   });
   const [errors, setErrors] = useState({});
-  const [loading, setLoading] = useState(true); // Add loading state
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchSchoolInfo = async () => {
       try {
-        setLoading(true); // Set loading to true before fetching data
+        setLoading(true);
         const response = await fetch(`${BaseUrl}/schoolinfo`, {
           method: 'POST',
           headers: {
@@ -107,7 +136,7 @@ const StaffProfessionalInfo = ({ formData, setFormData }) => {
       } catch (error) {
         console.error('Error fetching school info:', error);
       } finally {
-        setLoading(false); // Set loading to false after data is fetched
+        setLoading(false);
       }
     };
 
@@ -230,10 +259,10 @@ const StaffProfessionalInfo = ({ formData, setFormData }) => {
         <form className={classes.formContainer}>
           <Grid container spacing={3} className={classes.gridContainer}>
             <Grid item xs={12} sm={12}>
-              <FormControl component="fieldset" className={`${classes.field} urbanist-font`} style={{ marginBottom: '0px' }}>
+              <FormControl component="fieldset" className="urbanist-font" style={{ marginBottom: '0px' }}>
                 <label style={{ marginBottom: '12px' }}>Position / Role :</label>
                 <FormGroup>
-                  <Grid container spacing={1}>
+                  <Grid container spacing={1} className={`${classes.field} urbanist-font`}>
                     {schoolInfo.Positions.map((option) => (
                       <Grid item key={option.value}>
                         <FormControlLabel
@@ -252,8 +281,8 @@ const StaffProfessionalInfo = ({ formData, setFormData }) => {
                 </FormGroup>
               </FormControl>
             </Grid>
-            <Grid item xs={12} sm={12} style={{ display: 'flex', alignItems: 'center' }}>
-              <label style={{ marginBottom: '12px', marginRight: '8px' }} className={`${classes.field} urbanist-font`} gutterBottom>
+            <Grid item xs={12} sm={12} className={classes.addIconContainer}>
+              <label style={{ marginBottom: '12px' }} className='urbanist-font' gutterBottom>
                 Grade-wise Subject Selection:
               </label>
               <IconButton onClick={addGrade}>
@@ -262,8 +291,8 @@ const StaffProfessionalInfo = ({ formData, setFormData }) => {
             </Grid>
 
             {formValues.grades.map((grade, index) => (
-              <Grid container spacing={3} key={index}>
-                <Grid item xs={12} sm={6}>
+              <Grid container spacing={3} key={index} className={classes.gradeSpecialization}>
+                <Grid item xs={12} sm={6}  >
                   <TextField
                     id={`grade-${index}`}
                     select
@@ -273,7 +302,7 @@ const StaffProfessionalInfo = ({ formData, setFormData }) => {
                     onChange={(e) => handleGradeChange(e, index)}
                     fullWidth
                     required
-                    className={`${classes.field} urbanist-font`}
+                    className={`${classes.gradeField} urbanist-font`} 
                   >
                     {schoolInfo.Grades.map((option) => (
                       <MenuItem key={option.value} value={option.value} className={classes.menuItem}>
@@ -284,29 +313,26 @@ const StaffProfessionalInfo = ({ formData, setFormData }) => {
                 </Grid>
                 <Grid item xs={12} sm={6} style={{ display: 'flex', alignItems: 'center' }}>
                   <FormControl className={classes.field}>
-                    <InputLabel id={`subject-label-${index}`}>Subjects</InputLabel>
-                    <Select
-                      labelId={`subject-label-${index}`}
-                      id={`subject-${index}`}
+                    <Autocomplete
                       multiple
+                      id={`subject-${index}`}
+                      options={schoolInfo.Subjects}
                       value={grade.subjects || []}
-                      onChange={(e) => handleSubjectChange(e, grade.value)}
-                      input={<OutlinedInput id={`select-multiple-chip-${index}`} label="Subjects" />}
-                      renderValue={(selected) => (
-                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                          {selected.map((value) => (
-                            <Chip key={value} label={value} />
-                          ))}
-                        </Box>
+                      onChange={(event, newValue) => handleSubjectChange({ target: { value: newValue } }, grade.value)}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          variant="standard"
+                          label="Subjects"
+                          placeholder="Select subjects"
+                        />
                       )}
-                      MenuProps={MenuProps}
-                    >
-                      {schoolInfo.Subjects.map((subject) => (
-                        <MenuItem key={subject} value={subject}>
-                          {subject}
-                        </MenuItem>
-                      ))}
-                    </Select>
+                      renderTags={(selected, getTagProps) =>
+                        selected.map((value, index) => (
+                          <Chip key={value} label={value} {...getTagProps({ index })} className={classes.chip} />
+                        ))
+                      }
+                    />
                   </FormControl>
                   <IconButton onClick={() => deleteGrade(index)} disabled={formValues.grades.length === 1}>
                     <DeleteIcon />
@@ -329,6 +355,7 @@ const StaffProfessionalInfo = ({ formData, setFormData }) => {
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
+                select
                 id="qualification"
                 label="Qualification"
                 name="qualification"
@@ -337,9 +364,26 @@ const StaffProfessionalInfo = ({ formData, setFormData }) => {
                 fullWidth
                 required
                 className={`${classes.field} urbanist-font`}
-                error={!!errors.qualification}
-                helperText={errors.qualification}
-              />
+              >
+                {qualifications.map((qualification) => (
+                  <MenuItem key={qualification} value={qualification}>
+                    {qualification}
+                  </MenuItem>
+                ))}
+              </TextField>
+              {formValues.qualification === 'Other' && (
+                <TextField
+                  id="otherQualification"
+                  name="otherQualification"
+                  label="Please specify"
+                  fullWidth
+                  value={formValues.otherQualification || ''}
+                  onChange={handleChange}
+                  className={`${classes.field} urbanist-font`}
+                  error={!!errors.otherQualification}
+                  helperText={errors.otherQualification}
+                />
+              )}
             </Grid>
 
             <Grid item xs={12} sm={6}>

@@ -93,7 +93,7 @@ export default function GuardianInfoForm({ formData, setFormData }) {
     }
   };
 
-  const handleCurrentAddressChange = (event) => {
+    const handleCurrentAddressChange = (event) => {
     const { id, value } = event.target;
     let isValid = true;
     let errorMessage = '';
@@ -106,11 +106,17 @@ export default function GuardianInfoForm({ formData, setFormData }) {
       errorMessage = 'Invalid numeric input';
     }
   
+    if (value === '' && ['line1', 'city', 'district', 'state', 'pincode'].includes(id)) {
+      isValid = false;
+      errorMessage = 'This field is required';
+    }
+  
+    setCurrentAddress((prev) => ({ ...prev, [id]: value }));
+    if (sameAddress) {
+      setPermanentAddress((prev) => ({ ...prev, [id]: value }));
+    }
+  
     if (isValid) {
-      setCurrentAddress((prev) => ({ ...prev, [id]: value }));
-      if (sameAddress) {
-        setPermanentAddress((prev) => ({ ...prev, [id]: value }));
-      }
       setErrors((prevErrors) => ({
         ...prevErrors,
         [id]: '',
@@ -122,8 +128,8 @@ export default function GuardianInfoForm({ formData, setFormData }) {
       }));
     }
   };
-
-   const handlePermanentAddressChange = (event) => {
+  
+  const handlePermanentAddressChange = (event) => {
     const { id, value } = event.target;
     let isValid = true;
     let errorMessage = '';
@@ -136,8 +142,14 @@ export default function GuardianInfoForm({ formData, setFormData }) {
       errorMessage = 'Invalid numeric input';
     }
   
+    if (value === '' && ['line1', 'city', 'district', 'state', 'pincode'].includes(id)) {
+      isValid = false;
+      errorMessage = 'This field is required';
+    }
+  
+    setPermanentAddress((prev) => ({ ...prev, [id]: value }));
+  
     if (isValid) {
-      setPermanentAddress((prev) => ({ ...prev, [id]: value }));
       setErrors((prevErrors) => ({
         ...prevErrors,
         [id]: '',
@@ -169,6 +181,11 @@ export default function GuardianInfoForm({ formData, setFormData }) {
       errorMessage = 'Email must end with @gmail.com';
     } else if (name === 'ParentQualification' && value === 'Other') {
       setOtherQualification('');
+    }
+
+    if (value === '' && ['FatherName', 'MotherName', 'ParentOccupation', 'MobileNumber', 'Email', 'EmergencyContact'].includes(name)) {
+      isValid = false;
+      errorMessage = 'This field is required';
     }
   
     setFormData((prevData) => ({

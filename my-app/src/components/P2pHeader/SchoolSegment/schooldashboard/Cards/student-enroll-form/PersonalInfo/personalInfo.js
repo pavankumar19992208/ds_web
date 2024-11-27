@@ -79,6 +79,12 @@ export default function DetailsForm({ formData, setFormData }) {
         errorMessage = 'Aadhar number must be 12 digits';
       }
     }
+
+      // Check if the field is required and empty
+  if (['StudentName', 'DOB', 'Gender', 'Grade', 'AadharNumber'].includes(name) && value === '') {
+    isValid = false;
+    errorMessage = 'This field is required';
+  }
   
     setFormData((prevData) => ({
       ...prevData,

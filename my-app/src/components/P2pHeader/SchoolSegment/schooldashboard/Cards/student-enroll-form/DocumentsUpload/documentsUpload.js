@@ -2,13 +2,9 @@ import React, { useState, useEffect } from 'react';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
+import Alert from '@mui/material/Alert';
+import Stack from '@mui/material/Stack';
 
 const useStyles = makeStyles((theme) => ({
   typography: {
@@ -17,14 +13,20 @@ const useStyles = makeStyles((theme) => ({
     color: '#3f51b5',
     fontFamily: '"Urbanist", sans-serif',
     fontOpticalSizing: 'auto',
-    fontWeight: 500 ,
+    fontWeight: 500,
   },
   textField: {
     marginLeft: theme.spacing(2),
     width: '92%',
     fontFamily: '"Urbanist", sans-serif',
     fontOpticalSizing: 'auto',
-    fontWeight: 500 ,
+    fontWeight: 500,
+  },
+  alert: {
+    position: 'fixed',
+    top: theme.spacing(8),
+    right: theme.spacing(0),
+    zIndex: 1000,
   },
 }));
 
@@ -33,6 +35,7 @@ export default function DocumentsUpload({ formData, setFormData }) {
   const [open, setOpen] = useState(false);
   const [uploadedDoc, setUploadedDoc] = useState({});
   const [fileNames, setFileNames] = useState({});
+  const [showAlert, setShowAlert] = useState(false);
 
   useEffect(() => {
     const storedFileNames = formData.documents.reduce((acc, doc) => {
@@ -62,14 +65,11 @@ export default function DocumentsUpload({ formData, setFormData }) {
           ...prevFileNames,
           [documentType]: file.name,
         }));
-        setOpen(true);
+        setShowAlert(true);
+        setTimeout(() => setShowAlert(false), 3000); // Hide alert after 3 seconds
       };
       reader.readAsDataURL(file);
     }
-  };
-
-  const handleClose = () => {
-    setOpen(false);
   };
 
   return (
@@ -142,19 +142,11 @@ export default function DocumentsUpload({ formData, setFormData }) {
           {fileNames.birth && <Typography variant="body2" className={classes.typography}>{fileNames.birth}</Typography>}
         </Grid>
       </Grid>
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Document Uploaded</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            {`The document "${uploadedDoc.name}" of type "${uploadedDoc.type}" has been successfully uploaded.`}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            Close
-          </Button>
-        </DialogActions>
-      </Dialog>
+      {showAlert && (
+        <Stack className={classes.alert} spacing={2}>
+          <Alert severity="success" sx={{ backgroundColor: 'rgb(237, 247, 237)' }}>{`uploaded "${uploadedDoc.name}".`}</Alert>
+        </Stack>
+      )}
     </React.Fragment>
   );
 }

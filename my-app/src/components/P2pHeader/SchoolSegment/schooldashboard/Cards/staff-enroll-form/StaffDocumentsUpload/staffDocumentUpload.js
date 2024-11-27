@@ -2,15 +2,12 @@ import React, { useState, useEffect } from 'react';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Button from '@material-ui/core/Button';
+import Alert from '@mui/material/Alert';
+import Stack from '@mui/material/Stack';
 import { makeStyles } from '@material-ui/core/styles';
 import { storage } from '../../../../../../connections/firebase'; // Adjust the import path as necessary
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import './staffDocumentUpload.css';
 
 const useStyles = makeStyles((theme) => ({
   typography: {
@@ -22,13 +19,20 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: theme.spacing(2),
     width: '92%',
   },
+  alert: {
+    position: 'fixed',
+    top: theme.spacing(8),
+    right: theme.spacing(0),
+    zIndex: 1000,
+
+  },
 }));
 
 export default function StaffDocumentUploadForm({ formData = { documents: [] }, setFormData }) {
   const classes = useStyles();
-  const [open, setOpen] = useState(false);
   const [uploadedDoc, setUploadedDoc] = useState({});
   const [fileNames, setFileNames] = useState({});
+  const [showAlert, setShowAlert] = useState(false);
 
   useEffect(() => {
     const storedFileNames = formData.documents.reduce((acc, doc) => {
@@ -59,12 +63,9 @@ export default function StaffDocumentUploadForm({ formData = { documents: [] }, 
         ...prevFileNames,
         [documentType]: file.name,
       }));
-      setOpen(true);
+      setShowAlert(true);
+      setTimeout(() => setShowAlert(false), 3000); // Hide alert after 3 seconds
     }
-  };
-
-  const handleClose = () => {
-    setOpen(false);
   };
 
   return (
@@ -115,19 +116,11 @@ export default function StaffDocumentUploadForm({ formData = { documents: [] }, 
           {fileNames.educationalCertificates && <Typography variant="body2" className={`${classes.typography} urbanist-font`}>{fileNames.educationalCertificates}</Typography>}
         </Grid>
       </Grid>
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Document Uploaded</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            {`The document "${uploadedDoc.name}" of type "${uploadedDoc.type}" has been successfully uploaded.`}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            Close
-          </Button>
-        </DialogActions>
-      </Dialog>
+      {showAlert && (
+        <Stack className={classes.alert} spacing={2}>
+          <Alert severity="success"  >{`uploaded "${uploadedDoc.name}".`}</Alert>
+        </Stack>
+      )}
     </React.Fragment>
   );
 }

@@ -26,7 +26,7 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
 
   const validateField = (name, value) => {
     let error = '';
-    if (['fullName', 'city', 'district', 'state'].includes(name)) {
+    if (['fullName', 'city', 'district', 'state', 'customGender'].includes(name)) {
       if (!/^[a-zA-Z\s]+$/.test(value)) {
         error = 'Only alphabets are allowed';
       }
@@ -67,7 +67,7 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
 
     setErrors((prev) => ({
       ...prev,
-      [name]: error,
+      [addressType ? `${addressType}.${name}` : name]: error,
     }));
 
     if (fieldType === 'personalInfo') {
@@ -92,15 +92,7 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
     }
   };
 
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
-      const { name } = e.target;
-      setErrors((prev) => ({
-        ...prev,
-        [name]: '',
-      }));
-    }
-  };
+
 
   const handleCheckboxChange = (e) => {
     setSameAsCurrent(e.target.checked);
@@ -117,7 +109,7 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
         ...prev,
         personalInfo: {
           ...prev.personalInfo,
-          permanentAddress: {
+          permanentAddress: prev.personalInfo.permanentAddress || {
             line1: '',
             line2: '',
             city: '',
@@ -146,7 +138,6 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
             autoComplete="name"
             value={formData.personalInfo.fullName}
             onChange={(e) => handleInputChange(e, 'personalInfo')}
-            onKeyPress={handleKeyPress}
             error={!!errors.fullName}
             helperText={errors.fullName}
             className={`${classes.fieldMargin} heading`}
@@ -154,7 +145,6 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
-            required
             id="profilePic"
             name="profilePic"
             label="Profile Picture"
@@ -180,7 +170,6 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
             }}
             value={formData.personalInfo.dob}
             onChange={(e) => handleInputChange(e, 'personalInfo')}
-            onKeyPress={handleKeyPress}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -194,12 +183,25 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
             className={`${classes.fieldMargin} heading`}
             value={formData.personalInfo.gender}
             onChange={(e) => handleInputChange(e, 'personalInfo')}
-            onKeyPress={handleKeyPress}
           >
             <MenuItem value="male">Male</MenuItem>
             <MenuItem value="female">Female</MenuItem>
             <MenuItem value="other">Other</MenuItem>
           </TextField>
+          {formData.personalInfo.gender === 'other' && (
+            <TextField
+              required
+              id="customGender"
+              name="customGender"
+              label="Please specify"
+              fullWidth
+              className={`${classes.fieldMargin} heading`}
+              value={formData.personalInfo.customGender || ''}
+              onChange={(e) => handleInputChange(e, 'personalInfo')}
+              error={!!errors.customGender}
+              helperText={errors.customGender}
+            />
+          )}
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
@@ -212,7 +214,6 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
             autoComplete="tel"
             value={formData.personalInfo.contactNumber}
             onChange={(e) => handleInputChange(e, 'personalInfo')}
-            onKeyPress={handleKeyPress}
             error={!!errors.contactNumber}
             helperText={errors.contactNumber}
           />
@@ -228,7 +229,6 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
             autoComplete="email"
             value={formData.personalInfo.email}
             onChange={(e) => handleInputChange(e, 'personalInfo')}
-            onKeyPress={handleKeyPress}
           />
         </Grid>
         <Grid item xs={12}>
@@ -246,7 +246,8 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
             className={`${classes.fieldMargin} heading`}
             value={formData.personalInfo.currentAddress.line1}
             onChange={(e) => handleInputChange(e, 'address', 'currentAddress')}
-            onKeyPress={handleKeyPress}
+            error={!!errors['currentAddress.line1']}
+            helperText={errors['currentAddress.line1']}
           />
         </Grid>
         <Grid item xs={12}>
@@ -258,7 +259,8 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
             className={`${classes.fieldMargin} heading`}
             value={formData.personalInfo.currentAddress.line2}
             onChange={(e) => handleInputChange(e, 'address', 'currentAddress')}
-            onKeyPress={handleKeyPress}
+            error={!!errors['currentAddress.line2']}
+            helperText={errors['currentAddress.line2']}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -271,9 +273,8 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
             className={`${classes.fieldMargin} heading`}
             value={formData.personalInfo.currentAddress.city}
             onChange={(e) => handleInputChange(e, 'address', 'currentAddress')}
-            onKeyPress={handleKeyPress}
-            error={!!errors.city}
-            helperText={errors.city}
+            error={!!errors['currentAddress.city']}
+            helperText={errors['currentAddress.city']}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -286,9 +287,8 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
             className={`${classes.fieldMargin} heading`}
             value={formData.personalInfo.currentAddress.district}
             onChange={(e) => handleInputChange(e, 'address', 'currentAddress')}
-            onKeyPress={handleKeyPress}
-            error={!!errors.district}
-            helperText={errors.district}
+            error={!!errors['currentAddress.district']}
+            helperText={errors['currentAddress.district']}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -301,9 +301,8 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
             className={`${classes.fieldMargin} heading`}
             value={formData.personalInfo.currentAddress.state}
             onChange={(e) => handleInputChange(e, 'address', 'currentAddress')}
-            onKeyPress={handleKeyPress}
-            error={!!errors.state}
-            helperText={errors.state}
+            error={!!errors['currentAddress.state']}
+            helperText={errors['currentAddress.state']}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -316,9 +315,8 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
             className={`${classes.fieldMargin} heading`}
             value={formData.personalInfo.currentAddress.pinCode}
             onChange={(e) => handleInputChange(e, 'address', 'currentAddress')}
-            onKeyPress={handleKeyPress}
-            error={!!errors.pinCode}
-            helperText={errors.pinCode}
+            error={!!errors['currentAddress.pinCode']}
+            helperText={errors['currentAddress.pinCode']}
           />
         </Grid>
         <Grid item xs={12}>
@@ -349,8 +347,9 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
             className={`${classes.fieldMargin} heading`}
             value={formData.personalInfo.permanentAddress.line1}
             onChange={(e) => handleInputChange(e, 'address', 'permanentAddress')}
-            onKeyPress={handleKeyPress}
             disabled={sameAsCurrent}
+            error={!!errors['permanentAddress.line1']}
+            helperText={errors['permanentAddress.line1']}
           />
         </Grid>
         <Grid item xs={12}>
@@ -362,8 +361,9 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
             className={`${classes.fieldMargin} heading`}
             value={formData.personalInfo.permanentAddress.line2}
             onChange={(e) => handleInputChange(e, 'address', 'permanentAddress')}
-            onKeyPress={handleKeyPress}
             disabled={sameAsCurrent}
+            error={!!errors['permanentAddress.line2']}
+            helperText={errors['permanentAddress.line2']}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -376,10 +376,9 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
             className={`${classes.fieldMargin} heading`}
             value={formData.personalInfo.permanentAddress.city}
             onChange={(e) => handleInputChange(e, 'address', 'permanentAddress')}
-            onKeyPress={handleKeyPress}
             disabled={sameAsCurrent}
-            error={!!errors.city}
-            helperText={errors.city}
+            error={!!errors['permanentAddress.city']}
+            helperText={errors['permanentAddress.city']}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -392,10 +391,9 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
             className={`${classes.fieldMargin} heading`}
             value={formData.personalInfo.permanentAddress.district}
             onChange={(e) => handleInputChange(e, 'address', 'permanentAddress')}
-            onKeyPress={handleKeyPress}
             disabled={sameAsCurrent}
-            error={!!errors.district}
-            helperText={errors.district}
+            error={!!errors['permanentAddress.district']}
+            helperText={errors['permanentAddress.district']}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -408,10 +406,9 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
             className={`${classes.fieldMargin} heading`}
             value={formData.personalInfo.permanentAddress.state}
             onChange={(e) => handleInputChange(e, 'address', 'permanentAddress')}
-            onKeyPress={handleKeyPress}
             disabled={sameAsCurrent}
-            error={!!errors.state}
-            helperText={errors.state}
+            error={!!errors['permanentAddress.state']}
+            helperText={errors['permanentAddress.state']}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -424,10 +421,9 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
             className={`${classes.fieldMargin} heading`}
             value={formData.personalInfo.permanentAddress.pinCode}
             onChange={(e) => handleInputChange(e, 'address', 'permanentAddress')}
-            onKeyPress={handleKeyPress}
             disabled={sameAsCurrent}
-            error={!!errors.pinCode}
-            helperText={errors.pinCode}
+            error={!!errors['permanentAddress.pinCode']}
+            helperText={errors['permanentAddress.pinCode']}
           />
         </Grid>
       </Grid>

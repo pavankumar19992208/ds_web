@@ -444,39 +444,39 @@ export default function StaffPrimaryForm() {
     setActiveStep(activeStep - 1);
   };
 
-  const handleStepClick = (step) => {
-    if (step < activeStep) {
-      setActiveStep(step);
-      return;
-    }
+  // const handleStepClick = (step) => {
+  //   if (step < activeStep) {
+  //     setActiveStep(step);
+  //     return;
+  //   }
 
-    let isValid = true;
-    switch (activeStep) {
-      case 0:
-        isValid = validatePersonalInfo();
-        break;
-      case 1:
-        isValid = validateProfessionalInfo();
-        break;
-      case 2:
-        isValid = validateEmploymentInfo();
-        break;
-      case 3:
-        isValid = validateEmergencyContactInfo();
-        break;
-      case 4:
-        isValid = validateDocumentUpload();
-        break;
-      default:
-        break;
-    }
+  //   let isValid = true;
+  //   switch (activeStep) {
+  //     case 0:
+  //       isValid = validatePersonalInfo();
+  //       break;
+  //     case 1:
+  //       isValid = validateProfessionalInfo();
+  //       break;
+  //     case 2:
+  //       isValid = validateEmploymentInfo();
+  //       break;
+  //     case 3:
+  //       isValid = validateEmergencyContactInfo();
+  //       break;
+  //     case 4:
+  //       isValid = validateDocumentUpload();
+  //       break;
+  //     default:
+  //       break;
+  //   }
 
-    if (isValid) {
-      setActiveStep(step);
-    } else {
-      alert("Please fill out all required fields before proceeding.");
-    }
-  };
+  //   if (isValid) {
+  //     setActiveStep(step);
+  //   } else {
+  //     alert("Please fill out all required fields before proceeding.");
+  //   }
+  // };
 
    const handleEnrollMore = () => {
     setFormData({
@@ -557,7 +557,7 @@ export default function StaffPrimaryForm() {
       fullName: formData.personalInfo.fullName,
       profilepic: formData.personalInfo.profilePic,
       dob: formData.personalInfo.dob,
-      gender: formData.personalInfo.gender,
+      gender: formData.personalInfo.gender === 'other' ? formData.personalInfo.customGender : formData.personalInfo.gender,
       contactNumber: formData.personalInfo.contactNumber,
       email: formData.personalInfo.email,
       currentAddress: formData.personalInfo.currentAddress,
@@ -569,8 +569,7 @@ export default function StaffPrimaryForm() {
         return acc;
       }, {}),
       experience: formData.professionalInfo.experience,
-      qualification: formData.professionalInfo.qualification,
-      certifications: formData.professionalInfo.certifications,
+      qualification: formData.professionalInfo.qualification === 'Other' ? formData.professionalInfo.otherQualification : formData.professionalInfo.qualification,      certifications: formData.professionalInfo.certifications,
       joiningDate: formData.employmentInfo.joiningDate,
       employmentType: formData.employmentInfo.employmentType === 'Other' ? formData.employmentInfo.otherEmploymentType : formData.employmentInfo.employmentType,
       previousSchool: formData.employmentInfo.previousSchool,
@@ -652,7 +651,7 @@ export default function StaffPrimaryForm() {
           <Stack sx={{ width: '100%' }} spacing={4} className="stepperContainer">
             <Stepper alternativeLabel activeStep={activeStep} connector={<ColorlibConnector />}>
               {steps.map((label, index) => (
-                <Step key={label} onClick={() => handleStepClick(index)}>
+                <Step key={label}>
                   <StepLabel StepIconComponent={ColorlibStepIcon}>{label}</StepLabel>
                 </Step>
               ))}
