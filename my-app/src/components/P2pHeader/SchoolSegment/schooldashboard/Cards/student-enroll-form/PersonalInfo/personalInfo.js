@@ -62,7 +62,7 @@ export default function DetailsForm({ formData, setFormData }) {
     setFileName(formData.personalInfo.PhotoName || '');
   }, [formData.personalInfo.PhotoName]);
 
-   const handleChange = (event) => {
+    const handleChange = (event) => {
     const { name, value } = event.target;
     let isValid = true;
     let errorMessage = '';
@@ -74,11 +74,17 @@ export default function DetailsForm({ formData, setFormData }) {
       isValid = /^[0-9]*$/.test(value); // Ensure only numbers are entered
       if (!isValid) {
         errorMessage = 'Aadhar number must contain only digits';
-      } else if (value.length > 12) {
+      } else if (value.length !== 12) {
         isValid = false;
         errorMessage = 'Aadhar number must be 12 digits';
       }
     }
+
+      // Check if the field is required and empty
+  if (['StudentName', 'DOB', 'Gender', 'Grade', 'AadharNumber'].includes(name) && value === '') {
+    isValid = false;
+    errorMessage = 'This field is required';
+  }
   
     setFormData((prevData) => ({
       ...prevData,
@@ -111,15 +117,15 @@ export default function DetailsForm({ formData, setFormData }) {
     });
   };
 
-  const handleKeyDown = (event) => {
-    if (event.key === 'Enter') {
-      const { name } = event.target;
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        [name]: '',
-      }));
-    }
-  };
+  // const handleKeyDown = (event) => {
+  //   if (event.key === 'Enter') {
+  //     const { name } = event.target;
+  //     setErrors((prevErrors) => ({
+  //       ...prevErrors,
+  //       [name]: '',
+  //     }));
+  //   }
+  // };
 
   const handleBlur = (event) => {
     const { name } = event.target;
@@ -257,8 +263,8 @@ export default function DetailsForm({ formData, setFormData }) {
             autoComplete="name"
             value={formData.personalInfo.StudentName || ''}
             onChange={handleChange}
-            onKeyDown={handleKeyDown}
-            onBlur={handleBlur}
+            // onKeyDown={handleKeyDown}
+            // onBlur={handleBlur}
             className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
             error={!!errors.StudentName}
             helperText={errors.StudentName}
@@ -277,9 +283,11 @@ export default function DetailsForm({ formData, setFormData }) {
             }}
             value={formData.personalInfo.DOB || ''}
             onChange={handleChange}
-            onKeyDown={handleKeyDown}
-            onBlur={handleBlur}
+            // onKeyDown={handleKeyDown}
+            // onBlur={handleBlur}
             className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
+            error={!!errors.DOB}
+            helperText={errors.DOB}
           />
         </Grid>
         {/* >>> */}
@@ -293,9 +301,11 @@ export default function DetailsForm({ formData, setFormData }) {
             fullWidth
             value={formData.personalInfo.Gender || ''}
             onChange={handleChange}
-            onKeyDown={handleKeyDown}
-            onBlur={handleBlur}
+            // onKeyDown={handleKeyDown}
+            // onBlur={handleBlur}
             className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
+            error={!!errors.Gender}
+            helperText={errors.Gender}
           >
             <MenuItem value="male">Male</MenuItem>
             <MenuItem value="female">Female</MenuItem>
@@ -306,8 +316,8 @@ export default function DetailsForm({ formData, setFormData }) {
               id="otherGender"
               name="otherGender"
               label="Please specify"
-              onBlur={handleBlur}
-              onKeyDown={handleKeyDown}
+              // onBlur={handleBlur}
+              // onKeyDown={handleKeyDown}
               fullWidth
               value={otherGender}
               onChange={handleOtherGenderChange}
@@ -349,8 +359,8 @@ export default function DetailsForm({ formData, setFormData }) {
             fullWidth
             value={formData.personalInfo.Grade || ''}
             onChange={handleChange}
-            onKeyDown={handleKeyDown}
-            onBlur={handleBlur}
+            // onKeyDown={handleKeyDown}
+            // onBlur={handleBlur}
             className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
           >
             {[...Array(10).keys()].map(i => (
@@ -366,8 +376,8 @@ export default function DetailsForm({ formData, setFormData }) {
             fullWidth
             value={formData.personalInfo.PreviousSchool || ''}
             onChange={handleChange}
-            onKeyDown={handleKeyDown}
-            onBlur={handleBlur}
+            // onKeyDown={handleKeyDown}
+            // onBlur={handleBlur}
             className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
             error={!!errors.PreviousSchool}
             helperText={errors.PreviousSchool}
@@ -411,8 +421,8 @@ export default function DetailsForm({ formData, setFormData }) {
               name="otherLanguage"
               value={otherLanguage}
               onChange={handleOtherLanguageChange}
-              onKeyDown={handleKeyDown}
-              onBlur={handleOtherLanguageBlur}
+              // onKeyDown={handleKeyDown}
+              // onBlur={handleOtherLanguageBlur}
               fullWidth
               className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
               error={!!errors.otherLanguage}
@@ -428,8 +438,8 @@ export default function DetailsForm({ formData, setFormData }) {
             fullWidth
             value={formData.personalInfo.Religion || ''}
             onChange={handleChange}
-            onKeyDown={handleKeyDown}
-            onBlur={handleBlur}
+            // onKeyDown={handleKeyDown}
+            // onBlur={handleBlur}
             className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
             error={!!errors.Religion}
             helperText={errors.Religion}
@@ -443,8 +453,8 @@ export default function DetailsForm({ formData, setFormData }) {
             fullWidth
             value={formData.personalInfo.Category || ''}
             onChange={handleChange}
-            onKeyDown={handleKeyDown}
-            onBlur={handleBlur}
+            // onKeyDown={handleKeyDown}
+            // onBlur={handleBlur}
             className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
             error={!!errors.Category}
             helperText={errors.Category}
@@ -458,8 +468,8 @@ export default function DetailsForm({ formData, setFormData }) {
             fullWidth
             value={formData.personalInfo.Nationality || ''}
             onChange={handleChange}
-            onKeyDown={handleKeyDown}
-            onBlur={handleBlur}
+            // onKeyDown={handleKeyDown}
+            // onBlur={handleBlur}
             className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
             error={!!errors.Nationality}
             helperText={errors.Nationality}
@@ -475,8 +485,8 @@ export default function DetailsForm({ formData, setFormData }) {
             fullWidth
             value={formData.personalInfo.AadharNumber || ''}
             onChange={handleChange}
-            onKeyDown={handleKeyDown}
-            onBlur={handleBlur}
+            // onKeyDown={handleKeyDown}
+            // onBlur={handleBlur}
             className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
             error={!!errors.AadharNumber}
             helperText={errors.AadharNumber}

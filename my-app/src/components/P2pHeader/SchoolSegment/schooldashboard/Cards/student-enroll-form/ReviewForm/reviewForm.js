@@ -38,7 +38,7 @@ function ReviewForm({ formData, expandedDoc, setExpandedDoc, classes }) {
                           {expandedDoc === key ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                         </IconButton>
                         {expandedDoc === key && (
-                          <img src={formData.personalInfo.Photo} alt="User's uploaded photo" style={{ width: '100%' }} />
+                          <img src={formData.personalInfo.Photo} alt="User's uploaded photo" style={{ width: '200px', height: '200px', objectFit: 'cover' }} />
                         )}
                       </div>
                     ) : key === 'languagesKnown' ? (
@@ -138,7 +138,7 @@ function ReviewForm({ formData, expandedDoc, setExpandedDoc, classes }) {
                   {expandedDoc === index && (
                     <TableRow>
                       <TableCell colSpan={3}>
-                        <img src={doc.data} alt={doc.name} style={{ width: '100%' }} />
+                        <img src={doc.data} alt={doc.name} style={{ width: '200px', height: '200px', objectFit: 'cover' }} />
                       </TableCell>
                     </TableRow>
                   )}

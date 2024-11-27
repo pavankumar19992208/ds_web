@@ -38,7 +38,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import HashLoader from 'react-spinners/HashLoader';
 import './staffPrimaryForm.css';
 
-
 const QontoConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {
     top: 10,
@@ -334,7 +333,7 @@ export default function StaffPrimaryForm() {
 
   const validatePersonalInfo = () => {
     const { personalInfo } = formData;
-    const requiredFields = ['fullName', 'dob', 'gender', 'contactNumber', 'currentAddress', 'permanentAddress'];
+    const requiredFields = ['fullName', 'dob', 'gender', 'email', 'contactNumber', 'currentAddress', 'permanentAddress'];
     let isValid = true;
     let newErrors = {};
 
@@ -351,17 +350,24 @@ export default function StaffPrimaryForm() {
 
   const validateProfessionalInfo = () => {
     const { professionalInfo } = formData;
-    const requiredFields = ['position', 'subjectSpecialization', 'grade', 'qualification'];
+    const requiredFields = ['position', 'qualification', 'grades'];
     let isValid = true;
     let newErrors = {};
-
+  
+    // Validate required fields
     requiredFields.forEach((field) => {
-      if (!professionalInfo[field]) {
+      if (!professionalInfo[field] || (Array.isArray(professionalInfo[field]) && professionalInfo[field].length === 0)) {
         isValid = false;
         newErrors[field] = 'This field is required';
       }
     });
-
+  
+    // Validate grades
+    if (!professionalInfo.grades || !Array.isArray(professionalInfo.grades) || professionalInfo.grades.some(grade => !grade.value || !grade.subjects || grade.subjects.length === 0)) {
+      isValid = false;
+      newErrors.grades = 'Each grade must have a value and at least one subject';
+    }
+  
     setErrors(newErrors);
     return isValid;
   };
@@ -421,10 +427,10 @@ export default function StaffPrimaryForm() {
       alert("Please fill out all required fields in Personal Details.");
       return;
     }
-    // if (activeStep === 1 && !validateProfessionalInfo()) {
-    //   alert("Please fill out all required fields in Professional Details.");
-    //   return;
-    // }
+    if (activeStep === 1 && !validateProfessionalInfo()) {
+      alert("Please fill out all required fields in Professional Details. Ensure each grade has a value and at least one subject.");
+      return;
+    }
     if (activeStep === 2 && !validateEmploymentInfo()) {
       alert("Please fill out all required fields in Employment Details.");
       return;
@@ -444,39 +450,39 @@ export default function StaffPrimaryForm() {
     setActiveStep(activeStep - 1);
   };
 
-  const handleStepClick = (step) => {
-    if (step < activeStep) {
-      setActiveStep(step);
-      return;
-    }
+  // const handleStepClick = (step) => {
+  //   if (step < activeStep) {
+  //     setActiveStep(step);
+  //     return;
+  //   }
 
-    let isValid = true;
-    switch (activeStep) {
-      case 0:
-        isValid = validatePersonalInfo();
-        break;
-      case 1:
-        isValid = validateProfessionalInfo();
-        break;
-      case 2:
-        isValid = validateEmploymentInfo();
-        break;
-      case 3:
-        isValid = validateEmergencyContactInfo();
-        break;
-      case 4:
-        isValid = validateDocumentUpload();
-        break;
-      default:
-        break;
-    }
+  //   let isValid = true;
+  //   switch (activeStep) {
+  //     case 0:
+  //       isValid = validatePersonalInfo();
+  //       break;
+  //     case 1:
+  //       isValid = validateProfessionalInfo();
+  //       break;
+  //     case 2:
+  //       isValid = validateEmploymentInfo();
+  //       break;
+  //     case 3:
+  //       isValid = validateEmergencyContactInfo();
+  //       break;
+  //     case 4:
+  //       isValid = validateDocumentUpload();
+  //       break;
+  //     default:
+  //       break;
+  //   }
 
-    if (isValid) {
-      setActiveStep(step);
-    } else {
-      alert("Please fill out all required fields before proceeding.");
-    }
-  };
+  //   if (isValid) {
+  //     setActiveStep(step);
+  //   } else {
+  //     alert("Please fill out all required fields before proceeding.");
+  //   }
+  // };
 
    const handleEnrollMore = () => {
     setFormData({
@@ -551,13 +557,13 @@ export default function StaffPrimaryForm() {
       11: 'Class 11',
       12: 'Class 12',
     };
-  
+    
         const payload = {
       SchoolId: globalData.data.SCHOOL_ID,
       fullName: formData.personalInfo.fullName,
       profilepic: formData.personalInfo.profilePic,
       dob: formData.personalInfo.dob,
-      gender: formData.personalInfo.gender,
+      gender: formData.personalInfo.gender === 'other' ? formData.personalInfo.customGender : formData.personalInfo.gender,
       contactNumber: formData.personalInfo.contactNumber,
       email: formData.personalInfo.email,
       currentAddress: formData.personalInfo.currentAddress,
@@ -569,8 +575,7 @@ export default function StaffPrimaryForm() {
         return acc;
       }, {}),
       experience: formData.professionalInfo.experience,
-      qualification: formData.professionalInfo.qualification,
-      certifications: formData.professionalInfo.certifications,
+      qualification: formData.professionalInfo.qualification === 'Other' ? formData.professionalInfo.otherQualification : formData.professionalInfo.qualification,      certifications: formData.professionalInfo.certifications,
       joiningDate: formData.employmentInfo.joiningDate,
       employmentType: formData.employmentInfo.employmentType === 'Other' ? formData.employmentInfo.otherEmploymentType : formData.employmentInfo.employmentType,
       previousSchool: formData.employmentInfo.previousSchool,
@@ -652,7 +657,7 @@ export default function StaffPrimaryForm() {
           <Stack sx={{ width: '100%' }} spacing={4} className="stepperContainer">
             <Stepper alternativeLabel activeStep={activeStep} connector={<ColorlibConnector />}>
               {steps.map((label, index) => (
-                <Step key={label} onClick={() => handleStepClick(index)}>
+                <Step key={label}>
                   <StepLabel StepIconComponent={ColorlibStepIcon}>{label}</StepLabel>
                 </Step>
               ))}
