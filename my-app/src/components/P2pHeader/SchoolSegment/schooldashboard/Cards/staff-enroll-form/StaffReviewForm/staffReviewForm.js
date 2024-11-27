@@ -39,6 +39,32 @@ function ReviewForm({ formData, expandedDoc, setExpandedDoc, classes }) {
           </Table>
         </Grid>
         <Grid item xs={12} sm={6}>
+          <Typography variant="h6" className={classes.reviewSectionTitle}>Current Address</Typography>
+          <Table>
+            <TableBody>
+              {Object.entries(formData.personalInfo.currentAddress).map(([key, value]) => (
+                <TableRow key={key}>
+                  <TableCell>{key}</TableCell>
+                  <TableCell>{value || ''}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <Typography variant="h6" className={classes.reviewSectionTitle}>Permanent Address</Typography>
+          <Table>
+            <TableBody>
+              {Object.entries(formData.personalInfo.permanentAddress).map(([key, value]) => (
+                <TableRow key={key}>
+                  <TableCell>{key}</TableCell>
+                  <TableCell>{value || ''}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </Grid>
+        <Grid item xs={12} sm={6}>
           <Typography variant="h6" className={classes.reviewSectionTitle}>Professional Info</Typography>
           <Table>
             <TableBody>

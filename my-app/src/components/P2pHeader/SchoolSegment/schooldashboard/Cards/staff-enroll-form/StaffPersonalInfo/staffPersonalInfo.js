@@ -20,7 +20,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function StaffPersonalInfo({ formData, setFormData }) {
-  const [sameAsCurrent, setSameAsCurrent] = useState(false);
   const [errors, setErrors] = useState({});
   const classes = useStyles();
 
@@ -33,6 +32,10 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
     } else if (['pinCode', 'contactNumber'].includes(name)) {
       if (!/^\d+$/.test(value)) {
         error = 'Only numbers are allowed';
+      }
+    } else if (name === 'email') {
+      if (!value.endsWith('@gmail.com')) {
+        error = 'Email must end with @gmail.com';
       }
     }
     return error;
@@ -92,35 +95,34 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
     }
   };
 
-
-
   const handleCheckboxChange = (e) => {
-    setSameAsCurrent(e.target.checked);
-    if (e.target.checked) {
-      setFormData((prev) => ({
-        ...prev,
-        personalInfo: {
-          ...prev.personalInfo,
-          permanentAddress: prev.personalInfo.currentAddress,
+    const checked = e.target.checked;
+    setFormData((prev) => ({
+      ...prev,
+      personalInfo: {
+        ...prev.personalInfo,
+        sameAsCurrent: checked,
+        permanentAddress: checked ? prev.personalInfo.currentAddress : prev.personalInfo.permanentAddress || {
+          line1: '',
+          line2: '',
+          city: '',
+          district: '',
+          state: '',
+          pinCode: '',
         },
-      }));
-    } else {
-      setFormData((prev) => ({
-        ...prev,
-        personalInfo: {
-          ...prev.personalInfo,
-          permanentAddress: prev.personalInfo.permanentAddress || {
-            line1: '',
-            line2: '',
-            city: '',
-            district: '',
-            state: '',
-            pinCode: '',
-          },
-        },
-      }));
-    }
+      },
+    }));
   };
+
+  useEffect(() => {
+    setFormData((prev) => ({
+      ...prev,
+      personalInfo: {
+        ...prev.personalInfo,
+        sameAsCurrent: prev.personalInfo.sameAsCurrent || false,
+      },
+    }));
+  }, [setFormData]);
 
   return (
     <React.Fragment>
@@ -225,10 +227,13 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
             label="Email Address"
             type="email"
             fullWidth
+            required
             className={`${classes.fieldMargin} heading`}
             autoComplete="email"
             value={formData.personalInfo.email}
             onChange={(e) => handleInputChange(e, 'personalInfo')}
+            error={!!errors.email}
+            helperText={errors.email}
           />
         </Grid>
         <Grid item xs={12}>
@@ -323,7 +328,7 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
           <FormControlLabel
             control={
               <Checkbox
-                checked={sameAsCurrent}
+                checked={formData.personalInfo.sameAsCurrent}
                 onChange={handleCheckboxChange}
                 color="primary"
                 className='heading'
@@ -347,7 +352,7 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
             className={`${classes.fieldMargin} heading`}
             value={formData.personalInfo.permanentAddress.line1}
             onChange={(e) => handleInputChange(e, 'address', 'permanentAddress')}
-            disabled={sameAsCurrent}
+            disabled={formData.personalInfo.sameAsCurrent}
             error={!!errors['permanentAddress.line1']}
             helperText={errors['permanentAddress.line1']}
           />
@@ -361,7 +366,7 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
             className={`${classes.fieldMargin} heading`}
             value={formData.personalInfo.permanentAddress.line2}
             onChange={(e) => handleInputChange(e, 'address', 'permanentAddress')}
-            disabled={sameAsCurrent}
+            disabled={formData.personalInfo.sameAsCurrent}
             error={!!errors['permanentAddress.line2']}
             helperText={errors['permanentAddress.line2']}
           />
@@ -376,7 +381,7 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
             className={`${classes.fieldMargin} heading`}
             value={formData.personalInfo.permanentAddress.city}
             onChange={(e) => handleInputChange(e, 'address', 'permanentAddress')}
-            disabled={sameAsCurrent}
+            disabled={formData.personalInfo.sameAsCurrent}
             error={!!errors['permanentAddress.city']}
             helperText={errors['permanentAddress.city']}
           />
@@ -391,7 +396,7 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
             className={`${classes.fieldMargin} heading`}
             value={formData.personalInfo.permanentAddress.district}
             onChange={(e) => handleInputChange(e, 'address', 'permanentAddress')}
-            disabled={sameAsCurrent}
+            disabled={formData.personalInfo.sameAsCurrent}
             error={!!errors['permanentAddress.district']}
             helperText={errors['permanentAddress.district']}
           />
@@ -406,7 +411,7 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
             className={`${classes.fieldMargin} heading`}
             value={formData.personalInfo.permanentAddress.state}
             onChange={(e) => handleInputChange(e, 'address', 'permanentAddress')}
-            disabled={sameAsCurrent}
+            disabled={formData.personalInfo.sameAsCurrent}
             error={!!errors['permanentAddress.state']}
             helperText={errors['permanentAddress.state']}
           />
@@ -421,7 +426,7 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
             className={`${classes.fieldMargin} heading`}
             value={formData.personalInfo.permanentAddress.pinCode}
             onChange={(e) => handleInputChange(e, 'address', 'permanentAddress')}
-            disabled={sameAsCurrent}
+            disabled={formData.personalInfo.sameAsCurrent}
             error={!!errors['permanentAddress.pinCode']}
             helperText={errors['permanentAddress.pinCode']}
           />

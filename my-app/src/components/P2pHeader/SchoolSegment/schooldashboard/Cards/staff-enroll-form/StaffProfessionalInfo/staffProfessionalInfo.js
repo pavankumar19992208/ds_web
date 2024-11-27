@@ -4,6 +4,7 @@ import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
 import { makeStyles } from '@material-ui/core/styles';
 import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
 import Chip from '@material-ui/core/Chip';
 import Box from '@material-ui/core/Box';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -17,8 +18,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Typography from '@material-ui/core/Typography';
 import { GlobalStateContext } from '../../../../../../../GlobalStateContext';
 import BaseUrl from '../../../../../../../config';
-import HashLoader from 'react-spinners/HashLoader';
-import Autocomplete from '@material-ui/lab/Autocomplete'; // Import Autocomplete component
+import HashLoader from 'react-spinners/HashLoader'; // Import the loader component
 
 const useStyles = makeStyles((theme) => ({
   formContainer: {},
@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
   },
   gradeField: {
     marginLeft: theme.spacing(3.5),
-    width: '90%',
+    width: '90%', // Decrease the width
   },
   menuItem: {
     backgroundColor: '#f0f0f0',
@@ -48,12 +48,12 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   chip: {
-    height: '20px',
+    height: '20px', // Decrease the height of the chips
   },
   chipBox: {
     display: 'flex',
     flexWrap: 'wrap',
-    gap: theme.spacing(1),
+    gap: theme.spacing(1), // Increase the gap between chips
   },
   addIconContainer: {
     display: 'flex',
@@ -90,14 +90,15 @@ const StaffProfessionalInfo = ({ formData, setFormData }) => {
     ...formData.professionalInfo,
     position: formData.professionalInfo.position || [],
     grades: formData.professionalInfo.grades && formData.professionalInfo.grades.length > 0 ? formData.professionalInfo.grades : [{ value: '', subjects: [] }],
+    experience: formData.professionalInfo.experience || 0, // Set default experience to 0
   });
   const [errors, setErrors] = useState({});
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true); // Add loading state
 
   useEffect(() => {
     const fetchSchoolInfo = async () => {
       try {
-        setLoading(true);
+        setLoading(true); // Set loading to true before fetching data
         const response = await fetch(`${BaseUrl}/schoolinfo`, {
           method: 'POST',
           headers: {
@@ -136,7 +137,7 @@ const StaffProfessionalInfo = ({ formData, setFormData }) => {
       } catch (error) {
         console.error('Error fetching school info:', error);
       } finally {
-        setLoading(false);
+        setLoading(false); // Set loading to false after data is fetched
       }
     };
 
@@ -145,29 +146,33 @@ const StaffProfessionalInfo = ({ formData, setFormData }) => {
 
   const validateField = (name, value) => {
     let error = '';
-    if (['certifications', 'qualification'].includes(name)) {
+    if (name === 'certifications' && value) {
+      if (!/^[a-zA-Z\s]+$/.test(value)) {
+        error = 'Only alphabets are allowed';
+      }
+    } else if (name === 'qualification') {
       if (!/^[a-zA-Z\s]+$/.test(value)) {
         error = 'Only alphabets are allowed';
       }
     }
     return error;
   };
-
+  
   const handleChange = (event) => {
     const { name, value } = event.target;
     let error = validateField(name, value);
-
-    if (!value) {
+  
+    if (!value && name !== 'certifications') {
       error = 'This field is required';
     }
-
+  
     setErrors((prev) => ({
       ...prev,
       [name]: error,
     }));
-
+  
     const updatedValue = name === 'experience' ? parseInt(value, 10) : value;
-
+  
     const updatedFormValues = { ...formValues, [name]: updatedValue };
     setFormValues(updatedFormValues);
     setFormData((prevData) => ({
@@ -312,27 +317,30 @@ const StaffProfessionalInfo = ({ formData, setFormData }) => {
                   </TextField>
                 </Grid>
                 <Grid item xs={12} sm={6} style={{ display: 'flex', alignItems: 'center' }}>
-                  <FormControl className={classes.field}>
-                    <Autocomplete
-                      multiple
+                  <FormControl className={classes.field} required>
+                    <InputLabel id={`subject-label-${index}`}>Subjects</InputLabel>
+                    <Select
+                      labelId={`subject-label-${index}`}
                       id={`subject-${index}`}
-                      options={schoolInfo.Subjects}
+                      multiple
                       value={grade.subjects || []}
-                      onChange={(event, newValue) => handleSubjectChange({ target: { value: newValue } }, grade.value)}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          variant="standard"
-                          label="Subjects"
-                          placeholder="Select subjects"
-                        />
+                      onChange={(e) => handleSubjectChange(e, grade.value)}
+                      input={<Input id={`select-multiple-chip-${index}`} label="Subjects" />}
+                      renderValue={(selected) => (
+                        <Box className={classes.chipBox}>
+                          {selected.map((value) => (
+                            <Chip key={value} label={value} className={classes.chip} />
+                          ))}
+                        </Box>
                       )}
-                      renderTags={(selected, getTagProps) =>
-                        selected.map((value, index) => (
-                          <Chip key={value} label={value} {...getTagProps({ index })} className={classes.chip} />
-                        ))
-                      }
-                    />
+                      MenuProps={MenuProps}
+                    >
+                      {schoolInfo.Subjects.map((subject) => (
+                        <MenuItem key={subject} value={subject}>
+                          {subject}
+                        </MenuItem>
+                      ))}
+                    </Select>
                   </FormControl>
                   <IconButton onClick={() => deleteGrade(index)} disabled={formValues.grades.length === 1}>
                     <DeleteIcon />

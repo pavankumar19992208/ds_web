@@ -38,7 +38,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import HashLoader from 'react-spinners/HashLoader';
 import './staffPrimaryForm.css';
 
-
 const QontoConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {
     top: 10,
@@ -334,7 +333,7 @@ export default function StaffPrimaryForm() {
 
   const validatePersonalInfo = () => {
     const { personalInfo } = formData;
-    const requiredFields = ['fullName', 'dob', 'gender', 'contactNumber', 'currentAddress', 'permanentAddress'];
+    const requiredFields = ['fullName', 'dob', 'gender', 'email', 'contactNumber', 'currentAddress', 'permanentAddress'];
     let isValid = true;
     let newErrors = {};
 
@@ -351,17 +350,24 @@ export default function StaffPrimaryForm() {
 
   const validateProfessionalInfo = () => {
     const { professionalInfo } = formData;
-    const requiredFields = ['position', 'subjectSpecialization', 'grade', 'qualification'];
+    const requiredFields = ['position', 'qualification', 'grades'];
     let isValid = true;
     let newErrors = {};
-
+  
+    // Validate required fields
     requiredFields.forEach((field) => {
-      if (!professionalInfo[field]) {
+      if (!professionalInfo[field] || (Array.isArray(professionalInfo[field]) && professionalInfo[field].length === 0)) {
         isValid = false;
         newErrors[field] = 'This field is required';
       }
     });
-
+  
+    // Validate grades
+    if (!professionalInfo.grades || !Array.isArray(professionalInfo.grades) || professionalInfo.grades.some(grade => !grade.value || !grade.subjects || grade.subjects.length === 0)) {
+      isValid = false;
+      newErrors.grades = 'Each grade must have a value and at least one subject';
+    }
+  
     setErrors(newErrors);
     return isValid;
   };
@@ -421,10 +427,10 @@ export default function StaffPrimaryForm() {
       alert("Please fill out all required fields in Personal Details.");
       return;
     }
-    // if (activeStep === 1 && !validateProfessionalInfo()) {
-    //   alert("Please fill out all required fields in Professional Details.");
-    //   return;
-    // }
+    if (activeStep === 1 && !validateProfessionalInfo()) {
+      alert("Please fill out all required fields in Professional Details. Ensure each grade has a value and at least one subject.");
+      return;
+    }
     if (activeStep === 2 && !validateEmploymentInfo()) {
       alert("Please fill out all required fields in Employment Details.");
       return;
@@ -551,7 +557,7 @@ export default function StaffPrimaryForm() {
       11: 'Class 11',
       12: 'Class 12',
     };
-  
+    
         const payload = {
       SchoolId: globalData.data.SCHOOL_ID,
       fullName: formData.personalInfo.fullName,
