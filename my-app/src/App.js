@@ -16,6 +16,8 @@ import CareerGuidance from './components/P2pHeader/SchoolSegment/schooldashboard
 import StaffPayroll from './components/P2pHeader/SchoolSegment/schooldashboard/Cards/staff-payroll/staffPayroll';
 import SubjectAllocation from './components/P2pHeader/SchoolSegment/schooldashboard/Sidebar/subject-allocation/subjectAllocation';
 import ClassTimeTable from './components/P2pHeader/SchoolSegment/schooldashboard/Cards/class-timetable/classTimeTable';
+import DataEnter from './components/DataEnter';
+
 
 function App() {
   return (
@@ -37,7 +39,7 @@ function App() {
           <Route path="/staff-payroll" element={<StaffPayroll />} />
           <Route path="/subject-allocation" element={<SubjectAllocation/>}/>
           <Route path="/class-timetable" element={<ClassTimeTable/>}/>
-
+          <Route path="/data-entry" element={<DataEnter />} />
         </Routes>
       </Router>
     </GlobalStateProvider>
