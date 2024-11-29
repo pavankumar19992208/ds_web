@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Navbar from './Navbar';
+import BaseUrl from '../config';
 
 const DataEnter = () => {
   const [hoveredButton, setHoveredButton] = useState(null);
@@ -11,6 +12,8 @@ const DataEnter = () => {
   const [chapterInput, setChapterInput] = useState('');
   const [chapterCount, setChapterCount] = useState(0);
   const [chapterNames, setChapterNames] = useState([]);
+  const [grades, setGrades] = useState([]);
+  const [subjects, setSubjects] = useState([]);
 
   const buttonStyle = {
     display: 'block',
@@ -77,6 +80,32 @@ const DataEnter = () => {
     setChapterNames([]);
   };
 
+  const handleGetSchoolInfo = async () => {
+    try {
+      const response = await fetch(`${BaseUrl}/schoolinfo`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ SchoolId: String(schoolId) }),
+      });
+      const data = await response.json();
+      console.log(data);
+      console.log(data.data.GradeLevelFrom);
+      // Extract grades and subjects from the response
+      const gradeLevelFrom = parseInt(data.data.GradeLevelFrom.match(/\d+/)[0], 10);
+      const gradeLevelTo = parseInt(data.data.GradeLevelTo.match(/\d+/)[0], 10);
+      const gradesList = [];
+      for (let i = gradeLevelFrom; i <= gradeLevelTo; i++) {
+        gradesList.push(`Class ${i}`);
+      }
+      setGrades(gradesList);
+      setSubjects(data.data.Subjects);
+    } catch (error) {
+      console.error('Error fetching school info:', error);
+    }
+  };
+
   return (
     <div>
       <Navbar showButtons={false} />
@@ -102,7 +131,7 @@ const DataEnter = () => {
                   style={{ marginLeft: '10px', width: '300px', padding: '10px', fontSize: '20px', borderRadius: '5px', fontFamily: 'monospace' }}
                 />
               </label>
-              <button style={{ ...smallerButtonStyle, backgroundColor: 'green', marginLeft: '10px' }}>Get</button>
+              <button onClick={handleGetSchoolInfo} style={{ ...smallerButtonStyle, backgroundColor: 'green', marginLeft: '10px' }}>Get</button>
             </div>
           )}
         </div>
@@ -121,23 +150,18 @@ const DataEnter = () => {
                 Grade:
                 <select value={grade} onChange={(e) => setGrade(e.target.value)} style={{ marginLeft: '10px', width: '300px', padding: '10px', fontSize: '20px', borderRadius: '5px', fontFamily: 'monospace', borderColor: 'black' }}>
                   <option value="">Select Grade</option>
-                  <option value="6">6</option>
-                  <option value="7">7</option>
-                  <option value="8">8</option>
-                  <option value="9">9</option>
-                  <option value="10">10</option>
+                  {grades.map((grade, index) => (
+                    <option key={index} value={grade}>{grade}</option>
+                  ))}
                 </select>
               </label>
               <label style={{ fontSize: '24px', marginLeft: '40px' }}>
                 Subject:
                 <select value={subject} onChange={(e) => setSubject(e.target.value)} style={{ marginLeft: '10px', width: '300px', padding: '10px', fontSize: '20px', borderRadius: '5px', fontFamily: 'monospace', borderColor: 'black' }}>
                   <option value="">Select Subject</option>
-                  <option value="Telugu">Telugu</option>
-                  <option value="Hindi">Hindi</option>
-                  <option value="English">English</option>
-                  <option value="Maths">Maths</option>
-                  <option value="Science">Science</option>
-                  <option value="Social">Social</option>
+                  {subjects.map((subject, index) => (
+                    <option key={index} value={subject}>{subject}</option>
+                  ))}
                 </select>
               </label>
               <label style={{ fontSize: '24px', marginLeft: '40px' }}>
