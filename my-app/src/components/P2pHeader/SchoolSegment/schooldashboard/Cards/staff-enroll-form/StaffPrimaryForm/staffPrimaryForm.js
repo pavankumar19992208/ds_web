@@ -333,17 +333,37 @@ export default function StaffPrimaryForm() {
 
   const validatePersonalInfo = () => {
     const { personalInfo } = formData;
-    const requiredFields = ['fullName', 'dob', 'gender', 'email', 'contactNumber', 'currentAddress', 'permanentAddress'];
+    const requiredFields = ['fullName', 'dob', 'gender', 'email', 'contactNumber'];
+    const requiredAddressFields = ['line1', 'city', 'district', 'state', 'pinCode'];
     let isValid = true;
     let newErrors = {};
-
+  
+    // Validate required fields
     requiredFields.forEach((field) => {
-      if (!personalInfo[field] || (typeof personalInfo[field] === 'object' && Object.values(personalInfo[field]).some(value => !value))) {
+      if (!personalInfo[field]) {
         isValid = false;
         newErrors[field] = 'This field is required';
       }
     });
-
+  
+    // Validate current address fields
+    requiredAddressFields.forEach((field) => {
+      if (!personalInfo.currentAddress[field]) {
+        isValid = false;
+        newErrors[`currentAddress.${field}`] = 'This field is required';
+      }
+    });
+  
+    // Validate permanent address fields if not same as current
+    if (!personalInfo.sameAsCurrent) {
+      requiredAddressFields.forEach((field) => {
+        if (!personalInfo.permanentAddress[field]) {
+          isValid = false;
+          newErrors[`permanentAddress.${field}`] = 'This field is required';
+        }
+      });
+    }
+  
     setErrors(newErrors);
     return isValid;
   };

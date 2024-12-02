@@ -118,6 +118,14 @@ const renderButtons = () => (
     >
       Admin Login
     </button>
+    <button
+        style={buttonStyle('shop')}
+        onMouseEnter={() => setIsHovered({ ...isHovered, shop: true })}
+        onMouseLeave={() => setIsHovered({ ...isHovered, shop: false })}
+        onClick={() => window.location.href = '/ecommerce-dashboard'}
+      >
+        Shop Now
+      </button>
   </div>
 );
 
