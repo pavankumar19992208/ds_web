@@ -1,0 +1,65 @@
+/* ecommerceDashboard.css */
+body {
+  background-color: bisque;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  /* height: 100vh; */
+}
+
+.AppBar {
+  background-color: #3f51b5;
+}
+
+.Toolbar {
+  display: flex;
+  justify-content: space-between;
+}
+
+.Search {
+  position: relative;
+  border-radius: 4px;
+  background-color: white;
+  margin-right: 16px;
+  margin-left: 0;
+  width: 100%;
+}
+
+.SearchIconWrapper {
+  padding: 0 16px;
+  height: 100%;
+  position: absolute;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.StyledInputBase {
+  color: inherit;
+  width: 100%;
+}
+
+.StyledInputBase .MuiInputBase-input {
+  padding: 8px 8px 8px 0;
+  padding-left: calc(1em + 32px);
+  transition: width 300ms;
+  width: 100%;
+}
+
+.StyledInputBase .MuiInputBase-input:focus {
+  width: 20ch;
+}
+
+.GridContainer {
+  margin-top: 20px;
+}
+
+.GridItem {
+  background-color: #f0f0f0;
+  height: 100%;
+}
+
+.GridItem2x2 {
+  background-color: #d0d0d0;
+  height: 100%;
+}

@@ -16,6 +16,9 @@ import CareerGuidance from './components/P2pHeader/SchoolSegment/schooldashboard
 import StaffPayroll from './components/P2pHeader/SchoolSegment/schooldashboard/Cards/staff-payroll/staffPayroll';
 import SubjectAllocation from './components/P2pHeader/SchoolSegment/schooldashboard/Sidebar/subject-allocation/subjectAllocation';
 import ClassTimeTable from './components/P2pHeader/SchoolSegment/schooldashboard/Cards/class-timetable/classTimeTable';
+import UploadProducts from './components/Ecommerce/UploadProducts/uploadProducts';
+import EcommerceDashboard from './components/Ecommerce/EcommerceDashboard/ecommerceDashboard';
+import ProductsList from './components/Ecommerce/ProductsList/productsList';
 
 function App() {
   return (
@@ -37,6 +40,9 @@ function App() {
           <Route path="/staff-payroll" element={<StaffPayroll />} />
           <Route path="/subject-allocation" element={<SubjectAllocation/>}/>
           <Route path="/class-timetable" element={<ClassTimeTable/>}/>
+          <Route path="/upload-products" element={<UploadProducts/>}/>
+          <Route path="/ecommerce-dashboard" element={<EcommerceDashboard/>}/>
+          <Route path="/products-list" element={<ProductsList/>}/>
 
         </Routes>
       </Router>
