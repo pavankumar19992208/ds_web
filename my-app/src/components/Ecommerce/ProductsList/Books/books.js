@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import './productsList.css';
+import EcommerceNavbar from '../../EcommerceNavbar/ecommerceNavbar';
 
-const ProductsList = () => {
+import '../productsList.css';
+
+const BooksList = () => {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
@@ -9,7 +11,8 @@ const ProductsList = () => {
       try {
         const response = await fetch("http://localhost:8000/products");
         const data = await response.json();
-        setProducts(data);
+        const Books = data.filter(product => product.category === 'Books');
+        setProducts(Books);
       } catch (error) {
         console.error("Error fetching products:", error);
       }
@@ -30,7 +33,7 @@ const ProductsList = () => {
 
   return (
     <div className="dashboard">
-        {/* <EcommerceNavbar /> */}
+        <EcommerceNavbar />
       <div className="product-list">
         {products.length > 0 ? (
           products.map((product) => (
@@ -57,4 +60,4 @@ const ProductsList = () => {
   );
 };
 
-export default ProductsList;
+export default BooksList;

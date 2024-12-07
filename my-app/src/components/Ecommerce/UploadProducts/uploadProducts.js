@@ -8,9 +8,20 @@ function AdminUploadPage() {
     const [price, setPrice] = useState("");
     const [stock, setStock] = useState("");
     const [category, setCategory] = useState("");
+    const [mainImage, setMainImage] = useState(null);
     const [images, setImages] = useState([]);
     const [imageNames, setImageNames] = useState([]);
     const [uploadedImages, setUploadedImages] = useState([]);
+
+    const handleMainImageChange = (e) => {
+        const selectedImage = e.target.files[0];
+        if (selectedImage) {
+            setMainImage(selectedImage);
+        } else {
+            alert("Please upload an image file.");
+            setMainImage(null);
+        }
+    };
 
     const handleImageChange = (e) => {
         const selectedImages = Array.from(e.target.files);
@@ -25,11 +36,20 @@ function AdminUploadPage() {
     };
 
     const handleUpload = async () => {
+        if (!mainImage) {
+            alert("Please select a main image to upload.");
+            return;
+        }
+
         if (images.length === 0) {
             alert("Please select images to upload.");
             return;
         }
-    
+
+        const mainImageRef = ref(storage, `images/${mainImage.name}`);
+        await uploadBytes(mainImageRef, mainImage);
+        const mainImageUrl = await getDownloadURL(mainImageRef);
+
         const imageUrls = await Promise.all(images.map(async (image) => {
             const imageRef = ref(storage, `images/${image.name}`);
             await uploadBytes(imageRef, image);
@@ -42,6 +62,7 @@ function AdminUploadPage() {
             price,
             stock,
             category,
+            mainImageUrl,
             imageUrls
         };
 
@@ -53,6 +74,7 @@ function AdminUploadPage() {
         formData.append("price", price);
         formData.append("stock", stock);
         formData.append("category", category);
+        formData.append("mainImageUrl", mainImageUrl);
         imageUrls.forEach((url, index) => formData.append(`imageUrls`, url)); // Append as individual items
 
         try {
@@ -81,6 +103,7 @@ function AdminUploadPage() {
             <input type="number" placeholder="Price" value={price} onChange={(e) => setPrice(e.target.value)} />
             <input type="number" placeholder="Stock" value={stock} onChange={(e) => setStock(e.target.value)} />
             <input type="text" placeholder="Category" value={category} onChange={(e) => setCategory(e.target.value)} />
+            <input type="file" onChange={handleMainImageChange} />
             <input type="file" multiple onChange={handleImageChange} />
             <button onClick={handleUpload}>Upload</button>
             <h2>Selected Images:</h2>

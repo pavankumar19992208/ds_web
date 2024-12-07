@@ -1,4 +1,5 @@
 .dashboard {
+  margin: 4% 0;
   padding: 20px;
   font-family: Arial, sans-serif;
 }
@@ -14,25 +15,76 @@
 
 .product-list {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 20px;
 }
 
 .product {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 10px;
   border: 1px solid #ccc;
   padding: 10px;
   border-radius: 5px;
-  width: 300px;
+  width: 98.5%;
+}
+
+.product-details {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.product-details h2 {
+  font-size: 1.2rem; /* Adjust the font size as needed */
+}
+.price{
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+.stock {
+margin-top: -4px;
+
 }
 
 .image-container {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+  justify-content: center;
+  align-items: center;
 }
 
 .image {
-  width: 100px;
-  height: 100px;
+  width: auto;
+  height: 240px;
   object-fit: cover;
+}
+
+
+button {
+  padding: 10px 20px;
+  margin: 5px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+button:hover {
+  opacity: 0.8;
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+button.add-to-cart {
+  background-color: #1c3052; /* Green */
+  width: 25%;
+  color: white;
+}
+
+button.add-to-favourites {
+  background-color: #0f0f0f; /* Tomato */
+  width: 25%;
+  color: white;
 }

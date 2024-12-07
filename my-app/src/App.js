@@ -19,6 +19,7 @@ import ClassTimeTable from './components/P2pHeader/SchoolSegment/schooldashboard
 import UploadProducts from './components/Ecommerce/UploadProducts/uploadProducts';
 import EcommerceDashboard from './components/Ecommerce/EcommerceDashboard/ecommerceDashboard';
 import ProductsList from './components/Ecommerce/ProductsList/productsList';
+import BookList from './components/Ecommerce/ProductsList/Books/books';
 
 function App() {
   return (
@@ -43,6 +44,7 @@ function App() {
           <Route path="/upload-products" element={<UploadProducts/>}/>
           <Route path="/ecommerce-dashboard" element={<EcommerceDashboard/>}/>
           <Route path="/products-list" element={<ProductsList/>}/>
+          <Route path="/books-list" element={<BookList/>}/>
 
         </Routes>
       </Router>
