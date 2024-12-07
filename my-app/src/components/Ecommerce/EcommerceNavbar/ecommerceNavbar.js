@@ -1,5 +1,5 @@
 import React from 'react';
-import { AppBar, Toolbar, IconButton, InputBase, Badge } from '@mui/material';
+import { AppBar, Toolbar, IconButton, InputBase, Badge, Box } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import SearchIcon from '@mui/icons-material/Search';
@@ -41,40 +41,45 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
     transition: theme.transitions.create('width'),
     width: '100%',
+    color: 'black', // Change text color to black
     [theme.breakpoints.up('md')]: {
-      width: '20ch',
+      width: '30ch', // Increased width
     },
   },
 }));
 
 function EcommerceNavbar() {
   return (
-    <AppBar position="static">
+    <AppBar style={{backgroundColor:"#084152"}} position="fixed">
       <Toolbar>
         <IconButton edge="start" color="inherit">
           <AccountCircle />
         </IconButton>
+        <Box sx={{ flexGrow: 1 }} />
         <Search>
           <SearchIconWrapper>
-            <SearchIcon />
+            <SearchIcon sx={{color:'black'}}/>
           </SearchIconWrapper>
           <StyledInputBase placeholder="Search…" inputProps={{ 'aria-label': 'search' }} />
         </Search>
-        <IconButton color="inherit">
+        <IconButton color="inherit" sx={{ mx: 1 }}>
           <Badge badgeContent={4} color="secondary">
             <ShoppingCartIcon />
           </Badge>
         </IconButton>
-        <IconButton color="inherit">
+        <IconButton color="inherit" sx={{ mx: 1 }}>
           <Badge badgeContent={17} color="secondary">
             <MailIcon />
           </Badge>
         </IconButton>
-        <IconButton color="inherit">
+        <IconButton color="inherit" sx={{ mx: 1 }}>
           <ListAltIcon />
         </IconButton>
-        <IconButton color="inherit">
+        <IconButton color="inherit" sx={{ mx: 1 }}>
           <FavoriteIcon />
+        </IconButton>
+        <IconButton edge="start" color="inherit" sx={{ mx: 1 }}>
+          <AccountCircle />
         </IconButton>
       </Toolbar>
     </AppBar>

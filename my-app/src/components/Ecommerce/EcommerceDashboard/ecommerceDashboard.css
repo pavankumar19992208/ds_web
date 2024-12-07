@@ -1,57 +1,15 @@
-/* ecommerceDashboard.css */
-body {
-  background-color: bisque;
+
+.dashboardStyle {
+  background-color: rgb(242, 242, 242);
   margin: 0;
   font-family: Arial, sans-serif;
-  /* height: 100vh; */
-}
-
-.AppBar {
-  background-color: #3f51b5;
-}
-
-.Toolbar {
-  display: flex;
-  justify-content: space-between;
-}
-
-.Search {
-  position: relative;
-  border-radius: 4px;
-  background-color: white;
-  margin-right: 16px;
-  margin-left: 0;
-  width: 100%;
-}
-
-.SearchIconWrapper {
-  padding: 0 16px;
   height: 100%;
-  position: absolute;
-  pointer-events: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  overflow: hidden;
 }
 
-.StyledInputBase {
-  color: inherit;
-  width: 100%;
-}
+.boxes{
+  box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.1); /* Add box shadow to the right side */
 
-.StyledInputBase .MuiInputBase-input {
-  padding: 8px 8px 8px 0;
-  padding-left: calc(1em + 32px);
-  transition: width 300ms;
-  width: 100%;
-}
-
-.StyledInputBase .MuiInputBase-input:focus {
-  width: 20ch;
-}
-
-.GridContainer {
-  margin-top: 20px;
 }
 
 .GridItem {
@@ -62,4 +20,15 @@ body {
 .GridItem2x2 {
   background-color: #d0d0d0;
   height: 100%;
+}
+
+.buy-btn{
+  color: black !important;
+  background-color: rgb(255, 242, 230) !important;
+  border-radius: 20px !important;
+}
+
+.custom-slider .slick-dots {
+  top: auto;
+  bottom: 10px;
 }
