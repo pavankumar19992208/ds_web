@@ -17,7 +17,7 @@ const Categories = () => {
 
   return (
     <div className='category-content'>
-      <h2>Shop by Category</h2>
+      <h2 className='category-heading'>Shop by Category</h2>
       <div className="grid-container">
         <div className="grid-item" onClick={() => handleCategoryClick('Books')}>
           <img src={Books} alt="Books" />
