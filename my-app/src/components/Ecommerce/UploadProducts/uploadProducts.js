@@ -102,7 +102,15 @@ function AdminUploadPage() {
             <input type="text" placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)} />
             <input type="number" placeholder="Price" value={price} onChange={(e) => setPrice(e.target.value)} />
             <input type="number" placeholder="Stock" value={stock} onChange={(e) => setStock(e.target.value)} />
-            <input type="text" placeholder="Category" value={category} onChange={(e) => setCategory(e.target.value)} />
+            <select value={category} onChange={(e) => setCategory(e.target.value)}>
+                <option value="">Select Category</option>
+                <option value="Books">Books</option>
+                <option value="Stationery">Stationery</option>
+                <option value="Accessories">Accessories</option>
+                <option value="Furniture">Furniture</option>
+                <option value="Exam Preparation">Exam Preparation</option>
+                <option value="Sports & Fitness">Sports & Fitness</option>
+            </select>
             <input type="file" onChange={handleMainImageChange} />
             <input type="file" multiple onChange={handleImageChange} />
             <button onClick={handleUpload}>Upload</button>

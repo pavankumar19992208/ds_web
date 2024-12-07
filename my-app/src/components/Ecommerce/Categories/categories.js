@@ -12,9 +12,7 @@ const Categories = () => {
   const navigate = useNavigate();
 
   const handleCategoryClick = (category) => {
-    if (category === 'Books') {
-      navigate('/books-list');
-    }
+    navigate(`/products-list?category=${category}`);
   };
 
   return (
@@ -25,23 +23,23 @@ const Categories = () => {
           <img src={Books} alt="Books" />
           <span>Books</span>
         </div>
-        <div className="grid-item">
+        <div className="grid-item" onClick={() => handleCategoryClick('Accessories')}>
           <img src={Accessories} alt="Accessories" />
           <span>Accessories</span>
         </div>
-        <div className="grid-item">
+        <div className="grid-item" onClick={() => handleCategoryClick('Stationery')}>
           <img src={Stationery} alt="Stationery" />
           <span>Stationery</span>
         </div>
-        <div className="grid-item">
+        <div className="grid-item" onClick={() => handleCategoryClick('Furniture')}>
           <img src={Furniture} alt="Furniture" />
           <span>Furniture</span>
         </div>
-        <div className="grid-item">
+        <div className="grid-item" onClick={() => handleCategoryClick('Sports & Fitness')}>
           <img src={Sports_Fitness} alt="Sports & Fitness" />
           <span>Sports & Fitness</span>
         </div>
-        <div className="grid-item">
+        <div className="grid-item" onClick={() => handleCategoryClick('Exam Preparation')}>
           <img src={Exam_Preparation} alt="Exam Preparation" />
           <span>Exam Preparation</span>
         </div>
