@@ -5,7 +5,7 @@ import Books from './Images/books.jpg';
 import Accessories from './Images/accessories.jpg';
 import Stationery from './Images/stationery.jpg';
 import Furniture from './Images/furniture.jpg';
-import Sports_Fitness from './Images/sports_fitness.webp';
+import Sports from './Images/sports_fitness.webp';
 import Exam_Preparation from './Images/exam_preparation.jpg';
 
 const Categories = () => {
@@ -35,9 +35,9 @@ const Categories = () => {
           <img src={Furniture} alt="Furniture" />
           <span>Furniture</span>
         </div>
-        <div className="grid-item" onClick={() => handleCategoryClick('Sports & Fitness')}>
-          <img src={Sports_Fitness} alt="Sports & Fitness" />
-          <span>Sports & Fitness</span>
+        <div className="grid-item" onClick={() => handleCategoryClick('Sports')}>
+          <img src={Sports} alt="Sports" />
+          <span>Sports</span>
         </div>
         <div className="grid-item" onClick={() => handleCategoryClick('Exam Preparation')}>
           <img src={Exam_Preparation} alt="Exam Preparation" />

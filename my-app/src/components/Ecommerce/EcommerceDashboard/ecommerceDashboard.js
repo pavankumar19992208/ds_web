@@ -83,13 +83,13 @@ function EcommerceDashboard() {
       <Container style={contentStyle}>
         <Grid container spacing={3}>
           <Grid item xs={6}>
-          {demandedProducts.map((product) => (
-              <div className='boxes' key={product.id} style={{ backgroundColor: '#f0f0f0', height: '507px', borderRadius: '12px', overflow: 'hidden', position: 'relative' }}>
-                {product.imageUrls && product.imageUrls.length > 0 ? (
+            {demandedProducts.length > 0 && (
+              <div className='boxes' key={demandedProducts[0].id} style={{ backgroundColor: '#f0f0f0', height: '507px', borderRadius: '12px', overflow: 'hidden', position: 'relative' }}>
+                {demandedProducts[0].imageUrls && demandedProducts[0].imageUrls.length > 0 ? (
                   <Slider {...settings} className="custom-slider">
-                    {product.imageUrls.map((url, index) => (
+                    {demandedProducts[0].imageUrls.map((url, index) => (
                       <div key={index}>
-                        <img src={url} alt={product.name} style={{ width:'100%', height: '508px', objectFit: 'contain'}} />
+                        <img src={url} alt={demandedProducts[0].name} style={{ width:'100%', height: '508px', objectFit: 'contain'}} />
                       </div>
                     ))}
                   </Slider>
@@ -98,15 +98,15 @@ function EcommerceDashboard() {
                 )}
                 <Button className='buy-btn' style={{ position: 'absolute', bottom: '10px', left: '10px' }}>Buy Now</Button>
               </div>
-            ))}
+            )}
           </Grid>
           <Grid item xs={6}>
             <Grid container spacing={3}>
-            {demandedProducts.slice(0, 6).map((product) => (
+              {demandedProducts.slice(1, 7).map((product) => (
                 <Grid item xs={4} key={product.id}>
                   <div className='boxes' style={{ backgroundColor: '#f0f0f0', height: '242px', borderRadius: '12px', overflow: 'hidden', position: 'relative' }}>
                     {product.mainImageUrl ? (
-                      <img src={product.mainImageUrl} alt={product.name} style={{ display: 'block', margin: 'auto', width: '55%', height: '100%', objectFit: 'contain' }} />
+                      <img src={product.mainImageUrl} alt={product.name} style={{ display: 'block', margin: 'auto', width: '90%', height: '100%', objectFit: 'contain' }} />
                     ) : (
                       <p>No image available</p>
                     )}

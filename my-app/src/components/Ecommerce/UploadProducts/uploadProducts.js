@@ -121,7 +121,7 @@ function AdminUploadPage() {
         <div>
             <h1>Upload Product Data</h1>
             <input type="text" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} />
-            <input type="text" placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)} />
+            <textarea placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)} />
             <input type="number" placeholder="Price" value={price} onChange={(e) => setPrice(e.target.value)} />
             <input type="number" placeholder="Stock" value={stock} onChange={(e) => setStock(e.target.value)} />
             <select value={category} onChange={(e) => setCategory(e.target.value)}>
@@ -131,7 +131,7 @@ function AdminUploadPage() {
                 <option value="Accessories">Accessories</option>
                 <option value="Furniture">Furniture</option>
                 <option value="Exam Preparation">Exam Preparation</option>
-                <option value="Sports & Fitness">Sports & Fitness</option>
+                <option value="Sports">Sports</option>
             </select>
             <input type="file" onChange={handleMainImageChange} />
             <input type="file" multiple onChange={handleImageChange} />
