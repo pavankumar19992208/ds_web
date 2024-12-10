@@ -20,6 +20,7 @@ const contentStyle = {
 
 function EcommerceDashboard() {
   const [products, setProducts] = useState([]);
+  const [demandedProducts, setDemandedProducts] = useState([]);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -32,7 +33,18 @@ function EcommerceDashboard() {
       }
     };
 
+    const fetchDemandedProducts = async () => {
+      try {
+        const response = await fetch("http://localhost:8000/demanded-products");
+        const data = await response.json();
+        setDemandedProducts(data);
+      } catch (error) {
+        console.error("Error fetching demanded products:", error);
+      }
+    };
+
     fetchProducts();
+    fetchDemandedProducts();
   }, []);
 
   const updateImageUrl = async (productId, imageUrl) => {
@@ -71,13 +83,13 @@ function EcommerceDashboard() {
       <Container style={contentStyle}>
         <Grid container spacing={3}>
           <Grid item xs={6}>
-            {products.slice(0, 1).map((product) => (
+          {demandedProducts.map((product) => (
               <div className='boxes' key={product.id} style={{ backgroundColor: '#f0f0f0', height: '507px', borderRadius: '12px', overflow: 'hidden', position: 'relative' }}>
                 {product.imageUrls && product.imageUrls.length > 0 ? (
                   <Slider {...settings} className="custom-slider">
                     {product.imageUrls.map((url, index) => (
                       <div key={index}>
-                        <img src={url} alt={product.name} style={{ width: '100%', height: '507px', objectFit: 'cover' }} />
+                        <img src={url} alt={product.name} style={{ width:'100%', height: '508px', objectFit: 'contain'}} />
                       </div>
                     ))}
                   </Slider>
@@ -90,11 +102,11 @@ function EcommerceDashboard() {
           </Grid>
           <Grid item xs={6}>
             <Grid container spacing={3}>
-              {products.slice(1, 7).map((product) => (
+            {demandedProducts.slice(0, 6).map((product) => (
                 <Grid item xs={4} key={product.id}>
                   <div className='boxes' style={{ backgroundColor: '#f0f0f0', height: '242px', borderRadius: '12px', overflow: 'hidden', position: 'relative' }}>
-                    {product.imageUrls && product.imageUrls.length > 0 ? (
-                      <img src={product.imageUrls[0]} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    {product.mainImageUrl ? (
+                      <img src={product.mainImageUrl} alt={product.name} style={{ display: 'block', margin: 'auto', width: '55%', height: '100%', objectFit: 'contain' }} />
                     ) : (
                       <p>No image available</p>
                     )}

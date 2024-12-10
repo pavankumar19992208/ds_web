@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { storage } from "../../connections/firebase"; // Adjust the import path as necessary
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
@@ -12,6 +12,22 @@ function AdminUploadPage() {
     const [images, setImages] = useState([]);
     const [imageNames, setImageNames] = useState([]);
     const [uploadedImages, setUploadedImages] = useState([]);
+    const [demanded, setDemanded] = useState(false);
+    const [demandedProducts, setDemandedProducts] = useState([]);
+
+    useEffect(() => {
+        const fetchDemandedProducts = async () => {
+            try {
+                const response = await fetch("http://localhost:8000/demanded-products");
+                const data = await response.json();
+                setDemandedProducts(data);
+            } catch (error) {
+                console.error("Error fetching demanded products:", error);
+            }
+        };
+
+        fetchDemandedProducts();
+    }, []);
 
     const handleMainImageChange = (e) => {
         const selectedImage = e.target.files[0];
@@ -63,7 +79,8 @@ function AdminUploadPage() {
             stock,
             category,
             mainImageUrl,
-            imageUrls
+            imageUrls,
+            demanded
         };
 
         console.log("Payload:", payload);
@@ -75,6 +92,7 @@ function AdminUploadPage() {
         formData.append("stock", stock);
         formData.append("category", category);
         formData.append("mainImageUrl", mainImageUrl);
+        formData.append("demanded", demanded);
         imageUrls.forEach((url, index) => formData.append(`imageUrls`, url)); // Append as individual items
 
         try {
@@ -95,6 +113,10 @@ function AdminUploadPage() {
         }
     };
 
+    const handleReplace = async (productId) => {
+        // Implement the logic to replace the demanded product
+    };
+
     return (
         <div>
             <h1>Upload Product Data</h1>
@@ -113,6 +135,10 @@ function AdminUploadPage() {
             </select>
             <input type="file" onChange={handleMainImageChange} />
             <input type="file" multiple onChange={handleImageChange} />
+            <label>
+                <input type="checkbox" checked={demanded} onChange={(e) => setDemanded(e.target.checked)} />
+                Mark as Demanded
+            </label>
             <button onClick={handleUpload}>Upload</button>
             <h2>Selected Images:</h2>
             <ul>
@@ -124,6 +150,15 @@ function AdminUploadPage() {
             <ul>
                 {uploadedImages.map((url, index) => (
                     <li key={index}><img src={url} alt={`Uploaded ${index}`} width="100" /></li>
+                ))}
+            </ul>
+            <h2>Demanded Products:</h2>
+            <ul>
+                {demandedProducts.map((product) => (
+                    <li key={product.id}>
+                        {product.name}
+                        <button onClick={() => handleReplace(product.id)}>Replace</button>
+                    </li>
                 ))}
             </ul>
         </div>
