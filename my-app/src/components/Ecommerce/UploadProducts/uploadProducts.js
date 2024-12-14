@@ -1,6 +1,28 @@
 import React, { useState, useEffect } from "react";
 import { storage } from "../../connections/firebase"; // Adjust the import path as necessary
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import {
+    Container,
+    TextField,
+    TextareaAutosize,
+    Button,
+    Checkbox,
+    FormControlLabel,
+    Select,
+    MenuItem,
+    InputLabel,
+    Typography,
+    List,
+    ListItem,
+    ListItemText,
+    ListItemSecondaryAction,
+    Grid,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+} from "@mui/material";
+import { PhotoCamera } from "@mui/icons-material";
 
 function AdminUploadPage() {
     const [name, setName] = useState("");
@@ -11,9 +33,13 @@ function AdminUploadPage() {
     const [mainImage, setMainImage] = useState(null);
     const [images, setImages] = useState([]);
     const [imageNames, setImageNames] = useState([]);
-    const [uploadedImages, setUploadedImages] = useState([]);
     const [demanded, setDemanded] = useState(false);
     const [demandedProducts, setDemandedProducts] = useState([]);
+    const [fetchedProducts, setFetchedProducts] = useState([]); // New state for fetched products
+    const [open, setOpen] = useState(false); // State to manage modal open/close
+    const [selectedProductId, setSelectedProductId] = useState(null); // State to store selected product ID
+    const [selectedProductName, setSelectedProductName] = useState(""); // State to store selected product name
+    const [searchQuery, setSearchQuery] = useState(""); // State for search query
 
     useEffect(() => {
         const fetchDemandedProducts = async () => {
@@ -103,7 +129,6 @@ function AdminUploadPage() {
             const data = await response.json();
             if (response.ok) {
                 alert(data.message);
-                setUploadedImages(imageUrls); // Update state with uploaded image URLs
             } else {
                 alert("Upload failed");
             }
@@ -113,55 +138,222 @@ function AdminUploadPage() {
         }
     };
 
-    const handleReplace = async (productId) => {
-        // Implement the logic to replace the demanded product
+    const handleReplace = async (productId, productName) => {
+        try {
+            const response = await fetch("http://localhost:8000/products");
+            const data = await response.json();
+            setFetchedProducts(data); // Update state with fetched products
+            setSelectedProductId(productId); // Set the selected product ID
+            setSelectedProductName(productName); // Set the selected product name
+            setOpen(true); // Open the modal
+        } catch (error) {
+            console.error("Error fetching products:", error);
+        }
     };
 
+    const handleConfirmReplace = async (newProductId) => {
+        try {
+            const response = await fetch(`http://localhost:8000/replace-demanded-product`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    oldProductId: selectedProductId,
+                    newProductId: newProductId,
+                }),
+            });
+            const data = await response.json();
+            if (response.ok) {
+                alert(data.message);
+                setOpen(false);
+                // Refresh demanded products list
+                const demandedResponse = await fetch("http://localhost:8000/demanded-products");
+                const demandedData = await demandedResponse.json();
+                setDemandedProducts(demandedData);
+            } else {
+                alert("Replacement failed");
+            }
+        } catch (error) {
+            console.error("Error replacing product:", error);
+            alert("Replacement failed");
+        }
+    };
+
+    const filteredProducts = fetchedProducts
+    .filter(product => product.name.toLowerCase().includes(searchQuery.toLowerCase()))
+    .filter(product => !demandedProducts.some(demandedProduct => demandedProduct.id === product.id));
+
     return (
-        <div>
-            <h1>Upload Product Data</h1>
-            <input type="text" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} />
-            <textarea placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)} />
-            <input type="number" placeholder="Price" value={price} onChange={(e) => setPrice(e.target.value)} />
-            <input type="number" placeholder="Stock" value={stock} onChange={(e) => setStock(e.target.value)} />
-            <select value={category} onChange={(e) => setCategory(e.target.value)}>
-                <option value="">Select Category</option>
-                <option value="Books">Books</option>
-                <option value="Stationery">Stationery</option>
-                <option value="Accessories">Accessories</option>
-                <option value="Furniture">Furniture</option>
-                <option value="Exam Preparation">Exam Preparation</option>
-                <option value="Sports">Sports</option>
-            </select>
-            <input type="file" onChange={handleMainImageChange} />
-            <input type="file" multiple onChange={handleImageChange} />
-            <label>
-                <input type="checkbox" checked={demanded} onChange={(e) => setDemanded(e.target.checked)} />
-                Mark as Demanded
-            </label>
-            <button onClick={handleUpload}>Upload</button>
-            <h2>Selected Images:</h2>
-            <ul>
+        <Container>
+            <Typography variant="h6" gutterBottom>Upload Product Data</Typography>
+            <Grid container spacing={2}>
+                <Grid item xs={12} sm={6}>
+                    <TextField
+                        label="Name"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        fullWidth
+                        margin="normal"
+                    />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                    <TextField
+                        label="Price"
+                        type="number"
+                        value={price}
+                        onChange={(e) => setPrice(e.target.value)}
+                        fullWidth
+                        margin="normal"
+                    />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                    <TextField
+                        label="Stock"
+                        type="number"
+                        value={stock}
+                        onChange={(e) => setStock(e.target.value)}
+                        fullWidth
+                        margin="normal"
+                    />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                    <InputLabel id="category-label">Category</InputLabel>
+                    <Select
+                        labelId="category-label"
+                        value={category}
+                        onChange={(e) => setCategory(e.target.value)}
+                        fullWidth
+                        margin="normal"
+                    >
+                        <MenuItem value="">Select Category</MenuItem>
+                        <MenuItem value="Books">Books</MenuItem>
+                        <MenuItem value="Stationery">Stationery</MenuItem>
+                        <MenuItem value="Accessories">Accessories</MenuItem>
+                        <MenuItem value="Furniture">Furniture</MenuItem>
+                        <MenuItem value="Exam Preparation">Exam Preparation</MenuItem>
+                        <MenuItem value="Sports">Sports</MenuItem>
+                    </Select>
+                </Grid>
+                <Grid item xs={12}>
+                    <TextareaAutosize
+                        minRows={3}
+                        placeholder="Description"
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        style={{ width: '100%', marginBottom: '16px', height: '40vh' }}
+                    />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                    <Button
+                        variant="contained"
+                        component="label"
+                        startIcon={<PhotoCamera />}
+                        fullWidth
+                        margin="normal"
+                    >
+                        Upload Main Image
+                        <input
+                            type="file"
+                            hidden
+                            onChange={handleMainImageChange}
+                        />
+                    </Button>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                    <Button
+                        variant="contained"
+                        component="label"
+                        startIcon={<PhotoCamera />}
+                        fullWidth
+                        margin="normal"
+                    >
+                        Upload Images
+                        <input
+                            type="file"
+                            multiple
+                            hidden
+                            onChange={handleImageChange}
+                        />
+                    </Button>
+                </Grid>
+                <Grid item xs={12}>
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                checked={demanded}
+                                onChange={(e) => setDemanded(e.target.checked)}
+                            />
+                        }
+                        label="Mark as Demanded"
+                    />
+                </Grid>
+                <Grid item xs={12}>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleUpload}
+                        fullWidth
+                        margin="normal"
+                    >
+                        Upload
+                    </Button>
+                </Grid>
+            </Grid>
+            <Typography variant="h6" gutterBottom sx={{marginTop: '20px'}}>Selected Images:</Typography>
+            <List>
                 {imageNames.map((name, index) => (
-                    <li key={index}>{name}</li>
+                    <ListItem key={index}>
+                        <ListItemText primary={name} />
+                    </ListItem>
                 ))}
-            </ul>
-            <h2>Uploaded Images:</h2>
-            <ul>
-                {uploadedImages.map((url, index) => (
-                    <li key={index}><img src={url} alt={`Uploaded ${index}`} width="100" /></li>
-                ))}
-            </ul>
-            <h2>Demanded Products:</h2>
-            <ul>
+            </List>
+            
+            <Typography variant="h6" gutterBottom>Demanded Products:</Typography>
+            <List>
                 {demandedProducts.map((product) => (
-                    <li key={product.id}>
-                        {product.name}
-                        <button onClick={() => handleReplace(product.id)}>Replace</button>
-                    </li>
+                    <ListItem key={product.id}>
+                        <ListItemText primary={product.name}/>
+                        <ListItemSecondaryAction>
+                            <Button
+                                variant="contained"
+                                color="secondary"
+                                onClick={() => handleReplace(product.id, product.name)}
+                            >
+                                Replace
+                            </Button>
+                        </ListItemSecondaryAction>
+                    </ListItem>
                 ))}
-            </ul>
-        </div>
+            </List>
+            <Dialog open={open} onClose={() => setOpen(false)} maxWidth="80vw" fullWidth>
+            <Typography variant="h6" gutterBottom padding={'20px'}>
+                <strong>Selected product:</strong> {selectedProductName}
+            </Typography>
+            <DialogTitle>Select a Product to Replace</DialogTitle>
+            <DialogContent>
+                <TextField
+                    label="Search Products"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    fullWidth
+                    margin="normal"
+                />
+                <List>
+                    {filteredProducts.map((product) => (
+                        <ListItem key={product.id} button onClick={() => handleConfirmReplace(product.id)}>
+                            <ListItemText primary={`${product.name} - ${product.category}`} />
+                        </ListItem>
+                    ))}
+                </List>
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={() => setOpen(false)} color="primary">
+                    Cancel
+                </Button>
+            </DialogActions>
+        </Dialog>
+        </Container>
     );
 }
 
