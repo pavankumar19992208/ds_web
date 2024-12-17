@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Grid, Container, Button } from '@mui/material';
+import { Grid, Container } from '@mui/material';
 import Slider from "react-slick";
+import { useNavigate } from 'react-router-dom';
 import './ecommerceDashboard.css';
 import "slick-carousel/slick/slick.css"; 
 import "slick-carousel/slick/slick-theme.css";
@@ -9,18 +10,18 @@ import Categories from '../Categories/categories';
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
 const dashboardStyle = {
-  padding: '20px',
   fontFamily: 'Arial, sans-serif',
 };
 
 const contentStyle = {
-  marginTop: '80px',
+  marginTop: '16px',
   maxWidth: '1800px', // Adjust the maxWidth as needed
 };
 
 function EcommerceDashboard() {
   const [products, setProducts] = useState([]);
   const [demandedProducts, setDemandedProducts] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -77,6 +78,10 @@ function EcommerceDashboard() {
     )
   };
 
+  const handleGridClick = (productId) => {
+    navigate(`/product-overview/${productId}`);
+  };
+
   return (
     <div className="dashboardStyle" style={dashboardStyle}>
       <EcommerceNavbar />
@@ -84,7 +89,7 @@ function EcommerceDashboard() {
         <Grid container spacing={3}>
           <Grid item xs={6}>
             {demandedProducts.length > 0 && (
-              <div className='boxes' key={demandedProducts[0].id} style={{ backgroundColor: '#f0f0f0', height: '507px', borderRadius: '12px', overflow: 'hidden', position: 'relative' }}>
+              <div className='boxes' key={demandedProducts[0].id} style={{ backgroundColor: '#fff', height: '507px', borderRadius: '12px', overflow: 'hidden', position: 'relative' }} onClick={() => handleGridClick(demandedProducts[0].id)}>
                 {demandedProducts[0].imageUrls && demandedProducts[0].imageUrls.length > 0 ? (
                   <Slider {...settings} className="custom-slider">
                     {demandedProducts[0].imageUrls.map((url, index) => (
@@ -96,7 +101,6 @@ function EcommerceDashboard() {
                 ) : (
                   <p>No image available</p>
                 )}
-                <Button className='buy-btn' style={{ position: 'absolute', bottom: '10px', left: '10px' }}>Buy Now</Button>
               </div>
             )}
           </Grid>
@@ -104,13 +108,12 @@ function EcommerceDashboard() {
             <Grid container spacing={3}>
               {demandedProducts.slice(1, 7).map((product) => (
                 <Grid item xs={4} key={product.id}>
-                  <div className='boxes' style={{ backgroundColor: '#f0f0f0', height: '242px', borderRadius: '12px', overflow: 'hidden', position: 'relative' }}>
+                  <div className='boxes' style={{ backgroundColor: '#fff', height: '242px', borderRadius: '12px', overflow: 'hidden', position: 'relative' }} onClick={() => handleGridClick(product.id)}>
                     {product.mainImageUrl ? (
                       <img src={product.mainImageUrl} alt={product.name} style={{ display: 'block', margin: 'auto', width: '90%', height: '100%', objectFit: 'contain' }} />
                     ) : (
                       <p>No image available</p>
                     )}
-                    <Button className='buy-btn' style={{ position: 'absolute', bottom: '10px', left: '10px' }}>Buy Now</Button>
                   </div>
                 </Grid>
               ))}
@@ -122,4 +125,5 @@ function EcommerceDashboard() {
     </div>
   );
 }
+
 export default EcommerceDashboard;
