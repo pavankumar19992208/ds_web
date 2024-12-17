@@ -59,8 +59,24 @@ margin-top: -4px;
   object-fit: cover;
 }
 
+button.add-to-cart:hover {
+  opacity: 0.8;
+}
+button.add-to-favourites:hover {
+  opacity: 0.8;
+}
 
-button {
+button.add-to-favourites:active {
+  transform: scale(0.98);
+}
+button.add-to-cart:active {
+  transform: scale(0.98);
+}
+
+button.add-to-cart {
+  background-color: #1c3052; /* Green */
+  width: 25%;
+  color: white;
   padding: 10px 20px;
   margin: 5px;
   border: none;
@@ -69,22 +85,14 @@ button {
   font-size: 16px;
 }
 
-button:hover {
-  opacity: 0.8;
-}
-
-button:active {
-  transform: scale(0.98);
-}
-
-button.add-to-cart {
-  background-color: #1c3052; /* Green */
-  width: 25%;
-  color: white;
-}
-
 button.add-to-favourites {
   background-color: #0f0f0f; /* Tomato */
   width: 25%;
   color: white;
+  padding: 10px 20px;
+  margin: 5px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
 }

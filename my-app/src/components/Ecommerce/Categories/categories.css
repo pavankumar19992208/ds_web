@@ -1,6 +1,9 @@
 .category-content{
     margin-top: 28px;
 }
+.category-heading{
+  font-size: 1.3rem;
+}
 .grid-container {
   margin: 24px 0px;
   width: 98.25%;
@@ -10,6 +13,7 @@
 }
 
 .grid-item {
+
   position: relative;
   background-color: #ffffff; /* Adjust the background color as needed */
   padding: 20px; /* Adjust the padding as needed */

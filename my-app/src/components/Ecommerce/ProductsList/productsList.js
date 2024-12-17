@@ -1,13 +1,19 @@
 import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import EcommerceNavbar from '../EcommerceNavbar/ecommerceNavbar';
 import './productsList.css';
 
 const ProductsList = () => {
   const [products, setProducts] = useState([]);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch("http://localhost:8000/products");
+        const params = new URLSearchParams(location.search);
+        const category = params.get('category');
+        const response = await fetch(`http://localhost:8000/products?category=${category}`);
         const data = await response.json();
         setProducts(data);
       } catch (error) {
@@ -16,7 +22,7 @@ const ProductsList = () => {
     };
 
     fetchProducts();
-  }, []);
+  }, [location.search]);
 
   const handleAddToCart = (productId) => {
     console.log(`Add to Cart clicked for product ID: ${productId}`);
@@ -28,9 +34,13 @@ const ProductsList = () => {
     // Implement add to favourites functionality here
   };
 
+  const handleProductClick = (productId) => {
+    navigate(`/product-overview/${productId}`);
+  };
+
   return (
     <div className="dashboard">
-        {/* <EcommerceNavbar /> */}
+      <EcommerceNavbar />
       <div className="product-list">
         {products.length > 0 ? (
           products.map((product) => (
@@ -41,7 +51,7 @@ const ProductsList = () => {
                 )}
               </div>
               <div className="product-details">
-                <h2>{product.name}</h2>
+                <h2 onClick={() => handleProductClick(product.id)}>{product.name}</h2>
                 <p>Price: <span className='price'>₹{product.price}</span></p>
                 <p className='stock'>Stock: {product.stock}</p>
                 <button className="add-to-cart" onClick={() => handleAddToCart(product.id)}>Add to Cart</button>
