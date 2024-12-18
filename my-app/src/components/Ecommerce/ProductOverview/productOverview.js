@@ -17,7 +17,7 @@ const ProductOverview = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/products/${productId}`);
+        const response = await fetch(`http://localhost:8001/products/${productId}`);
         const data = await response.json();
         setProduct(data);
       } catch (error) {
@@ -86,12 +86,12 @@ const ProductOverview = () => {
   };
 
   const mainSliderSettings = {
-    dots: true,
-    infinite: true,
+    dots: product.imageUrls.length > 1,
+    infinite: product.imageUrls.length > 1,
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
-    autoplay: true,
+    autoplay: product.imageUrls.length > 1,
     autoplaySpeed: 2000, // 2 seconds,
     appendDots: dots => (
       <div style={{ position: 'absolute', bottom: '10px', width: '100%' }}>
@@ -102,20 +102,20 @@ const ProductOverview = () => {
   };
 
   const modalSliderSettings = {
-    dots: true,
-    infinite: true,
+    dots: product.imageUrls.length > 1,
+    infinite: product.imageUrls.length > 1,
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
-    autoplay: true,
+    autoplay: product.imageUrls.length > 1,
     autoplaySpeed: 2000, // 2 seconds,
     appendDots: dots => (
       <div style={{ position: 'absolute', bottom: '10px', width: '100%' }}>
         <ul style={{ margin: '0px' }}> {dots} </ul>
       </div>
     ),
-    nextArrow: <NextArrow />,
-    prevArrow: <PrevArrow />
+    nextArrow: product.imageUrls.length > 1 ? <NextArrow /> : null,
+    prevArrow: product.imageUrls.length > 1 ? <PrevArrow /> : null
   };
 
   return (

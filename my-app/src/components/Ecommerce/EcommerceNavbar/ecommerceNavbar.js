@@ -46,7 +46,7 @@ function EcommerceNavbar() {
   const fetchProducts = async (query) => {
     try {
       console.log(`Fetching products for query: ${query}`);
-      const response = await fetch(`http://localhost:8000/products?search=${query}`);
+      const response = await fetch(`http://localhost:8001/products?search=${query}`);
       const data = await response.json();
       console.log('Fetched products:', data);
       setProducts(data);

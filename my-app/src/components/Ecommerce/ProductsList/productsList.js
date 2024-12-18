@@ -13,7 +13,7 @@ const ProductsList = () => {
       try {
         const params = new URLSearchParams(location.search);
         const category = params.get('category');
-        const response = await fetch(`http://localhost:8000/products?category=${category}`);
+        const response = await fetch(`http://localhost:8001/products?category=${category}`);
         const data = await response.json();
         setProducts(data);
       } catch (error) {

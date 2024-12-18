@@ -26,7 +26,7 @@ function EcommerceDashboard() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch("http://localhost:8000/products");
+        const response = await fetch("http://localhost:8001/products");
         const data = await response.json();
         setProducts(data);
       } catch (error) {
@@ -36,7 +36,7 @@ function EcommerceDashboard() {
 
     const fetchDemandedProducts = async () => {
       try {
-        const response = await fetch("http://localhost:8000/demanded-products");
+        const response = await fetch("http://localhost:8001/demanded-products");
         const data = await response.json();
         setDemandedProducts(data);
       } catch (error) {
