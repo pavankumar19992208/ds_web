@@ -62,6 +62,11 @@ const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true, sel
     setSelectedItem('subjectAllocation');
   };
 
+  const navigateToLeaveApproval = () => {
+    navigate('/leave-approval');
+    setSelectedItem('leaveApproval');
+  };
+
   const isPrimaryFormOpen = location.pathname.includes('primaryForm');
 
   return (
@@ -110,7 +115,7 @@ const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true, sel
         )}
         {visibleItems.includes('leaveApprovals') && (
           <Tooltip title="Leave Approvals" placement="right">
-            <ListItem button className="list-item">
+            <ListItem button className="list-item" onClick={navigateToLeaveApproval}>
               <BsPersonFillCheck size={20} />
               {!isPrimaryFormOpen && showTitle && <ListItemText primary="Leave Approvals" className="list-item-text" />}
             </ListItem>

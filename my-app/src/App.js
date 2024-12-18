@@ -20,6 +20,7 @@ import UploadProducts from './components/Ecommerce/UploadProducts/uploadProducts
 import EcommerceDashboard from './components/Ecommerce/EcommerceDashboard/ecommerceDashboard';
 import ProductsList from './components/Ecommerce/ProductsList/productsList';
 import ProductOverview from './components/Ecommerce/ProductOverview/productOverview';
+import LeaveApproval from './components/P2pHeader/SchoolSegment/schooldashboard/Sidebar/leave-approval/leave-approval';
 // import BookList from './components/Ecommerce/ProductsList/Books/books';
 
 function App() {
@@ -46,6 +47,7 @@ function App() {
           <Route path="/ecommerce-dashboard" element={<EcommerceDashboard/>}/>
           <Route path="/products-list" element={<ProductsList/>}/>
           <Route path="/product-overview/:productId" element={<ProductOverview />} />
+          <Route path= "/leave-approval" element={<LeaveApproval/>} />
           {/* <Route path="/books-list" element={<BookList/>}/> */}
         </Routes>
       </Router>
