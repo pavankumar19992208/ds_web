@@ -29,6 +29,8 @@ const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true, sel
       '/career-guidance': 'careerGuidance',
       '/update-enrollment': 'updateEnrollment',
       '/subject-allocation': 'subjectAllocation',
+      '/leave-approval': 'leaveApproval',
+      '/inventory-management': 'inventoryManagement',
       // Add other paths as needed
     };
     const currentItem = pathToItemMap[location.pathname];
@@ -65,6 +67,11 @@ const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true, sel
   const navigateToLeaveApproval = () => {
     navigate('/leave-approval');
     setSelectedItem('leaveApproval');
+  };
+
+  const navigateToInventoryManagement = () => {
+    navigate('/inventory-management');
+    setSelectedItem('inventoryManagement');
   };
 
   const isPrimaryFormOpen = location.pathname.includes('primaryForm');
@@ -163,7 +170,7 @@ const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true, sel
         )}
         {visibleItems.includes('inventoryManagement') && (
           <Tooltip title="Inventory Management" placement="right">
-            <ListItem button className="list-item">
+            <ListItem button className="list-item" onClick={navigateToInventoryManagement}>
               <MdInventory size={20} />
               {!isPrimaryFormOpen && showTitle && <ListItemText primary="Inventory Management" className="list-item-text"/>}
             </ListItem>

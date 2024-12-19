@@ -21,6 +21,7 @@ import EcommerceDashboard from './components/Ecommerce/EcommerceDashboard/ecomme
 import ProductsList from './components/Ecommerce/ProductsList/productsList';
 import ProductOverview from './components/Ecommerce/ProductOverview/productOverview';
 import LeaveApproval from './components/P2pHeader/SchoolSegment/schooldashboard/Sidebar/leave-approval/leave-approval';
+import InventoryManagement from './components/P2pHeader/SchoolSegment/schooldashboard/Sidebar/inventory-management/inventory-management';
 // import BookList from './components/Ecommerce/ProductsList/Books/books';
 
 function App() {
@@ -48,6 +49,7 @@ function App() {
           <Route path="/products-list" element={<ProductsList/>}/>
           <Route path="/product-overview/:productId" element={<ProductOverview />} />
           <Route path= "/leave-approval" element={<LeaveApproval/>} />
+          <Route path= "/inventory-management" element={<InventoryManagement/>} />
           {/* <Route path="/books-list" element={<BookList/>}/> */}
         </Routes>
       </Router>
