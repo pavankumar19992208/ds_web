@@ -128,7 +128,7 @@ const SchoolInternalData = () => {
   const [sections, setSections] = useState('');
   const [loading, setLoading] = useState(false);
   const [successDialogOpen, setSuccessDialogOpen] = useState(false);
-  const handleStateChange = (event) => {
+  const handleStateChange = (event) =>{ 
     setState(event.target.value);
   };
 
@@ -816,7 +816,7 @@ const SchoolInternalData = () => {
                               />
                             </Grid>
                             <Grid item xs={1}>
-                              <IconButton onClick={() => deleteExtraProgram(index)}>
+                              <IconButton onClick={() => deleteExtraProgram(index)} disabled={extraPrograms.length === 1}>
                                 <DeleteIcon />
                               </IconButton>
                             </Grid>
@@ -861,7 +861,7 @@ const SchoolInternalData = () => {
                               />
                             </Grid>
                             <Grid item xs={1}>
-                              <IconButton onClick={() => deleteFeeStructure(index)}>
+                              <IconButton onClick={() => deleteFeeStructure(index)} disabled={feeStructure.length === 1}>
                                 <DeleteIcon />
                               </IconButton>
                             </Grid>

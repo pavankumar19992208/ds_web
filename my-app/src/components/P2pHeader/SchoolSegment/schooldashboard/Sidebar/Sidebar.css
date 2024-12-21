@@ -42,11 +42,11 @@
   transition: background-color 0.3s ease-in-out;
 }
 
-.list-item:hover {
-  background-color: #0E5E9D50;
+.sidebar .list-item:hover {
+  background-color: #0E5E9D60;
 }
 
-.selected-list-item {
+.sidebar .selected-list-item {
   background-color: #0E5E9D60;
 }
 
