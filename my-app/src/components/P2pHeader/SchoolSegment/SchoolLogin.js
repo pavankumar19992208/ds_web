@@ -6,7 +6,7 @@ import BaseUrl from '../../../config';
 import HashLoader from 'react-spinners/HashLoader';
 import './SchoolLogin.css';
 
-const SchoolLogin = () => {
+const SchoolLogin = ({ onClose }) => {
     let navigate = useNavigate();
     const { setGlobalData } = useContext(GlobalStateContext);
     const [schoolId, setSchoolId] = useState('');
@@ -45,7 +45,8 @@ const SchoolLogin = () => {
             <div className="loginPopupContainer">
                 <div className='widget-container'>
                     <div className="loginHeader">
-                        <h2 style={{marginLeft:'0%'}}>SCHOOL LOGIN</h2>
+                        <h2 style={{ marginLeft: '0%' }}>SCHOOL LOGIN</h2>
+                        <button onClick={onClose} className="closeButton">X</button>
                     </div>
                     <div className="loginBody">
                         <div className="inputGroup inputIcon">

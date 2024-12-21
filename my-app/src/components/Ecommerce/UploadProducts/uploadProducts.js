@@ -44,7 +44,7 @@ function AdminUploadPage() {
     useEffect(() => {
         const fetchDemandedProducts = async () => {
             try {
-                const response = await fetch("http://localhost:8000/demanded-products");
+                const response = await fetch("http://localhost:8001/demanded-products");
                 const data = await response.json();
                 setDemandedProducts(data);
             } catch (error) {
@@ -122,7 +122,7 @@ function AdminUploadPage() {
         imageUrls.forEach((url, index) => formData.append(`imageUrls`, url)); // Append as individual items
 
         try {
-            const response = await fetch("http://localhost:8000/upload", {
+            const response = await fetch("http://localhost:8001/upload", {
                 method: "POST",
                 body: formData,
             });
@@ -140,7 +140,7 @@ function AdminUploadPage() {
 
     const handleReplace = async (productId, productName) => {
         try {
-            const response = await fetch("http://localhost:8000/products");
+            const response = await fetch("http://localhost:8001/products");
             const data = await response.json();
             setFetchedProducts(data); // Update state with fetched products
             setSelectedProductId(productId); // Set the selected product ID
@@ -153,7 +153,7 @@ function AdminUploadPage() {
 
     const handleConfirmReplace = async (newProductId) => {
         try {
-            const response = await fetch(`http://localhost:8000/replace-demanded-product`, {
+            const response = await fetch(`http://localhost:8001/replace-demanded-product`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -168,7 +168,7 @@ function AdminUploadPage() {
                 alert(data.message);
                 setOpen(false);
                 // Refresh demanded products list
-                const demandedResponse = await fetch("http://localhost:8000/demanded-products");
+                const demandedResponse = await fetch("http://localhost:8001/demanded-products");
                 const demandedData = await demandedResponse.json();
                 setDemandedProducts(demandedData);
             } else {

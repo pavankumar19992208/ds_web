@@ -1,0 +1,66 @@
+.ecommerce-navbar {
+    background-color: #0b2e44 !important;
+    border-radius: 50px;
+    width: 98%; /* Decrease the width */
+    margin: 12px auto; /* Center the navbar */
+    display: flex;
+    justify-content: center;
+    padding: 8px ;
+    box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.1); /* Add box shadow to the right side */
+}
+
+.toolbar {
+    width: 100%;
+    max-width: 1300px; /* Adjust this value as needed */
+    display: flex;
+    align-items: center;
+}
+
+.search {
+  position: relative;
+  border-radius: var(--theme-shape-border-radius);
+  background-color: var(--theme-palette-common-white);
+  margin-right: var(--theme-spacing-2);
+  margin-left: 0;
+  width: 100%;
+  border-radius: 20px;
+}
+
+.search:hover {
+  background-color: var(--theme-palette-common-white);
+}
+
+@media (min-width: 600px) {
+  .search {
+    margin-left: var(--theme-spacing-3);
+    width: auto;
+  }
+}
+
+.searchIconWrapper {
+  padding: var(--theme-spacing-0-2);
+  height: 100%;
+  position: absolute;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.styledInputBase {
+  color: inherit;
+}
+
+.styledInputBase .MuiInputBase-input {
+  padding: var(--theme-spacing-1-1-1-0);
+  padding-left: calc(1em + var(--theme-spacing-4));
+  transition: var(--theme-transitions-create-width);
+  width: 100%;
+  color: black;
+}
+
+@media (min-width: 960px) {
+  .styledInputBase .MuiInputBase-input {
+    width: 30ch;
+  }
+}
