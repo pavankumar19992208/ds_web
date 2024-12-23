@@ -1,0 +1,29 @@
+
+.dashboardStyle {
+  background-color: #FBF6E9;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  height: 100%;
+  overflow: hidden;
+}
+
+.boxes{
+  box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.1); /* Add box shadow to the right side */
+
+}
+
+.GridItem {
+  background-color: #f8ebb7;
+  height: 100%;
+}
+
+.GridItem2x2 {
+  background-color: #f8ebb7;
+  height: 100%;
+}
+
+
+.custom-slider .slick-dots {
+  top: auto;
+  bottom: 10px;
+}
