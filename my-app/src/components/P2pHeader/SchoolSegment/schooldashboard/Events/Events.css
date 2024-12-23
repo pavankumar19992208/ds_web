@@ -1,0 +1,116 @@
+#card {
+  position: relative;
+  width: 60.7%;
+height: 35vh; /* Set a maximum height for the card */
+  overflow-y: auto; /* Enable vertical scrolling */
+  padding: 0 10px;
+  border: 1px solid hsla(220, 20%, 80%, 0.4); /* Optional: Add a border for better visual separation */
+  border-radius: 12px; 
+  margin-bottom: 30px;
+  margin-top: 20px;
+  background-color: #fff;
+}
+
+#items{
+  margin-top: 50px;
+}
+
+.news-section {
+  position: fixed;
+  white-space: nowrap;
+  overflow: hidden;
+  background-color: #f8d7da;
+  color: #721c24;
+  box-sizing: border-box;
+  margin-bottom: 10px;
+  border-radius: 12px;
+  width: 910px;
+  z-index: 1;
+  height: 40px; /* Increase the height */
+}
+
+.news-label {
+  background-color: #721c24;
+  color: rgb(255, 255, 255);
+  padding: 0 12px;
+  display: inline-block;
+  font-weight: bold;
+  font-size: 14px;
+  position: relative;
+  z-index: 2;
+  height: 40px; /* Match the height of news-section */
+  line-height: 40px; /* Center text vertically */
+}
+
+.news-text {
+  display: inline-block;
+  animation: scroll-left 100s linear infinite;
+  padding-left: 300px;
+}
+
+@keyframes scroll-left {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.news-section::-webkit-scrollbar {
+  height: 8px;
+}
+
+.news-section::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 12px; 
+}
+
+.news-section::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* @media(max-width: 1024px){
+  #card {
+    width: 94%;
+    margin-bottom: 0px;
+    height: 20vh;
+  }
+  .news-section {
+    width: 970px; 
+    padding: 0px;
+    
+  }
+  .news-label {
+    font-size: 12px;
+  }
+  .news-text {
+    font-size: 12px;
+  }
+  #items{
+    margin-top: 40px;
+  }
+} */
+
+ /* Large devices (laptops/desktops, 992px and up) */
+ @media (min-width: 992px) and (max-width: 1199.98px) {
+  /* Your styles for large devices */
+  #items{
+    margin-top: 36px;
+  }
+  #card{
+    width: 69%;
+  }
+  .news-section{
+    /* width: 684px; */
+    width: 69%;
+    height: 32px;
+    font-size: 14px;
+    border-radius: 8px;
+  }
+  .news-label{
+    height: 36px;
+    font-size: 12px;
+    line-height: 32px;
+  }
+}

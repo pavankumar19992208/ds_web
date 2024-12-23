@@ -1,0 +1,41 @@
+/* attachDocumentStudent.css */
+.page-container {
+    position: absolute;
+    right: 0px;
+    top: 50px;
+  display: flex;
+  justify-content: flex-end; /* Align items to the right */
+  transition: transform 0.3s ease-in-out; /* Add a transition effect */
+  height: 92.8vh;
+
+}
+
+.form-container {
+  border-left: 1px solid hsla(220, 20%, 80%, 0.4);
+  background-color: hsl(220, 35%, 97%);
+  max-width: 600px; 
+  width: 100%;
+  padding: 20px 40px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1); /* Add box shadow to the right side */
+}
+
+.attach-button {
+    width: 50vh;
+  background-color: #0E5E9D60 !important;
+  border-radius: 12px !important; /* Primary color */
+  box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.1); /* Add box shadow to the right side */
+  padding: 10px 50px !important; /* Add padding */
+  color: rgb(0, 0, 0) !important; /* Text color */
+  width: auto !important; /* Adjust width */
+  margin-top: 16px !important; /* Add margin to the top */
+  border: 1px solid hsla(219, 63%, 37%, 0.4) !important; /* Example border color */
+
+}
+
+.attach-button:hover {
+  border: 1px solid hsla(219, 63%, 37%, 0.4) !important; /* Example border color */
+  background-color: #303f9f; /* Darker shade on hover */
+  padding: 12px 52px !important; /* Add padding */
+  box-shadow: 3px 3px 16px rgba(0, 0, 0, 0.3); /* Add box shadow to the right side */
+
+}

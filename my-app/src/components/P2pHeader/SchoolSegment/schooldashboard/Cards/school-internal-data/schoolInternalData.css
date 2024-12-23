@@ -1,0 +1,36 @@
+.school-internal-data {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.urbanist-font {
+  font-family: 'Urbanist', sans-serif !important;
+  font-optical-sizing: auto !important;
+  font-weight: 500 !important;
+}
+
+.school-information-title {
+  font-size: 2rem !important;
+  font-family: 'Urbanist', sans-serif !important;
+  font-optical-sizing: auto !important;
+  font-weight: 700 !important;
+  font-style: normal !important;
+}
+
+.school-name {
+  color: grey ;
+  font-size: 1rem !important;
+  font-family: 'Roboto Mono', monospace !important;
+  font-optical-sizing: auto !important;
+  font-weight: 400 !important;
+}
+
+.school-id {
+  color: grey ;
+  font-size: 1rem !important;
+  font-family: 'Roboto Mono', monospace !important;
+  font-optical-sizing: auto !important;
+  font-weight: 400 !important;
+}

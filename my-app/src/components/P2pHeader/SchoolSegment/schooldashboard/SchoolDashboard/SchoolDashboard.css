@@ -1,0 +1,80 @@
+body, html {
+  overflow-x: hidden;
+  /* background-image: url('./img.jpg'); */
+  /* height: 100vh; */
+
+  background-size: cover;
+  /* background-color: rgb(235, 235, 235); */
+  background-color: #fff;
+} 
+.homepage {
+  background: linear-gradient(to right, #ffffff, #edf3f7) !important; /* Gradient from light pink to a lighter shade */
+  overflow: hidden;
+  position: relative;
+  left: 0vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: 100vh;
+  /* margin-left: 260px; */
+}
+
+
+
+.main-content {
+    margin: 70px 0 20px;
+    position: relative;
+    left: 20vh;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  /* padding: 20px; */
+  width: 100%;
+ 
+}
+
+.school-id-box {
+  position: fixed;
+  bottom: 40px;
+  left: 22px;
+  background-color: #ffffff;
+  padding: 12px 8px;
+  border-radius: 8px;
+  box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.1);
+  font-size: 14px;
+  color: #333;
+  width: 200px;
+  text-align: center;
+  z-index: 1000;
+  font-family: 'Roboto Mono', monospace !important;
+  font-optical-sizing: auto !important;
+  font-weight: 400 !important;
+}
+
+.academic-year-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 20px;
+  width: 100vw;
+  z-index: 1003;
+}
+
+ /* Large devices (laptops/desktops, 992px and up) */
+ @media (min-width: 992px) and (max-width: 1199.98px) {
+  .main-content{
+    left: 20vh;
+  }
+  .school-id-box{
+    bottom: 14px;
+    left: 14px;
+    width: 180px;
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+  
+}

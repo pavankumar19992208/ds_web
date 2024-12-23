@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import logo from '../../images/large-dNk4O_UUZ-transformed (1).png';
+import { useNavigate } from 'react-router-dom';
 import { FaBars } from 'react-icons/fa'; // Import the pi-bars icon
 
 
@@ -9,7 +10,7 @@ const P2pHeader = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [isMenuOpen, setIsMenuOpen] = useState(false); // State to toggle the menu
   const [showLoginPopup, setShowLoginPopup] = useState(false); // State to control the visibility of the LoginPopup
-
+  const navigate = useNavigate();
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
     window.addEventListener('resize', handleResize);
@@ -98,26 +99,12 @@ const buttonStyle = (button) => ({
 const renderButtons = () => (
   <div style={renderStyles()}>
     <button 
-      style={buttonStyle('demo')} 
-      onMouseEnter={() => setIsHovered({...isHovered, demo: true})}
-      onMouseLeave={() => setIsHovered({...isHovered, demo: false})}
-    >
-      Book A Demo
-    </button>
-    <button 
-      style={buttonStyle('brochure')} 
-      onMouseEnter={() => setIsHovered({...isHovered, brochure: true})}
-      onMouseLeave={() => setIsHovered({...isHovered, brochure: false})}
-    >
-      Brochure
-    </button>
-    <button 
       style={buttonStyle('login')} 
       onMouseEnter={() => setIsHovered({...isHovered, login: true})}
       onMouseLeave={() => setIsHovered({...isHovered, login: false})}
-      onClick={toggleLoginPopup}
+      onClick={() => navigate('/register-school')}
     >
-      Admin Login
+      REGISTER A SCHOOL
     </button>
   </div>
 );

@@ -4,7 +4,7 @@ import logo from '../images/large-dNk4O_UUZ-transformed (1).png';
 import { FaBars } from 'react-icons/fa'; // Import the pi-bars icon
 import LoginPopup from './popups/LoginPopup';
 
-const NavBar = () => {
+const NavBar = ({ showButtons = true }) => {
   const [isHovered, setIsHovered] = useState({});
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [isMenuOpen, setIsMenuOpen] = useState(false); // State to toggle the menu
@@ -31,7 +31,6 @@ const NavBar = () => {
     color: '#042642',
     fontFamily: 'monospace',
     borderRadius: '30px',
-    // border: '1px solid #04264229',
     marginLeft: '1.5%',
     marginRight: '1.5%',
     marginTop: windowWidth < 450 ? '3%' : '1%',
@@ -142,7 +141,7 @@ const renderButtons = () => (
       {windowWidth < 450 ? (
         <FaBars onClick={() => setIsMenuOpen(!isMenuOpen)} /> // Render the pi-bars icon and toggle the menu on click
       ) : (
-        renderButtons()
+        showButtons && renderButtons()
       )}
       {isMenuOpen && windowWidth < 450 && renderButtons()} 
     </div>

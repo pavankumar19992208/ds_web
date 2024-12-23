@@ -1,0 +1,139 @@
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: -12px;
+  margin-top: -12px;
+}
+
+.generate-button {
+  padding: 10px 20px;
+  background-color: #374441;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-family: "Ramabhadra", sans-serif;
+  font-style: normal;
+  letter-spacing: 0.1em;
+}
+
+.generate-button:hover {
+  background-color: #374441db;
+}
+.table-container {
+    flex: 1;
+    padding: 8px 20px 20px;
+    overflow: hidden;
+    border: 1px solid hsla(220, 20%, 80%, 0.4);
+    /* box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.1);  */
+    width: 86.5%;
+    height: 82vh;
+    border-radius: 12px;
+    position: absolute;
+    left: 16vh;
+    top:72px;
+    box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.1); /* Add box shadow to the right side */
+
+  }
+
+    .layout {
+    display: flex;
+  }
+  
+    .table-wrapper {
+    overflow-x: auto;
+    width: 100%;
+  }
+
+  .timetable {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .timetable th, .timetable td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+  }
+  
+  .timetable th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+  }
+  
+  .timetable tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  .timetable tr:hover {
+    background-color: #ddd;
+  }
+  
+  .class-dropdown {
+    width: 160px;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #f2f2f2;
+    font-size: 16px;
+    text-align: center;
+  }
+  
+  .class-dropdown:focus {
+    outline: none;
+    border-color: #aaa;
+  } 
+
+    .column-header {
+      position: relative;
+  }
+  
+  .icon-container {
+      display: none;
+      position: absolute;
+      top: 0;
+      right: 0;
+      background-color: rgba(255, 255, 255, 0.8);
+      border-radius: 50%;
+      padding: 5px;
+  }
+  
+  .column-header:hover .icon-container {
+      display: block;
+  }
+  
+  .icon {
+      cursor: pointer;
+      margin-left: 5px;
+  }
+  .subject-dropdown {
+    width: 100%;
+    padding: 8px;
+    /* border: 1px solid #ddd; */
+    border: none;
+    border-radius: 4px;
+    background-color: #fff;
+    font-size: 14px;
+    text-align: center;
+  }
+  
+  .subject-dropdown:focus {
+    outline: none;
+    border-color: #aaa;
+  }   
+  .update-button{
+    margin-top: 14px;
+    padding: 10px 20px;
+    background-color: #374441;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: "Ramabhadra", sans-serif;
+    font-style: normal;
+    letter-spacing: 0.1em;
+  }
+  .update-button:hover {
+    background-color: #374441db;
+  }

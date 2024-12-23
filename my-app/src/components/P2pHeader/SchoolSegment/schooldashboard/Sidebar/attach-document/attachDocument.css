@@ -1,0 +1,34 @@
+.attach-document-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  flex-direction: column;
+}
+.attach-document-container.show-form {
+  transform: translateX(-13%);
+  transition: transform 0.5s;
+}
+.card {
+  margin: 10px;
+  width: 300px;
+  cursor: pointer;
+  border-radius: 12px !important;
+  box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.1) !important;
+  border: 1px solid hsla(220, 20%, 80%, 0.4);
+}
+
+.school-id-box {
+  position: fixed;
+  bottom: 40px;
+  left: 22px;
+  background-color: #ffffff;
+  padding: 12px 8px;
+  border-radius: 8px;
+  box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.1);
+  font-size: 14px;
+  color: #333;
+  width: 200px;
+  text-align: center;
+  z-index: 1000;
+}
