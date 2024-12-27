@@ -1,7 +1,7 @@
 // config.js
 
 // Define the base URL for the backend
-const BaseUrl = 'http://127.0.0.1:8000';
+const BaseUrl = 'http://15.206.128.108:8002';
 
 // Export the base URL so it can be used in other files
 export default BaseUrl;
