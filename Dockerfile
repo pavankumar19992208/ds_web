@@ -13,8 +13,8 @@ RUN npm install --legacy-peer-deps
 # Copy the rest of the application code
 COPY . .
 
-# Build the React app
-RUN npm run build
+# Build the React app with increased memory limit
+RUN NODE_OPTIONS=--max_old_space_size=4096 npm run build
 
 # Install a simple HTTP server to serve the static files
 RUN npm install -g serve
