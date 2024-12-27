@@ -26,7 +26,7 @@ jobs:
     - name: Build and push Docker image
       run: |
         docker build -t ds_web .
-        docker tag my-app:latest ${{ secrets.DOCKER_USERNAME }}/ds_web:latest
+        docker tag ds_web:latest ${{ secrets.DOCKER_USERNAME }}/ds_web:latest
         docker push ${{ secrets.DOCKER_USERNAME }}/ds_web:latest
 
     - name: SSH to EC2 and deploy
