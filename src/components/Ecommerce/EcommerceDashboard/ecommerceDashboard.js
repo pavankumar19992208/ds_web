@@ -14,7 +14,7 @@ const dashboardStyle = {
 };
 
 const contentStyle = {
-  marginTop: '16px',
+  marginTop: '80px',
   maxWidth: '1800px', // Adjust the maxWidth as needed
 };
 
@@ -86,15 +86,15 @@ function EcommerceDashboard() {
     <div className="dashboardStyle" style={dashboardStyle}>
       <EcommerceNavbar />
       <Container style={contentStyle}>
-        <Grid container spacing={3}>
+        <Grid container spacing={2}>
           <Grid item xs={6}>
             {demandedProducts.length > 0 && (
-              <div className='boxes' key={demandedProducts[0].id} style={{ backgroundColor: '#fff', height: '507px', borderRadius: '12px', overflow: 'hidden', position: 'relative' }} onClick={() => handleGridClick(demandedProducts[0].id)}>
+              <div className='boxes' key={demandedProducts[0].id} style={{ backgroundColor: '#fff', height: '416px', borderRadius: '12px', overflow: 'hidden', position: 'relative' }} onClick={() => handleGridClick(demandedProducts[0].id)}>
                 {demandedProducts[0].imageUrls && demandedProducts[0].imageUrls.length > 0 ? (
                   <Slider {...settings} className="custom-slider">
                     {demandedProducts[0].imageUrls.map((url, index) => (
                       <div key={index}>
-                        <img src={url} alt={demandedProducts[0].name} style={{ width:'100%', height: '508px', objectFit: 'contain'}} />
+                        <img src={url} alt={demandedProducts[0].name} style={{ width:'100%', height: '400px', objectFit: 'contain'}} />
                       </div>
                     ))}
                   </Slider>
@@ -105,12 +105,12 @@ function EcommerceDashboard() {
             )}
           </Grid>
           <Grid item xs={6}>
-            <Grid container spacing={3}>
+            <Grid container spacing={2}>
               {demandedProducts.slice(1, 7).map((product) => (
                 <Grid item xs={4} key={product.id}>
-                  <div className='boxes' style={{ backgroundColor: '#fff', height: '242px', borderRadius: '12px', overflow: 'hidden', position: 'relative' }} onClick={() => handleGridClick(product.id)}>
+                  <div className='boxes' style={{ backgroundColor: '#fff', height: '200px', borderRadius: '12px', overflow: 'hidden', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => handleGridClick(product.id)}>
                     {product.mainImageUrl ? (
-                      <img src={product.mainImageUrl} alt={product.name} style={{ display: 'block', margin: 'auto', width: '90%', height: '100%', objectFit: 'contain' }} />
+                      <img src={product.mainImageUrl} alt={product.name} style={{ display: 'block', margin: 'auto', width: '90%', height: '90%', objectFit: 'contain' }} />
                     ) : (
                       <p>No image available</p>
                     )}

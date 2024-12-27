@@ -20,7 +20,7 @@ import UploadProducts from './components/Ecommerce/UploadProducts/uploadProducts
 import EcommerceDashboard from './components/Ecommerce/EcommerceDashboard/ecommerceDashboard';
 import ProductsList from './components/Ecommerce/ProductsList/productsList';
 import ProductOverview from './components/Ecommerce/ProductOverview/productOverview';
-// import BookList from './components/Ecommerce/ProductsList/Books/books';
+import CartPage from './components/Ecommerce/Cart/cartPage';
 
 function App() {
   return (
@@ -44,10 +44,9 @@ function App() {
           <Route path="/class-timetable" element={<ClassTimeTable/>}/>
           <Route path="/upload-products" element={<UploadProducts/>}/>
           <Route path="/ecommerce-dashboard" element={<EcommerceDashboard/>}/>
-          <Route path="/products-list" element={<ProductsList/>}/>
+          <Route path="/products" element={<ProductsList/>}/>
           <Route path="/product-overview/:productId" element={<ProductOverview />} />
-          {/* <Route path="/books-list" element={<BookList/>}/> */}
-        </Routes>
+          <Route path="/cart" element={<CartPage />} />        </Routes>
       </Router>
     </GlobalStateProvider>
   );

@@ -1,16 +1,18 @@
-.product-overview-grid {
+.product-overview{
+  margin: 0 auto;
+}
+.product-overview .product-overview-grid {
   border: 1px solid #e0e0e0;
   border-radius: 20px;
   display: grid;
   grid-template-columns: 30% 70%;
   gap: 20px;
   width: 98%;
-  margin: 12px auto;
+  margin: 68px auto;
 }
 
 .product-image img {
-    padding: 20px;
-
+  padding: 20px;
   width: 100%;
   height: auto;
 }
@@ -34,6 +36,10 @@
 
 .product-details p {
   margin-bottom: 10px;
+}
+
+.price-text{
+  font-size: 1.5rem;
 }
 
 .product-description-buttons {

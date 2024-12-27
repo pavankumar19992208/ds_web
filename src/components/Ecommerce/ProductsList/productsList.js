@@ -13,7 +13,14 @@ const ProductsList = () => {
       try {
         const params = new URLSearchParams(location.search);
         const category = params.get('category');
-        const response = await fetch(`http://localhost:8001/products?category=${category}`);
+        const search = params.get('search');
+        let url = 'http://localhost:8001/products';
+        if (category) {
+          url += `?category=${category}`;
+        } else if (search) {
+          url += `?keywords=${search}`;
+        }
+        const response = await fetch(url);
         const data = await response.json();
         setProducts(data);
       } catch (error) {
@@ -24,9 +31,24 @@ const ProductsList = () => {
     fetchProducts();
   }, [location.search]);
 
-  const handleAddToCart = (productId) => {
+  const handleAddToCart = async (productId) => {
     console.log(`Add to Cart clicked for product ID: ${productId}`);
     // Implement add to cart functionality here
+    try {
+      const response = await fetch('http://localhost:8001/cart', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ user_id: 1, id: productId, quantity: 1 })
+      });
+      if (!response.ok) {
+        throw new Error('Failed to add to cart');
+      }
+      console.log('Product added to cart');
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+    }
   };
 
   const handleAddToFavourites = (productId) => {
@@ -39,8 +61,8 @@ const ProductsList = () => {
   };
 
   return (
-    <div className="dashboard">
-      <EcommerceNavbar />
+    <>
+    <EcommerceNavbar />
       <div className="product-list">
         {products.length > 0 ? (
           products.map((product) => (
@@ -63,7 +85,8 @@ const ProductsList = () => {
           <p>No products available</p>
         )}
       </div>
-    </div>
+    
+    </>
   );
 };
 

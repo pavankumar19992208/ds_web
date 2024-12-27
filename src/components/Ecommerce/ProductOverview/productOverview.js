@@ -86,12 +86,12 @@ const ProductOverview = () => {
   };
 
   const mainSliderSettings = {
-    dots: product.imageUrls.length > 1,
-    infinite: product.imageUrls.length > 1,
+    dots: Array.isArray(product.imageUrls) && product.imageUrls.length > 1,
+    infinite: Array.isArray(product.imageUrls) && product.imageUrls.length > 1,
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
-    autoplay: product.imageUrls.length > 1,
+    autoplay: Array.isArray(product.imageUrls) && product.imageUrls.length > 1,
     autoplaySpeed: 2000, // 2 seconds,
     appendDots: dots => (
       <div style={{ position: 'absolute', bottom: '10px', width: '100%' }}>
@@ -102,31 +102,32 @@ const ProductOverview = () => {
   };
 
   const modalSliderSettings = {
-    dots: product.imageUrls.length > 1,
-    infinite: product.imageUrls.length > 1,
+    dots: Array.isArray(product.imageUrls) && product.imageUrls.length > 1,
+    infinite: Array.isArray(product.imageUrls) && product.imageUrls.length > 1,
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
-    autoplay: product.imageUrls.length > 1,
+    autoplay: Array.isArray(product.imageUrls) && product.imageUrls.length > 1,
     autoplaySpeed: 2000, // 2 seconds,
     appendDots: dots => (
       <div style={{ position: 'absolute', bottom: '10px', width: '100%' }}>
         <ul style={{ margin: '0px' }}> {dots} </ul>
       </div>
     ),
-    nextArrow: product.imageUrls.length > 1 ? <NextArrow /> : null,
-    prevArrow: product.imageUrls.length > 1 ? <PrevArrow /> : null
+    nextArrow: Array.isArray(product.imageUrls) && product.imageUrls.length > 1 ? <NextArrow /> : null,
+    prevArrow: Array.isArray(product.imageUrls) && product.imageUrls.length > 1 ? <PrevArrow /> : null
   };
 
   return (
+    <>
+    <EcommerceNavbar />
     <div className="product-overview">
-      <EcommerceNavbar />
       <div className="product-overview-grid">
       <div className="product-image" onClick={openModal}>
           <Slider {...mainSliderSettings} className="custom-slider">
-            {product.imageUrls.map((url, index) => (
+            {Array.isArray(product.imageUrls) && product.imageUrls.map((url, index) => (
               <div key={index}>
-                <img src={url} alt={product.name} style={{ width:'100%', height: '508px', objectFit: 'contain'}} />
+                <img src={url} alt={product.name} style={{ width:'100%', height: '380px', objectFit: 'contain'}} />
               </div>
             ))}
           </Slider>
@@ -134,18 +135,19 @@ const ProductOverview = () => {
         <div className="product-info">
           <div className="product-details">
             <h1>{product.name}</h1>
-            <p>Price: ₹{product.price}</p>
-            <p>Stock: {product.stock}</p>
+            <p><strong>Price :</strong> <span className='price-text'>₹{product.price}</span></p>
           </div>
           <div className="product-description-buttons">
-            <div className="product-description">
-              <p>Description: <br/><br/>{renderDescription()}</p>
-              {product.description.length > 300 && (
-                <a href="#" onClick={toggleDescription}>
-                  {isDescriptionExpanded ? 'less' : 'more'}
-                </a>
-              )}
-            </div>
+          <div className="product-description">
+            <p><strong>Description :</strong> <br/>
+              <span dangerouslySetInnerHTML={{ __html: renderDescription() }} />
+            </p>
+            {product.description.length > 300 && (
+              <a href="#" onClick={toggleDescription}>
+                {isDescriptionExpanded ? 'less' : 'more'}
+              </a>
+            )}
+          </div>
             <div className="btns">
               <button onClick={handleAddToFavourites}>Add to Favourites</button>
               <button onClick={handleAddToCart}>Add to Cart</button>
@@ -173,7 +175,7 @@ const ProductOverview = () => {
       >
         <FaTimes onClick={closeModal} style={{ cursor: 'pointer', position: 'absolute', top: '10px', right: '10px', fontSize: '24px' }} />
         <Slider {...modalSliderSettings} className="custom-slider">
-          {product.imageUrls.map((url, index) => (
+          {Array.isArray(product.imageUrls) && product.imageUrls.map((url, index) => (
             <div key={index}>
               <img src={url} alt={product.name} style={{ width:'100%', height: '508px', objectFit: 'contain'}} />
             </div>
@@ -181,6 +183,7 @@ const ProductOverview = () => {
         </Slider>
       </Modal>
     </div>
+    </>
   );
 };
 

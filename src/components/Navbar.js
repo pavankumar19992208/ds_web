@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import logo from '../images/large-dNk4O_UUZ-transformed (1).png';
 import { FaBars } from 'react-icons/fa'; // Import the pi-bars icon
 import LoginPopup from './popups/LoginPopup';
@@ -10,7 +11,8 @@ const NavBar = ({ showButtons = true }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false); // State to toggle the menu
   const [showLoginPopup, setShowLoginPopup] = useState(false); // State to control the visibility of the LoginPopup
   const [showSchoolLoginPopup, setShowSchoolLoginPopup] = useState(false); // State to control the visibility of the SchoolLoginPopup
-
+  const navigate = useNavigate();
+  
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
     window.addEventListener('resize', handleResize);
@@ -116,6 +118,14 @@ const NavBar = ({ showButtons = true }) => {
         onMouseLeave={() => setIsHovered({ ...isHovered, brochure: false })}
       >
         Brochure
+      </button>
+      <button
+        style={buttonStyle('shopNow')}
+        onMouseEnter={() => setIsHovered({ ...isHovered, shopNow: true })}
+        onMouseLeave={() => setIsHovered({ ...isHovered, shopNow: false })}
+        onClick={() => navigate('/ecommerce-dashboard')} // Redirect to the ecommerce page
+      >
+        Shop Now
       </button>
       <button
         style={buttonStyle('login')}

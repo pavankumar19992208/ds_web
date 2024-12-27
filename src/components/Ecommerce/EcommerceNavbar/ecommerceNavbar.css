@@ -1,12 +1,47 @@
+.en-urbanist-regular {
+  font-family: "Urbanist", serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
+}
+
+.en-urbanist-regular::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  display: block;
+  margin-top: 5px;
+  right: 0;
+  background: white;
+  transition: width 0.3s ease;
+}
+
+.en-urbanist-regular:hover::after {
+  width: 100%;
+  left: 0;
+  background: white;
+}
+
+.nav-heading{
+  font-family: "Urbanist", serif;
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-style: normal;
+  font-size: 1.5rem;
+}
+
 .ecommerce-navbar {
-    background-color: #0b2e44 !important;
-    border-radius: 50px;
-    width: 98%; /* Decrease the width */
-    margin: 12px auto; /* Center the navbar */
+    background-color: #2b2d42 !important;
+    width: 100%; /* Decrease the width */
+    /* margin: 0 auto; Center the navbar */
     display: flex;
     justify-content: center;
-    padding: 8px ;
+    padding: 4px ;
     box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.1); /* Add box shadow to the right side */
+    position: fixed;
+    top: 0;
+    z-index: 1;
 }
 
 .toolbar {
@@ -23,12 +58,26 @@
   margin-right: var(--theme-spacing-2);
   margin-left: 0;
   width: 100%;
-  border-radius: 20px;
+  border-radius: 6px;
+  box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.8);
 }
 
 .search:hover {
   background-color: var(--theme-palette-common-white);
 }
+
+.searchIconWrapper {
+  padding: var(--theme-spacing-0-2);
+  height: 100%;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer; /* Add this line */
+  z-index: 1000;
+  margin-left: -40px;
+}
+
 
 @media (min-width: 600px) {
   .search {

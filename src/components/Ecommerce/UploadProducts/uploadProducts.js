@@ -4,7 +4,6 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import {
     Container,
     TextField,
-    TextareaAutosize,
     Button,
     Checkbox,
     FormControlLabel,
@@ -23,6 +22,8 @@ import {
     DialogActions,
 } from "@mui/material";
 import { PhotoCamera } from "@mui/icons-material";
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 function AdminUploadPage() {
     const [name, setName] = useState("");
@@ -40,6 +41,7 @@ function AdminUploadPage() {
     const [selectedProductId, setSelectedProductId] = useState(null); // State to store selected product ID
     const [selectedProductName, setSelectedProductName] = useState(""); // State to store selected product name
     const [searchQuery, setSearchQuery] = useState(""); // State for search query
+    const [keywords, setKeywords] = useState(""); // State for keywords
 
     useEffect(() => {
         const fetchDemandedProducts = async () => {
@@ -77,21 +79,26 @@ function AdminUploadPage() {
         }
     };
 
+    const handleGenerateKeywords = () => {
+        const generatedKeywords = name.split(" ").join(", ");
+        setKeywords(generatedKeywords);
+    };
+
     const handleUpload = async () => {
         if (!mainImage) {
             alert("Please select a main image to upload.");
             return;
         }
-
+    
         if (images.length === 0) {
             alert("Please select images to upload.");
             return;
         }
-
+    
         const mainImageRef = ref(storage, `images/${mainImage.name}`);
         await uploadBytes(mainImageRef, mainImage);
         const mainImageUrl = await getDownloadURL(mainImageRef);
-
+    
         const imageUrls = await Promise.all(images.map(async (image) => {
             const imageRef = ref(storage, `images/${image.name}`);
             await uploadBytes(imageRef, image);
@@ -101,12 +108,13 @@ function AdminUploadPage() {
         const payload = {
             name,
             description,
-            price,
-            stock,
+            price: parseFloat(price),
+            stock: parseInt(stock),
             category,
             mainImageUrl,
             imageUrls,
-            demanded
+            demanded,
+            keywords
         };
 
         console.log("Payload:", payload);
@@ -119,12 +127,16 @@ function AdminUploadPage() {
         formData.append("category", category);
         formData.append("mainImageUrl", mainImageUrl);
         formData.append("demanded", demanded);
+        formData.append("keywords", keywords);
         imageUrls.forEach((url, index) => formData.append(`imageUrls`, url)); // Append as individual items
 
         try {
             const response = await fetch("http://localhost:8001/upload", {
                 method: "POST",
-                body: formData,
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(payload),
             });
             const data = await response.json();
             if (response.ok) {
@@ -179,6 +191,7 @@ function AdminUploadPage() {
             alert("Replacement failed");
         }
     };
+    
 
     const filteredProducts = fetchedProducts
     .filter(product => product.name.toLowerCase().includes(searchQuery.toLowerCase()))
@@ -236,12 +249,10 @@ function AdminUploadPage() {
                     </Select>
                 </Grid>
                 <Grid item xs={12}>
-                    <TextareaAutosize
-                        minRows={3}
-                        placeholder="Description"
+                    <ReactQuill
                         value={description}
-                        onChange={(e) => setDescription(e.target.value)}
-                        style={{ width: '100%', marginBottom: '16px', height: '40vh' }}
+                        onChange={setDescription}
+                        style={{ height: '40vh', marginBottom: '16px' }}
                     />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -287,6 +298,26 @@ function AdminUploadPage() {
                         }
                         label="Mark as Demanded"
                     />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                    <TextField
+                        label="Keywords"
+                        value={keywords}
+                        onChange={(e) => setKeywords(e.target.value)}
+                        fullWidth
+                        margin="normal"
+                    />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                    <Button
+                        variant="contained"
+                        color="secondary"
+                        onClick={handleGenerateKeywords}
+                        fullWidth
+                        margin="normal"
+                    >
+                        Generate Keywords
+                    </Button>
                 </Grid>
                 <Grid item xs={12}>
                     <Button

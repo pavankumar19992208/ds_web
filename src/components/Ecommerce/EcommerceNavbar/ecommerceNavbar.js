@@ -1,13 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IconButton, InputBase, Badge, Box, List, ListItem, Paper } from '@mui/material';
+import { IconButton, InputBase, Badge, Box, List, ListItem, Paper, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import SearchIcon from '@mui/icons-material/Search';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import MailIcon from '@mui/icons-material/Mail';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import ListAltIcon from '@mui/icons-material/ListAlt';
 import './ecommerceNavbar.css';
 
 const Search = styled('div')(({ theme }) => ({
@@ -19,7 +15,10 @@ const Search = styled('div')(({ theme }) => ({
 }));
 
 const SearchIconWrapper = styled('div')(({ theme }) => ({
-  '--theme-spacing-0-2': theme.spacing(0, 2),
+  '--theme-spacing-0-2': theme.spacing(0, 1),
+  background: '#f0f0f0',
+  borderRadius: '6px',
+  cursor: 'pointer'
 }));
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
@@ -41,17 +40,25 @@ const ResultsList = styled(Paper)(({ theme }) => ({
 function EcommerceNavbar() {
   const [searchInput, setSearchInput] = useState('');
   const [products, setProducts] = useState([]);
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const fetchProducts = async (query) => {
     try {
       console.log(`Fetching products for query: ${query}`);
-      const response = await fetch(`http://localhost:8001/products?search=${query}`);
+      const response = await fetch(`http://localhost:8001/products?keywords=${query}`);
       const data = await response.json();
       console.log('Fetched products:', data);
+      if (Array.isArray(data) && data.length === 0) {
+        setError('No products found');
+      } else {
+        setError('');
+      }
       setProducts(data);
     } catch (error) {
       console.error("Error fetching products:", error);
+      setError('Error fetching products');
+      setProducts([]);
     }
   };
 
@@ -62,26 +69,37 @@ function EcommerceNavbar() {
       fetchProducts(query);
     } else {
       setProducts([]);
+      setError('');
+    }
+  };
+
+  const handleSearchSubmit = () => {
+    if (searchInput) {
+      navigate(`/products?search=${searchInput}`);
     }
   };
 
   const handleProductClick = (productId) => {
-    navigate(`/product-overview/${productId}`);
+    setSearchInput('');
+    window.open(`/product-overview/${productId}`, '_blank');
   };
 
-  const filteredProducts = products.filter(product =>
+  const filteredProducts = Array.isArray(products) ? products.filter(product =>
     product.name.toLowerCase().includes(searchInput.toLowerCase())
-  );
+  ) : [];
 
   return (
     <div className='ecommerce-navbar'>
       <div className='toolbar'>
         <IconButton edge="start" color="inherit">
           <AccountCircle sx={{color:'white'}}/>
+          <Typography variant="h6" sx={{ color: 'white', marginLeft: 5 }} className='nav-heading'>
+            neuraLife
+          </Typography>
         </IconButton>
         <Box sx={{ flexGrow: 1 }} />
         <Search className="search">
-          <SearchIconWrapper className="searchIconWrapper">
+          <SearchIconWrapper className="searchIconWrapper"  onClick={handleSearchSubmit}>
             <SearchIcon sx={{color:'black'}}/>
           </SearchIconWrapper>
           <StyledInputBase
@@ -90,41 +108,48 @@ function EcommerceNavbar() {
             inputProps={{ 'aria-label': 'search' }}
             value={searchInput}
             onChange={handleSearchChange}
+            onKeyPress={(e) => e.key === 'Enter' && handleSearchSubmit()}
           />
-          {filteredProducts.length > 0 && (
+          {searchInput && (
             <ResultsList>
               <List>
-                {filteredProducts.map((product) => (
-                  <ListItem 
-                    key={product.id} 
-                    button 
-                    onClick={() => handleProductClick(product.id)}
-                  >
-                    {product.name}
+                {filteredProducts.length > 0 ? (
+                  filteredProducts.map((product) => (
+                    <ListItem 
+                      key={product.id} 
+                      button 
+                      onClick={() => handleProductClick(product.id)}
+                    >
+                      {product.name}
+                    </ListItem>
+                  ))
+                ) : (
+                  <ListItem>
+                    {error || 'No products found'}
                   </ListItem>
-                ))}
+                )}
               </List>
             </ResultsList>
           )}
         </Search>
-        <IconButton color="inherit" sx={{ mx: 1 }}>
-          <Badge badgeContent={4} color="secondary">
-            <ShoppingCartIcon sx={{color:'white'}}/>
+        <IconButton color="inherit" sx={{ mx: 1.5 }} onClick={() => navigate('/cart')}>
+          <Badge badgeContent={4} color="secondary" sx={{ '& .MuiBadge-badge': { fontSize: '0.75rem', padding: '0 4px', marginTop: '-6px'} }}>
+          <span style={{ color: 'white', fontSize: '1rem' }} className='en-urbanist-regular'>Cart</span>
           </Badge>
         </IconButton>
-        <IconButton color="inherit" sx={{ mx: 1 }}>
-          <Badge badgeContent={17} color="secondary">
-            <MailIcon sx={{color:'white'}}/>
+        <IconButton color="inherit" sx={{ mx: 1.5 }}>
+          <Badge badgeContent={17} color="secondary" sx={{ '& .MuiBadge-badge': { fontSize: '0.75rem', padding: '0 4px', marginTop: '-6px' }}}>
+          <span style={{ color: 'white', fontSize: '1rem' }} className='en-urbanist-regular'>Mail</span>
           </Badge>
+          </IconButton>
+        <IconButton color="inherit" sx={{ mx: 1.5 }}>
+        <span style={{ color: 'white', fontSize: '1rem' }} className='en-urbanist-regular'>Orders</span>
         </IconButton>
-        <IconButton color="inherit" sx={{ mx: 1 }}>
-          <ListAltIcon sx={{color:'white'}}/>
+        <IconButton color="inherit" sx={{ mx: 1.5 }}>
+        <span style={{ color: 'white', fontSize: '1rem' }} className='en-urbanist-regular'>Favorites</span>
         </IconButton>
-        <IconButton color="inherit" sx={{ mx: 1 }}>
-          <FavoriteIcon sx={{color:'white'}}/>
-        </IconButton>
-        <IconButton edge="start" color="inherit" sx={{ mx: 1 }}>
-          <AccountCircle sx={{color:'white'}}/>
+        <IconButton edge="start" color="inherit" sx={{ mx: 1.5 }}>
+        <AccountCircle sx={{color:'white'}}/>
         </IconButton>
       </div>
     </div>
