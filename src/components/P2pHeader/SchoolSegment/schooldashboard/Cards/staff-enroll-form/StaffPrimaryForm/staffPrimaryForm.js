@@ -683,7 +683,7 @@ export default function StaffPrimaryForm() {
               ))}
             </Stepper>
           </Stack>
-          <React.Fragment>
+          {/* <React.Fragment>
             {activeStep === steps.length ? (
               <React.Fragment>
                 <Typography variant="h5" gutterBottom>
@@ -723,7 +723,7 @@ export default function StaffPrimaryForm() {
                 </div>
               </React.Fragment>
             )}
-          </React.Fragment>
+          </React.Fragment> */}
         </Paper>
       </main>
       {loading && (

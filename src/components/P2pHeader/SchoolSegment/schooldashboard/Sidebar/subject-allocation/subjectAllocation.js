@@ -2,10 +2,45 @@ import React, { useContext, useState, useEffect } from 'react';
 import { GlobalStateContext } from '../../../../../../GlobalStateContext';
 import Navbar from '../../Navbar/Navbar';
 import Sidebar from '../../Sidebar/Sidebar';
-import { Grid, Card, CardContent, Typography, Checkbox, FormControlLabel, Select, MenuItem, Box, IconButton, Button } from '@mui/material';
+import BaseUrl from '../../../../../../config';
+import { Grid, Card, CardContent, Typography, Select, MenuItem, Box, IconButton, Button, Tabs, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CloseIcon from '@mui/icons-material/Close';
+import PropTypes from 'prop-types';
 import './subjectAllocation.css';
+
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`vertical-tabpanel-${index}`}
+      aria-labelledby={`vertical-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
+
+TabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.number.isRequired,
+  value: PropTypes.number.isRequired,
+};
+
+function a11yProps(index) {
+  return {
+    id: `vertical-tab-${index}`,
+    'aria-controls': `vertical-tabpanel-${index}`,
+  };
+}
 
 const SubjectAllocation = () => {
   const { globalData } = useContext(GlobalStateContext);
@@ -14,6 +49,11 @@ const SubjectAllocation = () => {
   const [teachers, setTeachers] = useState([]);
   const [selectedTeacher, setSelectedTeacher] = useState({});
   const [allottedTeachers, setAllottedTeachers] = useState({});
+  const [tabValue, setTabValue] = useState(0);
+  const [grades, setGrades] = useState([]);
+  const [subjects, setSubjects] = useState([]);
+  const [classes, setClasses] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const handleGradeChange = (event) => {
     setSelectedGrade(event.target.value);
@@ -64,6 +104,10 @@ const SubjectAllocation = () => {
     });
   };
 
+  const handleTabChange = (event, newValue) => {
+    setTabValue(newValue);
+  };
+
   useEffect(() => {
     if (selectedGrade !== 'Select Grade' && selectedSubject !== 'Select Subject') {
       const fetchedTeachers = [
@@ -77,81 +121,110 @@ const SubjectAllocation = () => {
     }
   }, [selectedGrade, selectedSubject]);
 
+  useEffect(() => {
+    const fetchSchoolInfo = async () => {
+      try {
+        setLoading(true); // Set loading to true before fetching data
+        const response = await fetch(`${BaseUrl}/grades-and-subjects`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ SchoolId: globalData.data.SCHOOL_ID }),
+        });
+
+        if (!response.ok) {
+          const text = await response.text();
+          console.error('Error fetching school info:', text);
+          throw new Error('Failed to fetch school info');
+        }
+
+        const data = await response.json();
+        setGrades(data.grades || []);
+        setSubjects(data.subjects || []);
+        setClasses(data.all_classes || []);
+      } catch (error) {
+        console.error('Error fetching grades and subjects:', error);
+      } finally {
+        setLoading(false); // Set loading to false after fetching data
+      }
+    };
+
+    fetchSchoolInfo();
+  }, [globalData.data.SCHOOL_ID]);
+
   return (
     <div className="subject-allocation-container">
       <Navbar schoolName={globalData.data.SCHOOL_NAME} schoolLogo={globalData.data.SCHOOL_LOGO} />
       <div className="subject-allocation-content">
         <Sidebar visibleItems={['home', 'attachDocument', 'subjectAllocation', 'attendanceTracking', 'leaveApprovals', 'academicPerformance', 'teacherAlert', 'eventPlanning', 'careerGuidance', 'inventoryManagement']} />
-        <main className="content">
+        <main className="sa-content">
           <div className="button-container">
             <Select className="custom-select" value={selectedGrade} onChange={handleGradeChange} displayEmpty>
               <MenuItem value="Select Grade">Select Grade</MenuItem>
-              {Array.from({ length: 12 }, (_, i) => (
-                <MenuItem key={i + 1} value={`Class-${i + 1}`}>{`Class-${i + 1}`}</MenuItem>
+              {grades.map((grade, index) => (
+                <MenuItem key={index} value={grade}>{grade}</MenuItem>
               ))}
             </Select>
             <Select className="custom-select" value={selectedSubject} onChange={handleSubjectChange} displayEmpty>
               <MenuItem value="Select Subject">Select Subject</MenuItem>
-              {['Math', 'Science', 'English', 'History', 'Geography'].map((subject, index) => (
+              {subjects.map((subject, index) => (
                 <MenuItem key={index} value={subject}>{subject}</MenuItem>
               ))}
             </Select>
-          </div>
-          <Grid container spacing={2}>
-            <Grid item xs={12} md={4} sx={{ mt: 4 }}>
-              {teachers.length > 0 && (
-                <div className="teacher-list">
-                  <h3>Available Teachers</h3>
-                  <ul>
-                    {teachers.map((teacher) => (
-                      <li key={teacher.id}>
-                        <FormControlLabel
-                          control={
-                            <Checkbox
-                              value={teacher.name}
-                              checked={selectedTeacher[selectedGrade]?.[selectedSubject] === teacher.name}
-                              onChange={(e) => handleTeacherChange(e, selectedGrade, selectedSubject)}
-                            />
-                          }
-                          label={teacher.name}
-                        />
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </Grid>
-            <Grid item xs={12} md={8}>
-              <Grid container spacing={2} className="allotted-teachers-cards">
-                {Object.keys(allottedTeachers).map((grade) => (
-                  <Grid item xs={12} sm={6} md={4} key={grade}>
-                    <Card className="allotted-teacher-card custom-card" sx={{ width: 240, height: 268 }}>
-                      <CardContent>
-                        <Box className='grade' display="flex" justifyContent="space-between" alignItems="center">
-                          <Typography className='grade-text' variant="h5">{grade}</Typography>
-                          <IconButton onClick={() => handleCloseCard(grade)}>
-                            <CloseIcon className='icons' />
-                          </IconButton>
-                        </Box>
-                        <Box mt={2}>
-                          {Object.keys(allottedTeachers[grade]).map((subject) => (
-                            <Box className='subjects' key={subject} display="flex" alignItems="center" justifyContent="space-between">
-                              <Typography className='subjects-text'>{subject}: {allottedTeachers[grade][subject]}</Typography>
-                              <IconButton onClick={() => handleDeleteSubjectTeacher(grade, subject)}>
-                                <DeleteIcon className='icons'/>
-                              </IconButton>
-                            </Box>
-                          ))}
-                        </Box>
-                      </CardContent>
-                    </Card>
-                  </Grid>
+            {teachers.length > 0 && (
+              <Select className="custom-select" value={selectedTeacher[selectedGrade]?.[selectedSubject] || ''} onChange={(e) => handleTeacherChange(e, selectedGrade, selectedSubject)} displayEmpty>
+                <MenuItem value="">Select Teacher</MenuItem>
+                {teachers.map((teacher) => (
+                  <MenuItem key={teacher.id} value={teacher.name}>{teacher.name}</MenuItem>
                 ))}
-              </Grid>
-            </Grid>
-          </Grid>
+              </Select>
+            )}
+          </div>
+          <Box sx={{ flexGrow: 1, display: 'flex', height: '60vh', marginTop: 10 }}>
+            <Tabs
+              orientation="vertical"
+              variant="scrollable"
+              value={tabValue}
+              onChange={handleTabChange}
+              aria-label="Vertical tabs example"
+              sx={{ borderRight: 1, borderColor: 'divider' }}
+            >
+              {Object.keys(allottedTeachers).map((grade, index) => (
+                <Tab label={grade} {...a11yProps(index)} key={index} />
+              ))}
+            </Tabs>
+            {Object.keys(allottedTeachers).map((grade, index) => (
+              <TabPanel value={tabValue} index={index} key={index}>
+                <TableContainer component={Paper} sx={{ marginLeft: '16px' }}>
+                  <Table sx={{ width: '64vw' }} aria-label="simple table">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell sx={{ padding: '8px', height: '24px' }}><strong>Subject</strong></TableCell>
+                        <TableCell sx={{ padding: '8px', height: '24px' }}><strong>Teacher</strong></TableCell>
+                        <TableCell sx={{ padding: '8px', height: '24px' }}><strong>Actions</strong></TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {Object.keys(allottedTeachers[grade]).map((subject) => (
+                        <TableRow key={subject}>
+                          <TableCell sx={{ padding: '8px', height: '30px' }}>{subject}</TableCell>
+                          <TableCell sx={{ padding: '8px', height: '30px' }}>{allottedTeachers[grade][subject]}</TableCell>
+                          <TableCell sx={{ padding: '8px', height: '30px' }}>
+                            <IconButton onClick={() => handleDeleteSubjectTeacher(grade, subject)}>
+                              <DeleteIcon />
+                            </IconButton>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </TabPanel>
+            ))}
+          </Box>
           <Box position="absolute" bottom={16} left={16}>
-            <Button className="custom-submit-button" >
+            <Button className="custom-submit-button">
               Submit
             </Button>
           </Box>

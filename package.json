@@ -12,16 +12,13 @@
     "@material-ui/icons": "^4.11.3",
     "@mui/icons-material": "^6.1.6",
     "@mui/material": "^5.11.0",
-    "@mui/styles": "^6.2.0",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^13.5.0",
     "axios": "^1.7.2",
     "chart.js": "^4.4.6",
     "firebase": "^10.12.4",
     "jspdf": "^2.5.2",
     "jspdf-autotable": "^3.8.4",
-    "mdb-react-ui-kit": "^8.0.0",
     "react": "^18.3.1",
     "react-chartjs-2": "^5.2.0",
     "react-csv": "^2.2.2",
@@ -29,21 +26,20 @@
     "react-icons": "^5.3.0",
     "react-modal": "^3.16.1",
     "react-quill": "^2.0.0",
-    "react-responsive": "^10.0.0",
     "react-router-dom": "^6.27.0",
     "react-scripts": "^5.0.1",
     "react-select": "^5.8.0",
     "react-slick": "^0.30.2",
     "react-spinners": "^0.14.1",
     "slick-carousel": "^1.8.1",
-    "url": "^0.11.4",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "analyze": "source-map-explorer 'build/static/js/*.js'"
   },
   "eslintConfig": {
     "extends": [
@@ -64,6 +60,7 @@
     ]
   },
   "devDependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "webpack-bundle-analyzer": "^4.10.2"
   }
 }

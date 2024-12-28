@@ -29,6 +29,7 @@ const Cards = ({ studentCount, staffCount, schoolName, schoolLogo }) => {
           }
   
           const data = await response.json(); // Parse the response as JSON
+          console.log('School info:', data);
           setGlobalData(prevData => ({ ...prevData, schoolInfo: data.data }));
           console.log("globalData", globalData);
           navigate('/staff-enroll');

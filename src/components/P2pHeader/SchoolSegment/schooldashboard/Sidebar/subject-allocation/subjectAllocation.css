@@ -13,8 +13,7 @@
   flex: 1;
 }
 
-.content {
-
+.sa-content {
   flex: 1;
   padding: 20px;
   overflow: auto;
@@ -55,12 +54,12 @@
   .custom-select {
     background-color: #fff;
     box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.1); 
-    padding: 8px;
+    padding: 6px;
     border-radius: 12px !important;
   }
   
   .custom-select .MuiSelect-select {
-    padding: 8px;
+    padding: 6px;
   }
   
   .custom-select .MuiOutlinedInput-notchedOutline {
@@ -76,49 +75,8 @@
     border-color: #555;
   }
 
-  .custom-card {
-    background: #fff !important;
-    border: 1px solid hsla(220, 20%, 80%, 0.4) !important; /* Example border color */
-    border-radius: 12px !important; /* Example border radius */
-    box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.1) !important; /* Example box shadow */
-  }
+ 
   
-
-
-  
-  /* .select-button:hover {
-    background-color: #444444;
-
-  } */
-
-  .teacher-list {
-    background: #fff !important;
-    margin-top: 60px;
-    width: 80%;
-    height: 340px;
-    border: 1px solid hsla(220, 20%, 80%, 0.4);
-    border-radius: 12px;
-    box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.1); 
-    padding: 20px;
-
-  }
-  
-  .teacher-list h3 {
-    margin-bottom: 10px;
-  }
-  
-  .teacher-list ul {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  .teacher-list li {
-    padding: 5px 0;
-    border-bottom: 1px solid #ccc;
-  }
-
-  
-
   .custom-submit-button {
     background-color: #0E5E9D80 !important; /* Example background color */
     color: #000 !important; /* Example text color */
