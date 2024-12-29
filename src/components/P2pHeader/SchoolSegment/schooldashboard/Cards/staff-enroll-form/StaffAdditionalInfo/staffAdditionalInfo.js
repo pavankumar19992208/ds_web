@@ -81,7 +81,7 @@ const StaffAdditionalInfo = ({ formData, setFormData }) => {
         <Grid container spacing={3} className={classes.gridContainer}>
           <Grid item xs={12} sm={6}>
             <FormControl fullWidth variant="standard" className={`${classes.field} urbanist-font`}>
-              <InputLabel className={`${classes.field} urbanist-font`} id="languagesKnown-label">Languages Known</InputLabel>
+              <InputLabel className={`${classes.field} urbanist-font`} required id="languagesKnown-label">Languages Known</InputLabel>
               <Select
                 labelId="languagesKnown-label"
                 id="languagesKnown"
