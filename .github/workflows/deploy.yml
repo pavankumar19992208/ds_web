@@ -1,0 +1,48 @@
+name: Deploy React App to AWS
+
+on:
+  push:
+    branches:
+      - pavan
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: Login to Docker Hub
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Build and push Docker image
+      run: |
+        docker build -t my-app .
+        docker tag my-app:latest ${{ secrets.DOCKER_USERNAME }}/my-app:latest
+        docker push ${{ secrets.DOCKER_USERNAME }}/my-app:latest
+
+    - name: SSH to EC2 and deploy
+      uses: appleboy/ssh-action@v0.1.5
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ec2-user
+        key: ${{ secrets.EC2_KEY }}
+        script: |
+          cd /home/ec2-user/DS_WEB/my-app  # Change to the directory where your Dockerfile is located
+          git pull origin pavan
+          docker pull ${{ secrets.DOCKER_USERNAME }}/my-app:latest
+          docker stop my-app || true
+          docker rm my-app || true
+          docker build -t my-app .
+          docker run -d -p 3000:3000 --name my-app ${{ secrets.DOCKER_USERNAME }}/my-app:latest
+
+    - name: Output instance URL
+      run: |
+        echo "Application is deployed and running at: http://${{ secrets.EC2_HOST }}"
