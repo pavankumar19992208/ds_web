@@ -117,16 +117,6 @@ export default function DetailsForm({ formData, setFormData }) {
     });
   };
 
-  // const handleKeyDown = (event) => {
-  //   if (event.key === 'Enter') {
-  //     const { name } = event.target;
-  //     setErrors((prevErrors) => ({
-  //       ...prevErrors,
-  //       [name]: '',
-  //     }));
-  //   }
-  // };
-
   const handleBlur = (event) => {
     const { name } = event.target;
     setErrors((prevErrors) => ({

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Grid, Container } from '@mui/material';
+import { Grid, Container, Button } from '@mui/material';
 import Slider from "react-slick";
 import { useNavigate } from 'react-router-dom';
 import './ecommerceDashboard.css';
@@ -87,6 +87,23 @@ function EcommerceDashboard() {
       <EcommerceNavbar />
       <Container style={contentStyle}>
         <Grid container spacing={2}>
+          <Grid item xs={12}>
+            {demandedProducts.length > 0 && (
+              <div className='demanded-container' style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', backgroundColor: '#fff', borderRadius: '12px', padding: '20px', marginBottom: '20px', height: '60vh' }}>
+                <div style={{ flex: '0 0 50%' }}>
+                  <h3>{demandedProducts[0].name}</h3>
+                  <Button style={{ left: '20%' }} variant="contained" color="primary" onClick={() => handleGridClick(demandedProducts[0].id)}>Buy Now</Button>
+                </div>
+                <div style={{ flex: '0 0 50%' }}>
+                  {demandedProducts[0].mainImageUrl ? (
+                    <img src={demandedProducts[0].mainImageUrl} alt={demandedProducts[0].name} style={{ width:'100%', height: '400px', objectFit: 'contain'}} />
+                  ) : (
+                    <p>No image available</p>
+                  )}
+                </div>
+              </div>
+            )}
+          </Grid>
           <Grid item xs={6}>
             {demandedProducts.length > 0 && (
               <div className='boxes' key={demandedProducts[0].id} style={{ backgroundColor: '#fff', height: '416px', borderRadius: '12px', overflow: 'hidden', position: 'relative' }} onClick={() => handleGridClick(demandedProducts[0].id)}>

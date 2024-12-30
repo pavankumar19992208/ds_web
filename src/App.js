@@ -18,6 +18,7 @@ import SubjectAllocation from './components/P2pHeader/SchoolSegment/schooldashbo
 import ClassTimeTable from './components/P2pHeader/SchoolSegment/schooldashboard/Cards/class-timetable/classTimeTable';
 import UploadProducts from './components/Ecommerce/UploadProducts/uploadProducts';
 import EcommerceDashboard from './components/Ecommerce/EcommerceDashboard/ecommerceDashboard';
+import EcomDash from './components/Ecommerce/EcommerceDashboard/ecomDash';
 import ProductsList from './components/Ecommerce/ProductsList/productsList';
 import ProductOverview from './components/Ecommerce/ProductOverview/productOverview';
 import CartPage from './components/Ecommerce/Cart/cartPage';
@@ -44,6 +45,7 @@ function App() {
           <Route path="/class-timetable" element={<ClassTimeTable/>}/>
           <Route path="/upload-products" element={<UploadProducts/>}/>
           <Route path="/ecommerce-dashboard" element={<EcommerceDashboard/>}/>
+          <Route path="/ecom-dash" element={<EcomDash/>}/>
           <Route path="/products" element={<ProductsList/>}/>
           <Route path="/product-overview/:productId" element={<ProductOverview />} />
           <Route path="/cart" element={<CartPage />} />        </Routes>
