@@ -339,6 +339,31 @@ const SchoolInternalData = () => {
         subjects: payload.Subjects,
       }));
 
+      // Send subjects to the allocate endpoint
+    const allocatePayload = {
+      subject: 'Subjects Allocation',
+      subject_id: globalData.data.SCHOOL_ID, // Assuming SCHOOL_ID as subject_id
+      class_teachers: {
+        class_1: subjects,
+        // Add other classes if needed
+      },
+    };
+
+    const allocateResponse = await fetch(`${BaseUrl}/allocate`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(allocatePayload),
+    });
+
+    if (!allocateResponse.ok) {
+      throw new Error('Teacher allocation failed');
+    }
+
+    const allocateData = await allocateResponse.json();
+    console.log('Teacher allocation data sent to backend successfully:', allocateData);
+
       setSuccessDialogOpen(true);
     } catch (error) {
       console.error('Error sending form data to backend:', error);
