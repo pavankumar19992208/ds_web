@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AppBar, Toolbar, IconButton, Menu, MenuItem, Avatar, Typography, Drawer, Box, Button } from '@material-ui/core';
-import { Event, Notifications, ExitToApp } from '@material-ui/icons';
+import { AppBar, Toolbar, IconButton, Menu, MenuItem, Avatar, Typography, Drawer, Box, Button } from '@mui/material';
+import { Event, Notifications, ExitToApp } from '@mui/icons-material';
 import { GlobalStateContext } from '../../../../../GlobalStateContext';
 import './Navbar.css';
 

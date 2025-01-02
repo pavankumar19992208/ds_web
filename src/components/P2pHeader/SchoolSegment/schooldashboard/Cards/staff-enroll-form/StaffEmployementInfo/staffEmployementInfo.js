@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import Grid from '@material-ui/core/Grid';
-import TextField from '@material-ui/core/TextField';
-import MenuItem from '@material-ui/core/MenuItem';
-import { makeStyles } from '@material-ui/core/styles';
+import Grid from '@mui/material/Grid';
+import TextField from '@mui/material/TextField';
+import MenuItem from '@mui/material/MenuItem';
+import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles((theme) => ({
   formContainer: {},
