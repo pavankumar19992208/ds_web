@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
 export default function StaffPersonalInfo({ formData, setFormData }) {
   const [errors, setErrors] = useState({});
   const classes = useStyles();
-
+  const validateNumbers = (value) => /^[0-9]{0,10}$/.test(value);
   const validateField = (name, value) => {
     let error = '';
     if (['fullName', 'city', 'district', 'state', 'customGender'].includes(name)) {
@@ -62,10 +62,20 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
   const handleInputChange = (e, fieldType, addressType = null) => {
     const { name, value } = e.target;
     let error = validateField(name, value);
-
+    let isValid = true;
+    let errorMessage = '';
     // Show error if the field is empty
     if (!value) {
       error = 'This field is required';
+    }
+
+    if (name === 'contactNumber') {
+      isValid = validateNumbers(value) || value === '';
+      if (value.length > 10) {
+        isValid = false;
+        errorMessage = 'Phone number must be 10 digits';
+      }
+      error = !isValid ? errorMessage : error;
     }
 
     setErrors((prev) => ({
@@ -81,7 +91,8 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
           [name]: value,
         },
       }));
-    } else if (fieldType === 'address' && addressType) {
+    } 
+    else if (fieldType === 'address' && addressType) {
       setFormData((prev) => ({
         ...prev,
         personalInfo: {

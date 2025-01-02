@@ -1,6 +1,5 @@
 
 .dashboardStyle {
-  /* background-color: #FBF6E9; */
   background: linear-gradient(to right, #ffffff, #edf3f7) !important; /* Gradient from light pink to a lighter shade */
   margin: 0;
   font-family: Arial, sans-serif;
@@ -10,19 +9,7 @@
 
 .boxes{
   box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.1); /* Add box shadow to the right side */
-
 }
-
-/* .GridItem {
-  background-color: #f8ebb7;
-  height: 80%;
-}
-
-.GridItem2x2 {
-  background-color: #f8ebb7;
-  height: 80%;
-} */
-
 
 .custom-slider .slick-dots {
   top: auto;
