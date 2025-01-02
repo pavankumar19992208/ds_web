@@ -629,37 +629,7 @@ export default function StaffPrimaryForm() {
       console.log("Form data sent to backend successfully:", data);
       setPassword(data.password);
       setUserId(data.userid);
-
-      // Prepare the allocation payload
-      const allocationPayload = {
-        subject: formData.professionalInfo.subjectSpecialization,
-        subject_id: data.subject_id, // Assuming the backend returns a subject_id
-        class_teachers: {}
-      };
-      
-      // Populate class_teachers dynamically
-      for (let i = 1; i <= 12; i++) {
-        allocationPayload.class_teachers[`class_${i}`] = formData.professionalInfo.grades.find(grade => grade.value === i)?.subjects || [];
-      }
-      
-      console.log('Payload to be sent:', allocationPayload);
-
-    // Send the allocation payload to the backend
-    const allocationResponse = await fetch(`${BaseUrl}/allocate`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(allocationPayload),
-    });
-
-    if (!allocationResponse.ok) {
-      throw new Error("Teacher allocation submission failed");
-    }
-
-    const allocationData = await allocationResponse.json();
-    console.log("Teacher allocation data sent to backend successfully:", allocationData);
-
+            
       // Open success dialog
       setSuccessDialogOpen(true);
     } catch (error) {
