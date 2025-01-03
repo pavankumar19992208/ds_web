@@ -43,7 +43,7 @@ const Navbar = ({ schoolName, schoolLogo, establishmentYear, establishmentID, em
           </Button>
         </div>
         <div className="navbar-right">
-          <Button className='new-aca-year-btn' style={{ marginLeft: '10px' }} onClick={onStartNewAcademicYear}>
+          <Button className='new-aca-year-btn'  onClick={onStartNewAcademicYear}>
             Start New Academic Year
           </Button>
           <IconButton id="icon" onClick={handleMenuOpen}>
