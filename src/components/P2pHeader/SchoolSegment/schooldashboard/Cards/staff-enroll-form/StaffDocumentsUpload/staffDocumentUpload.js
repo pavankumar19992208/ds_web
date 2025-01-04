@@ -11,18 +11,18 @@ import './staffDocumentUpload.css';
 
 const useStyles = makeStyles((theme) => ({
   typography: {
-    marginTop: theme.spacing(2),
-    marginBottom: theme.spacing(1),
+    marginTop: 16,
+    marginBottom: 8,
     color: '#3f51b5',
   },
   textField: {
-    marginLeft: theme.spacing(2),
+    marginLeft: 16,
     width: '92%',
   },
   alert: {
     position: 'fixed',
-    top: theme.spacing(8),
-    right: theme.spacing(0),
+    top: 64,
+    right: 0,
     zIndex: 1000,
 
   },

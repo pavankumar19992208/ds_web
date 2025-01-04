@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
     margin: '32px auto',
   },
   field: {
-    marginLeft: theme.spacing(2),
+    marginLeft: 16,
     width: '92%',
   },
 }));

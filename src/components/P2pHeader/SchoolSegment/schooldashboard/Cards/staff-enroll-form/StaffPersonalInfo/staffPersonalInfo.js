@@ -13,8 +13,8 @@ import './staffPersonalInfo.css';
 
 const useStyles = makeStyles((theme) => ({
   fieldMargin: {
-    marginLeft: theme.spacing(2), // Add left margin to all fields
-    marginRight: theme.spacing(2), // Add right margin to all fields
+    marginLeft: 16, // Add left margin to all fields
+    marginRight: 16, // Add right margin to all fields
     width: '92%', // Set the width of all fields to 92%
   },
 }));

@@ -31,14 +31,14 @@ const useStyles = makeStyles((theme) => ({
     margin: '16px auto',
   },
   field: {
-    marginLeft: theme.spacing(2),
+    marginLeft: 16,
     width: '92%',
   },
   gradeSpecialization: {
     marginBottom: '10px',
   },
   gradeField: {
-    marginLeft: theme.spacing(3.5),
+    marginLeft: 28,
     width: '90%', // Decrease the width
   },
   menuItem: {
@@ -53,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
   chipBox: {
     display: 'flex',
     flexWrap: 'wrap',
-    gap: theme.spacing(1), // Increase the gap between chips
+    gap: 8, // Increase the gap between chips
   },
   addIconContainer: {
     display: 'flex',

@@ -36,6 +36,7 @@ import { styled } from '@mui/material/styles';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@mui/styles';
 import HashLoader from 'react-spinners/HashLoader';
+import { useTheme } from '@mui/material/styles';
 import './staffPrimaryForm.css';
 
 const QontoConnector = styled(StepConnector)(({ theme }) => ({
@@ -211,8 +212,7 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.primary.main,
     fontSize: '1.5rem',
     textAlign: 'center',
-    marginTop: theme.spacing(3),
-    marginBottom: theme.spacing(3),
+    margin: '24px 0 24px ',
     fontFamily: '"Urbanist", sans-serif',
     fontOpticalSizing: 'auto',
     fontWeight: 500 ,
@@ -268,6 +268,7 @@ function getStepContent(step, formData, setFormData, schoolInfo, expandedDoc, se
 
 export default function StaffPrimaryForm() {
   const classes = useStyles();
+  const theme = useTheme();
   const [activeStep, setActiveStep] = useState(0);
   const { globalData } = useContext(GlobalStateContext);
   const schoolInfo = globalData.schoolInfo || {};
