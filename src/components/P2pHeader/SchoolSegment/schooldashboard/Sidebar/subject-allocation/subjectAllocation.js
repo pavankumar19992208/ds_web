@@ -49,6 +49,7 @@ const SubjectAllocation = () => {
   const [teachers, setTeachers] = useState([]);
   const [selectedTeacher, setSelectedTeacher] = useState({});
   const [allottedTeachers, setAllottedTeachers] = useState({});
+  const [allottedTeacherIds, setAllottedTeacherIds] = useState({});
   const [tabValue, setTabValue] = useState(0);
   const [grades, setGrades] = useState([]);
   const [subjects, setSubjects] = useState([]);
@@ -61,37 +62,15 @@ const SubjectAllocation = () => {
 
   const handleSubjectChange = (event) => {
     const subject = event.target.value;
-    console.log(`Selected subject: ${subject}`); // Add this line to log the selected subject
+    console.log(`Selected subject: ${subject}`);
     setSelectedSubject(subject);
     fetchTeachers(selectedClass, subject);
-};
+  };
 
   const handleClassChange = (event) => {
     const grade = event.target.value;
     setSelectedClass(grade);
     fetchTeachers(grade, selectedSubject);
-  };
-
-  const handleTeacherChange = (event, grade, subject) => {
-    const teacherName = event.target.value;
-    if (Object.keys(allottedTeachers).length >= 6 && !allottedTeachers[grade]) {
-      alert('You can only allot teachers to 6 classes at a time');
-      return;
-    }
-    setSelectedTeacher((prev) => ({
-      ...prev,
-      [grade]: {
-        ...prev[grade],
-        [subject]: teacherName,
-      },
-    }));
-    setAllottedTeachers((prev) => ({
-      ...prev,
-      [grade]: {
-        ...prev[grade],
-        [subject]: teacherName,
-      },
-    }));
   };
 
   const handleDeleteSubjectTeacher = (grade, subject) => {
@@ -104,10 +83,23 @@ const SubjectAllocation = () => {
       }
       return { ...prev, [grade]: updatedGrade };
     });
+    setAllottedTeacherIds((prev) => {
+      const updatedGrade = { ...prev[grade] };
+      delete updatedGrade[subject];
+      if (Object.keys(updatedGrade).length === 0) {
+        const { [grade]: _, ...rest } = prev;
+        return rest;
+      }
+      return { ...prev, [grade]: updatedGrade };
+    });
   };
 
   const handleCloseCard = (grade) => {
     setAllottedTeachers((prev) => {
+      const { [grade]: _, ...rest } = prev;
+      return rest;
+    });
+    setAllottedTeacherIds((prev) => {
       const { [grade]: _, ...rest } = prev;
       return rest;
     });
@@ -197,6 +189,59 @@ const SubjectAllocation = () => {
     fetchSubjects();
   }, [globalData.data.SCHOOL_ID]);
 
+  const submitAllottedTeachers = async () => {
+    try {
+      const response = await fetch(`${BaseUrl}/allottedteachers`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ SchoolId: globalData.data.SCHOOL_ID, AllottedTeachers: allottedTeacherIds }),
+      });
+  
+      if (!response.ok) {
+        const text = await response.text();
+        console.error('Error submitting allotted teachers:', text);
+        throw new Error('Failed to submit allotted teachers');
+      }
+  
+      const data = await response.json();
+      console.log('Submitted allotted teachers:', data);
+    } catch (error) {
+      console.error('Error submitting allotted teachers:', error);
+    }
+  };
+
+  const handleTeacherChange = (event, grade, subject) => {
+    const teacherId = event.target.value;
+    const teacherName = teachers.find(teacher => teacher.userId === teacherId)?.name || '';
+    if (Object.keys(allottedTeachers).length >= 6 && !allottedTeachers[grade]) {
+      alert('You can only allot teachers to 6 classes at a time');
+      return;
+    }
+    setSelectedTeacher((prev) => ({
+      ...prev,
+      [grade]: {
+        ...prev[grade],
+        [subject]: teacherId,
+      },
+    }));
+    setAllottedTeachers((prev) => ({
+      ...prev,
+      [grade]: {
+        ...prev[grade],
+        [subject]: teacherName,
+      },
+    }));
+    setAllottedTeacherIds((prev) => ({
+      ...prev,
+      [grade]: {
+        ...prev[grade],
+        [subject]: teacherId,
+      },
+    }));
+  };
+
   return (
     <div className="subject-allocation-container">
       <Navbar schoolName={globalData.data.SCHOOL_NAME} schoolLogo={globalData.data.SCHOOL_LOGO} />
@@ -219,7 +264,7 @@ const SubjectAllocation = () => {
             <Select className="custom-select" value={selectedTeacher?.[selectedSubject] || ''} onChange={(e) => handleTeacherChange(e, selectedClass, selectedSubject)} displayEmpty>
               <MenuItem value="">Select Teacher</MenuItem>
               {teachers.map((teacher, index) => (
-                <MenuItem key={index} value={teacher}>{teacher}</MenuItem>
+                <MenuItem key={index} value={teacher.userId}>{teacher.name}</MenuItem>
               ))}
             </Select>
           </div>
@@ -266,7 +311,7 @@ const SubjectAllocation = () => {
             ))}
           </Box>
           <Box position="absolute" bottom={16} left={16}>
-            <Button className="custom-submit-button">
+            <Button className="custom-submit-button" onClick={submitAllottedTeachers}>
               Submit
             </Button>
           </Box>
