@@ -36,6 +36,7 @@ import PropTypes from 'prop-types';
 import { styled } from '@mui/material/styles';
 import BaseUrl from '../../../../../../../config';
 import HashLoader from 'react-spinners/HashLoader';
+import { validateAlphabets, validateNumbers } from '../PersonalInfo/personalInfo';
 
 const validateEmail = (value) => /^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(value);
 
@@ -269,8 +270,8 @@ function getStepContent(step, formData, setFormData, handleDocumentClick, expand
 
 export default function EnrollForm() {
   const classes = useStyles();
-  const [activeStep, setActiveStep] = useState(0);
   const { globalData } = useContext(GlobalStateContext);
+  const [activeStep, setActiveStep] = useState(0);
   const [formData, setFormData] = useState({
     personalInfo: {
       StudentName: '',
@@ -284,7 +285,6 @@ export default function EnrollForm() {
       Category: '',
       Nationality: '',
       AadharNumber: '',
-      // Password: '',
     },
     guardianInfo: {
       MotherName: '',
@@ -313,7 +313,6 @@ export default function EnrollForm() {
     },
     academicInfo: {},
     documents: [],
-    
   });
   const [open, setOpen] = useState(false);
   const [selectedDoc, setSelectedDoc] = useState(null);
@@ -335,7 +334,7 @@ export default function EnrollForm() {
         permanentAddress.line1 && permanentAddress.city && permanentAddress.district && permanentAddress.state && permanentAddress.pincode &&
         validateEmail(Email);
     } else if (activeStep === 2) {
-      const {  BloodGroup } = formData.academicInfo;
+      const { BloodGroup } = formData.academicInfo;
       return BloodGroup;
     }
     return true;
@@ -419,12 +418,52 @@ export default function EnrollForm() {
     return errors;
   };
 
+  const validatePersonalInfo = () => {
+    const errors = {};
+    const { StudentName, PreviousSchool, Religion, Category, Nationality, AadharNumber, DOB } = formData.personalInfo;
+  
+    if (!validateAlphabets(StudentName)) {
+      errors.StudentName = 'Invalid alphabetic input';
+    }
+    if (!validateAlphabets(PreviousSchool)) {
+      errors.PreviousSchool = 'Invalid alphabetic input';
+    }
+    if (!validateAlphabets(Religion)) {
+      errors.Religion = 'Invalid alphabetic input';
+    }
+    if (!validateAlphabets(Category)) {
+      errors.Category = 'Invalid alphabetic input';
+    }
+    if (!validateAlphabets(Nationality)) {
+      errors.Nationality = 'Invalid alphabetic input';
+    }
+    if (!validateNumbers(AadharNumber)) {
+      errors.AadharNumber = 'Invalid numeric input';
+    }
+  
+    const currentDate = new Date().toISOString().split('T')[0];
+    if (DOB > currentDate) {
+      errors.DOB = 'Date of Birth cannot be in the future';
+    }
+  
+    return errors;
+  };
+
   const handleNext = () => {
     const errors = validateForm();
     if (Object.keys(errors).length > 0) {
       alert('Please fill all required fields.');
       return;
     }
+  
+    if (activeStep === 0) {
+      const personalInfoErrors = validatePersonalInfo();
+      if (Object.keys(personalInfoErrors).length > 0) {
+        alert('Please correct the errors in the personal information.');
+        return;
+      }
+    }
+  
     setActiveStep(activeStep + 1);
   };
 
