@@ -420,13 +420,10 @@ export default function EnrollForm() {
 
   const validatePersonalInfo = () => {
     const errors = {};
-    const { StudentName, PreviousSchool, Religion, Category, Nationality, AadharNumber, DOB } = formData.personalInfo;
+    const { StudentName, Religion, Category, Nationality, AadharNumber, DOB } = formData.personalInfo;
   
     if (!validateAlphabets(StudentName)) {
       errors.StudentName = 'Invalid alphabetic input';
-    }
-    if (!validateAlphabets(PreviousSchool)) {
-      errors.PreviousSchool = 'Invalid alphabetic input';
     }
     if (!validateAlphabets(Religion)) {
       errors.Religion = 'Invalid alphabetic input';
