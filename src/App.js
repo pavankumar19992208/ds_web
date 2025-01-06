@@ -21,13 +21,7 @@ import EcommerceDashboard from './components/Ecommerce/EcommerceDashboard/ecomme
 import EcomDash from './components/Ecommerce/EcommerceDashboard/ecomDash';
 import ProductsList from './components/Ecommerce/ProductsList/productsList';
 import ProductOverview from './components/Ecommerce/ProductOverview/productOverview';
-<<<<<<< HEAD:my-app/src/App.js
-import LeaveApproval from './components/P2pHeader/SchoolSegment/schooldashboard/Sidebar/leave-approval/leave-approval';
-import InventoryManagement from './components/P2pHeader/SchoolSegment/schooldashboard/Sidebar/inventory-management/inventory-management';
-// import BookList from './components/Ecommerce/ProductsList/Books/books';
-=======
 import CartPage from './components/Ecommerce/Cart/cartPage';
->>>>>>> 9a564e5a05c1f94e594148acb4b77ce7cef2167d:src/App.js
 
 function App() {
   return (
@@ -54,14 +48,7 @@ function App() {
           <Route path="/ecom-dash" element={<EcomDash/>}/>
           <Route path="/products" element={<ProductsList/>}/>
           <Route path="/product-overview/:productId" element={<ProductOverview />} />
-<<<<<<< HEAD:my-app/src/App.js
-          <Route path= "/leave-approval" element={<LeaveApproval/>} />
-          <Route path= "/inventory-management" element={<InventoryManagement/>} />
-          {/* <Route path="/books-list" element={<BookList/>}/> */}
-        </Routes>
-=======
           <Route path="/cart" element={<CartPage />} />        </Routes>
->>>>>>> 9a564e5a05c1f94e594148acb4b77ce7cef2167d:src/App.js
       </Router>
     </GlobalStateProvider>
   );
