@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AppBar, Toolbar, IconButton, Menu, MenuItem, Avatar, Typography, Drawer, Box, Button } from '@material-ui/core';
-import { Event, Notifications, ExitToApp } from '@material-ui/icons';
+import { AppBar, Toolbar, IconButton, Menu, MenuItem, Avatar, Typography, Drawer, Box, Button } from '@mui/material';
+import { Event, Notifications, ExitToApp } from '@mui/icons-material';
 import { GlobalStateContext } from '../../../../../GlobalStateContext';
 import './Navbar.css';
 
@@ -43,7 +43,7 @@ const Navbar = ({ schoolName, schoolLogo, establishmentYear, establishmentID, em
           </Button>
         </div>
         <div className="navbar-right">
-          <Button className='new-aca-year-btn' style={{ marginLeft: '10px' }} onClick={onStartNewAcademicYear}>
+          <Button className='new-aca-year-btn'  onClick={onStartNewAcademicYear}>
             Start New Academic Year
           </Button>
           <IconButton id="icon" onClick={handleMenuOpen}>

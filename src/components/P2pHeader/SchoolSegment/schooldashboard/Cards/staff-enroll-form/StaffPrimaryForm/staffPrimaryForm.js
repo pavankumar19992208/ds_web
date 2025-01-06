@@ -1,8 +1,8 @@
 import React, { useState, useContext } from "react";
-import Grid from '@material-ui/core/Grid';
-import Paper from "@material-ui/core/Paper";
-import Button from "@material-ui/core/Button";
-import Typography from "@material-ui/core/Typography";
+import Grid from '@mui/material/Grid';
+import Paper from "@mui/material/Paper";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
 import StaffPersonalInfo from "../StaffPersonalInfo/staffPersonalInfo";
 import ProfessionalDetailsForm from "../StaffProfessionalInfo/staffProfessionalInfo";
 import EmploymentDetailsForm from "../StaffEmployementInfo/staffEmployementInfo";
@@ -20,11 +20,11 @@ import StepLabel from '@mui/material/StepLabel';
 import Check from '@mui/icons-material/Check';
 import { PiBagSimpleFill } from "react-icons/pi";
 import ReviewForm from '../StaffReviewForm/staffReviewForm';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Dialog from '@mui/material/Dialog';
 import { BsPersonWorkspace } from "react-icons/bs";
 import { IoCall } from "react-icons/io5";
 import { RiFolderUploadFill } from "react-icons/ri";
@@ -34,8 +34,9 @@ import { MdRateReview } from "react-icons/md";
 import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector';
 import { styled } from '@mui/material/styles';
 import PropTypes from 'prop-types';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import HashLoader from 'react-spinners/HashLoader';
+import { useTheme } from '@mui/material/styles';
 import './staffPrimaryForm.css';
 
 const QontoConnector = styled(StepConnector)(({ theme }) => ({
@@ -211,8 +212,7 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.primary.main,
     fontSize: '1.5rem',
     textAlign: 'center',
-    marginTop: theme.spacing(3),
-    marginBottom: theme.spacing(3),
+    margin: '24px 0 24px ',
     fontFamily: '"Urbanist", sans-serif',
     fontOpticalSizing: 'auto',
     fontWeight: 500 ,
@@ -268,6 +268,7 @@ function getStepContent(step, formData, setFormData, schoolInfo, expandedDoc, se
 
 export default function StaffPrimaryForm() {
   const classes = useStyles();
+  const theme = useTheme();
   const [activeStep, setActiveStep] = useState(0);
   const { globalData } = useContext(GlobalStateContext);
   const schoolInfo = globalData.schoolInfo || {};
@@ -629,7 +630,11 @@ export default function StaffPrimaryForm() {
       console.log("Form data sent to backend successfully:", data);
       setPassword(data.password);
       setUserId(data.userid);
+<<<<<<< HEAD
 
+=======
+            
+>>>>>>> 15347b982f6bc1a83c72eb65626d815039861ca1
       // Open success dialog
       setSuccessDialogOpen(true);
     } catch (error) {

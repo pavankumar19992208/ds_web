@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/TextField';
-import MenuItem from '@material-ui/core/MenuItem';
-import Checkbox from '@material-ui/core/Checkbox';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import { makeStyles } from '@material-ui/core/styles';
+import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
+import TextField from '@mui/material/TextField';
+import MenuItem from '@mui/material/MenuItem';
+import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import { makeStyles } from '@mui/styles';
 import { storage } from '../../../../../../connections/firebase'; // Adjust the import path as necessary
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
@@ -13,8 +13,8 @@ import './staffPersonalInfo.css';
 
 const useStyles = makeStyles((theme) => ({
   fieldMargin: {
-    marginLeft: theme.spacing(2), // Add left margin to all fields
-    marginRight: theme.spacing(2), // Add right margin to all fields
+    marginLeft: 16, // Add left margin to all fields
+    marginRight: 16, // Add right margin to all fields
     width: '92%', // Set the width of all fields to 92%
   },
 }));

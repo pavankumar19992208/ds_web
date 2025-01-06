@@ -1,24 +1,24 @@
 import React, { useState, useContext } from 'react';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/TextField';
-import Paper from '@material-ui/core/Paper';
-import IconButton from '@material-ui/core/IconButton';
-import DeleteIcon from '@material-ui/icons/Delete';
-import AddIcon from '@material-ui/icons/Add';
-import Button from '@material-ui/core/Button';
-import { makeStyles } from '@material-ui/core/styles';
+import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
+import TextField from '@mui/material/TextField';
+import Paper from '@mui/material/Paper';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
+import AddIcon from '@mui/icons-material/Add';
+import Button from '@mui/material/Button';
+import { makeStyles } from '@mui/styles';
 import Navbar from '../../Navbar/Navbar';
 import Sidebar from '../../Sidebar/Sidebar';
 import { GlobalStateContext } from '../../../../../../GlobalStateContext';
 import './schoolInternalData.css';
 import BaseUrl from '../../../../../../config';
-import MenuItem from '@material-ui/core/MenuItem';
-import Dialog from '@material-ui/core/Dialog';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogActions from '@material-ui/core/DialogActions';
+import MenuItem from '@mui/material/MenuItem';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogActions from '@mui/material/DialogActions';
 import HashLoader from 'react-spinners/HashLoader';
 
 const useStyles = makeStyles((theme) => ({
@@ -34,70 +34,67 @@ const useStyles = makeStyles((theme) => ({
   buttons: {
     display: 'flex',
     justifyContent: 'flex-end',
-    marginTop: theme.spacing(3),
+    margin: '24px auto',
   },
   button: {
-    marginTop: theme.spacing(3),
-    marginLeft: theme.spacing(1),
+    margin: '24px 0 0 8px',
   },
   schoolProfileTitle: {
-    marginBottom: theme.spacing(-3),
+    margin: '0 0 -24px',
     color: '#3f51b5',
     fontSize: '1rem',    
   },
   gradeLevelsTitle: {
-    marginTop: theme.spacing(2),
-    marginBottom: theme.spacing(-3),
+    margin: '16px 0 -24px',
     color: '#3f51b5',
     fontSize: '1rem',
   },
   totalSectionsTitle: {
-    marginTop: theme.spacing(2),
-    marginBottom: theme.spacing(-3),
+    margin: '16px 0 -24px',
     color: '#3f51b5',
     fontSize: '1rem',
   },
   academicYearTitle: {
-    marginTop: theme.spacing(2),
+    marginTop: 16,
     color: '#3f51b5',
     fontSize: '1rem',
   },
   schoolTimingTitle: {
-    marginTop: theme.spacing(2),
+    marginTop: 16,
     color: '#3f51b5',
     fontSize: '1rem',
   },
   extraCircularProgramsTitle: {
-    marginTop: theme.spacing(2),
+    marginTop: 16,
     color: '#3f51b5',
     fontSize: '1rem',
   },
   feeStructureTitle: {
-    marginTop: theme.spacing(2),
+    marginTop: 16,
     color: '#3f51b5',
     fontSize: '1rem',
   },
   staffRolesTitle: {
-    marginTop: theme.spacing(2),
-    marginBottom: theme.spacing(-3),
+    marginTop: 16,
+    marginBottom: -24,
     color: '#3f51b5',
     fontSize: '1rem',
   },
   staffRolesHeading: {
-    marginTop: theme.spacing(2),
+    marginTop: 16,
     color: '#3f51b5',
     fontSize: '0.9rem',
   },
   totalAmount: {
-    marginTop: theme.spacing(2),
+    marginTop: 16,
     fontWeight: 'bold',
   },
   field: {
-    marginLeft: theme.spacing(2),
+    marginLeft: 16,
     width: '92%',
   },
   feeTypeTitle: {
-    marginLeft: theme.spacing(0.5),
+    marginLeft: 4,
     width: '90%',
   },
 }));

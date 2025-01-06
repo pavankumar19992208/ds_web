@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/TextField';
-import MenuItem from '@material-ui/core/MenuItem';
+import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
+import TextField from '@mui/material/TextField';
+import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import InputLabel from '@mui/material/InputLabel';
 import ListItemText from '@mui/material/ListItemText';
 import FormControl from '@mui/material/FormControl';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import { storage } from '../../../../../../../components/connections/firebase';
 import { ref, uploadString, getDownloadURL } from 'firebase/storage';
 import './personalInfo.css';
@@ -46,8 +46,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const validateAlphabets = (value) => /^[A-Za-z\s]+$/.test(value);
-const validateNumbers = (value) => /^[0-9]{0,12}$/.test(value);
+export const validateAlphabets = (value) => /^[A-Za-z\s]+$/.test(value);
+export const validateNumbers = (value) => /^[0-9]{0,12}$/.test(value);
 
 export default function DetailsForm({ formData, setFormData }) {
   const classes = useStyles();
@@ -62,11 +62,11 @@ export default function DetailsForm({ formData, setFormData }) {
     setFileName(formData.personalInfo.PhotoName || '');
   }, [formData.personalInfo.PhotoName]);
 
-    const handleChange = (event) => {
+  const handleChange = (event) => {
     const { name, value } = event.target;
     let isValid = true;
     let errorMessage = '';
-  
+
     if (['StudentName', 'PreviousSchool', 'Religion', 'Category', 'Nationality'].includes(name)) {
       isValid = validateAlphabets(value) || value === '';
       errorMessage = 'Invalid alphabetic input';
@@ -78,14 +78,20 @@ export default function DetailsForm({ formData, setFormData }) {
         isValid = false;
         errorMessage = 'Aadhar number must be 12 digits';
       }
+    } else if (name === 'DOB') {
+      const currentDate = new Date().toISOString().split('T')[0];
+      if (value > currentDate) {
+        isValid = false;
+        errorMessage = 'Date of Birth cannot be in the future';
+      }
     }
 
-      // Check if the field is required and empty
-  if (['StudentName', 'DOB', 'Gender', 'Grade', 'AadharNumber'].includes(name) && value === '') {
-    isValid = false;
-    errorMessage = 'This field is required';
-  }
-  
+    // Check if the field is required and empty
+    if (['StudentName', 'DOB', 'Gender', 'Grade', 'AadharNumber'].includes(name) && value === '') {
+      isValid = false;
+      errorMessage = 'This field is required';
+    }
+
     setFormData((prevData) => ({
       ...prevData,
       personalInfo: {
@@ -93,7 +99,7 @@ export default function DetailsForm({ formData, setFormData }) {
         [name]: value,
       },
     }));
-  
+
     if (isValid) {
       setErrors((prevErrors) => ({
         ...prevErrors,
@@ -105,24 +111,16 @@ export default function DetailsForm({ formData, setFormData }) {
         [name]: errorMessage,
       }));
     }
-  
-    // Clear errors for all other fields
-    Object.keys(errors).forEach((key) => {
-      if (key !== name) {
-        setErrors((prevErrors) => ({
-          ...prevErrors,
-          [key]: '',
-        }));
-      }
-    });
   };
 
   const handleBlur = (event) => {
     const { name } = event.target;
-    setErrors((prevErrors) => ({
-      ...prevErrors,
-      [name]: '',
-    }));
+    if (errors[name]) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [name]: '',
+      }));
+    }
   };
 
   const handleFileChange = async (event) => {
@@ -210,7 +208,7 @@ export default function DetailsForm({ formData, setFormData }) {
     }));
   };
 
-   const handleOtherGenderChange = (event) => {
+  const handleOtherGenderChange = (event) => {
     const { value } = event.target;
     if (validateAlphabets(value) || value === '') {
       setOtherGender(value);
@@ -218,7 +216,7 @@ export default function DetailsForm({ formData, setFormData }) {
         ...prevErrors,
         otherGender: '',
       }));
-  
+
       setFormData((prevData) => ({
         ...prevData,
         personalInfo: {
@@ -301,7 +299,7 @@ export default function DetailsForm({ formData, setFormData }) {
             <MenuItem value="female">Female</MenuItem>
             <MenuItem value="other">Other</MenuItem>
           </TextField>
-                    {formData.personalInfo.Gender === 'other' && (
+          {formData.personalInfo.Gender === 'other' && (
             <TextField
               id="otherGender"
               name="otherGender"
@@ -380,30 +378,26 @@ export default function DetailsForm({ formData, setFormData }) {
           </Typography>
         </Grid>
         <Grid item xs={12} sm={6}>
-          <FormControl fullWidth variant="standard" className={`${classes.field} urbanist-font`}>
-            <InputLabel className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`} id="languagesKnown-label">Languages Known</InputLabel>
-            <Select
-              labelId="languagesKnown-label"
-              id="languagesKnown"
-              multiple
-              value={selectedLanguages}
-              onChange={handleLanguageChange}
-              className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
-              renderValue={(selected) => selected.join(', ')}
-            >
-              {languages.map((language) => (
-                <MenuItem
-                  key={language}
-                  value={language}
-                  style={{
-                    backgroundColor: selectedLanguages.includes(language) ? '#0E5E9D60' : 'transparent',
-                  }}
-                >
-                  <ListItemText primary={language} />
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+          <TextField
+            id="languagesKnown"
+            name="languagesKnown"
+            label="Languages Known"
+            select
+            fullWidth
+            value={selectedLanguages}
+            onChange={handleLanguageChange}
+            className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
+            SelectProps={{
+              multiple: true,
+              renderValue: (selected) => selected.join(', '),
+            }}
+          >
+            {languages.map((language) => (
+              <MenuItem key={language} value={language}>
+                <ListItemText primary={language} />
+              </MenuItem>
+            ))}
+          </TextField>
           {selectedLanguages.includes('Other') && (
             <TextField
               id="otherLanguage"
@@ -411,8 +405,6 @@ export default function DetailsForm({ formData, setFormData }) {
               name="otherLanguage"
               value={otherLanguage}
               onChange={handleOtherLanguageChange}
-              // onKeyDown={handleKeyDown}
-              // onBlur={handleOtherLanguageBlur}
               fullWidth
               className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
               error={!!errors.otherLanguage}

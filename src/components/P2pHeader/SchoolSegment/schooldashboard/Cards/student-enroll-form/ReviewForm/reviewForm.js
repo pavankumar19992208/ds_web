@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Typography, Grid, Table, TableBody, TableRow, TableCell, IconButton } from '@material-ui/core';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+import { Typography, Grid, Table, TableBody, TableRow, TableCell, IconButton } from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 
 const personalInfoKeys = ['StudentName', 'DOB', 'Gender', 'Photo', 'Grade', 'PreviousSchool', 'languagesKnown', 'Religion', 'Category', 'Nationality', 'AadharNumber'];
 const guardianInfoKeys = ['MotherName', 'FatherName', 'GuardianName', 'MobileNumber', 'Email', 'EmergencyContact', 'ParentOccupation', 'ParentQualification'];

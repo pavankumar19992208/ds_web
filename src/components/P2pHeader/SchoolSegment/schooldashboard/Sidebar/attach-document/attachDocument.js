@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Card, CardContent, Typography, Box } from '@material-ui/core';
+import { Card, CardContent, Typography, Box } from '@mui/material';
 import Navbar from '../../Navbar/Navbar';
 import Sidebar from '../../Sidebar/Sidebar';
 import AttachDocumentStudent from '../attach-document/attach-document-student/attachDocumentStudent'; // Import the form component

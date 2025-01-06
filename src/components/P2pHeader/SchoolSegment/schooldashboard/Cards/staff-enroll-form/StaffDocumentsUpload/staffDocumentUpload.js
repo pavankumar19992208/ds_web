@@ -1,28 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
-import TextField from '@material-ui/core/TextField';
+import Typography from '@mui/material/Typography';
+import Grid from '@mui/material/Grid';
+import TextField from '@mui/material/TextField';
 import Alert from '@mui/material/Alert';
 import Stack from '@mui/material/Stack';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import { storage } from '../../../../../../connections/firebase'; // Adjust the import path as necessary
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import './staffDocumentUpload.css';
 
 const useStyles = makeStyles((theme) => ({
   typography: {
-    marginTop: theme.spacing(2),
-    marginBottom: theme.spacing(1),
+    marginTop: 16,
+    marginBottom: 8,
     color: '#3f51b5',
   },
   textField: {
-    marginLeft: theme.spacing(2),
+    marginLeft: 16,
     width: '92%',
   },
   alert: {
     position: 'fixed',
-    top: theme.spacing(8),
-    right: theme.spacing(0),
+    top: 64,
+    right: 0,
     zIndex: 1000,
 
   },

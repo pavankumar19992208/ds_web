@@ -1,7 +1,7 @@
 import React from 'react';
-import { TextField, MenuItem, FormControl, InputLabel, Select, Button, IconButton } from '@material-ui/core';
-import AttachFileIcon from '@material-ui/icons/AttachFile';
-import CloseIcon from '@material-ui/icons/Close';
+import { TextField, MenuItem, FormControl, InputLabel, Select, Button, IconButton } from '@mui/material';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
+import CloseIcon from '@mui/icons-material/Close';
 import './attachDocumentStudent.css'; // Import the CSS file
 
 const AttachDocumentStudent = ({ onClose }) => {

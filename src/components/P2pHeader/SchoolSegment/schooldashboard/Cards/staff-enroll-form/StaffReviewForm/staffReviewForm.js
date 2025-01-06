@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Grid, Typography, Table, TableBody, TableCell, TableRow, IconButton } from '@material-ui/core';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+import { Grid, Typography, Table, TableBody, TableCell, TableRow, IconButton } from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 
 const personalInfoKeys = ['fullName', 'dob', 'gender', 'contactNumber', 'email'];
 const professionalInfoKeys = ['position', 'experience', 'qualification', 'certifications'];
