@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
@@ -27,15 +27,37 @@ const employmentTypes = [
   { value: 'Other', label: 'Other' },
 ];
 
+// Function to get today's date in yyyy-mm-dd format
+const getTodayDate = () => {
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+  const dd = String(today.getDate()).padStart(2, '0');
+  return `${yyyy}-${mm}-${dd}`;
+};
+
 const StaffEmploymentInfo = ({ formData, setFormData }) => {
   const classes = useStyles();
-  const [formValues, setFormValues] = useState(formData.employmentInfo || {
-    joiningDate: '',
+  const [formValues, setFormValues] = useState({
+    joiningDate: getTodayDate(),
     employmentType: '',
     otherEmploymentType: '',
     previousSchool: '',
+    ...formData.employmentInfo,
   });
   const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    if (!formData.employmentInfo || !formData.employmentInfo.joiningDate) {
+      setFormData((prevData) => ({
+        ...prevData,
+        employmentInfo: {
+          ...prevData.employmentInfo,
+          joiningDate: getTodayDate(),
+        },
+      }));
+    }
+  }, [formData, setFormData]);
 
   const validateField = (name, value) => {
     let error = '';
@@ -50,17 +72,17 @@ const StaffEmploymentInfo = ({ formData, setFormData }) => {
   const handleChange = (event) => {
     const { name, value } = event.target;
     let error = validateField(name, value);
-  
+
     // Show error if the field is empty
     if (!value) {
       error = 'This field is required';
     }
-  
+
     setErrors((prev) => ({
       ...prev,
       [name]: error,
     }));
-  
+
     const updatedFormValues = { ...formValues, [name]: value };
     setFormValues(updatedFormValues);
     setFormData((prevData) => ({
