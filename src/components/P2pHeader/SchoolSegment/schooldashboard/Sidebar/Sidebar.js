@@ -29,6 +29,7 @@ const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true, sel
       '/career-guidance': 'careerGuidance',
       '/update-enrollment': 'updateEnrollment',
       '/subject-allocation': 'subjectAllocation',
+      '/leave-approval': 'leaveApproval',
       // Add other paths as needed
     };
     const currentItem = pathToItemMap[location.pathname];
@@ -56,10 +57,18 @@ const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true, sel
     navigate('/update-enrollment');
     setSelectedItem('updateEnrollment');
   };
-
+  const navigateToUpdateStaffPayroll = () => {
+    navigate('/update-staff-payroll');
+    setSelectedItem('UpdateStaffPayroll');
+  };
   const navigateToSubjectAllocation = () => {
     navigate('/subject-allocation');
     setSelectedItem('subjectAllocation');
+  };
+
+  const navigateToLeaveApproval = () => {
+    navigate('/leave-approval');
+    setSelectedItem('leaveApproval');
   };
 
   const isPrimaryFormOpen = location.pathname.includes('primaryForm');
@@ -110,7 +119,7 @@ const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true, sel
         )}
         {visibleItems.includes('leaveApprovals') && (
           <Tooltip title="Leave Approvals" placement="right">
-            <ListItem button className="list-item">
+            <ListItem button className="list-item" onClick={navigateToLeaveApproval}>
               <BsPersonFillCheck size={20} />
               {!isPrimaryFormOpen && showTitle && <ListItemText primary="Leave Approvals" className="list-item-text" />}
             </ListItem>
@@ -151,6 +160,14 @@ const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true, sel
         {visibleItems.includes('updateEnrollment') && (
           <Tooltip title="Update Enrollment" placement="right">
             <ListItem button className="list-item" onClick={navigateToUpdateEnrollment}>
+              <FaUserEdit size={20} />
+              {!isPrimaryFormOpen && showTitle && <ListItemText primary="Update Enrollment" className="list-item-text"/>}
+            </ListItem>
+          </Tooltip>
+        )}
+        {visibleItems.includes('updateStaffPayroll') && (
+          <Tooltip title="Add / Update Staff Payroll" placement="right">
+            <ListItem button className="list-item" onClick={navigateToUpdateStaffPayroll}>
               <FaUserEdit size={20} />
               {!isPrimaryFormOpen && showTitle && <ListItemText primary="Update Enrollment" className="list-item-text"/>}
             </ListItem>

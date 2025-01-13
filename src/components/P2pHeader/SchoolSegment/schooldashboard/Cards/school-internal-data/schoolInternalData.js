@@ -279,6 +279,16 @@ const SchoolInternalData = () => {
     return true;
   };
 
+  const generateClassList = (from, to) => {
+    const gradeLevels = [
+      'Nursery', 'LKG', 'UKG', 'Class 1', 'Class 2', 'Class 3', 'Class 4', 'Class 5',
+      'Class 6', 'Class 7', 'Class 8', 'Class 9', 'Class 10', 'Class 11', 'Class 12'
+    ];
+    const fromIndex = gradeLevels.indexOf(from);
+    const toIndex = gradeLevels.indexOf(to);
+    return gradeLevels.slice(fromIndex, toIndex + 1);
+  };
+
   const handleSubmit = async () => {
     if (!validateForm()) {
       return;
@@ -286,6 +296,7 @@ const SchoolInternalData = () => {
     setLoading(true); // Set loading to true when the form submission starts
 
     const totalAmount = calculateTotalAmount();
+    const gradesOffered = generateClassList(gradeLevel1, gradeLevel2);
     const payload = {
       SchoolId: globalData.data.SCHOOL_ID,
       State: state,
@@ -310,6 +321,7 @@ const SchoolInternalData = () => {
       TotalAmount: totalAmount,
       TeachingStaff: teachingStaff,
       NonTeachingStaff: nonTeachingStaff,
+      GradesOffered: gradesOffered
     };
 
     console.log('Payload to be sent:', payload);

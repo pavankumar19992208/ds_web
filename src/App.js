@@ -22,6 +22,8 @@ import EcomDash from './components/Ecommerce/EcommerceDashboard/ecomDash';
 import ProductsList from './components/Ecommerce/ProductsList/productsList';
 import ProductOverview from './components/Ecommerce/ProductOverview/productOverview';
 import CartPage from './components/Ecommerce/Cart/cartPage';
+import LeaveApproval from './components/P2pHeader/SchoolSegment/schooldashboard/Sidebar/leave-approval/leaveApproval';
+import PayrollForm from './components/P2pHeader/SchoolSegment/schooldashboard/Cards/staff-payroll/payRoll';
 
 function App() {
   return (
@@ -48,7 +50,10 @@ function App() {
           <Route path="/ecom-dash" element={<EcomDash/>}/>
           <Route path="/products" element={<ProductsList/>}/>
           <Route path="/product-overview/:productId" element={<ProductOverview />} />
-          <Route path="/cart" element={<CartPage />} />        </Routes>
+          <Route path="/cart" element={<CartPage />} />
+          <Route path= "/leave-approval" element={<LeaveApproval/>} />
+          <Route path="/update-staff-payroll" element={<PayrollForm />} />
+          </Routes>
       </Router>
     </GlobalStateProvider>
   );

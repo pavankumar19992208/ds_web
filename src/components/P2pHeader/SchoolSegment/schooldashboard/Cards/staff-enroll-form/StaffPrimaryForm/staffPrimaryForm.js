@@ -591,7 +591,7 @@ export default function StaffPrimaryForm() {
       permanentAddress: formData.personalInfo.permanentAddress,
       position: formData.professionalInfo.position.filter(pos => pos !== ''),
       subjectSpecialization: formData.professionalInfo.grades.reduce((acc, grade) => {
-        const gradeText = gradeMapping[grade.value] || `Class ${grade.value}`;
+        const gradeText = gradeMapping[grade.value] || grade.value ;
         acc[gradeText] = grade.subjects || [];
         return acc;
       }, {}),

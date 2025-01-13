@@ -9,10 +9,6 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import IconButton from '@mui/material/IconButton';
 import AddIcon from '@mui/icons-material/Add'; // Import AddIcon
-import SaveIcon from '@mui/icons-material/Save';
-import UpdateIcon from '@mui/icons-material/Update';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
 import GetAppIcon from '@mui/icons-material/GetApp';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -139,7 +135,7 @@ export default function StaffPayroll() {
   return (
     <React.Fragment>
       <Navbar schoolName={globalData.data.SCHOOL_NAME} schoolLogo={globalData.data.SCHOOL_LOGO} />
-      <Sidebar visibleItems={['home', 'updateEnrollment']} hideProfile={true} showTitle={false} />
+      <Sidebar visibleItems={['home', 'updateStaffPayroll']} hideProfile={true} showTitle={false} />
       <div style={{ display: 'flex', justifyContent: 'center', marginTop: '100px', height: '80vh' }}>
         <Paper style={{ width: '85%' }}>
           <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '10px' }}>

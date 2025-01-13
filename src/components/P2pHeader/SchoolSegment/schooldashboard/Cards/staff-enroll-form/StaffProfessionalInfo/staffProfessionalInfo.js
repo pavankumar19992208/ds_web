@@ -116,13 +116,13 @@ const StaffProfessionalInfo = ({ formData, setFormData }) => {
         const data = await response.json();
         console.log('Fetched school info:', data);
 
-        const Grades = [];
-        const gradeLevelFrom = parseInt(data.data.GradeLevelFrom.match(/\d+/)[0], 10);
-        const gradeLevelTo = parseInt(data.data.GradeLevelTo.match(/\d+/)[0], 10);
+        const Grades = data.data.GradesOffered.map((grade) => ({ value: grade, label: ` ${grade}` }));
+        // const gradeLevelFrom = parseInt(data.data.GradeLevelFrom.match(/\d+/)[0], 10);
+        // const gradeLevelTo = parseInt(data.data.GradeLevelTo.match(/\d+/)[0], 10);
 
-        for (let i = gradeLevelFrom; i <= gradeLevelTo; i++) {
-          Grades.push({ value: i, label: `Class ${i}` });
-        }
+        // for (let i = gradeLevelFrom; i <= gradeLevelTo; i++) {
+        //   Grades.push({ value: i, label: `Class ${i}` });
+        // }
 
         const Positions = [
           ...data.data.TeachingStaff.map((staff) => ({ value: staff, label: staff })),
