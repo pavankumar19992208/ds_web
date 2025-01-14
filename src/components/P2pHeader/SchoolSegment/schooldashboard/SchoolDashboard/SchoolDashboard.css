@@ -1,47 +1,53 @@
 .school-dashboard {
   overflow-x: hidden;
   overflow-y: hidden; 
-  /* background-image: url('./img.jpg'); */
-  /* height: 100vh; */
   display: flex; 
   background-size: cover;
   height: 100vh;
-  /* background-color: rgb(235, 235, 235); */
   background-color: #003353;
 } 
+
 .homepage {
   background: linear-gradient(to right, #ffffff, #edf3f7) !important;
   overflow: hidden;
   margin: 50px 0;
   border-top-left-radius: 15px;
   height: 93%;
-  transition: margin-left 0.3s ease-in-out; /* Add transition for smooth movement */
-  flex-grow: 1; /* Allow homepage to grow and fill the remaining space */
-  margin-left: 80px; /* Initial margin */
+  transition: margin-left 0.3s ease-in-out;
+  flex-grow: 1;
+  margin-left: 80px;
+  display: flex;
 }
 
-
-
-
 .main-content {
-    margin: 50px 0 20px 240px;
-    position: relative;
-    /* left: 20vh; */
   display: flex;
-  flex-wrap: wrap;
-  flex-direction: row;
-  align-items: flex-start;
-  justify-content: center;
-  /* padding: 20px; */
-  width: 95%;
+  width: 92%;
+  margin-left: 14%;
 }
 
 .cards-container {
-  width: 45%;
+  width: 50%;
+  margin: 30px 0 0 30px;
+}
+
+.carousel-events-container {
+  margin-top: 50px;
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+}
+
+.carousel-container {
+  background-color: #003353;
+  height: 45vh;
+  flex: 1;
+  margin-bottom: 20px;
+  width: 64%;
+  border-radius: 20px;
 }
 
 .events-container {
-  width: 45%;
+  flex: 1;
 }
 
 .school-id-box {
@@ -72,17 +78,15 @@
   z-index: 1003;
 }
 
- /* Large devices (laptops/desktops, 992px and up) */
- @media (min-width: 992px) and (max-width: 1199.98px) {
-  .main-content{
+@media (min-width: 992px) and (max-width: 1199.98px) {
+  .main-content {
     left: 20vh;
   }
-  .school-id-box{
+  .school-id-box {
     bottom: 14px;
     left: 14px;
     width: 180px;
     padding: 10px 12px;
     font-size: 14px;
   }
-  
 }

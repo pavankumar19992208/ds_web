@@ -5,8 +5,6 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import Tooltip from '@mui/material/Tooltip';
-import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
 import { MdTopic } from "react-icons/md";
 import { IoIosAlert } from "react-icons/io";
 import { CgAttachment } from "react-icons/cg";
@@ -49,10 +47,6 @@ const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true, sel
     }
   }, [location.pathname]);
 
-  const toggleCollapse = () => {
-    setIsCollapsed(!isCollapsed);
-  };
-
   const navigateToHomepage = () => {
     navigate('/school_dashboard');
     setSelectedItem('school_dashboard');
@@ -91,10 +85,12 @@ const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true, sel
   const isPrimaryFormOpen = location.pathname.includes('primaryForm');
 
   return (
-    <Box className={showTitle ? "sidebar" : "sidebar_d"} style={{ width: isCollapsed ? '60px' : '200px', justifyContent: 'center' }}>
-      <IconButton onClick={toggleCollapse} style={{ marginLeft: isCollapsed ? '0' : 'auto' }}>
-        <MenuIcon />
-      </IconButton>
+    <Box
+      className={showTitle ? "sidebar" : "sidebar_d"}
+      style={{ width: isCollapsed ? '40px' : '250px', justifyContent: 'center' }}
+      onMouseEnter={() => setIsCollapsed(false)}
+      onMouseLeave={() => setIsCollapsed(true)}
+    >
       <List component="nav">
         {visibleItems.includes('home') && (
           <Tooltip title="Home" placement="right">

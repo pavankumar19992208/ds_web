@@ -11,10 +11,6 @@ height: 35vh; /* Set a maximum height for the card */
   background-color: #fff;
 }
 
-#items{
-  margin-top: 50px;
-}
-
 .news-section {
   position: fixed;
   white-space: nowrap;
