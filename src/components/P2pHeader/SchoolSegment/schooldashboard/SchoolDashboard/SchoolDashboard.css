@@ -62,7 +62,7 @@
   color: #333;
   width: 200px;
   text-align: center;
-  z-index: 1000;
+  z-index: 1000 !important;
   font-family: 'Roboto Mono', monospace !important;
   font-optical-sizing: auto !important;
   font-weight: 400 !important;
