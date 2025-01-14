@@ -21,7 +21,8 @@ const AttachDocument = () => {
   const { globalData } = React.useContext(GlobalStateContext);
 
   return (
-    <div>
+    <div className="school-dashboard">
+      <div className='homepage'>
       <Navbar schoolName={globalData.data.SCHOOL_NAME} schoolLogo={globalData.data.SCHOOL_LOGO} />
       <Sidebar visibleItems={['home', 'attachDocument', 'subjectAllocation', 'attendanceTracking', 'leaveApprovals', 'academicPerformance', 'teacherAlert', 'eventPlanning', 'careerGuidance', 'inventoryManagement']} />
       <Box className={`attach-document-container ${showForm ? 'show-form' : ''}`}>
@@ -51,6 +52,7 @@ const AttachDocument = () => {
       {showForm && <AttachDocumentStudent onClose={handleCloseForm} />}
       <div className="school-id-box">
         School ID: {globalData.data.SCHOOL_ID}
+      </div>
       </div>
     </div>
   );

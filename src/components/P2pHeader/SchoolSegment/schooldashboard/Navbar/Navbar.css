@@ -1,5 +1,5 @@
 #navbar {
-  background-color: #fff;
+  background-color: #003353;
   /* background-color: #ffdbdc; */
   box-shadow: none;
   position: fixed;
@@ -8,7 +8,7 @@
   width: 100%;
   justify-content: center;
   height: 50px;
-  border: 1px solid hsla(220, 20%, 80%, 0.4);
+  /* border: 1px solid hsla(220, 20%, 80%, 0.4); */
 
 }
 
@@ -20,7 +20,7 @@
 .navbar-left Button{
   /* border: 1px solid #ccc; */
   padding: 8px 20px;
-  background-color: #fff;
+  /* background-color: #fff; */
   /* box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);  */
 }
 #avatar{
@@ -52,7 +52,7 @@
 
 #name{
     margin-left: 30px !important;
-    color: black;
+    color: rgb(255, 255, 255);
     font-family: "Ramabhadra", sans-serif;
     font-weight: 400;
     font-style: normal;
@@ -69,11 +69,12 @@
 }
 #icon{
   border: 1px solid hsla(220, 20%, 80%, 0.4);
+  background-color: #DFECEF;
 }
 #icon, #logout_icon {
-  color: #374441;
+  color: #003353;
   margin-left: 24px;
-  border-radius: 12px;
+  border-radius: 50px;
    width: 40px;
     height: 40px;
 
@@ -84,8 +85,8 @@
 }
 
 #logout_icon{
-    color: #374441;
-    background-color: #0E5E9D60;
+    color: #DFECEF;
+    background-color: #000000;
    
 }
 #logout_icon:hover{
@@ -93,18 +94,18 @@
     background-color: #374441;
 }
 .new-aca-year-btn{
-  background-color: #0E5E9D !important;
-  color: #fff !important;
+  background-color: #DFECEF !important;
+  color: #003353 !important;
   font-family: "Ramabhadra", sans-serif !important;
   font-weight: 300 !important;
   font-style: normal !important;
   padding: 8px 20px !important;
-  border-radius: 8px !important;
+  border-radius: 50px !important;
   box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.1) !important; /* Add box shadow to the right side */
 
 }
 .new-aca-year-btn:hover{
-  background-color: #0E5E9D60 !important;
+  background-color: #DFECEF60 !important;
   color: white !important;
   box-shadow: none;
 }

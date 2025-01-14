@@ -1,50 +1,58 @@
-body, html {
+.school-dashboard {
   overflow-x: hidden;
+  overflow-y: hidden; 
   /* background-image: url('./img.jpg'); */
   /* height: 100vh; */
-
+  display: flex; 
   background-size: cover;
+  height: 100vh;
   /* background-color: rgb(235, 235, 235); */
-  background-color: #fff;
+  background-color: #003353;
 } 
 .homepage {
-  background: linear-gradient(to right, #ffffff, #edf3f7) !important; /* Gradient from light pink to a lighter shade */
+  background: linear-gradient(to right, #ffffff, #edf3f7) !important;
   overflow: hidden;
-  position: relative;
-  left: 0vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  height: 100vh;
-  /* margin-left: 260px; */
+  margin: 50px 0;
+  border-top-left-radius: 15px;
+  height: 93%;
+  transition: margin-left 0.3s ease-in-out; /* Add transition for smooth movement */
+  flex-grow: 1; /* Allow homepage to grow and fill the remaining space */
+  margin-left: 80px; /* Initial margin */
 }
+
 
 
 
 .main-content {
-    margin: 70px 0 20px;
+    margin: 50px 0 20px 240px;
     position: relative;
-    left: 20vh;
+    /* left: 20vh; */
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   /* padding: 20px; */
-  width: 100%;
- 
+  width: 95%;
+}
+
+.cards-container {
+  width: 45%;
+}
+
+.events-container {
+  width: 45%;
 }
 
 .school-id-box {
   position: fixed;
-  bottom: 40px;
-  left: 22px;
+  bottom: 20px;
+  left: 10px;
   background-color: #ffffff;
-  padding: 12px 8px;
-  border-radius: 8px;
+  padding: 8px 6px;
+  border-radius: 20px;
   box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.1);
-  font-size: 14px;
+  font-size: 12px;
   color: #333;
   width: 200px;
   text-align: center;
