@@ -5,8 +5,6 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import Tooltip from '@mui/material/Tooltip';
-import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
 import { MdTopic } from "react-icons/md";
 import { IoIosAlert } from "react-icons/io";
 import { CgAttachment } from "react-icons/cg";
@@ -23,13 +21,12 @@ import InfoRoundedIcon from '@mui/icons-material/InfoRounded';
 import EditCalendarRoundedIcon from '@mui/icons-material/EditCalendarRounded';
 import FlightTakeoffRoundedIcon from '@mui/icons-material/FlightTakeoffRounded';
 import Inventory2RoundedIcon from '@mui/icons-material/Inventory2Rounded';
-import { FaUserEdit } from "react-icons/fa";
+import { FaUserEdit } from "react-icons/fa"; // Import the new icon
 import { MdInventory } from "react-icons/md";
-import './Sidebar.css';
+import './Sidebar.css'; // Import the CSS file
 
 const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true, selectedItem: initialSelectedItem }) => {
   const [selectedItem, setSelectedItem] = useState(initialSelectedItem || '');
-  const [isCollapsed, setIsCollapsed] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -41,10 +38,6 @@ const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true, sel
       '/update-enrollment': 'updateEnrollment',
       '/subject-allocation': 'subjectAllocation',
       '/leave-approval': 'leaveApproval',
-<<<<<<< HEAD
-      '/inventory-management': 'inventoryManagement',
-=======
->>>>>>> f822a08c3c4eda569abf8cd4712de253615ae424
       // Add other paths as needed
     };
     const currentItem = pathToItemMap[location.pathname];
@@ -52,10 +45,6 @@ const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true, sel
       setSelectedItem(currentItem);
     }
   }, [location.pathname]);
-
-  const toggleCollapse = () => {
-    setIsCollapsed(!isCollapsed);
-  };
 
   const navigateToHomepage = () => {
     navigate('/school_dashboard');
@@ -76,12 +65,10 @@ const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true, sel
     navigate('/update-enrollment');
     setSelectedItem('updateEnrollment');
   };
-
   const navigateToUpdateStaffPayroll = () => {
     navigate('/update-staff-payroll');
     setSelectedItem('UpdateStaffPayroll');
   };
-
   const navigateToSubjectAllocation = () => {
     navigate('/subject-allocation');
     setSelectedItem('subjectAllocation');
@@ -92,28 +79,17 @@ const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true, sel
     setSelectedItem('leaveApproval');
   };
 
-<<<<<<< HEAD
-  const navigateToInventoryManagement = () => {
-    navigate('/inventory-management');
-    setSelectedItem('inventoryManagement');
-  };
-
-=======
->>>>>>> f822a08c3c4eda569abf8cd4712de253615ae424
   const isPrimaryFormOpen = location.pathname.includes('primaryForm');
 
   return (
-    <Box className={showTitle ? "sidebar" : "sidebar_d"} style={{ width: isCollapsed ? '60px' : '200px', justifyContent: 'center' }}>
-      <IconButton onClick={toggleCollapse} style={{ marginLeft: isCollapsed ? '0' : 'auto' }}>
-        <MenuIcon />
-      </IconButton>
+    <Box className={showTitle ? "sidebar" : "sidebar_d"} style={{ width: isPrimaryFormOpen ? '60px' : '40px', justifyContent: 'center' }}>
       <List component="nav">
         {visibleItems.includes('home') && (
           <Tooltip title="Home" placement="right">
             <ListItem
               button className={`list-item ${selectedItem === 'home' ? 'selected-list-item' : ''}`} onClick={navigateToHomepage} style={selectedItem === 'home' ? { pointerEvents: 'none' } : {}}>
               <Home size={20} className='icons'/>
-              {!isCollapsed && showTitle && <ListItemText primary="Home" className="list-item-text"  />}
+              {!isPrimaryFormOpen && showTitle && <ListItemText primary="Home" className="list-item-text"  />}
             </ListItem>
           </Tooltip>
         )}
@@ -124,7 +100,7 @@ const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true, sel
               className={`list-item ${selectedItem === 'attachDocument' ? 'selected-list-item' : ''}`} onClick={navigateToAttachDocument}
             >
               <AttachFileRoundedIcon size={20} className='icons'/>
-              {!isCollapsed && showTitle && <ListItemText primary="Attach Document" className="list-item-text" />}
+              {!isPrimaryFormOpen && showTitle && <ListItemText primary="Attach Document" className="list-item-text" />}
             </ListItem>
           </Tooltip>
         )}
@@ -136,7 +112,7 @@ const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true, sel
               onClick={navigateToSubjectAllocation}
             >
               <AccountTreeRoundedIcon size={20} className='icons'/>
-              {!isCollapsed && showTitle && <ListItemText primary="Subject Allocation" className="list-item-text"/>}
+              {!isPrimaryFormOpen && showTitle && <ListItemText primary="Subject Allocation" className="list-item-text"/>}
             </ListItem>
           </Tooltip>
         )}
@@ -144,20 +120,15 @@ const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true, sel
           <Tooltip title="Attendance Tracking" placement="right">
             <ListItem button className="list-item">
               <AssessmentRoundedIcon size={20} className='icons'/>
-              {!isCollapsed && showTitle && <ListItemText primary="Attendance Tracking" className="list-item-text"/>}
+              {!isPrimaryFormOpen && showTitle && <ListItemText primary="Attendance Tracking" className="list-item-text"/>}
             </ListItem>
           </Tooltip>
         )}
         {visibleItems.includes('leaveApprovals') && (
           <Tooltip title="Leave Approvals" placement="right">
             <ListItem button className="list-item" onClick={navigateToLeaveApproval}>
-<<<<<<< HEAD
-              <BsPersonFillCheck size={20} />
-              {!isPrimaryFormOpen && showTitle && <ListItemText primary="Leave Approvals" className="list-item-text" />}
-=======
               <HowToRegRoundedIcon size={20} className='icons'/>
-              {!isCollapsed && showTitle && <ListItemText primary="Leave Approvals" className="list-item-text" />}
->>>>>>> f822a08c3c4eda569abf8cd4712de253615ae424
+              {!isPrimaryFormOpen && showTitle && <ListItemText primary="Leave Approvals" className="list-item-text" />}
             </ListItem>
           </Tooltip>
         )}
@@ -165,7 +136,7 @@ const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true, sel
           <Tooltip title="Academic Performance" placement="right">
             <ListItem button className="list-item">
               <TrendingUp size={16} className='icons'/>
-              {!isCollapsed && showTitle && <ListItemText primary="Academic Performance" className="list-item-text"/>}
+              {!isPrimaryFormOpen && showTitle && <ListItemText primary="Academic Performance" className="list-item-text"/>}
             </ListItem>
           </Tooltip>
         )}
@@ -173,7 +144,7 @@ const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true, sel
           <Tooltip title="Teacher Alert" placement="right">
             <ListItem button className="list-item">
               <InfoRoundedIcon size={20} className='icons'/>
-              {!isCollapsed && showTitle && <ListItemText primary="Teacher Alert" className="list-item-text"/>}
+              {!isPrimaryFormOpen && showTitle && <ListItemText primary="Teacher Alert" className="list-item-text"/>}
             </ListItem>
           </Tooltip>
         )}
@@ -181,7 +152,7 @@ const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true, sel
           <Tooltip title="Event Planning" placement="right">
             <ListItem button className="list-item">
               <EditCalendarRoundedIcon size={20} className='icons'/>
-              {!isCollapsed && showTitle && <ListItemText primary="Event Planning" className="list-item-text"/>}
+              {!isPrimaryFormOpen && showTitle && <ListItemText primary="Event Planning" className="list-item-text"/>}
             </ListItem>
           </Tooltip>
         )}
@@ -189,7 +160,7 @@ const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true, sel
           <Tooltip title="Career Guidance" placement="right">
             <ListItem button className="list-item" onClick={navigateToCareerGuidance}>
               <FlightTakeoffRoundedIcon size={20} className='icons'/>
-              {!isCollapsed && showTitle && <ListItemText primary="Career Guidance" className="list-item-text"/>}
+              {!isPrimaryFormOpen && showTitle && <ListItemText primary="Career Guidance" className="list-item-text"/>}
             </ListItem>
           </Tooltip>
         )}
@@ -197,7 +168,7 @@ const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true, sel
           <Tooltip title="Update Enrollment" placement="right">
             <ListItem button className="list-item" onClick={navigateToUpdateEnrollment}>
               <FaUserEdit size={20} className='icons'/>
-              {!isCollapsed && showTitle && <ListItemText primary="Update Enrollment" className="list-item-text"/>}
+              {!isPrimaryFormOpen && showTitle && <ListItemText primary="Update Enrollment" className="list-item-text"/>}
             </ListItem>
           </Tooltip>
         )}
@@ -205,21 +176,15 @@ const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true, sel
           <Tooltip title="Add / Update Staff Payroll" placement="right">
             <ListItem button className="list-item" onClick={navigateToUpdateStaffPayroll}>
               <FaUserEdit size={20} className='icons'/>
-              {!isCollapsed && showTitle && <ListItemText primary="Update Enrollment" className="list-item-text"/>}
+              {!isPrimaryFormOpen && showTitle && <ListItemText primary="Update Enrollment" className="list-item-text"/>}
             </ListItem>
           </Tooltip>
         )}
         {visibleItems.includes('inventoryManagement') && (
           <Tooltip title="Inventory Management" placement="right">
-<<<<<<< HEAD
-            <ListItem button className="list-item" onClick={navigateToInventoryManagement}>
-              <MdInventory size={20} />
-              {!isPrimaryFormOpen && showTitle && <ListItemText primary="Inventory Management" className="list-item-text"/>}
-=======
             <ListItem button className="list-item">
               <Inventory2RoundedIcon size={20} className='icons'/>
-              {!isCollapsed && showTitle && <ListItemText primary="Inventory Management" className="list-item-text"/>}
->>>>>>> f822a08c3c4eda569abf8cd4712de253615ae424
+              {!isPrimaryFormOpen && showTitle && <ListItemText primary="Inventory Management" className="list-item-text"/>}
             </ListItem>
           </Tooltip>
         )}

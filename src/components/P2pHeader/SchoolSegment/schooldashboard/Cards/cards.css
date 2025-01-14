@@ -1,7 +1,7 @@
 .cards-container {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3 columns */
-    grid-template-rows: repeat(2, auto); /* 2 rows */
+    grid-template-columns: repeat(2, 1fr); /* 3 columns */
+    grid-template-rows: repeat(3, auto); /* 2 rows */
     justify-content: center; /* Distributes the cards evenly */
     align-items: center;
   }

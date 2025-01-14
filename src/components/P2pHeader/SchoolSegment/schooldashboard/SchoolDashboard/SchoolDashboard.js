@@ -68,6 +68,7 @@ const SchoolDashboard = () => {
   };
 
   return (
+    <div className='school-dashboard'>
     <div className="homepage">
       <Navbar 
         schoolName={globalData.data.SCHOOL_NAME} 
@@ -76,17 +77,22 @@ const SchoolDashboard = () => {
       />
       <Sidebar visibleItems={['home', 'attachDocument', 'subjectAllocation', 'attendanceTracking', 'leaveApprovals', 'academicPerformance','teacherAlert', 'eventPlanning', 'careerGuidance', 'inventoryManagement']} showTitle={true} selectedItem="home" />
       <main className="main-content">
-        <Cards schoolName={globalData.data.SCHOOL_NAME} schoolLogo={globalData.data.SCHOOL_LOGO} studentCount={studentCount} staffCount={staffCount} />
-        <Events />
-        {showAcademicYear && (
-          <div className="academic-year-popup">
-            <AcademicYear open={showAcademicYear} onClose={toggleAcademicYear} />
-          </div>
-        )}
-      </main>
+  <div className="cards-container">
+    <Cards schoolName={globalData.data.SCHOOL_NAME} schoolLogo={globalData.data.SCHOOL_LOGO} studentCount={studentCount} staffCount={staffCount} />
+  </div>
+  <div className="events-container">
+    <Events />
+  </div>
+  {showAcademicYear && (
+    <div className="academic-year-popup">
+      <AcademicYear open={showAcademicYear} onClose={toggleAcademicYear} />
+    </div>
+  )}
+</main>
       <div className="school-id-box">
         School ID: {globalData.data.SCHOOL_ID}
       </div>
+    </div>
     </div>
   );
 };

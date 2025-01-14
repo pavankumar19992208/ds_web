@@ -591,7 +591,7 @@ export default function StaffPrimaryForm() {
       permanentAddress: formData.personalInfo.permanentAddress,
       position: formData.professionalInfo.position.filter(pos => pos !== ''),
       subjectSpecialization: formData.professionalInfo.grades.reduce((acc, grade) => {
-        const gradeText = gradeMapping[grade.value] || `Class ${grade.value}`;
+        const gradeText = gradeMapping[grade.value] || grade.value ;
         acc[gradeText] = grade.subjects || [];
         return acc;
       }, {}),
@@ -757,24 +757,39 @@ export default function StaffPrimaryForm() {
               </Button>
             </DialogActions>
           </Dialog>
-          <Dialog open={successDialogOpen} onClose={handleSuccessClose}>
-            <DialogTitle>Success</DialogTitle>
+          <Dialog open={successDialogOpen}
+      onClose={handleSuccessClose}
+      PaperProps={{
+        style: {
+          width: UserId ? 'auto' : '400px',
+          height: UserId ? 'auto' : '200px',
+        },
+      }}>
+            <DialogTitle>{UserId ? 'Success' : 'Failed'}</DialogTitle>
             <DialogContent>
               <DialogContentText>
-                The form has been successfully submitted.
-                <br />
-                UserId: <strong> {UserId} </strong> 
-                <br />
-                Password: <strong> {Password} </strong> 
+                {UserId ? (
+                  <>
+                    The form has been submitted successfully.
+                    <br />
+                    User ID: <strong>{UserId}</strong>
+                    <br />
+                    Password: <strong>{Password}</strong>
+                  </>
+                ) : (
+                  'User already exists.'
+                )}
               </DialogContentText>
             </DialogContent>
             <DialogActions>
               <Button onClick={handleSuccessClose} color="primary">
                 Close
               </Button>
-              <Button onClick={handleEnrollMore} color="primary">
-                Enroll More
-              </Button>
+              {UserId && (
+                <Button onClick={handleEnrollMore} color="primary">
+                  Enroll More
+                </Button>
+              )}
             </DialogActions>
           </Dialog>
     </React.Fragment>

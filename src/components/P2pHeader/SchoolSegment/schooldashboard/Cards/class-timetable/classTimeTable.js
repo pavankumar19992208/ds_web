@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { GlobalStateContext } from "../../../../../../GlobalStateContext";
 import Sidebar from '../../Sidebar/Sidebar';
 import Navbar from '../../Navbar/Navbar';
@@ -16,26 +16,67 @@ const ClassTimeTable = () => {
     const [message, setMessage] = useState('');
     const [loading, setLoading] = useState(false);
     const [periods, setPeriods] = useState(7);
+    const [classes, setClasses] = useState([]);
+    const [subjectsTeachers, setSubjectsTeachers] = useState([]);
+
+    useEffect(() => {
+        const fetchClasses = async () => {
+            try {
+                const response = await fetch(`${BaseUrl}/classes`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ SchoolId: globalData.data.SCHOOL_ID }),
+                });
+
+                if (!response.ok) {
+                    const text = await response.text();
+                    console.error('Error fetching classes:', text);
+                    throw new Error('Failed to fetch classes');
+                }
+
+                const data = await response.json();
+                const uniqueClasses = [...new Set(data.classes || [])];
+                setClasses(uniqueClasses);
+            } catch (error) {
+                console.error('Error fetching classes:', error);
+            }
+        };
+
+        fetchClasses();
+    }, [globalData.data.SCHOOL_ID]);
+
+        useEffect(() => {
+        const fetchSubjectsTeachers = async () => {
+            if (selectedClass) {
+                try {
+                    const response = await fetch(`${BaseUrl}/class-subjects-teachers`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ SchoolId: globalData.data.SCHOOL_ID, Class: selectedClass }),
+                    });
+    
+                    if (!response.ok) {
+                        const text = await response.text();
+                        console.error('Error fetching subjects and teachers:', text);
+                        throw new Error('Failed to fetch subjects and teachers');
+                    }
+    
+                    const data = await response.json();
+                    setSubjectsTeachers(data.subjects_teachers);
+                } catch (error) {
+                    console.error('Error fetching subjects and teachers:', error);
+                }
+            }
+        };
+    
+        fetchSubjectsTeachers();
+    }, [selectedClass, globalData.data.SCHOOL_ID]);
 
     const weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-    const classes = ["Class 1A", "Class 1B", "Class 2A", "Class 2B", "Class 3A", "Class 3B", "Class 4A", "Class 4B", "Class 5A", "Class 5B", "Class 6A", "Class 6B", "Class 7A", "Class 7B", "Class 8A", "Class 8B", "Class 9A", "Class 9B", "Class 10A", "Class 10B"];
-    const subjects = [
-        { name: "Math", teacher: "Mr. Smith" },
-        { name: "Math", teacher: "Mr. John" },
-        { name: "Science", teacher: "Ms. Johnson" },
-        { name: "Science", teacher: "Ms. Rock" },
-        { name: "English", teacher: "Mrs. Brown" },
-        { name: "English", teacher: "Mrs. Lucy" },
-        { name: "History", teacher: "Mr. Davis" },
-        { name: "History", teacher: "Mr. Jarvis" },
-        { name: "Geography", teacher: "Ms. Miller" },
-        { name: "Geography", teacher: "Ms. Killer" },
-        { name: "Art", teacher: "Mr. Wilson" },
-        { name: "Art", teacher: "Mr. Milton" },
-        { name: "Physical Education", teacher: "Ms. Moore" },
-        { name: "Physical Education", teacher: "Ms. Toore" },
-        { name: "Lunch" }
-    ];
 
     const handleClassChange = (event) => {
         const selectedClass = event.target.value;
@@ -86,8 +127,8 @@ const ClassTimeTable = () => {
     };
 
     const handleSubjectChange = (day, period, value) => {
-        const selectedSubject = subjects.find(subject => subject.name === value);
-        handleTimetableChange(day, period, 'subject', selectedSubject.name);
+        const selectedSubject = subjectsTeachers.find(subject => subject.subject === value);
+        handleTimetableChange(day, period, 'subject', selectedSubject.subject);
         handleTimetableChange(day, period, 'teacher', selectedSubject.teacher);
     };
 
@@ -222,9 +263,9 @@ const ClassTimeTable = () => {
                                   {colIndex === 0 ? day : (
                                     <select className="subject-dropdown" onChange={(e) => handleSubjectChange(day, colIndex, e.target.value)} value={timetable[selectedClass]?.[day]?.[`period ${colIndex}`]?.subject || ''}>
                                       <option value="">Select Subject</option>
-                                      {subjects.map((subject, index) => (
-                                        <option key={index} value={subject.name}>
-                                          {subject.name} - {subject.teacher}
+                                      {subjectsTeachers.map((subject, index) => (
+                                        <option key={index} value={subject.subject}>
+                                          {subject.subject} - {subject.teacher}
                                         </option>
                                       ))}
                                     </select>

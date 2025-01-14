@@ -12,7 +12,6 @@ import DetailsForm from '../PersonalInfo/personalInfo';
 import GuardianInfoForm from '../GuardianInfo/guardianInfo';
 import AcademicInfoForm from '../AcademicInfo/academicInfo';
 import DocumentsUpload from '../DocumentsUpload/documentsUpload';
-
 import Sidebar from '../../../Sidebar/Sidebar';
 import Navbar from '../../../Navbar/Navbar';
 import ReviewForm from '../ReviewForm/reviewForm';
@@ -39,7 +38,6 @@ import HashLoader from 'react-spinners/HashLoader';
 import { validateAlphabets, validateNumbers } from '../PersonalInfo/personalInfo';
 
 const validateEmail = (value) => /^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(value);
-
 const QontoConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {
     top: 10,
@@ -599,34 +597,39 @@ export default function EnrollForm() {
     console.log('Payload to be sent:', payload);
       
           // Send formData and uploadedDocuments to backend
-          try {
-            const response = await fetch(`${BaseUrl}/registerstudent`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(payload),
-            });
-      
-            if (!response.ok) {
-              throw new Error('Form submission failed');
-            }
-      
-            const data = await response.json();
-            console.log('Form data sent to backend successfully:', data);
-            setUserId(data.UserId);
-            setPassword(data.Password);
-            // Clear local storage after successful submission
-            localStorage.removeItem('uploadedDocuments');
-      
-           // Open success dialog
+  try {
+    const response = await fetch(`${BaseUrl}/registerstudent`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      if (response.status === 409) { // Assuming 409 is the status code for user already exists
+        setSuccessDialogOpen(true);
+        setUserId('');
+        setPassword('');
+      } else {
+        throw new Error('Form submission failed');
+      }
+    } else {
+      const data = await response.json();
+      console.log('Form data sent to backend successfully:', data);
+      setUserId(data.UserId);
+      setPassword(data.Password);
+      // Clear local storage after successful submission
+      localStorage.removeItem('uploadedDocuments');
+      // Open success dialog
       setSuccessDialogOpen(true);
-    } catch (error) {
-      console.error('Error sending form data to backend:', error);
-    } finally {
-      setLoading(false);
     }
-        };
+  } catch (error) {
+    console.error('Error sending form data to backend:', error);
+  } finally {
+    setLoading(false);
+  }
+};
       
       const handleDocumentClick = (doc) => {
         setSelectedDoc(doc);
@@ -672,23 +675,23 @@ export default function EnrollForm() {
                 </Stepper>
               </Stack>
               <React.Fragment>
-                  <React.Fragment>
-                    {getStepContent(activeStep, formData, setFormData, handleDocumentClick, expandedDoc, setExpandedDoc, classes)}
-                    <div className="buttons">
-                      {activeStep !== 0 && (
-                        <Button onClick={handleBack} className={classes.button}>
-                          Back
-                        </Button>
-                      )}
-                      <Button
-                        variant="contained"
-                        onClick={activeStep === steps.length - 1 ? handleSubmit : handleNext}
-                        className={`${classes.button} ${classes.nextButton} urbanist-font`}
-                      >
-                        {activeStep === steps.length - 1 ? 'Verify and Submit' : 'Next'}
+                <React.Fragment>
+                  {getStepContent(activeStep, formData, setFormData, handleDocumentClick, expandedDoc, setExpandedDoc, classes)}
+                  <div className="buttons">
+                    {activeStep !== 0 && (
+                      <Button onClick={handleBack} className={classes.button}>
+                        Back
                       </Button>
-                    </div>
-                  </React.Fragment>
+                    )}
+                    <Button
+                      variant="contained"
+                      onClick={activeStep === steps.length - 1 ? handleSubmit : handleNext}
+                      className={`${classes.button} ${classes.nextButton} urbanist-font`}
+                    >
+                      {activeStep === steps.length - 1 ? 'Verify and Submit' : 'Next'}
+                    </Button>
+                  </div>
+                </React.Fragment>
               </React.Fragment>
             </Paper>
           </main>
@@ -696,25 +699,40 @@ export default function EnrollForm() {
             <div className="loaderContainer">
               <HashLoader color="#ffffff" size={50} />
             </div>
-          )}          
-          <Dialog open={successDialogOpen} onClose={handleSuccessClose}>
-            <DialogTitle>Success</DialogTitle>
+          )}
+          <Dialog open={successDialogOpen}
+      onClose={handleSuccessClose}
+      PaperProps={{
+        style: {
+          width: UserId ? 'auto' : '400px',
+          height: UserId ? 'auto' : '200px',
+        },
+      }}>
+            <DialogTitle>{UserId ? 'Success' : 'Failed'}</DialogTitle>
             <DialogContent>
               <DialogContentText>
-                The form has been submitted successfully.
-                <br />
-                User ID: <strong> {UserId} </strong> 
-                <br />
-                Password: <strong> {Password} </strong> 
+                {UserId ? (
+                  <>
+                    The form has been submitted successfully.
+                    <br />
+                    User ID: <strong>{UserId}</strong>
+                    <br />
+                    Password: <strong>{Password}</strong>
+                  </>
+                ) : (
+                  'User already exists.'
+                )}
               </DialogContentText>
             </DialogContent>
             <DialogActions>
               <Button onClick={handleSuccessClose} color="primary">
                 Close
               </Button>
-              <Button onClick={handleEnrollMore} color="primary">
-                Enroll More
-              </Button>
+              {UserId && (
+                <Button onClick={handleEnrollMore} color="primary">
+                  Enroll More
+                </Button>
+              )}
             </DialogActions>
           </Dialog>
         </React.Fragment>
