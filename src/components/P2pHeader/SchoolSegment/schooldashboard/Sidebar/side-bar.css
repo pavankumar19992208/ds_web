@@ -1,6 +1,9 @@
+.sidebar-drawer{
+  z-index: 999;
+}
 .sidebar {
     padding: 1%;
-    background-color: none !important;
+    background-color: #003353 !important;
     height: 100vh;
     position: fixed;
     left: 0px;
@@ -8,7 +11,7 @@
     overflow-y: auto;
     z-index: 1000;
     box-shadow: 3px 0 12px rgba(0, 0, 0, 0.1); 
-    transition: width 0.3s ease-in-out;
+    /* transition: width 0.3s ease-in-out; */
   }
   
   .sidebar:hover {
