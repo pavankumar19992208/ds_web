@@ -3,7 +3,6 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
-import Tooltip from '@mui/material/Tooltip';
 import Drawer from '@mui/material/Drawer';
 import { Home, TrendingUp } from '@mui/icons-material';
 import AttachFileRoundedIcon from '@mui/icons-material/AttachFileRounded';
@@ -91,108 +90,84 @@ const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true, sel
     >
       <List component="nav" className={showTitle ? "sidebar" : "sidebar_d"} style={{ justifyContent: 'center' }}>
         {visibleItems.includes('home') && (
-          <Tooltip title="Home" placement="right">
-            <ListItem
-              button className={`list-item ${selectedItem === 'home' ? 'selected-list-item' : ''}`} onClick={navigateToHomepage} style={selectedItem === 'home' ? { pointerEvents: 'none' } : {}}>
-              <Home size={20} className='icons'/>
-              {isExpanded && showTitle && <ListItemText primary="Home" className="list-item-text"  />}
-            </ListItem>
-          </Tooltip>
+          <ListItem
+            button className={`list-item ${selectedItem === 'home' ? 'selected-list-item' : ''}`} onClick={navigateToHomepage} style={selectedItem === 'home' ? { pointerEvents: 'none' } : {}}>
+            <Home size={20} className='icons'/>
+            {isExpanded && showTitle && <ListItemText primary="Home" className="list-item-text"  />}
+          </ListItem>
         )}
         {visibleItems.includes('attachDocument') && (
-          <Tooltip title="Attach Document" placement="right">
-            <ListItem
-              button
-              className={`list-item ${selectedItem === 'attachDocument' ? 'selected-list-item' : ''}`} onClick={navigateToAttachDocument}
-            >
-              <AttachFileRoundedIcon size={20} className='icons'/>
-              {isExpanded && showTitle && <ListItemText primary="Attach Document" className="list-item-text" />}
-            </ListItem>
-          </Tooltip>
+          <ListItem
+            button
+            className={`list-item ${selectedItem === 'attachDocument' ? 'selected-list-item' : ''}`} onClick={navigateToAttachDocument}
+          >
+            <AttachFileRoundedIcon size={20} className='icons'/>
+            {isExpanded && showTitle && <ListItemText primary="Attach Document" className="list-item-text" />}
+          </ListItem>
         )}
         {visibleItems.includes('subjectAllocation') && (
-          <Tooltip title="Subject Allocation" placement="right">
-            <ListItem
-              button
-              className={`list-item ${selectedItem === 'subjectAllocation' ? 'selected-list-item' : ''}`}
-              onClick={navigateToSubjectAllocation}
-            >
-              <AccountTreeRoundedIcon size={20} className='icons'/>
-              {isExpanded && showTitle && <ListItemText primary="Subject Allocation" className="list-item-text"/>}
-            </ListItem>
-          </Tooltip>
+          <ListItem
+            button
+            className={`list-item ${selectedItem === 'subjectAllocation' ? 'selected-list-item' : ''}`}
+            onClick={navigateToSubjectAllocation}
+          >
+            <AccountTreeRoundedIcon size={20} className='icons'/>
+            {isExpanded && showTitle && <ListItemText primary="Subject Allocation" className="list-item-text"/>}
+          </ListItem>
         )}
         {visibleItems.includes('attendanceTracking') && (
-          <Tooltip title="Attendance Tracking" placement="right">
-            <ListItem button className="list-item">
-              <AssessmentRoundedIcon size={20} className='icons'/>
-              {isExpanded && showTitle && <ListItemText primary="Attendance Tracking" className="list-item-text"/>}
-            </ListItem>
-          </Tooltip>
+          <ListItem button className="list-item">
+            <AssessmentRoundedIcon size={20} className='icons'/>
+            {isExpanded && showTitle && <ListItemText primary="Attendance Tracking" className="list-item-text"/>}
+          </ListItem>
         )}
         {visibleItems.includes('leaveApprovals') && (
-          <Tooltip title="Leave Approvals" placement="right">
-            <ListItem button className="list-item" onClick={navigateToLeaveApproval}>
-              <HowToRegRoundedIcon size={20} className='icons'/>
-              {isExpanded && showTitle && <ListItemText primary="Leave Approvals" className="list-item-text" />}
-            </ListItem>
-          </Tooltip>
+          <ListItem button className="list-item" onClick={navigateToLeaveApproval}>
+            <HowToRegRoundedIcon size={20} className='icons'/>
+            {isExpanded && showTitle && <ListItemText primary="Leave Approvals" className="list-item-text" />}
+          </ListItem>
         )}
         {visibleItems.includes('academicPerformance') && (
-          <Tooltip title="Academic Performance" placement="right">
-            <ListItem button className="list-item">
-              <TrendingUp size={16} className='icons'/>
-              {isExpanded && showTitle && <ListItemText primary="Academic Performance" className="list-item-text"/>}
-            </ListItem>
-          </Tooltip>
+          <ListItem button className="list-item">
+            <TrendingUp size={16} className='icons'/>
+            {isExpanded && showTitle && <ListItemText primary="Academic Performance" className="list-item-text"/>}
+          </ListItem>
         )}
         {visibleItems.includes('teacherAlert') && (
-          <Tooltip title="Teacher Alert" placement="right">
-            <ListItem button className="list-item">
-              <InfoRoundedIcon size={20} className='icons'/>
-              {isExpanded && showTitle && <ListItemText primary="Teacher Alert" className="list-item-text"/>}
-            </ListItem>
-          </Tooltip>
+          <ListItem button className="list-item">
+            <InfoRoundedIcon size={20} className='icons'/>
+            {isExpanded && showTitle && <ListItemText primary="Teacher Alert" className="list-item-text"/>}
+          </ListItem>
         )}
         {visibleItems.includes('eventPlanning') && (
-          <Tooltip title="Event Planning" placement="right">
-            <ListItem button className="list-item">
-              <EditCalendarRoundedIcon size={20} className='icons'/>
-              {isExpanded && showTitle && <ListItemText primary="Event Planning" className="list-item-text"/>}
-            </ListItem>
-          </Tooltip>
+          <ListItem button className="list-item">
+            <EditCalendarRoundedIcon size={20} className='icons'/>
+            {isExpanded && showTitle && <ListItemText primary="Event Planning" className="list-item-text"/>}
+          </ListItem>
         )}
         {visibleItems.includes('careerGuidance') && (
-          <Tooltip title="Career Guidance" placement="right">
-            <ListItem button className="list-item" onClick={navigateToCareerGuidance}>
-              <FlightTakeoffRoundedIcon size={20} className='icons'/>
-              {isExpanded && showTitle && <ListItemText primary="Career Guidance" className="list-item-text"/>}
-            </ListItem>
-          </Tooltip>
+          <ListItem button className="list-item" onClick={navigateToCareerGuidance}>
+            <FlightTakeoffRoundedIcon size={20} className='icons'/>
+            {isExpanded && showTitle && <ListItemText primary="Career Guidance" className="list-item-text"/>}
+          </ListItem>
         )}
         {visibleItems.includes('updateEnrollment') && (
-          <Tooltip title="Update Enrollment" placement="right">
-            <ListItem button className="list-item" onClick={navigateToUpdateEnrollment}>
-              <FaUserEdit size={20} className='icons'/>
-              {isExpanded && showTitle && <ListItemText primary="Update Enrollment" className="list-item-text"/>}
-            </ListItem>
-          </Tooltip>
+          <ListItem button className="list-item" onClick={navigateToUpdateEnrollment}>
+            <FaUserEdit size={20} className='icons'/>
+            {isExpanded && showTitle && <ListItemText primary="Update Enrollment" className="list-item-text"/>}
+          </ListItem>
         )}
         {visibleItems.includes('updateStaffPayroll') && (
-          <Tooltip title="Add / Update Staff Payroll" placement="right">
-            <ListItem button className="list-item" onClick={navigateToUpdateStaffPayroll}>
-              <FaUserEdit size={20} className='icons'/>
-              {isExpanded && showTitle && <ListItemText primary="Update Enrollment" className="list-item-text"/>}
-            </ListItem>
-          </Tooltip>
+          <ListItem button className="list-item" onClick={navigateToUpdateStaffPayroll}>
+            <FaUserEdit size={20} className='icons'/>
+            {isExpanded && showTitle && <ListItemText primary="Update Enrollment" className="list-item-text"/>}
+          </ListItem>
         )}
         {visibleItems.includes('inventoryManagement') && (
-          <Tooltip title="Inventory Management" placement="right">
-            <ListItem button className="list-item">
-              <Inventory2RoundedIcon size={20} className='icons'/>
-              {isExpanded && showTitle && <ListItemText primary="Inventory Management" className="list-item-text"/>}
-            </ListItem>
-          </Tooltip>
+          <ListItem button className="list-item">
+            <Inventory2RoundedIcon size={20} className='icons'/>
+            {isExpanded && showTitle && <ListItemText primary="Inventory Management" className="list-item-text"/>}
+          </ListItem>
         )}
       </List>
     </Drawer>
