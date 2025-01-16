@@ -630,11 +630,7 @@ export default function StaffPrimaryForm() {
       console.log("Form data sent to backend successfully:", data);
       setPassword(data.password);
       setUserId(data.userid);
-<<<<<<< HEAD
-
-=======
             
->>>>>>> 15347b982f6bc1a83c72eb65626d815039861ca1
       // Open success dialog
       setSuccessDialogOpen(true);
     } catch (error) {

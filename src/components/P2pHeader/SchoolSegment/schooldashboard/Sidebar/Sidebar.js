@@ -30,10 +30,6 @@ const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true, sel
       '/update-enrollment': 'updateEnrollment',
       '/subject-allocation': 'subjectAllocation',
       '/leave-approval': 'leaveApproval',
-<<<<<<< HEAD
-      '/inventory-management': 'inventoryManagement',
-=======
->>>>>>> f822a08c3c4eda569abf8cd4712de253615ae424
       // Add other paths as needed
     };
     const currentItem = pathToItemMap[location.pathname];
@@ -75,14 +71,6 @@ const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true, sel
     setSelectedItem('leaveApproval');
   };
 
-<<<<<<< HEAD
-  const navigateToInventoryManagement = () => {
-    navigate('/inventory-management');
-    setSelectedItem('inventoryManagement');
-  };
-
-=======
->>>>>>> f822a08c3c4eda569abf8cd4712de253615ae424
   const isPrimaryFormOpen = location.pathname.includes('primaryForm');
 
   return (
@@ -134,24 +122,10 @@ const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true, sel
           </ListItem>
         )}
         {visibleItems.includes('leaveApprovals') && (
-<<<<<<< HEAD
-          <Tooltip title="Leave Approvals" placement="right">
-            <ListItem button className="list-item" onClick={navigateToLeaveApproval}>
-<<<<<<< HEAD
-              <BsPersonFillCheck size={20} />
-              {!isPrimaryFormOpen && showTitle && <ListItemText primary="Leave Approvals" className="list-item-text" />}
-=======
-              <HowToRegRoundedIcon size={20} className='icons'/>
-              {!isCollapsed && showTitle && <ListItemText primary="Leave Approvals" className="list-item-text" />}
->>>>>>> f822a08c3c4eda569abf8cd4712de253615ae424
-            </ListItem>
-          </Tooltip>
-=======
           <ListItem button className="list-item" onClick={navigateToLeaveApproval}>
             <HowToRegRoundedIcon size={20} className='icons'/>
             {isExpanded && showTitle && <ListItemText primary="Leave Approvals" className="list-item-text" />}
           </ListItem>
->>>>>>> 96ada4a4a46af6b55c70bf3ec114a58223460f0f
         )}
         {visibleItems.includes('academicPerformance') && (
           <ListItem button className="list-item">
@@ -190,25 +164,10 @@ const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true, sel
           </ListItem>
         )}
         {visibleItems.includes('inventoryManagement') && (
-<<<<<<< HEAD
-          <Tooltip title="Inventory Management" placement="right">
-<<<<<<< HEAD
-            <ListItem button className="list-item" onClick={navigateToInventoryManagement}>
-              <MdInventory size={20} />
-              {!isPrimaryFormOpen && showTitle && <ListItemText primary="Inventory Management" className="list-item-text"/>}
-=======
-            <ListItem button className="list-item">
-              <Inventory2RoundedIcon size={20} className='icons'/>
-              {!isCollapsed && showTitle && <ListItemText primary="Inventory Management" className="list-item-text"/>}
->>>>>>> f822a08c3c4eda569abf8cd4712de253615ae424
-            </ListItem>
-          </Tooltip>
-=======
           <ListItem button className="list-item">
             <Inventory2RoundedIcon size={20} className='icons'/>
             {isExpanded && showTitle && <ListItemText primary="Inventory Management" className="list-item-text"/>}
           </ListItem>
->>>>>>> 96ada4a4a46af6b55c70bf3ec114a58223460f0f
         )}
       </List>
     </Drawer>

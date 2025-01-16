@@ -207,7 +207,7 @@ const useStyles = makeStyles((theme) => ({
   },
   button: {
     marginTop: theme.spacing(3),
-    marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(2.6),
   },
   nextButton: {
     backgroundColor: '#0E5E9D',
