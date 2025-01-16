@@ -81,10 +81,14 @@ const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true, sel
       onMouseLeave={() => setIsExpanded(false)}
       PaperProps={{
         style: {
-          width: isExpanded ? 230 : 0,
+          width: isExpanded ? 230 : 40,
           transition: 'width 0.3s',
           top: '50px',
           backgroundColor: '#003353',
+          left: '14px',
+          overflowY: 'hidden',
+          overflowX: 'hidden',
+          border: 'none',
         },
       }}
     >

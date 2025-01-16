@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { GlobalStateContext } from '../../../../../GlobalStateContext';
 import Navbar from '../Navbar/Navbar';
-import Sidebar from '../Sidebar/side-bar';
+import Sidebar from '../Sidebar/Sidebar';
 import Events from '../Events/Events';
 import Cards from '../Cards/cards';
 import AcademicYear from '../AcademicYear/AcademicYearVerification';
