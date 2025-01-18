@@ -245,8 +245,7 @@ const SubjectAllocation = () => {
   return (
     <div className="subject-allocation-container">
       <Navbar schoolName={globalData.data.SCHOOL_NAME} schoolLogo={globalData.data.SCHOOL_LOGO} />
-      <div className="subject-allocation-content">
-        <Sidebar visibleItems={['home', 'attachDocument', 'subjectAllocation', 'attendanceTracking', 'leaveApprovals', 'academicPerformance', 'teacherAlert', 'eventPlanning', 'careerGuidance', 'inventoryManagement']} />
+      <Sidebar visibleItems={['home', 'attachDocument', 'subjectAllocation', 'attendanceTracking', 'leaveApprovals', 'academicPerformance', 'teacherAlert', 'eventPlanning', 'careerGuidance', 'inventoryManagement']} />
         <main className="sa-content">
           <div className="button-container">
             <Select className="custom-select" value={selectedClass} onChange={handleClassChange} displayEmpty>
@@ -310,13 +309,13 @@ const SubjectAllocation = () => {
               </TabPanel>
             ))}
           </Box>
-          <Box position="absolute" bottom={16} left={16}>
+        
             <Button className="custom-submit-button" onClick={submitAllottedTeachers}>
               Submit
             </Button>
-          </Box>
+    
         </main>
-      </div>
+      
       <div className="school-id-box">
         School ID: {globalData.data.SCHOOL_ID}
       </div>

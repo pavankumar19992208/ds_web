@@ -1,37 +1,3 @@
-.homepage {
-  background: linear-gradient(to right, #ffffff, #edf3f7) !important;
-  overflow: hidden;
-  margin: 50px 0;
-  border-top-left-radius: 15px;
-  height: 93%;
-  transition: margin-left 0.3s ease-in-out; /* Add transition for smooth movement */
-  flex-grow: 1; /* Allow homepage to grow and fill the remaining space */
-  margin-left: 80px; /* Initial margin */
-}
-
-.school-dashboard {
-  overflow-x: hidden;
-  overflow-y: hidden; 
-  /* background-image: url('./img.jpg'); */
-  /* height: 100vh; */
-
-  background-size: cover;
-  height: 100vh;
-  /* background-color: rgb(235, 235, 235); */
-  background-color: #003353;
-} 
-.sidebar {
-  padding: 1%;
-  background-color: none !important;
-  height: 100vh;
-  position: fixed;
-  left: 0px;
-  top: 50px;
-  overflow-y: auto;
-  z-index: 1000;
-  box-shadow: 3px 0 12px rgba(0, 0, 0, 0.1); 
-  transition: width 0.3s ease-in-out, height 0.3s ease-in-out;
-}
 
 
 

@@ -1,9 +1,32 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import * as React from 'react';
+import { styled, useTheme } from '@mui/material/styles';
+import { Link, useLocation } from 'react-router-dom';
+import Box from '@mui/material/Box';
+import MuiDrawer from '@mui/material/Drawer';
+import MuiAppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
 import List from '@mui/material/List';
+import CssBaseline from '@mui/material/CssBaseline';
+import Typography from '@mui/material/Typography';
+import Divider from '@mui/material/Divider';
+import IconButton from '@mui/material/IconButton';
+import MenuIcon from '@mui/icons-material/Menu';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import Drawer from '@mui/material/Drawer';
+import InboxIcon from '@mui/icons-material/MoveToInbox';
+import MailIcon from '@mui/icons-material/Mail';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
+import SubjectIcon from '@mui/icons-material/Subject';
+import ApprovalIcon from '@mui/icons-material/Approval';
+import WarningIcon from '@mui/icons-material/Warning';import CareerIcon from '@mui/icons-material/Work';
+import InventoryIcon from '@mui/icons-material/Inventory';
+import PerformanceIcon from '@mui/icons-material/Assessment';
+import EventIcon from '@mui/icons-material/Event';
 import { Home, TrendingUp } from '@mui/icons-material';
 import AttachFileRoundedIcon from '@mui/icons-material/AttachFileRounded';
 import AccountTreeRoundedIcon from '@mui/icons-material/AccountTreeRounded';
@@ -14,168 +37,211 @@ import EditCalendarRoundedIcon from '@mui/icons-material/EditCalendarRounded';
 import FlightTakeoffRoundedIcon from '@mui/icons-material/FlightTakeoffRounded';
 import Inventory2RoundedIcon from '@mui/icons-material/Inventory2Rounded';
 import { FaUserEdit } from "react-icons/fa"; // Import the new icon
-import './Sidebar.css'; // Import the CSS file
 
-const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true, selectedItem: initialSelectedItem }) => {
-  const [selectedItem, setSelectedItem] = useState(initialSelectedItem || '');
-  const [isExpanded, setIsExpanded] = useState(false);
-  const navigate = useNavigate();
+const drawerWidth = 260;
+
+const openedMixin = (theme) => ({
+  width: drawerWidth,
+  transition: theme.transitions.create('width', {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.enteringScreen,
+  }),
+  overflowX: 'hidden',
+});
+
+const closedMixin = (theme) => ({
+  transition: theme.transitions.create('width', {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen,
+  }),
+  overflowX: 'hidden',
+  width: `calc(${theme.spacing(5)} + 1px)`,
+  [theme.breakpoints.up('sm')]: {
+    width: `calc(${theme.spacing(6)} + 1px)`,
+  },
+});
+
+const DrawerHeader = styled('div')(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'flex-end',
+  padding: theme.spacing(0, 1),
+  // necessary for content to be below app bar
+  ...theme.mixins.toolbar,
+}));
+
+const AppBar = styled(MuiAppBar, {
+  shouldForwardProp: (prop) => prop !== 'open',
+})(({ theme }) => ({
+  zIndex: theme.zIndex.drawer + 1,
+  transition: theme.transitions.create(['width', 'margin'], {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen,
+  }),
+  variants: [
+    {
+      props: ({ open }) => open,
+      style: {
+        marginLeft: drawerWidth,
+        width: `calc(100% - ${drawerWidth}px)`,
+        transition: theme.transitions.create(['width', 'margin'], {
+          easing: theme.transitions.easing.sharp,
+          duration: theme.transitions.duration.enteringScreen,
+        }),
+      },
+    },
+  ],
+}));
+
+const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
+  ({ theme }) => ({
+    width: drawerWidth,
+    flexShrink: 0,
+    whiteSpace: 'nowrap',
+    position: 'fixed',
+    zIndex: 1000,
+    boxSizing: 'border-box',
+    margin: '50px 0',
+    '& .MuiDrawer-paper': {
+      margin: '50px 0 ',
+    },
+    variants: [
+      {
+        props: ({ open }) => open,
+        style: {
+          ...openedMixin(theme),
+          '& .MuiDrawer-paper': openedMixin(theme),
+        },
+      },
+      {
+        props: ({ open }) => !open,
+        style: {
+          ...closedMixin(theme),
+          '& .MuiDrawer-paper': closedMixin(theme),
+        },
+      },
+    ],
+  }),
+);
+
+export default function MiniDrawer() {
+  const theme = useTheme();
+  const [open, setOpen] = React.useState(false);
   const location = useLocation();
 
-  useEffect(() => {
-    const pathToItemMap = {
-      '/': 'school_dashboard',
-      '/attach-document': 'attachDocument',
-      '/career-guidance': 'careerGuidance',
-      '/update-enrollment': 'updateEnrollment',
-      '/subject-allocation': 'subjectAllocation',
-      '/leave-approval': 'leaveApproval',
-      // Add other paths as needed
-    };
-    const currentItem = pathToItemMap[location.pathname];
-    if (currentItem) {
-      setSelectedItem(currentItem);
-    }
-  }, [location.pathname]);
-
-  const navigateToHomepage = () => {
-    navigate('/school_dashboard');
-    setSelectedItem('school_dashboard');
+  const handleDrawerOpen = () => {
+    setOpen(true);
   };
 
-  const navigateToAttachDocument = () => {
-    navigate('/attach-document');
-    setSelectedItem('attachDocument');
+  const handleDrawerClose = () => {
+    setOpen(false);
   };
 
-  const navigateToCareerGuidance = () => {
-    navigate('/career-guidance');
-    setSelectedItem('careerGuidance');
-  };
-
-  const navigateToUpdateEnrollment = () => {
-    navigate('/update-enrollment');
-    setSelectedItem('updateEnrollment');
-  };
-  const navigateToUpdateStaffPayroll = () => {
-    navigate('/update-staff-payroll');
-    setSelectedItem('UpdateStaffPayroll');
-  };
-  const navigateToSubjectAllocation = () => {
-    navigate('/subject-allocation');
-    setSelectedItem('subjectAllocation');
-  };
-
-  const navigateToLeaveApproval = () => {
-    navigate('/leave-approval');
-    setSelectedItem('leaveApproval');
-  };
-
-  const isPrimaryFormOpen = location.pathname.includes('primaryForm');
+  const menuItems = [
+    { text: 'Dashboard', path: '/school_dashboard', icon: <Home /> },
+    { text: 'Attach Documents', path: '/attach-document', icon: <AttachFileRoundedIcon /> },
+    { text: 'Subject Allocation', path: '/subject-allocation', icon: <AccountTreeRoundedIcon /> },
+    { text: 'Leave Approval', path: '/leave-approval', icon: <HowToRegRoundedIcon /> },
+    { text: 'Teacher Alert', path: '/teacher-alert', icon: <InfoRoundedIcon /> },
+    { text: 'Career Guidance', path: '/career-guidance', icon: <FlightTakeoffRoundedIcon /> },
+    { text: 'Inventory Management', path: '/inventory-management', icon: <Inventory2RoundedIcon /> },
+    { text: 'Attendance Tracking', path: '/attendance', icon: <AssessmentRoundedIcon /> },
+    { text: 'Academic Performance', path: '/academic-performance', icon: <TrendingUp /> },
+    { text: 'Event Planning', path: '/event-planning', icon: <EditCalendarRoundedIcon /> },
+  ];
 
   return (
-    <Drawer
-      variant="permanent"
-      className="sidebar-drawer"
-      onMouseEnter={() => setIsExpanded(true)}
-      onMouseLeave={() => setIsExpanded(false)}
-      PaperProps={{
-        style: {
-          width: isExpanded ? 230 : 40,
-          transition: 'width 0.3s',
-          top: '50px',
-          backgroundColor: '#003353',
-          left: '14px',
-          overflowY: 'hidden',
-          overflowX: 'hidden',
+    <Box>
+      {/* <CssBaseline /> */}
+      <Drawer
+        variant="permanent"
+        open={open}
+        onMouseEnter={handleDrawerOpen}
+        onMouseLeave={handleDrawerClose}
+        sx={{
+          backgroundColor: '#000',
+          padding: '0px', // Add padding here
           border: 'none',
-        },
-      }}
-    >
-      <List component="nav" className={showTitle ? "sidebar" : "sidebar_d"} style={{ justifyContent: 'center' }}>
-        {visibleItems.includes('home') && (
-          <ListItem
-            button className={`list-item ${selectedItem === 'home' ? 'selected-list-item' : ''}`} onClick={navigateToHomepage} style={selectedItem === 'home' ? { pointerEvents: 'none' } : {}}>
-            <Home size={20} className='icons'/>
-            {isExpanded && showTitle && <ListItemText primary="Home" className="list-item-text"  />}
-          </ListItem>
-        )}
-        {visibleItems.includes('attachDocument') && (
-          <ListItem
-            button
-            className={`list-item ${selectedItem === 'attachDocument' ? 'selected-list-item' : ''}`} onClick={navigateToAttachDocument}
-          >
-            <AttachFileRoundedIcon size={20} className='icons'/>
-            {isExpanded && showTitle && <ListItemText primary="Attach Document" className="list-item-text" />}
-          </ListItem>
-        )}
-        {visibleItems.includes('subjectAllocation') && (
-          <ListItem
-            button
-            className={`list-item ${selectedItem === 'subjectAllocation' ? 'selected-list-item' : ''}`}
-            onClick={navigateToSubjectAllocation}
-          >
-            <AccountTreeRoundedIcon size={20} className='icons'/>
-            {isExpanded && showTitle && <ListItemText primary="Subject Allocation" className="list-item-text"/>}
-          </ListItem>
-        )}
-        {visibleItems.includes('attendanceTracking') && (
-          <ListItem button className="list-item">
-            <AssessmentRoundedIcon size={20} className='icons'/>
-            {isExpanded && showTitle && <ListItemText primary="Attendance Tracking" className="list-item-text"/>}
-          </ListItem>
-        )}
-        {visibleItems.includes('leaveApprovals') && (
-          <ListItem button className="list-item" onClick={navigateToLeaveApproval}>
-            <HowToRegRoundedIcon size={20} className='icons'/>
-            {isExpanded && showTitle && <ListItemText primary="Leave Approvals" className="list-item-text" />}
-          </ListItem>
-        )}
-        {visibleItems.includes('academicPerformance') && (
-          <ListItem button className="list-item">
-            <TrendingUp size={16} className='icons'/>
-            {isExpanded && showTitle && <ListItemText primary="Academic Performance" className="list-item-text"/>}
-          </ListItem>
-        )}
-        {visibleItems.includes('teacherAlert') && (
-          <ListItem button className="list-item">
-            <InfoRoundedIcon size={20} className='icons'/>
-            {isExpanded && showTitle && <ListItemText primary="Teacher Alert" className="list-item-text"/>}
-          </ListItem>
-        )}
-        {visibleItems.includes('eventPlanning') && (
-          <ListItem button className="list-item">
-            <EditCalendarRoundedIcon size={20} className='icons'/>
-            {isExpanded && showTitle && <ListItemText primary="Event Planning" className="list-item-text"/>}
-          </ListItem>
-        )}
-        {visibleItems.includes('careerGuidance') && (
-          <ListItem button className="list-item" onClick={navigateToCareerGuidance}>
-            <FlightTakeoffRoundedIcon size={20} className='icons'/>
-            {isExpanded && showTitle && <ListItemText primary="Career Guidance" className="list-item-text"/>}
-          </ListItem>
-        )}
-        {visibleItems.includes('updateEnrollment') && (
-          <ListItem button className="list-item" onClick={navigateToUpdateEnrollment}>
-            <FaUserEdit size={20} className='icons'/>
-            {isExpanded && showTitle && <ListItemText primary="Update Enrollment" className="list-item-text"/>}
-          </ListItem>
-        )}
-        {visibleItems.includes('updateStaffPayroll') && (
-          <ListItem button className="list-item" onClick={navigateToUpdateStaffPayroll}>
-            <FaUserEdit size={20} className='icons'/>
-            {isExpanded && showTitle && <ListItemText primary="Update Enrollment" className="list-item-text"/>}
-          </ListItem>
-        )}
-        {visibleItems.includes('inventoryManagement') && (
-          <ListItem button className="list-item">
-            <Inventory2RoundedIcon size={20} className='icons'/>
-            {isExpanded && showTitle && <ListItemText primary="Inventory Management" className="list-item-text"/>}
-          </ListItem>
-        )}
-      </List>
-    </Drawer>
-  );
-};
+          '& .MuiDrawer-paper': {
+            backgroundColor: '#003353',
+            padding: '10px', // sidebar's padding
+            border: 'none',
 
-export default Sidebar;
+          },
+        }}
+      >
+        <List>
+          {menuItems.map(({ text, path, icon }) => {
+            const selected = location.pathname === path || (text === 'Dashboard' && location.pathname === '/');
+            return (
+              <ListItem key={text} disablePadding sx={{ display: 'block' }}>
+                <ListItemButton
+                  component={Link}
+                  to={path}
+                  sx={[
+                    {
+                      minHeight: 48,
+                      px: 2.5,
+                      borderRadius: '50px',
+                      backgroundColor: selected ? '#DFECEF' : 'inherit',
+                      color: selected ? '#003353' : '#DFECEF',
+                      '&:hover': {
+                        backgroundColor: selected ? '#DFECEF' : 'rgba(0, 0, 0, 0.04)',
+                        marginLeft: '5px',
+                      },
+                    },
+                    open
+                      ? {
+                          justifyContent: 'initial',
+                        }
+                      : {
+                          justifyContent: 'center',
+                        },
+                  ]}
+                >
+                  <ListItemIcon
+                    sx={[
+                      {
+                        padding: '5px',
+                        minWidth: 0,
+                        justifyContent: 'center',
+                        borderRadius: '50%',
+                        backgroundColor: selected ? '#003353' : '#DFECEF',
+                        color: selected ? '#DFECEF' : '#003353',
+                      },
+
+                      open
+                        ? {
+                            mr: 3,
+                          }
+                        : {
+                            mr: 'auto',
+                          },
+                    ]}
+                  >
+                    {icon}
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={text}
+                    sx={[
+                      {
+                        color: selected ? '#003353' : '#fff',
+                      },
+                      open
+                        ? {
+                            opacity: 1,
+                          }
+                        : {
+                            opacity: 0,
+                          },
+                    ]}
+                  />
+                </ListItemButton>
+              </ListItem>
+            );
+          })}
+        </List>
+      </Drawer>
+    </Box>
+  );
+}
