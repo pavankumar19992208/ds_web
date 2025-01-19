@@ -266,7 +266,7 @@ function getStepContent(step, formData, setFormData, handleDocumentClick, expand
   }
 }
 
-export default function EnrollForm() {
+export default function StudentEnrollForm() {
   const classes = useStyles();
   const { globalData } = useContext(GlobalStateContext);
   const [activeStep, setActiveStep] = useState(0);
@@ -648,11 +648,12 @@ export default function EnrollForm() {
         }, 1000);
       };
       
-      return (
-        <React.Fragment>
-          <Navbar schoolName={globalData.data.SCHOOL_NAME} schoolLogo={globalData.data.SCHOOL_LOGO} />
-          <main className="layout">
+            return (
+        <div className='enroll-form'>
+          <div className="enroll-form-container">
+            <Navbar schoolName={globalData.data.SCHOOL_NAME} schoolLogo={globalData.data.SCHOOL_LOGO} />
             <Sidebar visibleItems={['home', 'updateEnrollment']} hideProfile={true} showTitle={false} />
+            <div className="form-paper-container">
             <Paper className="paper">
               <Typography component="h1" variant="h4" align="center" className='headline'>
                 Student's Enroll Form
@@ -674,67 +675,68 @@ export default function EnrollForm() {
                   ))}
                 </Stepper>
               </Stack>
+      
               <React.Fragment>
-                <React.Fragment>
-                  {getStepContent(activeStep, formData, setFormData, handleDocumentClick, expandedDoc, setExpandedDoc, classes)}
-                  <div className="buttons">
-                    {activeStep !== 0 && (
-                      <Button onClick={handleBack} className={classes.button}>
-                        Back
-                      </Button>
-                    )}
-                    <Button
-                      variant="contained"
-                      onClick={activeStep === steps.length - 1 ? handleSubmit : handleNext}
-                      className={`${classes.button} ${classes.nextButton} urbanist-font`}
-                    >
-                      {activeStep === steps.length - 1 ? 'Verify and Submit' : 'Next'}
+                {getStepContent(activeStep, formData, setFormData, handleDocumentClick, expandedDoc, setExpandedDoc, classes)}
+                <div className="buttons">
+                  {activeStep !== 0 && (
+                    <Button onClick={handleBack} className={classes.button}>
+                      Back
                     </Button>
-                  </div>
-                </React.Fragment>
+                  )}
+                  <Button
+                    variant="contained"
+                    onClick={activeStep === steps.length - 1 ? handleSubmit : handleNext}
+                    className={`${classes.button} ${classes.nextButton} urbanist-font`}
+                  >
+                    {activeStep === steps.length - 1 ? 'Verify and Submit' : 'Next'}
+                  </Button>
+                </div>
               </React.Fragment>
             </Paper>
-          </main>
-          {loading && (
-            <div className="loaderContainer">
-              <HashLoader color="#ffffff" size={50} />
-            </div>
-          )}
-          <Dialog open={successDialogOpen}
-      onClose={handleSuccessClose}
-      PaperProps={{
-        style: {
-          width: UserId ? 'auto' : '400px',
-          height: UserId ? 'auto' : '200px',
-        },
-      }}>
-            <DialogTitle>{UserId ? 'Success' : 'Failed'}</DialogTitle>
-            <DialogContent>
-              <DialogContentText>
-                {UserId ? (
-                  <>
-                    The form has been submitted successfully.
-                    <br />
-                    User ID: <strong>{UserId}</strong>
-                    <br />
-                    Password: <strong>{Password}</strong>
-                  </>
-                ) : (
-                  'User already exists.'
-                )}
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={handleSuccessClose} color="primary">
-                Close
-              </Button>
-              {UserId && (
-                <Button onClick={handleEnrollMore} color="primary">
-                  Enroll More
+      
+            {loading && (
+              <div className="loaderContainer">
+                <HashLoader color="#ffffff" size={50} />
+              </div>
+            )}
+            <Dialog open={successDialogOpen}
+              onClose={handleSuccessClose}
+              PaperProps={{
+                style: {
+                  width: UserId ? 'auto' : '400px',
+                  height: UserId ? 'auto' : '200px',
+                },
+              }}>
+              <DialogTitle>{UserId ? 'Success' : 'Failed'}</DialogTitle>
+              <DialogContent>
+                <DialogContentText>
+                  {UserId ? (
+                    <>
+                      The form has been submitted successfully.
+                      <br />
+                      User ID: <strong>{UserId}</strong>
+                      <br />
+                      Password: <strong>{Password}</strong>
+                    </>
+                  ) : (
+                    'User already exists.'
+                  )}
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={handleSuccessClose} color="primary">
+                  Close
                 </Button>
-              )}
-            </DialogActions>
-          </Dialog>
-        </React.Fragment>
+                {UserId && (
+                  <Button onClick={handleEnrollMore} color="primary">
+                    Enroll More
+                  </Button>
+                )}
+              </DialogActions>
+            </Dialog>
+            </div>
+          </div>
+        </div>
       );
     }

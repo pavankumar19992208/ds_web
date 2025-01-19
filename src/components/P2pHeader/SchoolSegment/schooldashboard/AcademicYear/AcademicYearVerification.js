@@ -127,7 +127,7 @@ export default function SignIn(props) {
 
   return (
     <AppTheme {...props}>
-      <CssBaseline />
+      {/* <CssBaseline /> */}
       <SignInContainer direction="column" justifyContent="space-between">
         <Card variant="outlined">
           <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
