@@ -15,7 +15,7 @@ import EditCalendarRoundedIcon from '@mui/icons-material/EditCalendarRounded';
 import FlightTakeoffRoundedIcon from '@mui/icons-material/FlightTakeoffRounded';
 import Inventory2RoundedIcon from '@mui/icons-material/Inventory2Rounded';
 import { FaUserEdit } from "react-icons/fa"; // Import the new icon
-import './side-bar.css'; // Import the CSS file
+import './Sidebar.css'; // Import the CSS file
 
 const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true, selectedItem: initialSelectedItem }) => {
   const [selectedItem, setSelectedItem] = useState(initialSelectedItem || '');
@@ -77,7 +77,7 @@ const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true, sel
   return (
     <Drawer
       variant="permanent"
-      className="sidebar-drawer"
+      className="sidebar"
       onMouseEnter={() => setIsExpanded(true)}
       onMouseLeave={() => setIsExpanded(false)}
       PaperProps={{
@@ -85,8 +85,9 @@ const Sidebar = ({ visibleItems = [], hideProfile = false, showTitle = true, sel
           width: isExpanded ? 230 : 40,
           transition: 'width 0.3s',
           top: '50px',
-          backgroundColor: '#003353',
-          left: '14px',
+          backgroundColor: 'red',
+          left: '0px',
+          padding: '12px', 
           overflowY: 'hidden',
           overflowX: 'hidden',
         },

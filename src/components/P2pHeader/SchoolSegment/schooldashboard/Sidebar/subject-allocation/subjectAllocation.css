@@ -1,30 +1,34 @@
 /* subjectAllocation.css */
 .subject-allocation-container {
-    background: linear-gradient(to right, #ffffff, #edf3f7) !important; /* Gradient from light pink to a lighter shade */
+    /* background: linear-gradient(to right, #ffffff, #edf3f7) !important; Gradient from light pink to a lighter shade */
+    background-color: #003353;
+    overflow-y: hidden; 
 
   display: flex;
-  flex-direction: column;
+  /* flex-direction: column; */
   height: 100vh;
 }
 
-.subject-allocation-content {
+/* .subject-allocation-content {
+  
   position: relative;
   display: flex;
   flex: 1;
-}
+} */
 
 .sa-content {
-  flex: 1;
-  padding: 20px;
-  overflow: auto;
-  border: 1px solid hsla(220, 20%, 80%, 1);
+  background: linear-gradient(to right, #ffffff, #edf3f7) !important;
+  overflow: hidden;
+  border-top-left-radius: 15px;
   /* box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.1);  */
-  width: 75%;
-  height: 80vh;
-  border-radius: 12px;
-  position: absolute;
-  left: 44vh;
-  top:72px;
+  width: 95%;
+  height: 93%;
+  /* position: absolute;
+  left: 80px;
+  top:50px; */
+  margin: 50px 0 0 80px;
+  padding: 20px;
+
 }
 
 .school-id-box {
@@ -47,9 +51,9 @@
   
 
   .button-container {
-    position: absolute;
+    /* position: absolute;
   top: 20px;
-  left: 20px;
+  left: 20px; */
     display: flex;
     gap: 16px;
   }
@@ -81,6 +85,9 @@
  
   
   .custom-submit-button {
+    position: absolute;
+    bottom: 20px;
+    right: 20px !important;
     background-color: #0E5E9D80 !important; /* Example background color */
     color: #000 !important; /* Example text color */
     border-radius: 12px !important; /* Example border radius */
