@@ -9,3 +9,9 @@
 .slick-dots li.slick-active button:before {
   color: black;
 }
+.carousel-image {
+ height: auto;
+  object-fit: cover;
+  margin: 0 auto ;
+  border-radius: 20px;
+}
