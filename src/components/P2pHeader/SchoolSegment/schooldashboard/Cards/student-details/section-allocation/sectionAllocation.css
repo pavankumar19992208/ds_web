@@ -1,0 +1,62 @@
+.section-allocation-container {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  align-items: center;
+    margin-top: 16px;
+    border: 1px solid #ccc ;
+    border-radius: 16px;
+    padding: 16px;
+
+}
+
+.section-allocation-header {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.select-class {
+  margin-right: auto;
+  width: 16%;
+}
+
+.auto-allocate-button {
+  margin-left: auto;
+  background-color: black !important;
+  color: white !important;
+  border-radius: 16px !important;
+  width: 14%;
+  height: 48px;
+}
+
+.sticky-header {
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 1;
+}
+
+.scrollable-table::-webkit-scrollbar {
+    width: 8px; /* Decrease the width of the scrollbar */
+}
+
+.scrollable-table::-webkit-scrollbar-thumb {
+    background-color: #003353c8; /* Color of the scrollbar thumb */
+    border-radius: 10px; /* Rounded corners for the scrollbar thumb */
+}
+
+.scrollable-table::-webkit-scrollbar-thumb:hover {
+    background-color: #003353; /* Color of the scrollbar thumb on hover */
+}
+
+.sticky-header {
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 1;
+}
+
+.scrollable-table .MuiTableRow-root:hover {
+    background-color: #f5f5f5;
+}

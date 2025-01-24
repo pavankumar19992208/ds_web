@@ -4,8 +4,6 @@ import { Box } from '@mui/material';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import './ImageCarousel.css';
-
-// Import local images
 import image1 from './sch_img1.jpg';
 import image2 from './sch_img2.jpg';
 import image3 from './sch_img3.jpg';
