@@ -1,18 +1,80 @@
 import React, { useState } from 'react';
-import { Select, MenuItem, Button, FormControl, InputLabel, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Grid, IconButton, Popover } from '@mui/material';
+import { Select, MenuItem, Button, FormControl, InputLabel, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Grid } from '@mui/material';
+import { useDrag, useDrop } from 'react-dnd';
 import './sectionAllocation.css';
 
+const ItemTypes = {
+    STUDENT: 'student',
+};
+
+const DraggableRow = ({ student, section, moveStudent }) => {
+    const [, ref] = useDrag({
+        type: ItemTypes.STUDENT,
+        item: { student, section },
+    });
+
+    const [, drop] = useDrop({
+        accept: ItemTypes.STUDENT,
+        drop: (item) => {
+            if (item.section !== section) {
+                moveStudent(item.student, item.section, section);
+            }
+        },
+    });
+
+    return (
+        <TableRow ref={(node) => ref(drop(node))}>
+            <TableCell>{student.rollNo}</TableCell>
+            <TableCell>{student.name}</TableCell>
+            <TableCell>{student.percentage}</TableCell>
+        </TableRow>
+    );
+};
+
 const SectionAllocation = () => {
-    const [selectedClass, setSelectedClass] = useState(''); // State to manage selected class
-    const [open, setOpen] = useState(false); // State to manage modal open/close
-    const [percentages, setPercentages] = useState({ sectionA: '', sectionB: '', sectionC: '' }); // State to manage percentages
-    const [numSections, setNumSections] = useState(''); // State to manage number of sections
-    const [hoveredRowA, setHoveredRowA] = useState(null); // State to manage hovered row for section A
-    const [hoveredRowB, setHoveredRowB] = useState(null); // State to manage hovered row for section B
-    const [hoveredRowC, setHoveredRowC] = useState(null); // State to manage hovered row for section C
-    const [anchorEl, setAnchorEl] = useState(null); // State to manage menu anchor
-    const [currentStudent, setCurrentStudent] = useState(null); // State to manage current student
-    const [currentSection, setCurrentSection] = useState(null); // State to manage current section
+    const [selectedClass, setSelectedClass] = useState('');
+    const [open, setOpen] = useState(false);
+    const [percentages, setPercentages] = useState({ sectionA: '', sectionB: '', sectionC: '' });
+    const [numSections, setNumSections] = useState('');
+    const [dummyData, setDummyData] = useState({
+        sectionA: [
+            { rollNo: 1, name: 'John Doe', percentage: 85 },
+            { rollNo: 2, name: 'Jane Smith', percentage: 90 },
+            { rollNo: 3, name: 'John Doe', percentage: 85 },
+            { rollNo: 4, name: 'Jane Smith', percentage: 90 },
+            { rollNo: 5, name: 'John Doe', percentage: 85 },
+            { rollNo: 6, name: 'Jane Smith', percentage: 90 },
+            { rollNo: 7, name: 'John Doe', percentage: 85 },
+            { rollNo: 8, name: 'Jane Smith', percentage: 90 },
+            { rollNo: 9, name: 'John Doe', percentage: 85 },
+            { rollNo: 10, name: 'Jane Smith', percentage: 90 },
+
+        ],
+        sectionB: [
+            { rollNo: 1, name: 'Alice Johnson', percentage: 88 },
+            { rollNo: 2, name: 'Bob Brown', percentage: 92 },
+            { rollNo: 3, name: 'Alice Johnson', percentage: 88 },
+            { rollNo: 4, name: 'Alice Johnson', percentage: 88 },
+            { rollNo: 5, name: 'Bob Brown', percentage: 92 },
+            { rollNo: 6, name: 'Alice Johnson', percentage: 88 },
+            { rollNo: 7, name: 'Alice Johnson', percentage: 88 },
+            { rollNo: 8, name: 'Bob Brown', percentage: 92 },
+            { rollNo: 9, name: 'Alice Johnson', percentage: 88 },
+            { rollNo: 10, name: 'Alice Johnson', percentage: 88 },
+        ],
+        sectionC: [
+            { rollNo: 1, name: 'Charlie Davis', percentage: 87 },
+            { rollNo: 2, name: 'Dana White', percentage: 91 },
+            { rollNo: 3, name: 'Alice Johnson', percentage: 88 },
+            { rollNo: 4, name: 'Bob Brown', percentage: 92 },
+            { rollNo: 5, name: 'Alice Johnson', percentage: 88 },
+            { rollNo: 6, name: 'Alice Johnson', percentage: 88 },
+            { rollNo: 7, name: 'Bob Brown', percentage: 92 },
+            { rollNo: 8, name: 'Alice Johnson', percentage: 88 },
+            { rollNo: 9, name: 'Alice Johnson', percentage: 88 },
+            { rollNo: 10, name: 'Bob Brown', percentage: 92 },
+        ],
+    });
 
     const handleClassChange = (event) => {
         setSelectedClass(event.target.value);
@@ -34,7 +96,6 @@ const SectionAllocation = () => {
     };
 
     const handleAllocate = () => {
-        // Add your allocation logic here
         console.log('Allocating with percentages:', percentages);
         handleClose();
     };
@@ -46,43 +107,16 @@ const SectionAllocation = () => {
         }
     };
 
-    const dummyData = {
-        sectionA: [
-            { rollNo: 1, name: 'John Doe', percentage: 85 },
-            { rollNo: 2, name: 'Jane Smith', percentage: 90 },
-            { rollNo: 3, name: 'Alice Johnson', percentage: 88 },
-            { rollNo: 4, name: 'Bob Brown', percentage: 92 },
-            { rollNo: 5, name: 'Jane Smith', percentage: 90 },
-            { rollNo: 6, name: 'Alice Johnson', percentage: 88 },
-            { rollNo: 7, name: 'Bob Brown', percentage: 92 },
-            { rollNo: 8, name: 'John Doe', percentage: 85 },
-            { rollNo: 9, name: 'Jane Smith', percentage: 90 },
-            { rollNo: 10, name: 'Bob Brown', percentage: 92 },
-        ],
-        sectionB: [
-            { rollNo: 1, name: 'Alice Johnson', percentage: 88 },
-            { rollNo: 2, name: 'Bob Brown', percentage: 92 },
-            { rollNo: 3, name: 'John Doe', percentage: 85 },
-            { rollNo: 4, name: 'Jane Smith', percentage: 90 },
-            { rollNo: 5, name: 'Bob Brown', percentage: 92 },
-            { rollNo: 6, name: 'John Doe', percentage: 85 },
-            { rollNo: 7, name: 'Jane Smith', percentage: 90 },
-            { rollNo: 8, name: 'Alice Johnson', percentage: 88 },
-            { rollNo: 9, name: 'Bob Brown', percentage: 92 },
-            { rollNo: 10, name: 'Jane Smith', percentage: 90 },
-        ],
-        sectionC: [
-            { rollNo: 1, name: 'Charlie Davis', percentage: 87 },
-            { rollNo: 2, name: 'Dana White', percentage: 91 },
-            { rollNo: 3, name: 'Alice Johnson', percentage: 88 },
-            { rollNo: 4, name: 'Bob Brown', percentage: 92 },
-            { rollNo: 5, name: 'Bob Brown', percentage: 92 },
-            { rollNo: 6, name: 'Alice Johnson', percentage: 88 },
-            { rollNo: 7, name: 'Bob Brown', percentage: 92 },
-            { rollNo: 8, name: 'John Doe', percentage: 85 },
-            { rollNo: 9, name: 'Jane Smith', percentage: 90 },
-            { rollNo: 10, name: 'Bob Brown', percentage: 92 },
-        ],
+    const moveStudent = (student, fromSection, toSection) => {
+        setDummyData((prevData) => {
+            const fromList = prevData[fromSection].filter((s) => s.rollNo !== student.rollNo);
+            const toList = [...prevData[toSection], student];
+            return {
+                ...prevData,
+                [fromSection]: fromList,
+                [toSection]: toList,
+            };
+        });
     };
 
     return (
@@ -95,13 +129,12 @@ const SectionAllocation = () => {
                         value={selectedClass}
                         onChange={handleClassChange}
                         label="Select Class"
-                        style={{ borderRadius: 10, height: 50 }} // Adjust the height here
+                        style={{ borderRadius: 10, height: 50 }}
                     >
                         <MenuItem value=""><em>None</em></MenuItem>
                         <MenuItem value={'class1'}>Class 1</MenuItem>
                         <MenuItem value={'class2'}>Class 2</MenuItem>
                         <MenuItem value={'class3'}>Class 3</MenuItem>
-                        {/* Add more classes as needed */}
                     </Select>
                 </FormControl>
                 <Button className='auto-allocate-button' variant="contained" color="primary" onClick={handleClickOpen}>
@@ -131,15 +164,12 @@ const SectionAllocation = () => {
                                         </TableHead>
                                         <TableBody>
                                             {dummyData.sectionA.map((student) => (
-                                                <TableRow
+                                                <DraggableRow
                                                     key={student.rollNo}
-                                                    onMouseEnter={() => setHoveredRowA(student.rollNo)}
-                                                    onMouseLeave={() => setHoveredRowA(null)}
-                                                >
-                                                    <TableCell>{student.rollNo}</TableCell>
-                                                    <TableCell>{student.name}</TableCell>
-                                                    <TableCell>{student.percentage}</TableCell>
-                                                </TableRow>
+                                                    student={student}
+                                                    section="sectionA"
+                                                    moveStudent={moveStudent}
+                                                />
                                             ))}
                                         </TableBody>
                                     </Table>
@@ -157,15 +187,12 @@ const SectionAllocation = () => {
                                         </TableHead>
                                         <TableBody>
                                             {dummyData.sectionB.map((student) => (
-                                                <TableRow
+                                                <DraggableRow
                                                     key={student.rollNo}
-                                                    onMouseEnter={() => setHoveredRowB(student.rollNo)}
-                                                    onMouseLeave={() => setHoveredRowB(null)}
-                                                >
-                                                    <TableCell>{student.rollNo}</TableCell>
-                                                    <TableCell>{student.name}</TableCell>
-                                                    <TableCell>{student.percentage}</TableCell>
-                                                </TableRow>
+                                                    student={student}
+                                                    section="sectionB"
+                                                    moveStudent={moveStudent}
+                                                />
                                             ))}
                                         </TableBody>
                                     </Table>
@@ -183,15 +210,12 @@ const SectionAllocation = () => {
                                         </TableHead>
                                         <TableBody>
                                             {dummyData.sectionC.map((student) => (
-                                                <TableRow
+                                                <DraggableRow
                                                     key={student.rollNo}
-                                                    onMouseEnter={() => setHoveredRowC(student.rollNo)}
-                                                    onMouseLeave={() => setHoveredRowC(null)}
-                                                >
-                                                    <TableCell>{student.rollNo}</TableCell>
-                                                    <TableCell>{student.name}</TableCell>
-                                                    <TableCell>{student.percentage}</TableCell>
-                                                </TableRow>
+                                                    student={student}
+                                                    section="sectionC"
+                                                    moveStudent={moveStudent}
+                                                />
                                             ))}
                                         </TableBody>
                                     </Table>
@@ -202,12 +226,12 @@ const SectionAllocation = () => {
                 </Table>
             </TableContainer>
 
-            <Dialog open={open} onClose={handleClose}>
+            <Dialog open={open} onClose={handleClose} PaperProps={{ sx: { width: '480px', borderRadius: '10px' } }}>
                 <DialogTitle>Auto Allocate</DialogTitle>
                 <DialogContent>
                     <Grid container spacing={2}>
                         <Grid item xs={6}>
-                            <FormControl variant="outlined" fullWidth margin="normal">
+                            <FormControl variant="outlined" fullWidth margin="normal" size="small" >
                                 <InputLabel id="select-class-modal-label">Select Class</InputLabel>
                                 <Select
                                     labelId="select-class-modal-label"
@@ -219,7 +243,6 @@ const SectionAllocation = () => {
                                     <MenuItem value={'class1'}>Class 1</MenuItem>
                                     <MenuItem value={'class2'}>Class 2</MenuItem>
                                     <MenuItem value={'class3'}>Class 3</MenuItem>
-                                    {/* Add more classes as needed */}
                                 </Select>
                             </FormControl>
                         </Grid>
@@ -232,6 +255,7 @@ const SectionAllocation = () => {
                                 value={numSections}
                                 onChange={handleNumSectionsChange}
                                 inputProps={{ min: 1, maxLength: 1 }}
+                                size="small"
                             />
                         </Grid>
                     </Grid>
@@ -243,6 +267,7 @@ const SectionAllocation = () => {
                         value={percentages.sectionA}
                         onChange={handlePercentageChange('sectionA')}
                         inputProps={{ max: 100 }}
+                        size="small"
                     />
                     <TextField
                         margin="normal"
@@ -252,6 +277,7 @@ const SectionAllocation = () => {
                         value={percentages.sectionB}
                         onChange={handlePercentageChange('sectionB')}
                         inputProps={{ max: 100 }}
+                        size="small"
                     />
                     <TextField
                         margin="normal"
@@ -261,13 +287,14 @@ const SectionAllocation = () => {
                         value={percentages.sectionC}
                         onChange={handlePercentageChange('sectionC')}
                         inputProps={{ max: 100 }}
+                        size="small"
                     />
                 </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleClose} color="secondary">
+                <DialogActions className='dialog-actions'>
+                    <Button onClick={handleClose} className='dialog-cancel-button' sx={{ textTransform: 'none' }}>
                         Cancel
                     </Button>
-                    <Button onClick={handleAllocate} color="primary">
+                    <Button onClick={handleAllocate} className='dialog-submit-button' sx={{ textTransform: 'none' }}>
                         Allocate
                     </Button>
                 </DialogActions>

@@ -1,6 +1,8 @@
-import './App.css';
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { GlobalStateProvider } from './GlobalStateContext';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 import P2pHeader from './components/P2pHeader/P2pHeader';
 import WelcomeBoard from './components/WelcomeBoard/WelcomeBoard';
 import SchoolLogin from './components/P2pHeader/SchoolSegment/SchoolLogin';
@@ -30,32 +32,34 @@ function App() {
   return (
     <GlobalStateProvider>
       <Router>
-        <Routes>
-          <Route path="/" element={<WelcomeBoard />} />
-          <Route path="/p2pheader" element={<P2pHeader />} />
-          <Route path="/schlogin" element={<SchoolLogin />} />
-          <Route path="/register-school" element={<SchoolRegistration />} />
-          <Route path="/school_dashboard" element={<SchoolDashboard />} />
-          <Route path="/staff-enroll" element={<StaffEnrollForm />} />
-          <Route path="/student-enroll" element={<StudentEnrollForm />} />
-          <Route path="/student-details" element={<StudentDetails />} />
-          <Route path="/enroll/details" element={<StaffPrimaryForm />} />
-          {/* <Route path="/enroll/qualification" element={<QualificationForm />} /> */}
-          <Route path="/attach-document" element={<AttachDocument />} />
-          <Route path="/career-guidance" element={<CareerGuidance />} />
-          <Route path="/school-internal-data" element={<SchoolInternalData />} />
-          <Route path="/staff-payroll" element={<StaffPayroll />} />
-          <Route path="/subject-allocation" element={<SubjectAllocation/>}/>
-          <Route path="/class-timetable" element={<ClassTimeTable/>}/>
-          <Route path="/upload-products" element={<UploadProducts/>}/>
-          <Route path="/ecommerce-dashboard" element={<EcommerceDashboard/>}/>
-          <Route path="/ecom-dash" element={<EcomDash/>}/>
-          <Route path="/products" element={<ProductsList/>}/>
-          <Route path="/product-overview/:productId" element={<ProductOverview />} />
-          <Route path="/cart" element={<CartPage />} />
-          <Route path= "/leave-approval" element={<LeaveApproval/>} />
-          <Route path="/update-staff-payroll" element={<PayrollForm />} />
+        <DndProvider backend={HTML5Backend}>
+          <Routes>
+            <Route path="/" element={<WelcomeBoard />} />
+            <Route path="/p2pheader" element={<P2pHeader />} />
+            <Route path="/schlogin" element={<SchoolLogin />} />
+            <Route path="/register-school" element={<SchoolRegistration />} />
+            <Route path="/school_dashboard" element={<SchoolDashboard />} />
+            <Route path="/staff-enroll" element={<StaffEnrollForm />} />
+            <Route path="/student-enroll" element={<StudentEnrollForm />} />
+            <Route path="/student-details" element={<StudentDetails />} />
+            <Route path="/enroll/details" element={<StaffPrimaryForm />} />
+            {/* <Route path="/enroll/qualification" element={<QualificationForm />} /> */}
+            <Route path="/attach-document" element={<AttachDocument />} />
+            <Route path="/career-guidance" element={<CareerGuidance />} />
+            <Route path="/school-internal-data" element={<SchoolInternalData />} />
+            <Route path="/staff-payroll" element={<StaffPayroll />} />
+            <Route path="/subject-allocation" element={<SubjectAllocation/>}/>
+            <Route path="/class-timetable" element={<ClassTimeTable/>}/>
+            <Route path="/upload-products" element={<UploadProducts/>}/>
+            <Route path="/ecommerce-dashboard" element={<EcommerceDashboard/>}/>
+            <Route path="/ecom-dash" element={<EcomDash/>}/>
+            <Route path="/products" element={<ProductsList/>}/>
+            <Route path="/product-overview/:productId" element={<ProductOverview />} />
+            <Route path="/cart" element={<CartPage />} />
+            <Route path= "/leave-approval" element={<LeaveApproval/>} />
+            <Route path="/update-staff-payroll" element={<PayrollForm />} />
           </Routes>
+        </DndProvider>
       </Router>
     </GlobalStateProvider>
   );
