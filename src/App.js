@@ -11,6 +11,7 @@ import SchoolDashboard from './components/P2pHeader/SchoolSegment/schooldashboar
 import StaffEnrollForm from './components/P2pHeader/SchoolSegment/schooldashboard/Cards/staff-enroll-form/StaffPrimaryForm/staffPrimaryForm';
 import StudentEnrollForm from './components/P2pHeader/SchoolSegment/schooldashboard/Cards/student-enroll-form/PrimaryForm/primaryForm';
 import StudentDetails from './components/P2pHeader/SchoolSegment/schooldashboard/Cards/student-details/studentDetails';
+import StaffDetails from './components/P2pHeader/SchoolSegment/schooldashboard/Cards/staff-details/staffDetails';
 import StaffPrimaryForm from './components/P2pHeader/SchoolSegment/schooldashboard/Cards/staff-enroll-form/StaffPrimaryForm/staffPrimaryForm';
 // import QualificationForm from './components/P2pHeader/SchoolSegment/schooldashboard/Cards/staff-enroll-form/StaffProfessionalInfo/staffProfessionalInfo';
 import AttachDocument from './components/P2pHeader/SchoolSegment/schooldashboard/Sidebar/attach-document/attachDocument';
@@ -42,6 +43,7 @@ function App() {
             <Route path="/staff-enroll" element={<StaffEnrollForm />} />
             <Route path="/student-enroll" element={<StudentEnrollForm />} />
             <Route path="/student-details" element={<StudentDetails />} />
+            <Route path="/staff-details" element={<StaffDetails />} />
             <Route path="/enroll/details" element={<StaffPrimaryForm />} />
             {/* <Route path="/enroll/qualification" element={<QualificationForm />} /> */}
             <Route path="/attach-document" element={<AttachDocument />} />

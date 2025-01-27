@@ -5,7 +5,6 @@ import Sidebar from '../../Sidebar/Sidebar';
 import { GlobalStateContext } from '../../../../../../GlobalStateContext';
 import ViewStudents from './view-students/viewStudents';
 import SectionAllocation from './section-allocation/sectionAllocation';
-
 import './studentDetails.css';
 
 const StudentDetails = () => {

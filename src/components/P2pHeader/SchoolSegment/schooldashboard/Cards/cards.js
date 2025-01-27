@@ -52,6 +52,10 @@ const Cards = ({ studentCount, staffCount, schoolName, schoolLogo }) => {
     fetchSchoolInfo();
   };
 
+  const handleStaffDetails = () => {
+    navigate('/staff-details');
+  };
+
   const handleStaffPayroll = () => {
     navigate('/staff-payroll');
   };
@@ -79,7 +83,7 @@ const Cards = ({ studentCount, staffCount, schoolName, schoolLogo }) => {
         <p className="count">{Math.floor(staffCount)}</p>
         <div className="button-group">
           <button id='enroll-btn' onClick={handleStaffEnrollClick}>Enroll</button>
-          <button>Details</button>
+          <button onClick={handleStaffDetails}>Details</button>
         </div>
       </div>
       <div className="card">
