@@ -63,6 +63,10 @@ const Cards = ({ studentCount, staffCount, schoolName, schoolLogo }) => {
   const handleUpdateSchoolData = () => {
     navigate('/school-internal-data');
   };
+  const handleUpdateSchoolDataView = () => {
+    navigate('/school-internal-data-view');
+  };
+
 
   const handleClassTimetableSchedule = () => {
     navigate('/class-timetable');
@@ -90,7 +94,7 @@ const Cards = ({ studentCount, staffCount, schoolName, schoolLogo }) => {
         <h2>School Internal Data</h2>
         <div className="button-group">
           <button id='enroll-btn' onClick={handleUpdateSchoolData}>Update</button>
-          <button>View</button>
+          <button onClick={handleUpdateSchoolDataView}>View</button>
         </div>
       </div>
       <div className="card">
