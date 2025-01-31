@@ -16,7 +16,6 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Sidebar from '../Sidebar';
 import Navbar from '../../Navbar/Navbar';
 import { GlobalStateContext } from '../../../../../../GlobalStateContext';
-import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -58,7 +57,6 @@ export default function LeaveApprove() {
   const [rows, setRows] = React.useState(initialRows);
   const [open, setOpen] = React.useState(false);
   const [selectedRow, setSelectedRow] = React.useState(null);
-  const navigate = useNavigate();
 
   const handleOpen = (row) => {
     setSelectedRow(row);
@@ -102,8 +100,7 @@ export default function LeaveApprove() {
                 {rows.map((row, idx) => (
                   <StyledTableRow key={row.id}>
                     <StyledTableCell component="th" scope="row">
-                      <a href="#" onClick={() => handleOpen(row)}>{row.id}</a>
-                    </StyledTableCell>
+                      <button onClick={() => handleOpen(row)}>{row.id}</button>                    </StyledTableCell>
                     <StyledTableCell>{row.fullName}</StyledTableCell>
                     <StyledTableCell>{row.mobileNumber}</StyledTableCell>
                     <StyledTableCell>{row.leaveType}</StyledTableCell>

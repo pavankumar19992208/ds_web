@@ -1,7 +1,7 @@
 import React, {useContext, useState} from 'react';
 import Navbar from '../../Navbar/Navbar';
 import Sidebar from '../../Sidebar/Sidebar';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Menu, MenuItem, TextField, Button} from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Menu, MenuItem, Button} from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { GlobalStateContext } from '../../../../../../GlobalStateContext';
 import './staffDetails.css';
@@ -17,18 +17,15 @@ const StaffDetails = () => {
             { s_no:6, Staff_ID: 6, name: 'Staff 6', qualification: 'Diploma', experience: '8 Years' },
         ]; // Example data
         const [anchorEl, setAnchorEl] = useState(null);
-        const [selectedStaff, setSelectedStaff] = useState(null);
         const [searchQuery, setSearchQuery] = useState('');
         const [filteredStaff, setFilteredStaff] = useState(staff);
 
         const handleClick = (event, staff) => {
             setAnchorEl(event.currentTarget);
-            setSelectedStaff(staff);
         };
 
         const handleClose = () => {
             setAnchorEl(null);
-            setSelectedStaff(null);
         };
 
         const handleSearchChange = (event) => {

@@ -9,7 +9,6 @@ const P2pHeader = () => {
   const [isHovered, setIsHovered] = useState({});
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [isMenuOpen, setIsMenuOpen] = useState(false); // State to toggle the menu
-  const [showLoginPopup, setShowLoginPopup] = useState(false); // State to control the visibility of the LoginPopup
   const navigate = useNavigate();
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
@@ -17,10 +16,6 @@ const P2pHeader = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-    // Function to toggle the LoginPopup visibility
-    const toggleLoginPopup = () => {
-      setShowLoginPopup(!showLoginPopup);
-    };
 
   const P2pHeaderStyle = {
     maxHeight: windowWidth < 768 ? '20vh' : '10vh',

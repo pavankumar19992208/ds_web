@@ -7,7 +7,6 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import EcommerceNavbar from '../EcommerceNavbar/ecommerceNavbar';
 import Categories from '../Categories/categories';
-import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
 const dashboardStyle = {
   fontFamily: 'Arial, sans-serif',
@@ -19,7 +18,6 @@ const contentStyle = {
 };
 
 function EcommerceDashboard() {
-  const [products, setProducts] = useState([]);
   const [demandedProducts, setDemandedProducts] = useState([]);
   const navigate = useNavigate();
 
@@ -28,7 +26,7 @@ function EcommerceDashboard() {
       try {
         const response = await fetch("http://localhost:8001/products");
         const data = await response.json();
-        setProducts(data);
+        setDemandedProducts(data);
       } catch (error) {
         console.error("Error fetching products:", error);
       }
@@ -47,21 +45,6 @@ function EcommerceDashboard() {
     fetchProducts();
     fetchDemandedProducts();
   }, []);
-
-  const updateImageUrl = async (productId, imageUrl) => {
-    try {
-      const storage = getStorage();
-      const imageRef = ref(storage, imageUrl);
-      const url = await getDownloadURL(imageRef);
-      setProducts((prevProducts) =>
-        prevProducts.map((product) =>
-          product.id === productId ? { ...product, imageUrls: [url] } : product
-        )
-      );
-    } catch (error) {
-      console.error("Error updating image URL:", error);
-    }
-  };
 
   const settings = {
     dots: true,
@@ -107,7 +90,7 @@ function EcommerceDashboard() {
           <Grid item xs={6}>
             {demandedProducts.length > 0 && (
               <div className='boxes' key={demandedProducts[0].id} style={{ backgroundColor: '#fff', height: '416px', borderRadius: '12px', overflow: 'hidden', position: 'relative' }} onClick={() => handleGridClick(demandedProducts[0].id)}>
-                {demandedProducts[0].imageUrls && demandedProducts[0].imageUrls.length > 0 ? (
+                {Array.isArray(demandedProducts[0].imageUrls) && demandedProducts[0].imageUrls.length > 0 ? (
                   <Slider {...settings} className="custom-slider">
                     {demandedProducts[0].imageUrls.map((url, index) => (
                       <div key={index}>

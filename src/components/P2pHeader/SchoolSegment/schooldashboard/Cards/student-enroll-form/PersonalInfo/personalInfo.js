@@ -3,10 +3,7 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
-import InputLabel from '@mui/material/InputLabel';
 import ListItemText from '@mui/material/ListItemText';
-import FormControl from '@mui/material/FormControl';
 import { makeStyles } from '@mui/styles';
 import { storage } from '../../../../../../../components/connections/firebase';
 import { ref, uploadString, getDownloadURL } from 'firebase/storage';
@@ -113,16 +110,6 @@ export default function DetailsForm({ formData, setFormData }) {
     }
   };
 
-  const handleBlur = (event) => {
-    const { name } = event.target;
-    if (errors[name]) {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        [name]: '',
-      }));
-    }
-  };
-
   const handleFileChange = async (event) => {
     const { name, files } = event.target;
     const file = files[0];
@@ -199,13 +186,6 @@ export default function DetailsForm({ formData, setFormData }) {
         otherLanguage: 'Invalid alphabetic input',
       }));
     }
-  };
-
-  const handleOtherLanguageBlur = () => {
-    setErrors((prevErrors) => ({
-      ...prevErrors,
-      otherLanguage: '',
-    }));
   };
 
   const handleOtherGenderChange = (event) => {

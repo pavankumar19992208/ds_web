@@ -32,7 +32,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function DocumentsUpload({ formData, setFormData }) {
   const classes = useStyles();
-  const [open, setOpen] = useState(false);
   const [uploadedDoc, setUploadedDoc] = useState({});
   const [fileNames, setFileNames] = useState({});
   const [showAlert, setShowAlert] = useState(false);

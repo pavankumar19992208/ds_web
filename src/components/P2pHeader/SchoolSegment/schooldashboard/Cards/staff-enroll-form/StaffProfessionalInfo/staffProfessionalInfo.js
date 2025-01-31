@@ -15,7 +15,6 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
-import Typography from '@mui/material/Typography';
 import { GlobalStateContext } from '../../../../../../../GlobalStateContext';
 import BaseUrl from '../../../../../../../config';
 import HashLoader from 'react-spinners/HashLoader'; // Import the loader component

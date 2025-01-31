@@ -36,34 +36,7 @@ import { styled } from '@mui/material/styles';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@mui/styles';
 import HashLoader from 'react-spinners/HashLoader';
-import { useTheme } from '@mui/material/styles';
 import './staffPrimaryForm.css';
-
-const QontoConnector = styled(StepConnector)(({ theme }) => ({
-  [`&.${stepConnectorClasses.alternativeLabel}`]: {
-    top: 10,
-    left: 'calc(-50% + 16px)',
-    right: 'calc(50% + 16px)',
-  },
-  [`&.${stepConnectorClasses.active}`]: {
-    [`& .${stepConnectorClasses.line}`]: {
-      borderColor: '#784af4',
-    },
-  },
-  [`&.${stepConnectorClasses.completed}`]: {
-    [`& .${stepConnectorClasses.line}`]: {
-      borderColor: '#784af4',
-    },
-  },
-  [`& .${stepConnectorClasses.line}`]: {
-    borderColor: '#eaeaf0',
-    borderTopWidth: 3,
-    borderRadius: 1,
-    ...theme.applyStyles('dark', {
-      borderColor: theme.palette.grey[800],
-    }),
-  },
-}));
 
 const QontoStepIconRoot = styled('div')(({ theme }) => ({
   color: '#eaeaf0',
@@ -268,7 +241,6 @@ function getStepContent(step, formData, setFormData, schoolInfo, expandedDoc, se
 
 export default function StaffPrimaryForm() {
   const classes = useStyles();
-  const theme = useTheme();
   const [activeStep, setActiveStep] = useState(0);
   const { globalData } = useContext(GlobalStateContext);
   const schoolInfo = globalData.schoolInfo || {};
@@ -323,12 +295,12 @@ export default function StaffPrimaryForm() {
     },
     documents: [],
   });
-  const [errors, setErrors] = useState({});
+  const [setErrors] = useState({});
   const [expandedDoc, setExpandedDoc] = useState(null);
   const [successDialogOpen, setSuccessDialogOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
-  const [selectedDoc, setSelectedDoc] = useState(null);
+  const [selectedDoc] = useState(null);
   const [Password, setPassword] = useState('');
   const [UserId, setUserId] = useState('');
 

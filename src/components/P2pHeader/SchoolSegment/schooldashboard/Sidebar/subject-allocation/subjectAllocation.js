@@ -3,9 +3,8 @@ import { GlobalStateContext } from '../../../../../../GlobalStateContext';
 import Navbar from '../../Navbar/Navbar';
 import Sidebar from '../../Sidebar/Sidebar';
 import BaseUrl from '../../../../../../config';
-import { Grid, Card, CardContent, Typography, Select, MenuItem, Box, IconButton, Button, Tabs, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
+import { Typography, Select, MenuItem, Box, IconButton, Button, Tabs, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import CloseIcon from '@mui/icons-material/Close';
 import PropTypes from 'prop-types';
 import './subjectAllocation.css';
 
@@ -51,14 +50,8 @@ const SubjectAllocation = () => {
   const [allottedTeachers, setAllottedTeachers] = useState({});
   const [allottedTeacherIds, setAllottedTeacherIds] = useState({});
   const [tabValue, setTabValue] = useState(0);
-  const [grades, setGrades] = useState([]);
   const [subjects, setSubjects] = useState([]);
   const [classes, setClasses] = useState([]);
-  const [loading, setLoading] = useState(false);
-
-  const handleGradeChange = (event) => {
-    fetchTeachers(event.target.value, selectedSubject);
-  };
 
   const handleSubjectChange = (event) => {
     const subject = event.target.value;
@@ -91,17 +84,6 @@ const SubjectAllocation = () => {
         return rest;
       }
       return { ...prev, [grade]: updatedGrade };
-    });
-  };
-
-  const handleCloseCard = (grade) => {
-    setAllottedTeachers((prev) => {
-      const { [grade]: _, ...rest } = prev;
-      return rest;
-    });
-    setAllottedTeacherIds((prev) => {
-      const { [grade]: _, ...rest } = prev;
-      return rest;
     });
   };
 
@@ -138,29 +120,6 @@ const SubjectAllocation = () => {
     }
   };
 
-  const fetchSubjects = async () => {
-    try {
-      const response = await fetch(`${BaseUrl}/subjects`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ SchoolId: globalData.data.SCHOOL_ID }),
-      });
-
-      if (!response.ok) {
-        const text = await response.text();
-        console.error('Error fetching subjects:', text);
-        throw new Error('Failed to fetch subjects');
-      }
-
-      const data = await response.json();
-      setSubjects(data.subjects || []);
-    } catch (error) {
-      console.error('Error fetching subjects:', error);
-    }
-  };
-
   useEffect(() => {
     const fetchClasses = async () => {
       try {
@@ -182,6 +141,29 @@ const SubjectAllocation = () => {
         setClasses(data.classes || []);
       } catch (error) {
         console.error('Error fetching classes:', error);
+      }
+    };
+
+    const fetchSubjects = async () => {
+      try {
+        const response = await fetch(`${BaseUrl}/subjects`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ SchoolId: globalData.data.SCHOOL_ID }),
+        });
+
+        if (!response.ok) {
+          const text = await response.text();
+          console.error('Error fetching subjects:', text);
+          throw new Error('Failed to fetch subjects');
+        }
+
+        const data = await response.json();
+        setSubjects(data.subjects || []);
+      } catch (error) {
+        console.error('Error fetching subjects:', error);
       }
     };
 

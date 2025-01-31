@@ -57,8 +57,7 @@ const initialRows = [
 export default function StaffPayroll() {
   const { globalData } = React.useContext(GlobalStateContext);
   const [rows, setRows] = React.useState(initialRows);
-  const [isEditing, setIsEditing] = React.useState(false);
-  const [editIdx, setEditIdx] = React.useState(-1);
+  const [editIdx] = React.useState(-1);
   const [open, setOpen] = React.useState(false);
   const [selectedRow, setSelectedRow] = React.useState(null);
   const navigate = useNavigate();
@@ -70,20 +69,6 @@ export default function StaffPayroll() {
 
   const handleClose = () => setOpen(false);
 
-  const handleEdit = (idx) => {
-    setEditIdx(idx);
-    setIsEditing(true);
-  };
-
-  const handleSave = () => {
-    setEditIdx(-1);
-    setIsEditing(false);
-  };
-
-  const handleDelete = (idx) => {
-    const updatedRows = rows.filter((row, i) => i !== idx);
-    setRows(updatedRows);
-  };
 
   const handleChange = (e, name, idx) => {
     const { value } = e.target;
@@ -206,8 +191,7 @@ export default function StaffPayroll() {
                 {rows.map((row, idx) => (
                   <StyledTableRow key={row.staffId}>
                     <StyledTableCell component="th" scope="row">
-                      <a href="#" onClick={() => handleOpen(row)}>{row.staffId}</a>
-                    </StyledTableCell>
+                      <button onClick={() => handleOpen(row)}>{row.staffId}</button>                    </StyledTableCell>
                     <StyledTableCell>
                       {editIdx === idx ? (
                         <input

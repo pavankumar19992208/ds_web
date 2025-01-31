@@ -38,31 +38,6 @@ import HashLoader from 'react-spinners/HashLoader';
 import { validateAlphabets, validateNumbers } from '../PersonalInfo/personalInfo';
 
 const validateEmail = (value) => /^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(value);
-const QontoConnector = styled(StepConnector)(({ theme }) => ({
-  [`&.${stepConnectorClasses.alternativeLabel}`]: {
-    top: 10,
-    left: 'calc(-50% + 16px)',
-    right: 'calc(50% + 16px)',
-  },
-  [`&.${stepConnectorClasses.active}`]: {
-    [`& .${stepConnectorClasses.line}`]: {
-      borderColor: '#784af4',
-    },
-  },
-  [`&.${stepConnectorClasses.completed}`]: {
-    [`& .${stepConnectorClasses.line}`]: {
-      borderColor: '#784af4',
-    },
-  },
-  [`& .${stepConnectorClasses.line}`]: {
-    borderColor: '#eaeaf0',
-    borderTopWidth: 3,
-    borderRadius: 1,
-    ...theme.applyStyles('dark', {
-      borderColor: theme.palette.grey[800],
-    }),
-  },
-}));
 
 const QontoStepIconRoot = styled('div')(({ theme }) => ({
   color: '#eaeaf0',
@@ -244,11 +219,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const personalInfoKeys = ['StudentName', 'DOB', 'Gender', 'Photo', 'Grade', 'PreviousSchool', 'languages', 'Religion', 'Category', 'Nationality', 'AadharNumber'];
-const guardianInfoKeys = ['MotherName', 'FatherName', 'GuardianName', 'MobileNumber', 'Email', 'EmergencyContact', 'ParentOccupation', 'ParentQualification'];
-const academicInfoKeys = ['PreviousPercentage', 'BloodGroup', 'MedicalDisability'];
-const requiredDocuments = ['aadhar', 'tc', 'rationcard', 'income', 'birth'];
-
 function getStepContent(step, formData, setFormData, handleDocumentClick, expandedDoc, setExpandedDoc, classes) {
   switch (step) {
     case 0:
@@ -312,31 +282,13 @@ export default function StudentEnrollForm() {
     academicInfo: {},
     documents: [],
   });
-  const [open, setOpen] = useState(false);
-  const [selectedDoc, setSelectedDoc] = useState(null);
-  const [showDocuments, setShowDocuments] = useState(false);
+  const [ setOpen] = useState(false);
+  const [ setSelectedDoc] = useState(null);
   const [expandedDoc, setExpandedDoc] = useState(null);
   const [successDialogOpen, setSuccessDialogOpen] = useState(false);
   const [loading, setLoading] = useState(false); // Add loading state
   const [UserId, setUserId] = useState('');
   const [Password, setPassword] = useState('');
-
-  const validateStep = () => {
-    if (activeStep === 0) {
-      const { StudentName, DOB, Gender, Grade, AadharNumber } = formData.personalInfo;
-      return StudentName && DOB && Gender && Grade && AadharNumber;
-    } else if (activeStep === 1) {
-      const { MotherName, FatherName, ParentOccupation, ParentQualification, currentAddress, permanentAddress, EmergencyContact, MobileNumber, Email } = formData.guardianInfo;
-      return MotherName && FatherName && ParentOccupation && ParentQualification && EmergencyContact && MobileNumber &&
-        currentAddress.line1 && currentAddress.city && currentAddress.district && currentAddress.state && currentAddress.pincode &&
-        permanentAddress.line1 && permanentAddress.city && permanentAddress.district && permanentAddress.state && permanentAddress.pincode &&
-        validateEmail(Email);
-    } else if (activeStep === 2) {
-      const { BloodGroup } = formData.academicInfo;
-      return BloodGroup;
-    }
-    return true;
-  };
 
   const validateForm = () => {
     const errors = {};
@@ -634,10 +586,6 @@ export default function StudentEnrollForm() {
       const handleDocumentClick = (doc) => {
         setSelectedDoc(doc);
         setOpen(true);
-      };
-      
-            const handleClose = () => {
-        setOpen(false);
       };
       
       const handleSuccessClose = () => {

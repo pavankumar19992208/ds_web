@@ -216,12 +216,6 @@ const SchoolInternalData = () => {
     }
   };
 
-  const handleSectionsChange = (level, value) => {
-    setSections({
-      ...sections,
-      [level]: value,
-    });
-  };
 
   const calculateTotalAmount = () => {
     return feeStructure.reduce((total, fee) => {
@@ -385,9 +379,6 @@ const SchoolInternalData = () => {
     setSuccessDialogOpen(false);
   };
 
-  const handleEnrollMore = () => {
-    // Logic for enrolling more
-  };
 
   const statesOfIndia = [
     'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh',
