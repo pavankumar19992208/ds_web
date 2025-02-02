@@ -143,9 +143,9 @@ const ProductOverview = () => {
               <span dangerouslySetInnerHTML={{ __html: renderDescription() }} />
             </p>
             {product.description.length > 300 && (
-              <a href="#" onClick={toggleDescription}>
+                <button onClick={toggleDescription} style={{ background: 'none', border: 'none', color: 'blue', textDecoration: 'underline', cursor: 'pointer' }}>
                 {isDescriptionExpanded ? 'less' : 'more'}
-              </a>
+              </button>
             )}
           </div>
             <div className="btns">

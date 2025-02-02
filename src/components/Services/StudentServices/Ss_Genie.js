@@ -9,9 +9,9 @@ function SsGenie() {
       </div>
       <div className="side-by-side">
 <div className="item">
-  <marquee behavior="scroll" direction="left">
+  <div behavior="scroll" direction="left">
     <img style={{width:'90%', height:'400px', paddingBottom:'80px'}} src={genieimg} alt="Description" />
-  </marquee>
+  </div>
 </div>
       </div>
     </div>

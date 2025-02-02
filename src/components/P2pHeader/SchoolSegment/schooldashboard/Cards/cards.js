@@ -53,7 +53,7 @@ const Cards = ({ studentCount, staffCount, schoolName, schoolLogo }) => {
   };
 
   const handleStaffDetails = () => {
-    navigate('/staff-details');
+    navigate('/staff-details', { state: { schoolId } });
   };
 
   const handleStaffPayroll = () => {

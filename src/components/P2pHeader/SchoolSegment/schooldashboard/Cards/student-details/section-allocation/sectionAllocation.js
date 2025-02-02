@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Select, MenuItem, Button, FormControl, InputLabel, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Grid } from '@mui/material';
 import { useDrag, useDrop } from 'react-dnd';
+import BaseUrl from '../../../../../../../config';
 import './sectionAllocation.css';
 
 const ItemTypes = {
@@ -32,10 +33,11 @@ const DraggableRow = ({ student, section, moveStudent }) => {
 };
 
 const SectionAllocation = () => {
-    const [selectedClass, setSelectedClass] = useState('');
     const [open, setOpen] = useState(false);
     const [percentages, setPercentages] = useState({ sectionA: '', sectionB: '', sectionC: '' });
     const [numSections, setNumSections] = useState('');
+    const [grades, setGrades] = useState([]); // State to manage grades
+    const [selectedClass, setSelectedClass] = useState('Select Class'); // State to manage selected class
     const [dummyData, setDummyData] = useState({
         sectionA: [
             { rollNo: 1, name: 'John Doe', percentage: 85 },
@@ -75,6 +77,32 @@ const SectionAllocation = () => {
             { rollNo: 10, name: 'Bob Brown', percentage: 92 },
         ],
     });
+
+    useEffect(() => {
+        const fetchGrades = async () => {
+          try {
+            const response = await fetch(`${BaseUrl}/grades`, {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            });
+    
+            if (!response.ok) {
+              const text = await response.text();
+              console.error('Error fetching grades:', text);
+              throw new Error('Failed to fetch grades');
+            }
+    
+            const data = await response.json();
+            setGrades(data.grades || []);
+          } catch (error) {
+            console.error('Error fetching grades:', error);
+          }
+        };
+    
+        fetchGrades();
+      }, []);
 
     const handleClassChange = (event) => {
         setSelectedClass(event.target.value);
@@ -123,18 +151,11 @@ const SectionAllocation = () => {
         <div className='section-allocation-container'>
             <div className='section-allocation-header'>
                 <FormControl variant="outlined" className="select-class-dropdown">
-                    <InputLabel id="select-class-label">Select Class</InputLabel>
-                    <Select
-                        labelId="select-class-label"
-                        value={selectedClass}
-                        onChange={handleClassChange}
-                        label="Select Class"
-                        style={{ borderRadius: 10, height: 50 }}
-                    >
-                        <MenuItem value=""><em>None</em></MenuItem>
-                        <MenuItem value={'class1'}>Class 1</MenuItem>
-                        <MenuItem value={'class2'}>Class 2</MenuItem>
-                        <MenuItem value={'class3'}>Class 3</MenuItem>
+                    <Select className="custom-select" value={selectedClass} onChange={handleClassChange} displayEmpty>
+                      <MenuItem value="Select Class">Select Class</MenuItem>
+                      {grades.sort().map((grade, index) => (
+                        <MenuItem key={index} value={grade}>{grade}</MenuItem>
+                      ))}
                     </Select>
                 </FormControl>
                 <Button className='auto-allocate-button' variant="contained" color="primary" onClick={handleClickOpen}>

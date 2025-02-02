@@ -54,4 +54,12 @@
   border: 1px solid #ccc !important;
   background: #fff !important;
 }
-
+/* .loading-animation {
+  position: fixed;
+  top: 70%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+} */

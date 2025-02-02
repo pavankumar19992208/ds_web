@@ -31,3 +31,10 @@
   height: 28px;
   margin: 0 10px;
 }
+
+.loading-animation {
+  margin-top: 5%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
