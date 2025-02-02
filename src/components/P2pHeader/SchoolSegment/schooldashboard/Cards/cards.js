@@ -4,12 +4,19 @@ import { GlobalStateContext } from '../../../../../GlobalStateContext';
 import './cards.css';
 import BaseUrl from '../../../../../config';
 import HashLoader from 'react-spinners/HashLoader';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import Button from '@mui/material/Button';
+import GroupIcon from '@mui/icons-material/Group';
+import PersonIcon from '@mui/icons-material/Person';
 
 const Cards = ({ studentCount, staffCount, schoolName, schoolLogo }) => {
   const navigate = useNavigate();
   const { globalData, setGlobalData } = useContext(GlobalStateContext);
   const schoolId = globalData.data.SCHOOL_ID; // Assuming schoolId is stored in globalData
   const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false);
 
   const fetchSchoolInfo = async () => {
       setLoading(true);
@@ -41,7 +48,7 @@ const Cards = ({ studentCount, staffCount, schoolName, schoolLogo }) => {
   };
 
   const handleStudentEnrollClick = () => {
-    navigate('/student-enroll');
+    setOpen(true);
   };
 
   const handleStudentDetails = () => {
@@ -67,9 +74,16 @@ const Cards = ({ studentCount, staffCount, schoolName, schoolLogo }) => {
     navigate('/school-internal-data-view');
   };
 
-
   const handleClassTimetableSchedule = () => {
     navigate('/class-timetable');
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleAddSingleStudent = () => {
+    navigate('/student-enroll');
   };
 
   return (
@@ -122,6 +136,42 @@ const Cards = ({ studentCount, staffCount, schoolName, schoolLogo }) => {
           <HashLoader color="#ffffff" size={50} />
         </div>
       )}
+      <Dialog 
+        open={open} 
+        onClose={handleClose} 
+        className="dialogContainer" 
+        PaperProps={{
+          style: {
+            borderRadius: 15, // Add border-radius here
+          },
+        }}
+      >
+        <DialogContent className='enroll-box'>
+          <div className="dialogButtonGroup">
+            <Button
+              color="primary"
+              startIcon={<PersonIcon />}
+              onClick={handleAddSingleStudent}
+              className="addSingleButton"
+            >
+              Add Single Student
+            </Button>
+            <Button
+              color="secondary"
+              startIcon={<GroupIcon />}
+              className="addBulkButton"
+            >
+              Add Bulk Students
+            </Button>
+          </div>
+          <DialogActions>
+          <Button onClick={handleClose} color="primary" className="closeButton">
+            Cancel
+          </Button>
+          </DialogActions>
+        </DialogContent>
+
+      </Dialog>
     </div>
   );
 };

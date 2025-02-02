@@ -85,6 +85,80 @@
     border:1px solid #0E5E9D ;
   }
   
+  /* Existing styles... */
+  
+  .dialogContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+  .enroll-box{
+    padding: 12px !important;
+
+  }
+    
+  .dialogButtonGroup {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    margin-top: 20px;
+  }
+
+  .addSingleButton, .addBulkButton {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 10px;
+}
+
+.addSingleButton .MuiButton-startIcon, .addBulkButton .MuiButton-startIcon {
+    margin-bottom: 5px; /* Adjust the spacing between the icon and text */
+}
+
+.addSingleButton .MuiButton-startIcon svg, .addBulkButton .MuiButton-startIcon svg {
+  font-size: 5rem; /* Increase the size of the icons */
+  color: #003353;
+}
+
+  .addSingleButton {
+    width: 45%;
+    border: 1px solid #0E5E9D !important;
+    border-radius: 16px !important;
+    padding: 16px !important;
+    background-color: none !important;
+    color: #003353 !important;
+    font-weight: 600 !important;
+  }
+  .addBulkButton {
+    width: 45%;
+    border: 1px solid #0E5E9D !important;
+    border-radius: 16px !important;
+    padding: 16px !important;
+    background-color: none !important;
+    color: #003353 !important;
+    font-weight: 600 !important;
+  }
+  
+  .dialogButton {
+    width: 45%;
+  }
+
+    .closeButton {
+    background-color: #f44336 !important; /* Red background */
+    color: white !important; /* White text */
+    border-radius: 8px !important; /* Rounded corners */
+    padding: 8px 16px !important; /* Padding */
+    margin-top: 8px !important; /* Margin at the top */
+  }
+  
+  .closeButton:hover {
+    background-color: #d32f2f; /* Darker red on hover */
+  }
+  
+
     .loaderContainer {
       position: fixed;
       top: 0;
