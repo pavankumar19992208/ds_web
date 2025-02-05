@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
@@ -20,6 +20,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogActions from '@mui/material/DialogActions';
 import HashLoader from 'react-spinners/HashLoader';
+import LinearProgress from '@mui/material/LinearProgress'; // Import LinearProgress
 
 const useStyles = makeStyles((theme) => ({
   formContainer: {},
@@ -394,12 +395,62 @@ const SchoolInternalData = () => {
     'Class 6', 'Class 7', 'Class 8', 'Class 9', 'Class 10', 'Class 11', 'Class 12'
   ];
 
+  useEffect(() => {
+    const fetchSchoolData = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch(`${BaseUrl}/schoolinfo`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ SchoolId: globalData.data.SCHOOL_ID }),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch school data');
+        }
+
+        const data = await response.json();
+        const schoolData = data.data;
+
+        setState(schoolData.State);
+        setSchoolType(schoolData.SchoolType);
+        setCurriculum(schoolData.Curriculum);
+        setOtherCurriculum(schoolData.OtherCurriculum);
+        setGradeLevel1(schoolData.GradeLevelFrom);
+        setGradeLevel2(schoolData.GradeLevelTo);
+        setSubjects(schoolData.Subjects);
+        setMedium(schoolData.Medium);
+        setAcademicYearStart(schoolData.AcademicYearStart);
+        setAcademicYearEnd(schoolData.AcademicYearEnd);
+        setExtraPrograms(schoolData.ExtraPrograms);
+        // setSchoolTimingFrom(schoolData.SchoolTimingFrom);
+        // setSchoolTimingTo(schoolData.SchoolTimingTo);
+        setExamPattern(schoolData.ExamPattern);
+        setOtherExamPattern(schoolData.OtherExamPattern);
+        setAssessmentCriteria(schoolData.AssessmentCriteria);
+        setOtherAssessmentCriteria(schoolData.OtherAssessmentCriteria);
+        setFeeStructure(schoolData.FeeStructure);
+        setTeachingStaff(schoolData.TeachingStaff);
+        setNonTeachingStaff(schoolData.NonTeachingStaff);
+        setSections(schoolData.SectionsCount);
+      } catch (error) {
+        console.error('Error fetching school data:', error);
+      }
+    };
+
+    fetchSchoolData();
+  }, [globalData.data.SCHOOL_ID]);
+
   return (
     <React.Fragment>
       <Navbar schoolName={globalData.data.SCHOOL_NAME} schoolLogo={globalData.data.SCHOOL_LOGO} />
       <main className={`${classes.mainContainer} layout`}>
         <Sidebar visibleItems={['home']} hideProfile={true} showTitle={false} />
         <Paper className="paper">
+                {loading && <LinearProgress/>} {/* Display loader bar when loading */}
+          
           <Typography 
             component="h1" 
             variant="h4" 
@@ -909,11 +960,11 @@ const SchoolInternalData = () => {
                     </div>
                   </Paper>
                 </main>
-                {loading && (
+                {/* {loading && (
             <div className="loaderContainer">
               <HashLoader color="#ffffff" size={50} />
             </div>
-          )}          
+          )}           */}
           <Dialog open={successDialogOpen} onClose={handleSuccessClose}>
             <DialogTitle>Success</DialogTitle>
             <DialogContent>
