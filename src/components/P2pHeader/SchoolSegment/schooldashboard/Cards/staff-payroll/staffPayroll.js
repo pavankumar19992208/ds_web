@@ -11,11 +11,9 @@ import IconButton from '@mui/material/IconButton';
 import AddIcon from '@mui/icons-material/Add'; // Import AddIcon
 import GetAppIcon from '@mui/icons-material/GetApp';
 import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
+import BaseUrl from '../../../../../../config';
+import { useEffect } from 'react';
+import LinearProgress from '@mui/material/LinearProgress'; // Import LinearProgress
 import Sidebar from '../../Sidebar/Sidebar';
 import Navbar from '../../Navbar/Navbar';
 import { GlobalStateContext } from '../../../../../../GlobalStateContext';
@@ -23,6 +21,7 @@ import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import { CSVLink } from 'react-csv';
 import { useNavigate } from 'react-router-dom';
+import './staffPayroll.css';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -43,32 +42,54 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-function createData(staffId, staffName, bankAccount, workingHours, leaves, salary, currentSalary) {
-  return { staffId, staffName, bankAccount, workingHours, leaves, salary, currentSalary };
-}
-
-const initialRows = [
-  createData('S001', 'John Doe', '123456789', 160, '2', '$5000', '$4800'),
-  createData('S002', 'Jane Smith', '987654321', 150, '3', '$4500', '$4300'),
-  createData('S003', 'Alice Johnson', '456789123', 170, '1', '$7000', '$6800'),
-  createData('S004', 'Bob Brown', '789123456', 165, '0', '$6000', '$6000'),
-];
-
 export default function StaffPayroll() {
   const { globalData } = React.useContext(GlobalStateContext);
-  const [rows, setRows] = React.useState(initialRows);
+  const [rows, setRows] = React.useState([]);
   const [editIdx] = React.useState(-1);
-  const [open, setOpen] = React.useState(false);
-  const [selectedRow, setSelectedRow] = React.useState(null);
+  const [searchTerm, setSearchTerm] = React.useState('');
   const navigate = useNavigate();
+  const [loading, setLoading] = React.useState(false); // Add loading state
+  const schoolId = globalData.data.SCHOOL_ID;
 
-  const handleOpen = (row) => {
-    setSelectedRow(row);
-    setOpen(true);
+  useEffect(() => {
+    // Fetch data from the backend
+    const fetchStaffDetails = async () => {
+      setLoading(true);
+      try {
+        console.log(`Fetching staff details for schoolId: ${schoolId}`);
+        const response = await fetch(`${BaseUrl}/teachers?schoolId=${schoolId}`);
+        const data = await response.json();
+        console.log('Fetched staff details:', data);
+        const formattedData = data.teachers.map(teacher => ({
+          staffId: teacher.teacherid,
+          staffName: teacher.Name,
+          bankAccount: teacher.bankAccount || 'N/A', // Assuming bankAccount is part of the teacher object
+          workingHours: teacher.workingHours || 0, // Assuming workingHours is part of the teacher object
+          leaves: teacher.leaves || 0, // Assuming leaves is part of the teacher object
+          salary: teacher.salary || 'N/A', // Assuming salary is part of the teacher object
+          currentSalary: teacher.currentSalary || 'N/A', // Assuming currentSalary is part of the teacher object
+        }));
+        setRows(formattedData);
+      } catch (error) {
+        console.error('Error fetching staff details:', error);
+      } finally {
+        setLoading(false); // Set loading to false after fetching data
+      }
+    };
+
+    if (schoolId) {
+      fetchStaffDetails();
+    }
+  }, [schoolId]);
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
   };
 
-  const handleClose = () => setOpen(false);
-
+  const filteredRows = rows.filter(row =>
+    String(row.staffId).toLowerCase().includes(searchTerm.toLowerCase()) ||
+    row.staffName.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const handleChange = (e, name, idx) => {
     const { value } = e.target;
@@ -118,12 +139,22 @@ export default function StaffPayroll() {
   }));
 
   return (
-    <React.Fragment>
+    <div className="staff-payroll">
       <Navbar schoolName={globalData.data.SCHOOL_NAME} schoolLogo={globalData.data.SCHOOL_LOGO} />
       <Sidebar visibleItems={['home', 'updateStaffPayroll']} hideProfile={true} showTitle={false} />
-      <div style={{ display: 'flex', justifyContent: 'center', marginTop: '100px', height: '80vh' }}>
-        <Paper style={{ width: '85%' }}>
+      <div className='staff-payroll-container' >
+      {loading && <LinearProgress />} {/* Display loader bar when loading */}
+        <Paper style={{ width: '100%', margin: 'auto', marginTop: '20px' }}>
           <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '10px' }}>
+          <div className="srch-bar-container" >
+                    <input
+                        type="text"
+                        placeholder="Search by ID or Name"
+                        value={searchTerm}
+                        onChange={handleSearchChange}
+                        className="srch-bar"
+                    />
+                </div>
             <Button
               variant="contained"
               startIcon={<AddIcon />}
@@ -173,7 +204,7 @@ export default function StaffPayroll() {
               </Button>
             </CSVLink>
           </div>
-          <TableContainer sx={{ maxHeight: 'calc(100% - 60px)' }}>
+          <TableContainer sx={{ maxHeight: 520 }}> {/* Set a fixed height */}
             <Table stickyHeader sx={{ minWidth: 650 }} aria-label="customized table">
               <TableHead>
                 <TableRow>
@@ -188,10 +219,11 @@ export default function StaffPayroll() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows.map((row, idx) => (
+                {filteredRows.map((row, idx) => (
                   <StyledTableRow key={row.staffId}>
                     <StyledTableCell component="th" scope="row">
-                      <button onClick={() => handleOpen(row)}>{row.staffId}</button>                    </StyledTableCell>
+                      {row.staffId}
+                    </StyledTableCell>
                     <StyledTableCell>
                       {editIdx === idx ? (
                         <input
@@ -276,33 +308,6 @@ export default function StaffPayroll() {
           </TableContainer>
         </Paper>
       </div>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="dialog-title"
-        aria-describedby="dialog-description"
-        maxWidth="sm"
-        fullWidth
-      >
-        <DialogTitle id="dialog-title">Details for {selectedRow?.staffId}</DialogTitle>
-        <DialogContent>
-          {selectedRow && (
-            <DialogContentText id="dialog-description">
-              <strong>Staff Name:</strong> {selectedRow.staffName}<br />
-              <strong>Bank A/C:</strong> {selectedRow.bankAccount}<br />
-              <strong>Working Hours:</strong> {selectedRow.workingHours}<br />
-              <strong>Leaves:</strong> {selectedRow.leaves}<br />
-              <strong>Salary:</strong> {selectedRow.salary}<br />
-              <strong>Current Salary:</strong> {selectedRow.currentSalary}
-            </DialogContentText>
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            Close
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </React.Fragment>
+    </div>
   );
 }

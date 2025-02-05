@@ -16,7 +16,6 @@ import StaffPrimaryForm from './components/P2pHeader/SchoolSegment/schooldashboa
 // import QualificationForm from './components/P2pHeader/SchoolSegment/schooldashboard/Cards/staff-enroll-form/StaffProfessionalInfo/staffProfessionalInfo';
 import AttachDocument from './components/P2pHeader/SchoolSegment/schooldashboard/Sidebar/attach-document/attachDocument';
 import SchoolInternalData from './components/P2pHeader/SchoolSegment/schooldashboard/Cards/school-internal-data/schoolInternalData';
-import SchoolInternalDataView from './components/P2pHeader/SchoolSegment/schooldashboard/Cards/school-internal-data-view/schoolInternalDataView';
 import CareerGuidance from './components/P2pHeader/SchoolSegment/schooldashboard/Sidebar/careerGuidance/careerGuidance';
 import StaffPayroll from './components/P2pHeader/SchoolSegment/schooldashboard/Cards/staff-payroll/staffPayroll';
 import SubjectAllocation from './components/P2pHeader/SchoolSegment/schooldashboard/Sidebar/subject-allocation/subjectAllocation';
@@ -50,7 +49,6 @@ function App() {
             <Route path="/attach-document" element={<AttachDocument />} />
             <Route path="/career-guidance" element={<CareerGuidance />} />
             <Route path="/school-internal-data" element={<SchoolInternalData />} />
-            <Route path="/school-internal-data-view" element={<SchoolInternalDataView />} />
             <Route path="/staff-payroll" element={<StaffPayroll />} />
             <Route path="/subject-allocation" element={<SubjectAllocation/>}/>
             <Route path="/class-timetable" element={<ClassTimeTable/>}/>

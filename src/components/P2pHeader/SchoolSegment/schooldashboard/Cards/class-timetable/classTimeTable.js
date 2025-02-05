@@ -47,7 +47,7 @@ const ClassTimeTable = () => {
         fetchClasses();
     }, [globalData.data.SCHOOL_ID]);
 
-        useEffect(() => {
+    useEffect(() => {
         const fetchSubjectsTeachers = async () => {
             if (selectedClass) {
                 try {
@@ -74,6 +74,32 @@ const ClassTimeTable = () => {
         };
     
         fetchSubjectsTeachers();
+    }, [selectedClass, globalData.data.SCHOOL_ID]);
+
+    useEffect(() => {
+        const fetchTimetable = async () => {
+            if (selectedClass) {
+                try {
+                    const response = await fetch(`${BaseUrl}/classtimetable/${globalData.data.SCHOOL_ID}/${selectedClass}`);
+                    if (!response.ok) {
+                        const text = await response.text();
+                        console.error('Error fetching timetable:', text);
+                        throw new Error('Failed to fetch timetable');
+                    }
+                    const data = await response.json();
+                    setTimetable(prevTimetable => ({
+                        ...prevTimetable,
+                        [selectedClass]: data
+                    }));
+                    console.log('Timetable:', data);
+
+                } catch (error) {
+                    console.error('Error fetching timetable:', error);
+                }
+            }
+        };
+
+        fetchTimetable();
     }, [selectedClass, globalData.data.SCHOOL_ID]);
 
     const weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -141,8 +167,8 @@ const ClassTimeTable = () => {
                 periods: Array.from({ length: periods }).reduce((periodAcc, _, period) => {
                     const periodKey = `period ${period + 1}`;
                     periodAcc[periodKey] = {
-                        from_time: selectedClassTimetable[day]?.[periodKey]?.from || defaultTimes[periodKey]?.from || '',
-                        to_time: selectedClassTimetable[day]?.[periodKey]?.to || defaultTimes[periodKey]?.to || '',
+                        from_time: selectedClassTimetable[day]?.[periodKey]?.from_time || defaultTimes[periodKey]?.from_time || '',
+                        to_time: selectedClassTimetable[day]?.[periodKey]?.to_time || defaultTimes[periodKey]?.to_time || '',
                         subject: selectedClassTimetable[day]?.[periodKey]?.subject || '',
                         teacher: selectedClassTimetable[day]?.[periodKey]?.teacher || ''
                     };
@@ -249,8 +275,8 @@ const ClassTimeTable = () => {
                           <tr>
                             {Array.from({ length: periods }).map((_, index) => (
                               <th key={index}>
-                                <input type="time" placeholder="From" onChange={(e) => handleTimeChange(index + 1, 'from', e.target.value)} />
-                                <input type="time" placeholder="To" onChange={(e) => handleTimeChange(index + 1, 'to', e.target.value)} />
+                                <input type="time" placeholder="From" value={timetable[selectedClass]?.[weekdays[0]]?.[`period ${index + 1}`]?.from_time || ''} onChange={(e) => handleTimeChange(index + 1, 'from_time', e.target.value)} />
+                                <input type="time" placeholder="To" value={timetable[selectedClass]?.[weekdays[0]]?.[`period ${index + 1}`]?.to_time || ''} onChange={(e) => handleTimeChange(index + 1, 'to_time', e.target.value)} />
                               </th>
                             ))}
                           </tr>
