@@ -1,0 +1,141 @@
+.stats-dashboard {
+  display: flex;
+  background-size: cover;
+  background-color: #003353;
+  height: 100vh;
+}
+
+.stats-container {
+  background: linear-gradient(to right, #ffffff, #edf3f7) !important;
+  margin: 50px 0 0;
+  border-top-left-radius: 15px;
+  transition: margin-left 0.3s ease-in-out;
+  flex-grow: 1;
+  margin-left: 70px;
+  display: flex;
+  height: 100%;
+}
+
+.stats-title {
+  margin: 20px;
+  font-family: 'Urbanist', sans-serif !important;
+  font-size: 1.5rem;
+}
+.stats-grid {
+  height: 400px;
+  /* background-color: #000000; */
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* 2 columns */
+  gap: 20px; /* Space between columns */
+  margin: 0 20px;
+}
+.stats-grid-one{
+  flex-direction: column;
+  display: flex;
+  /* background-color: #c58484; */
+  height: 420px;
+
+
+}
+.stats-grid-two{
+  flex-direction: column;
+  display: flex;
+  height: 420px;
+  /* background-color: #c58484; */
+
+
+
+}
+
+
+.stats-cards-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Responsive grid */
+  gap: 20px; /* Space between cards */
+  margin-bottom: 20px;
+}
+
+.stats-card {
+  height: 160px;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 20px !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stats-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.stats-card h3 {
+  font-size: 1.2rem;
+  color: #333333;
+  margin-bottom: 10px;
+}
+
+.stats-card p {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #007bff;
+  margin: 0;
+}
+
+.stats-card:nth-child(1) { background-color: #f0f8ff; }
+.stats-card:nth-child(2) { background-color: #fff0f5; }
+.stats-card:nth-child(3) { background-color: #f0fff0; }
+
+.gender-chart-container {
+  /* width: 40%; */
+  /* padding: 10px; */
+  background-color: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.gender-chart-container h3 {
+  font-size: 1.2rem;
+  color: #333333;
+  margin-bottom: 20px;
+}
+
+
+.attendance-chart-container {
+  padding: 10px;
+  background-color: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+
+
+/* Responsive styles for laptops */
+@media (max-width: 1024px) {
+  .stats-container {
+    margin-left: 70px;
+    height: 100%;
+  }
+
+  .stats-title {
+    font-size: 1.2rem;
+  }
+
+  .stats-cards-container {
+    grid-template-columns: repeat(2, 1fr); /* 2 columns for tablets */
+  }
+
+  .gender-chart-container {
+    margin-top: 20px;
+    padding: 15px;
+  }
+
+  .gender-chart-container h3 {
+    font-size: 1rem;
+  }
+}

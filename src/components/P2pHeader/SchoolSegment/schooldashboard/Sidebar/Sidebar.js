@@ -95,6 +95,7 @@ export default function MiniDrawer({ visibleItems }) {
     { text: 'Inventory Management', path: '/inventory-management', icon: <Inventory2RoundedIcon />, key: 'inventoryManagement' },
     { text: 'Attendance Tracking', path: '/attendance', icon: <AssessmentRoundedIcon />, key: 'attendanceTracking' },
     { text: 'Academic Performance', path: '/academic-performance', icon: <TrendingUp />, key: 'academicPerformance' },
+    { text: 'School Statistics', path: '/school-statistics', icon: <TrendingUp />, key: 'schoolStatistics' },
     { text: 'Event Planning', path: '/event-planning', icon: <EditCalendarRoundedIcon />, key: 'eventPlanning' },
     { text: 'Update Enrollment', path: '/update-enrollment', icon: <FaUserEdit style={{fontSize: '22px' }}  />, key: 'updateEnrollment' },
     { text: 'Update Staff Payroll', path: '/update-staff-payroll', icon: <FaUserEdit />, key: 'updateStaffPayroll' },

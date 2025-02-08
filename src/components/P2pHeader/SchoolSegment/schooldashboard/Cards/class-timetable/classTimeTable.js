@@ -231,17 +231,19 @@ const ClassTimeTable = () => {
     };
 
     return (
-        <div>
+        <div className='classTimeTable'>
+        <div className='classTimeTable-container'>
             <Navbar
                 schoolName={globalData.data.SCHOOL_NAME}
                 schoolLogo={globalData.data.SCHOOL_LOGO}
             />
-            <div className="layout">
-                <Sidebar
-                    visibleItems={["home"]}
-                    hideProfile={true}
-                    showTitle={false}
-                />
+            <Sidebar
+                visibleItems={["home"]}
+                hideProfile={true}
+                showTitle={false}
+            />
+            {/* <div className="layout"> */}
+
                 <div className="table-container">
                     <div className="header-container">
                         <h1>Class Timetable</h1>
@@ -313,6 +315,7 @@ const ClassTimeTable = () => {
                 </div>
             </div>
         </div>
+      
     );
 };
 

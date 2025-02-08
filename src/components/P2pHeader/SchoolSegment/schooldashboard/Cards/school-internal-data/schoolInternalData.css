@@ -1,10 +1,28 @@
-.school-internal-data {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
+.data-form{
+  overflow-x: hidden;
+  overflow-y: hidden; 
+  display: flex; 
+  background-size: cover;
+  height: 100vh;
+  background-color: #003353;
+
 }
+.school-internal-data {
+  background: linear-gradient(to right, #ffffff, #edf3f7) !important;
+  overflow: hidden !important;
+  margin: 50px 0;
+  border-top-left-radius: 15px;
+  transition: margin-left 0.3s ease-in-out;
+  flex-grow: 1;
+  margin-left: 70px;
+  height: 100vh;
+}
+.form-paper-container{
+  max-height: calc(100vh - 60px); 
+  overflow: auto;
+
+}
+
 .urbanist-font {
   font-family: 'Urbanist', sans-serif !important;
   font-optical-sizing: auto !important;

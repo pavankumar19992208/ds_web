@@ -19,15 +19,11 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogActions from '@mui/material/DialogActions';
-import HashLoader from 'react-spinners/HashLoader';
 import LinearProgress from '@mui/material/LinearProgress'; // Import LinearProgress
 
 const useStyles = makeStyles((theme) => ({
   formContainer: {},
-  mainContainer: {
-    overflow: 'auto',
-    maxHeight: '100vh',
-  },
+
   gridContainer: {
     maxWidth: '100%',
     margin: '32px auto',
@@ -444,14 +440,14 @@ const SchoolInternalData = () => {
   }, [globalData.data.SCHOOL_ID]);
 
   return (
-    <React.Fragment>
+    <div className='data-form'>
+    <div className='school-internal-data'>
       <Navbar schoolName={globalData.data.SCHOOL_NAME} schoolLogo={globalData.data.SCHOOL_LOGO} />
-      <main className={`${classes.mainContainer} layout`}>
-        <Sidebar visibleItems={['home']} hideProfile={true} showTitle={false} />
+      <Sidebar visibleItems={['home']} hideProfile={true} showTitle={false} />
+      <div className="form-paper-container">
         <Paper className="paper">
-                {loading && <LinearProgress/>} {/* Display loader bar when loading */}
-          
-          <Typography 
+          {loading && <LinearProgress/>} {/* Display loader bar when loading */}
+           <Typography 
             component="h1" 
             variant="h4" 
             align="center"
@@ -959,7 +955,7 @@ const SchoolInternalData = () => {
                       </Button>
                     </div>
                   </Paper>
-                </main>
+                  </div>
                 {/* {loading && (
             <div className="loaderContainer">
               <HashLoader color="#ffffff" size={50} />
@@ -978,7 +974,8 @@ const SchoolInternalData = () => {
               </Button>
             </DialogActions>
           </Dialog>
-              </React.Fragment>
+              </div>
+              </div>
             );
 };
 

@@ -625,17 +625,19 @@ export default function StaffPrimaryForm() {
   };
 
   return (
-    <React.Fragment>
+    <div className='enroll-form'>
+    <div className="enroll-form-container">
+
       <Navbar
         schoolName={globalData.data.SCHOOL_NAME}
         schoolLogo={globalData.data.SCHOOL_LOGO}
       />
-      <main className="layout">
-        <Sidebar
+      <Sidebar
           visibleItems={["home", "updateEnrollment"]}
           hideProfile={true}
           showTitle={false}
         />
+      <div className="form-paper-container">
         <Paper className="paper" sx={{ padding: 3 }}>
           <Typography component="h1" variant="h4" align="center" className="staff-enroll-title">
             Staff Enroll Form
@@ -699,7 +701,7 @@ export default function StaffPrimaryForm() {
             )}
           </React.Fragment>
         </Paper>
-      </main>
+      </div>
       {loading && (
             <div className="loaderContainer">
               <HashLoader color="#ffffff" size={50} />
@@ -760,6 +762,7 @@ export default function StaffPrimaryForm() {
               )}
             </DialogActions>
           </Dialog>
-    </React.Fragment>
+    </div>
+    </div>
   );
 }

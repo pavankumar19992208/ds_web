@@ -28,6 +28,7 @@ import ProductOverview from './components/Ecommerce/ProductOverview/productOverv
 import CartPage from './components/Ecommerce/Cart/cartPage';
 import LeaveApproval from './components/P2pHeader/SchoolSegment/schooldashboard/Sidebar/leave-approval/leaveApproval';
 import PayrollForm from './components/P2pHeader/SchoolSegment/schooldashboard/Cards/staff-payroll/payRoll';
+import SchoolStatistics from './components/P2pHeader/SchoolSegment/schooldashboard/Sidebar/school-statistics/schoolStatistics';
 
 function App() {
   return (
@@ -60,6 +61,7 @@ function App() {
             <Route path="/cart" element={<CartPage />} />
             <Route path= "/leave-approval" element={<LeaveApproval/>} />
             <Route path="/update-staff-payroll" element={<PayrollForm />} />
+            <Route path='/school-statistics' element={<SchoolStatistics/>} />
           </Routes>
         </DndProvider>
       </Router>

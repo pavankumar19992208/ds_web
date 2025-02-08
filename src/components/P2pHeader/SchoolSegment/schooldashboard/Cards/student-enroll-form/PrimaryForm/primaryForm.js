@@ -596,7 +596,7 @@ export default function StudentEnrollForm() {
         }, 1000);
       };
       
-            return (
+      return (
         <div className='enroll-form'>
           <div className="enroll-form-container">
             <Navbar schoolName={globalData.data.SCHOOL_NAME} schoolLogo={globalData.data.SCHOOL_LOGO} />
