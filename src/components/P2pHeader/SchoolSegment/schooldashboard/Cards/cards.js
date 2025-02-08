@@ -86,6 +86,10 @@ const Cards = ({ studentCount, staffCount, schoolName, schoolLogo }) => {
     navigate('/student-enroll');
   };
 
+  const handleAddBulkStudent = () => {
+    navigate('/student-bulk-enroll');
+  };
+
   return (
     <div className="cards-container">
       <div className="card">
@@ -159,6 +163,7 @@ const Cards = ({ studentCount, staffCount, schoolName, schoolLogo }) => {
               color="secondary"
               startIcon={<GroupIcon />}
               className="addBulkButton"
+              onClick={handleAddBulkStudent}
             >
               Add Bulk Students
             </Button>
