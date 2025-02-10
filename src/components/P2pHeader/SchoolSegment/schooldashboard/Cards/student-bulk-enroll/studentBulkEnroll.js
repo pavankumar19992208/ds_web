@@ -13,6 +13,8 @@ import Navbar from "../../Navbar/Navbar";
 import Sidebar from "../../Sidebar/Sidebar";
 import * as XLSX from "xlsx"; // For XLSX file parsing
 import "./studentBulkEnroll.css";
+import BaseUrl from '../../../../../../config';
+
 
 const StudentTable = () => {
   const { globalData } = useContext(GlobalStateContext);
@@ -20,6 +22,11 @@ const StudentTable = () => {
   const toggleAcademicYear = () => {
     setShowAcademicYear(!showAcademicYear);
   };
+    const [UserId, setUserId] = useState('');
+    const [Password, setPassword] = useState('');
+      const [setsuccessDialogOpen, setSuccessDialogOpen] = useState(false);
+    
+  
 
   const initialRows = Array.from({ length: 10 }, (_, index) => ({
     id: index + 1,
@@ -227,6 +234,77 @@ const StudentTable = () => {
     XLSX.writeFile(workbook, "Student_Enrollment_Template.xlsx");
   };
 
+  // Prepare payload and send to backend
+  const sendToBackend = async () => {
+    const payload = rows.map(row => ({
+      SchoolId: globalData.data.SCHOOL_ID,
+      StudentName: row.fullName,
+      DOB: row.dateOfBirth,
+      Gender: row.gender,
+      // Photo: "", // Assuming photo URL is not available in bulk enroll
+      Grade: row.grade,
+      PreviousSchool: row.previousSchool,
+      // LanguagesKnown: '',
+      Religion: row.religion,
+      Category: row.category,
+      MotherName: row.motherName,
+      FatherName: row.fatherName,
+      Nationality: row.nationality,
+      AadharNumber: row.aadharNumber,
+      GuardianName: row.guardianName,
+      MobileNumber: row.phoneNumber,
+      Email: row.email,
+      // EmergencyContact: "", // Assuming emergency contact is not available in bulk enroll
+      // CurrentAddress: '',
+      // PermanentAddress: '',
+      PreviousPercentage: parseFloat(row.previousPercentage),
+      // BloodGroup: "", // Assuming blood group is not available in bulk enroll
+      // MedicalDisability: "", // Assuming medical disability is not available in bulk enroll
+      // Documents: {}, // Assuming documents are not available in bulk enroll
+      ParentOccupation: row.parentOccupation,
+      ParentQualification: row.parentQualification,
+    }));
+    console.log('Payload to send to backend:', payload);
+
+    try {
+      const response = await fetch(`${BaseUrl}/registerstudent`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+            // ...existing code...
+      
+      if (!response.ok) {
+        if (response.status === 409) { // Assuming 409 is the status code for user already exists
+          setSuccessDialogOpen(true);
+          setUserId('');
+          setPassword('');
+        } else {
+          throw new Error('Form submission failed');
+        }
+      } else {
+        const data = await response.json();
+        console.log('Form data sent to backend successfully:', data);
+        setUserId(data.UserId);
+        setPassword(data.Password);
+        // Print user ID and password to console
+        console.log('User ID:', data.UserId);
+        console.log('Password:', data.Password);
+        // Clear local storage after successful submission
+        localStorage.removeItem('uploadedDocuments');
+        // Open success dialog
+        setSuccessDialogOpen(true);
+      }
+      
+      // ...existing code...
+    } catch (error) {
+      console.error('Error sending form data to backend:', error);
+    }
+  };
+
   return (
     <div className='bulk-screen'>
       <div className="bulk-container">
@@ -322,6 +400,9 @@ const StudentTable = () => {
             </TableBody>
           </Table>
         </TableContainer>
+        <Button variant="contained" onClick={sendToBackend} style={{ marginTop: "20px" }}>
+          Submit to Backend
+        </Button>
       </div>
     </div>
   );
