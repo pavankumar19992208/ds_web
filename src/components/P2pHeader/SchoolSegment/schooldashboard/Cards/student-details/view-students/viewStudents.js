@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { MenuItem, Select, FormControl, Divider, LinearProgress } from '@mui/material';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Menu } from '@mui/material';
 import Lottie from 'lottie-react';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import BaseUrl from '../../../../../../../config';
 import animationData from '../../../../../../../images/Animation - 1738392036492.json'; // Import your Lottie JSON file
-
 import './viewStudents.css';
 
 const ViewStudents = ({ setLoading }) => {
@@ -12,6 +13,9 @@ const ViewStudents = ({ setLoading }) => {
   const [grades, setGrades] = useState([]); // State to manage grades
   const [students, setStudents] = useState([]);
   const [loading, setLoadingState] = useState(false); // State to manage loading
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [selectedStudent, setSelectedStudent] = useState(null); // State to store the selected student
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchGrades = async () => {
@@ -63,11 +67,12 @@ const ViewStudents = ({ setLoading }) => {
 
         const data = await response.json();
         const formattedStudents = data.students.map(student => ({
-          rollNumber: student.StudentId,
+          StudentId: student.StudentId, // Ensure StudentId is included
+          rollNumber: student.StudentId, // Optional: If you still want to use rollNumber
           name: student.Name,
           class: student.Grade,
-          section: student.Section || 'N/A', // Assuming section might be missing
-          performance: student.Performance || 'N/A' // Assuming performance might be missing
+          section: student.Section || 'N/A',
+          performance: student.Performance || 'N/A'
         }));
         setStudents(formattedStudents);
         setLoading(false); // Set loading to false once data is fetched
@@ -89,6 +94,18 @@ const ViewStudents = ({ setLoading }) => {
 
   const classStrength = students.filter(student => student.class === selectedClass).length;
   const schoolStrength = students.length;
+
+  const handleClick = (event, student) => {
+    setAnchorEl(event.currentTarget);
+    setSelectedStudent(student); // Store the selected student
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+    if (selectedStudent) {
+      navigate(`/student-view-details/${selectedStudent.StudentId}`); // Use StudentId instead of rollNumber
+    }
+  };
 
   return (
     <div className='view-students-container'>
@@ -123,6 +140,7 @@ const ViewStudents = ({ setLoading }) => {
                 <TableCell style={{ fontWeight: 'bold' }}>Class</TableCell>
                 <TableCell style={{ fontWeight: 'bold' }}>Section</TableCell>
                 <TableCell style={{ fontWeight: 'bold' }}>Performance</TableCell>
+                <TableCell style={{ fontWeight: 'bold' }}>Action</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -133,12 +151,24 @@ const ViewStudents = ({ setLoading }) => {
                   <TableCell>{student.class}</TableCell>
                   <TableCell>{student.section}</TableCell>
                   <TableCell>{student.performance}</TableCell>
+                  <TableCell>
+                    <IconButton onClick={(event) => handleClick(event, student)}>
+                      <MoreVertIcon />
+                    </IconButton>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </TableContainer>
       )}
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+      >
+        <MenuItem onClick={handleClose}>View Details</MenuItem>
+      </Menu>
     </div>
   );
 };
