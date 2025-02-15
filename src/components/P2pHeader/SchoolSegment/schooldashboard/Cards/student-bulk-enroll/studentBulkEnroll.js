@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, Button } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, CircularProgress } from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import DeleteIcon from "@mui/icons-material/Delete";
 import UndoIcon from "@mui/icons-material/Undo";
@@ -15,18 +15,15 @@ import * as XLSX from "xlsx"; // For XLSX file parsing
 import "./studentBulkEnroll.css";
 import BaseUrl from '../../../../../../config';
 
-
 const StudentTable = () => {
   const { globalData } = useContext(GlobalStateContext);
   const [showAcademicYear, setShowAcademicYear] = useState(false);
+  const [loading, setLoading] = useState(false); // Loader state
+  const [successDialogOpen, setSuccessDialogOpen] = useState(false); // Popup state
+  const [registrationSuccess, setRegistrationSuccess] = useState(true); // Track registration status
   const toggleAcademicYear = () => {
     setShowAcademicYear(!showAcademicYear);
   };
-    const [UserId, setUserId] = useState('');
-    const [Password, setPassword] = useState('');
-      const [setsuccessDialogOpen, setSuccessDialogOpen] = useState(false);
-    
-  
 
   const initialRows = Array.from({ length: 10 }, (_, index) => ({
     id: index + 1,
@@ -236,6 +233,7 @@ const StudentTable = () => {
 
   // Prepare payload and send to backend
   const sendToBackend = async () => {
+    setLoading(true);
     const payload = rows.map(row => ({
       SchoolId: globalData.data.SCHOOL_ID,
       StudentName: row.fullName,
@@ -275,33 +273,20 @@ const StudentTable = () => {
         body: JSON.stringify(payload),
       });
 
-            // ...existing code...
-      
       if (!response.ok) {
-        if (response.status === 409) { // Assuming 409 is the status code for user already exists
-          setSuccessDialogOpen(true);
-          setUserId('');
-          setPassword('');
-        } else {
-          throw new Error('Form submission failed');
-        }
-      } else {
-        const data = await response.json();
-        console.log('Form data sent to backend successfully:', data);
-        setUserId(data.UserId);
-        setPassword(data.Password);
-        // Print user ID and password to console
-        console.log('User ID:', data.UserId);
-        console.log('Password:', data.Password);
-        // Clear local storage after successful submission
-        localStorage.removeItem('uploadedDocuments');
-        // Open success dialog
-        setSuccessDialogOpen(true);
+        throw new Error('Form submission failed');
       }
-      
-      // ...existing code...
+
+      const data = await response.json();
+      // console.log('Form data sent to backend successfully:', data);
+
+      setRegistrationSuccess(true);
     } catch (error) {
       console.error('Error sending form data to backend:', error);
+      setRegistrationSuccess(false);
+    } finally {
+      setLoading(false); // Hide loader
+      setSuccessDialogOpen(true); // Show success popup
     }
   };
 
@@ -400,10 +385,24 @@ const StudentTable = () => {
             </TableBody>
           </Table>
         </TableContainer>
-        <Button variant="contained" onClick={sendToBackend} style={{ marginTop: "20px" }}>
-          Submit to Backend
+        <Button variant="contained" onClick={sendToBackend} style={{ marginTop: "20px" }} disabled={loading}>
+          {loading ? <CircularProgress size={24} /> : "Submit to Backend"}
         </Button>
       </div>
+      {/* Success Popup */}
+      <Dialog open={successDialogOpen} onClose={() => setSuccessDialogOpen(false)}>
+        <DialogTitle>{registrationSuccess ? "Registration Successful" : "Registration Failed"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            {registrationSuccess ? "Students have been successfully enrolled." : "Registration failed, please try again later."}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setSuccessDialogOpen(false)} color="primary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };

@@ -478,7 +478,7 @@ export default function StudentEnrollForm() {
   const handleSubmit = async () => {
     setLoading(true);
     console.log('Form submitted:', formData);
-
+  
     // Upload photo to Firebase and collect URL
     let photoURL = formData.personalInfo.Photo;
     if (photoURL && photoURL.startsWith('data:image/')) {
@@ -491,7 +491,7 @@ export default function StudentEnrollForm() {
         console.error("Error uploading photo: ", error);
       }
     }
-
+  
     // Upload documents to Firebase and collect URLs
     const uploadedDocuments = [];
     for (const doc of formData.documents) {
@@ -509,9 +509,7 @@ export default function StudentEnrollForm() {
         console.error("Error uploading document: ", error);
       }
     }
-
-
-
+  
     // Prepare payload
     const payload = {
       SchoolId: globalData.data.SCHOOL_ID,
@@ -544,44 +542,46 @@ export default function StudentEnrollForm() {
       ParentOccupation: formData.guardianInfo.ParentOccupation,
       ParentQualification: formData.guardianInfo.ParentQualification === 'Other' ? formData.guardianInfo.otherQualification : formData.guardianInfo.ParentQualification,
     };
-
+  
     // Log payload to console
     console.log('Payload to be sent:', payload);
-      
-          // Send formData and uploadedDocuments to backend
-  try {
-    const response = await fetch(`${BaseUrl}/registerstudent`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
-    });
-
-    if (!response.ok) {
-      if (response.status === 409) { // Assuming 409 is the status code for user already exists
-        setSuccessDialogOpen(true);
-        setUserId('');
-        setPassword('');
+  
+    // Send formData and uploadedDocuments to backend
+    try {
+      const response = await fetch(`${BaseUrl}/registerstudent`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+  
+      if (!response.ok) {
+        if (response.status === 409) { // Assuming 409 is the status code for user already exists
+          const data = await response.json();
+          setSuccessDialogOpen(true);
+          setUserId('');
+          setPassword('');
+          alert(data.detail); // Show the error message from the backend
+        } else {
+          throw new Error('Form submission failed');
+        }
       } else {
-        throw new Error('Form submission failed');
+        const data = await response.json();
+        console.log('Form data sent to backend successfully:', data);
+        setUserId(data.UserId);
+        setPassword(data.Password);
+        // Clear local storage after successful submission
+        localStorage.removeItem('uploadedDocuments');
+        // Open success dialog
+        setSuccessDialogOpen(true);
       }
-    } else {
-      const data = await response.json();
-      console.log('Form data sent to backend successfully:', data);
-      setUserId(data.UserId);
-      setPassword(data.Password);
-      // Clear local storage after successful submission
-      localStorage.removeItem('uploadedDocuments');
-      // Open success dialog
-      setSuccessDialogOpen(true);
+    } catch (error) {
+      console.error('Error sending form data to backend:', error);
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    console.error('Error sending form data to backend:', error);
-  } finally {
-    setLoading(false);
-  }
-};
+  };
       
       const handleDocumentClick = (doc) => {
         setSelectedDoc(doc);
