@@ -5,12 +5,14 @@ import Sidebar from '../../Sidebar/Sidebar';
 import { GlobalStateContext } from '../../../../../../GlobalStateContext';
 import ViewStudents from './view-students/viewStudents';
 import SectionAllocation from './section-allocation/sectionAllocation';
+import StudentAttachDocument from './student-attach-document/studentAttachDocument';
 import './studentDetails.css';
 
 const StudentDetails = () => {
   const { globalData } = useContext(GlobalStateContext);
   const [showViewStudents, setShowViewStudents] = useState(true); // State to manage visibility
   const [showSectionAllocation, setShowSectionAllocation] = useState(false); // State to manage visibility
+  const [showStudentAttachDocument, setShowStudentAttachDocument] = useState(false); // State to manage visibility
   const [selectedButton, setSelectedButton] = useState('viewStudents'); // State to manage selected button
 
   const handleViewStudentsClick = () => {
@@ -26,6 +28,15 @@ const StudentDetails = () => {
       setShowViewStudents(false);
       setShowSectionAllocation(true);
       setSelectedButton('sectionAllocation');
+    }
+  };
+
+  const handleAttachDocumentClick = () => {
+    if (selectedButton !== 'studentAttachDocument') {
+      setShowViewStudents(false);
+      setShowSectionAllocation(false);
+      setShowStudentAttachDocument(true);
+      setSelectedButton('studentAttachDocument');
     }
   };
 
@@ -52,12 +63,23 @@ const StudentDetails = () => {
         >
           Section Allocation
         </Button>
+        <Button
+          variant="contained"
+          className={`button-third ${selectedButton === 'studentAttachDocument' ? 'selected' : ''}`}
+          onClick={handleAttachDocumentClick}
+        >
+          Attach Documents
+        </Button>
+        
         {showViewStudents && (
           <ViewStudents setLoading={() => {}} />
         )}{/* Conditionally render ViewStudents */}
         {showSectionAllocation && (
           <SectionAllocation />
         )}{/* Conditionally render SectionAllocation */}
+        {showStudentAttachDocument && (
+          <StudentAttachDocument />
+        )}
       </div>
     </div>
   );

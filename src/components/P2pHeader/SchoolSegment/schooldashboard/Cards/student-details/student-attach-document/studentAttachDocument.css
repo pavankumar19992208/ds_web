@@ -1,0 +1,43 @@
+.student-attach-document-container{
+    margin-top: 16px;
+    border: 1px solid #ccc;
+    border-radius: 16px;
+    padding: 16px;
+}
+.student-details-grid{
+    margin: 32px 0px;
+}
+.upload-field {
+    color: #333;
+    border: solid 1px #ccc;
+    padding: 3px 12px;
+    border-radius: 8px;
+  }
+.upload-label {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 !important;
+}
+.submit-btn{
+    font-family: 'ramabadra', sans-serif;
+    font-weight: 600;
+    font-size: 1rem;
+    margin-top: 16px;
+    padding: 12px 44px;
+    border-radius: 12px;
+    background-color: #003353;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+.submit-btn:hover{
+    background-color: #003353c6;
+    box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.1); /* Add box shadow to the right side */
+}
+.submit-button-container {
+  text-align: right;
+}
+
+
