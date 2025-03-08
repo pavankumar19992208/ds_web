@@ -11,11 +11,9 @@ import {
   DialogTitle,
   Button,
   Typography,
-  Grid,
-  TextField,
+  IconButton,
   Stack,
   Alert,
-  IconButton,
 } from "@mui/material";
 import UploadIcon from "@mui/icons-material/Upload";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
@@ -30,7 +28,7 @@ const StaffAttachDocument = () => {
   const [selectedTeacherDetails, setSelectedTeacherDetails] = useState({});
   const [openPopup, setOpenPopup] = useState(false);
   const [openErrorPopup, setOpenErrorPopup] = useState(false);
-  const [uploadedDoc, setUploadedDoc] = useState({});
+  const [uploadedDocs, setUploadedDocs] = useState({});
   const [fileNames, setFileNames] = useState({});
   const [showAlert, setShowAlert] = useState(false);
 
@@ -72,6 +70,7 @@ const StaffAttachDocument = () => {
           ? documents.educationalCertificates.split("/").pop()
           : "",
       });
+      setUploadedDocs(documents);
     }
   };
 
@@ -82,7 +81,10 @@ const StaffAttachDocument = () => {
       await uploadBytes(storageRef, file);
       const fileURL = await getDownloadURL(storageRef);
 
-      setUploadedDoc({ name: file.name, url: fileURL, type: documentType });
+      setUploadedDocs((prevDocs) => ({
+        ...prevDocs,
+        [documentType]: fileURL,
+      }));
       setFileNames((prevFileNames) => ({
         ...prevFileNames,
         [documentType]: file.name,
@@ -101,18 +103,9 @@ const StaffAttachDocument = () => {
     setLoadingState(true);
     try {
       const updatedDocuments = {
-        resume:
-          uploadedDoc.type === "resume"
-            ? uploadedDoc.url
-            : selectedTeacherDetails.documents?.resume,
-        photoID:
-          uploadedDoc.type === "photoID"
-            ? uploadedDoc.url
-            : selectedTeacherDetails.documents?.photoID,
-        educationalCertificates:
-          uploadedDoc.type === "educationalCertificates"
-            ? uploadedDoc.url
-            : selectedTeacherDetails.documents?.educationalCertificates,
+        resume: uploadedDocs.resume || selectedTeacherDetails.documents?.resume,
+        photoID: uploadedDocs.photoID || selectedTeacherDetails.documents?.photoID,
+        educationalCertificates: uploadedDocs.educationalCertificates || selectedTeacherDetails.documents?.educationalCertificates,
       };
 
       console.log("Payload:", updatedDocuments);
@@ -174,8 +167,8 @@ const StaffAttachDocument = () => {
       </FormControl>
       <div className="teacher-details-grid">
         <div className="teacher-detail">
-        <Typography variant="subtitle1">Name</Typography>
-        <div className="teacher-field">
+          <Typography variant="subtitle1">Name</Typography>
+          <div className="teacher-field">
             {selectedTeacherDetails.Name || "Name"}
           </div>
         </div>
@@ -217,7 +210,7 @@ const StaffAttachDocument = () => {
         </div>
         <div className="teacher-detail">
           <Typography variant="subtitle1">
-            Educational Certificates (optional) 
+            Educational Certificates (optional)
           </Typography>
           <div className="upload-field">
             <input
@@ -229,7 +222,10 @@ const StaffAttachDocument = () => {
               style={{ display: "none" }}
               className="upload-input"
             />
-            <label htmlFor="educationalCertificates" className="upload-label">
+            <label
+              htmlFor="educationalCertificates"
+              className="upload-label"
+            >
               {fileNames.educationalCertificates ||
                 "Upload Educational Certificates"}
               <IconButton component="span">
@@ -249,7 +245,7 @@ const StaffAttachDocument = () => {
           spacing={2}
           style={{ position: "fixed", top: 64, right: 0, zIndex: 1000 }}
         >
-          <Alert severity="success">{`uploaded "${uploadedDoc.name}".`}</Alert>
+          <Alert severity="success">{`uploaded "${uploadedDocs.name}".`}</Alert>
         </Stack>
       )}
       <Dialog
