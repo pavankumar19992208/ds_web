@@ -242,7 +242,7 @@ const StudentTable = () => {
       // Photo: "", // Assuming photo URL is not available in bulk enroll
       Grade: row.grade,
       PreviousSchool: row.previousSchool,
-      // LanguagesKnown: '',
+      LanguagesKnown: [], // Assuming only one language is known// need to change or remove
       Religion: row.religion,
       Category: row.category,
       MotherName: row.motherName,
@@ -251,14 +251,14 @@ const StudentTable = () => {
       AadharNumber: row.aadharNumber,
       GuardianName: row.guardianName,
       MobileNumber: row.phoneNumber,
-      Email: row.email,
-      // EmergencyContact: "", // Assuming emergency contact is not available in bulk enroll
-      // CurrentAddress: '',
-      // PermanentAddress: '',
+      // Email: row.email,
+      EmergencyContact: "", // Assuming emergency contact is not available in bulk enroll
+      CurrentAddress: {},
+      PermanentAddress: {},
       PreviousPercentage: parseFloat(row.previousPercentage),
-      // BloodGroup: "", // Assuming blood group is not available in bulk enroll
-      // MedicalDisability: "", // Assuming medical disability is not available in bulk enroll
-      // Documents: {}, // Assuming documents are not available in bulk enroll
+      BloodGroup: "", // Assuming blood group is not available in bulk enroll
+      MedicalDisability: "", // Assuming medical disability is not available in bulk enroll
+      Documents: {}, // Assuming documents are not available in bulk enroll
       ParentOccupation: row.parentOccupation,
       ParentQualification: row.parentQualification,
     }));

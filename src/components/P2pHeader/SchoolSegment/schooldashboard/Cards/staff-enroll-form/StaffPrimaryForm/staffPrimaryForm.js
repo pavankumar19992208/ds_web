@@ -295,7 +295,7 @@ export default function StaffPrimaryForm() {
     },
     documents: [],
   });
-  const [setErrors] = useState({});
+  const [errors, setErrors] = useState({});
   const [expandedDoc, setExpandedDoc] = useState(null);
   const [successDialogOpen, setSuccessDialogOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -523,7 +523,7 @@ export default function StaffPrimaryForm() {
         relationshipToTeacher: "",
       },
       additionalInfo: {
-        languagesKnown: "",
+        languagesKnown: [],
         interests: "",
         availabilityOfExtraCirricularActivities: "",
       },
