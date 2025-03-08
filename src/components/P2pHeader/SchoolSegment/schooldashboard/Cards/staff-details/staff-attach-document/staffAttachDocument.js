@@ -1,14 +1,32 @@
-import React, { useEffect, useState } from 'react';
-import { MenuItem, Select, FormControl, LinearProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, Typography, Grid, TextField, Stack, Alert } from '@mui/material';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { storage } from '../../../../../../connections/firebase';
-import BaseUrl from '../../../../../../../config';
-import './staffAttachDocument.css';
+import React, { useEffect, useState } from "react";
+import {
+  MenuItem,
+  Select,
+  FormControl,
+  LinearProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Button,
+  Typography,
+  Grid,
+  TextField,
+  Stack,
+  Alert,
+  IconButton,
+} from "@mui/material";
+import UploadIcon from "@mui/icons-material/Upload";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { storage } from "../../../../../../connections/firebase";
+import BaseUrl from "../../../../../../../config";
+import "./staffAttachDocument.css";
 
 const StaffAttachDocument = () => {
   const [loading, setLoadingState] = useState(false);
   const [teachers, setTeachers] = useState([]);
-  const [selectedTeacher, setSelectedTeacher] = useState('Select Teacher');
+  const [selectedTeacher, setSelectedTeacher] = useState("Select Teacher");
   const [selectedTeacherDetails, setSelectedTeacherDetails] = useState({});
   const [openPopup, setOpenPopup] = useState(false);
   const [openErrorPopup, setOpenErrorPopup] = useState(false);
@@ -21,15 +39,15 @@ const StaffAttachDocument = () => {
       setLoadingState(true);
       try {
         const response = await fetch(`${BaseUrl}/teachers`, {
-          method: 'GET',
+          method: "GET",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
         });
         const data = await response.json();
         setTeachers(data.teachers || []);
       } catch (error) {
-        console.error('Error fetching teachers:', error);
+        console.error("Error fetching teachers:", error);
       } finally {
         setLoadingState(false);
       }
@@ -41,14 +59,18 @@ const StaffAttachDocument = () => {
   const handleTeacherChange = (event) => {
     const teacherId = event.target.value;
     setSelectedTeacher(teacherId);
-    const teacherDetails = teachers.find((teacher) => teacher.teacherid === teacherId);
+    const teacherDetails = teachers.find(
+      (teacher) => teacher.teacherid === teacherId
+    );
     setSelectedTeacherDetails(teacherDetails || {});
     if (teacherDetails && teacherDetails.documents) {
       const documents = JSON.parse(teacherDetails.documents);
       setFileNames({
-        resume: documents.resume ? documents.resume.split('/').pop() : '',
-        photoID: documents.photoID ? documents.photoID.split('/').pop() : '',
-        educationalCertificates: documents.educationalCertificates ? documents.educationalCertificates.split('/').pop() : '',
+        resume: documents.resume ? documents.resume.split("/").pop() : "",
+        photoID: documents.photoID ? documents.photoID.split("/").pop() : "",
+        educationalCertificates: documents.educationalCertificates
+          ? documents.educationalCertificates.split("/").pop()
+          : "",
       });
     }
   };
@@ -75,32 +97,44 @@ const StaffAttachDocument = () => {
       setOpenErrorPopup(true);
       return;
     }
-  
+
     setLoadingState(true);
     try {
       const updatedDocuments = {
-        resume: uploadedDoc.type === 'resume' ? uploadedDoc.url : selectedTeacherDetails.documents?.resume,
-        photoID: uploadedDoc.type === 'photoID' ? uploadedDoc.url : selectedTeacherDetails.documents?.photoID,
-        educationalCertificates: uploadedDoc.type === 'educationalCertificates' ? uploadedDoc.url : selectedTeacherDetails.documents?.educationalCertificates,
+        resume:
+          uploadedDoc.type === "resume"
+            ? uploadedDoc.url
+            : selectedTeacherDetails.documents?.resume,
+        photoID:
+          uploadedDoc.type === "photoID"
+            ? uploadedDoc.url
+            : selectedTeacherDetails.documents?.photoID,
+        educationalCertificates:
+          uploadedDoc.type === "educationalCertificates"
+            ? uploadedDoc.url
+            : selectedTeacherDetails.documents?.educationalCertificates,
       };
 
-      console.log('Payload:', updatedDocuments);
-  
-      const response = await fetch(`${BaseUrl}/teachers/${selectedTeacherDetails.teacherid}/documents`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ ...updatedDocuments }),
-      });
-  
+      console.log("Payload:", updatedDocuments);
+
+      const response = await fetch(
+        `${BaseUrl}/teachers/${selectedTeacherDetails.teacherid}/documents`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ ...updatedDocuments }),
+        }
+      );
+
       if (response.ok) {
         setOpenPopup(true);
       } else {
         setOpenErrorPopup(true);
       }
     } catch (error) {
-      console.error('Error updating documents:', error);
+      console.error("Error updating documents:", error);
       setOpenErrorPopup(true);
     } finally {
       setLoadingState(false);
@@ -119,8 +153,17 @@ const StaffAttachDocument = () => {
   return (
     <div className="staff-attach-document-container">
       {loading && <LinearProgress />}
-      <FormControl variant="outlined" className="select-class-dropdown" style={{ marginRight: '16px' }}>
-        <Select className="custom-select" value={selectedTeacher} onChange={handleTeacherChange} displayEmpty>
+      <FormControl
+        variant="outlined"
+        className="select-class-dropdown"
+        style={{ marginRight: "16px" }}
+      >
+        <Select
+          className="custom-select"
+          value={selectedTeacher}
+          onChange={handleTeacherChange}
+          displayEmpty
+        >
           <MenuItem value="Select Teacher">Select Teacher</MenuItem>
           {teachers.map((teacher) => (
             <MenuItem key={teacher.teacherid} value={teacher.teacherid}>
@@ -129,60 +172,83 @@ const StaffAttachDocument = () => {
           ))}
         </Select>
       </FormControl>
-      <div className='teacher-details-grid'>
-        <div className='teacher-detail'>
-          <div className='teacher-label'>Name:</div>
-          <div className='teacher-field'>{selectedTeacherDetails.Name || 'Name'}</div>
+      <div className="teacher-details-grid">
+        <div className="teacher-detail">
+        <Typography variant="subtitle1">Name</Typography>
+        <div className="teacher-field">
+            {selectedTeacherDetails.Name || "Name"}
+          </div>
+        </div>
+        <div className="teacher-detail">
+          <Typography variant="subtitle1">Resume / CV </Typography>
+          <div className="upload-field">
+            <input
+              type="file"
+              id="resume"
+              onChange={(e) => handleDocumentUpload(e, "resume")}
+              style={{ display: "none" }}
+              className="upload-input"
+            />
+            <label htmlFor="resume" className="upload-label">
+              {fileNames.resume || "Upload Resume / CV"}
+              <IconButton component="span">
+                <UploadIcon />
+              </IconButton>
+            </label>
+          </div>
+        </div>
+        <div className="teacher-detail">
+          <Typography variant="subtitle1">Photo ID </Typography>
+          <div className="upload-field">
+            <input
+              type="file"
+              id="photoID"
+              onChange={(e) => handleDocumentUpload(e, "photoID")}
+              style={{ display: "none" }}
+              className="upload-input"
+            />
+            <label htmlFor="photoID" className="upload-label">
+              {fileNames.photoID || "Upload Photo ID"}
+              <IconButton component="span">
+                <UploadIcon />
+              </IconButton>
+            </label>
+          </div>
+        </div>
+        <div className="teacher-detail">
+          <Typography variant="subtitle1">
+            Educational Certificates (optional) 
+          </Typography>
+          <div className="upload-field">
+            <input
+              type="file"
+              id="educationalCertificates"
+              onChange={(e) =>
+                handleDocumentUpload(e, "educationalCertificates")
+              }
+              style={{ display: "none" }}
+              className="upload-input"
+            />
+            <label htmlFor="educationalCertificates" className="upload-label">
+              {fileNames.educationalCertificates ||
+                "Upload Educational Certificates"}
+              <IconButton component="span">
+                <UploadIcon />
+              </IconButton>
+            </label>
+          </div>
         </div>
       </div>
-      <Grid container spacing={3}>
-        <Grid item xs={12} md={6}>
-          <Typography variant="subtitle1">Resume / CV :</Typography>
-          <TextField
-            required
-            type="file"
-            id="resume"
-            name="resume"
-            label="Upload Resume / CV"
-            fullWidth
-            InputLabelProps={{ shrink: true }}
-            onChange={(event) => handleDocumentUpload(event, 'resume')}
-          />
-          {fileNames.resume && <Typography variant="body2">{fileNames.resume}</Typography>}
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <Typography variant="subtitle1">Photo ID :</Typography>
-          <TextField
-            required
-            type="file"
-            id="photoID"
-            name="photoID"
-            label="Upload Photo ID"
-            fullWidth
-            InputLabelProps={{ shrink: true }}
-            onChange={(event) => handleDocumentUpload(event, 'photoID')}
-          />
-          {fileNames.photoID && <Typography variant="body2">{fileNames.photoID}</Typography>}
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <Typography variant="subtitle1">Educational Certificates (optional) :</Typography>
-          <TextField
-            type="file"
-            id="educationalCertificates"
-            name="educationalCertificates"
-            label="Upload Educational Certificates"
-            fullWidth
-            InputLabelProps={{ shrink: true }}
-            onChange={(event) => handleDocumentUpload(event, 'educationalCertificates')}
-          />
-          {fileNames.educationalCertificates && <Typography variant="body2">{fileNames.educationalCertificates}</Typography>}
-        </Grid>
-      </Grid>
-      <div className='submit-button-container'>
-        <button className='submit-btn' onClick={handleSubmit}>Submit</button>
+      <div className="submit-button-container">
+        <button className="submit-btn" onClick={handleSubmit}>
+          Submit
+        </button>
       </div>
       {showAlert && (
-        <Stack spacing={2} style={{ position: 'fixed', top: 64, right: 0, zIndex: 1000 }}>
+        <Stack
+          spacing={2}
+          style={{ position: "fixed", top: 64, right: 0, zIndex: 1000 }}
+        >
           <Alert severity="success">{`uploaded "${uploadedDoc.name}".`}</Alert>
         </Stack>
       )}
@@ -192,7 +258,9 @@ const StaffAttachDocument = () => {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{"Documents Submitted"}</DialogTitle>
+        <DialogTitle id="alert-dialog-title">
+          {"Documents Submitted"}
+        </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
             Your documents have been submitted successfully.
