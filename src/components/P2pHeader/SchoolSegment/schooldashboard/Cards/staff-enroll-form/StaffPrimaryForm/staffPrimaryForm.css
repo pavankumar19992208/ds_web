@@ -54,11 +54,12 @@
 .buttons {
   display: flex;
   justify-content: flex-end;
+  margin: 32px 0 0 ;
+  gap: 16px;
+
 }
 
 .button {
-  margin-top: 24px; /* theme.spacing(3) */
-  margin-left: 8px; /* theme.spacing(1) */
   background-color: #ff8040;
   color: white;
 }

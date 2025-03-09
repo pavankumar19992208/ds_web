@@ -45,6 +45,13 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: theme.spacing(2),
     width: '92%',
   },
+  addressField: {
+    fontFamily: '"Urbanist", sans-serif',
+    fontOpticalSizing: 'auto',
+    fontWeight: 500 ,
+    marginLeft: theme.spacing(2),
+    width: '96%',
+  },
 }));
 
 const validateAlphabets = (value) => /^[A-Za-z\s]*$/.test(value);
@@ -440,9 +447,7 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             autoComplete="address-line1"
             value={currentAddress.line1}
             onChange={handleCurrentAddressChange}
-            // onKeyDown={handleKeyDown}
-            // onBlur={handleBlur}
-            className={classes.textField}
+            className={classes.addressField}
             error={!!errors.line1}
             helperText={errors.line1}
           />
@@ -455,9 +460,7 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             autoComplete="address-line2"
             value={currentAddress.line2}
             onChange={handleCurrentAddressChange}
-            // onKeyDown={handleKeyDown}
-            // onBlur={handleBlur}
-            className={classes.textField}
+            className={classes.addressField}
             error={!!errors.line2}
             helperText={errors.line2}
           />
@@ -555,7 +558,7 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             onChange={handlePermanentAddressChange}
             // onKeyDown={handleKeyDown}
             // onBlur={handleBlur}
-            className={classes.textField}
+            className={classes.addressField}
             error={!!errors.line1}
             helperText={errors.line1}
             disabled={sameAddress}
@@ -571,7 +574,7 @@ export default function GuardianInfoForm({ formData, setFormData }) {
             onChange={handlePermanentAddressChange}
             // onKeyDown={handleKeyDown}
             // onBlur={handleBlur}
-            className={classes.textField}
+            className={classes.addressField}
             error={!!errors.line2}
             helperText={errors.line2}
             disabled={sameAddress}

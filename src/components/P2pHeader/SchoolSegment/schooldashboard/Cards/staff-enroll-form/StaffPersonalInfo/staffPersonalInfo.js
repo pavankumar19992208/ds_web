@@ -17,6 +17,14 @@ const useStyles = makeStyles((theme) => ({
     marginRight: 16, // Add right margin to all fields
     width: '92%', // Set the width of all fields to 92%
   },
+  addressField: {
+    fontFamily: '"Urbanist", sans-serif',
+    fontOpticalSizing: 'auto',
+    fontWeight: 500 ,
+    marginLeft: 16, // Add left margin to all fields
+    marginRight: 16, // Add right margin to all fields
+    width: '96%', // Set the width of all fields to 92%
+  },
 }));
 
 export default function StaffPersonalInfo({ formData, setFormData }) {
@@ -259,7 +267,7 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
             name="line1"
             label="Address Line 1"
             fullWidth
-            className={`${classes.fieldMargin} heading`}
+            className={`${classes.addressField} heading`}
             value={formData.personalInfo.currentAddress.line1}
             onChange={(e) => handleInputChange(e, 'address', 'currentAddress')}
             error={!!errors['currentAddress.line1']}
@@ -272,7 +280,7 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
             name="line2"
             label="Address Line 2"
             fullWidth
-            className={`${classes.fieldMargin} heading`}
+            className={`${classes.addressField} heading`}
             value={formData.personalInfo.currentAddress.line2}
             onChange={(e) => handleInputChange(e, 'address', 'currentAddress')}
             error={!!errors['currentAddress.line2']}
@@ -360,7 +368,7 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
             name="line1"
             label="Address Line 1"
             fullWidth
-            className={`${classes.fieldMargin} heading`}
+            className={`${classes.addressField} heading`}
             value={formData.personalInfo.permanentAddress.line1}
             onChange={(e) => handleInputChange(e, 'address', 'permanentAddress')}
             disabled={formData.personalInfo.sameAsCurrent}
@@ -374,7 +382,7 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
             name="line2"
             label="Address Line 2"
             fullWidth
-            className={`${classes.fieldMargin} heading`}
+            className={`${classes.addressField} heading`}
             value={formData.personalInfo.permanentAddress.line2}
             onChange={(e) => handleInputChange(e, 'address', 'permanentAddress')}
             disabled={formData.personalInfo.sameAsCurrent}
