@@ -1,42 +1,141 @@
-import React from 'react';
-import './LoginPopup.css'; // Assuming you will create this CSS file
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import RegistrationPopup from './SchoolRegistration'; // Import the RegistrationPopup component
 
 const LoginPopup = ({ onClose }) => {
-  let navigate = useNavigate();
+  const [showOTP, setShowOTP] = useState(false);
+  const [otp, setOtp] = useState(['', '', '', '', '', '']); // Array to store each digit of the OTP
+  const [isRegistrationOpen, setIsRegistrationOpen] = useState(false); // State to track registration popup visibility
 
-  function handleLogin() {
-    navigate('/p2pheader'); // Use the path to your P2pheader component
-  }
+  const handleOTPClick = () => {
+    setShowOTP(!showOTP);
+  };
+
+  const handleOtpChange = (value, index) => {
+    const newOtp = [...otp];
+    newOtp[index] = value;
+    setOtp(newOtp);
+  };
+
+  const openRegistrationPopup = () => {
+    setIsRegistrationOpen(true); // Open registration popup
+  };
+
+  const closeRegistrationPopup = () => {
+    setIsRegistrationOpen(false); // Close registration popup
+  };
+
   return (
-<div className="loginPopup">
-  <div className="loginPopupContainer">
-    <div className='widget-container'>
-    <div className="loginHeader">
-      <h2 style={{marginLeft:'10%'}}>ADMINISTRATION  LOGIN</h2>
-      <button onClick={onClose} className="closeButton widget-align-right">X</button>
+    <div style={styles.overlay}>
+      <div style={styles.popup}>
+        <h2>Login</h2>
+        <form>
+          <div style={styles.formGroup}>
+            <label>Email:</label>
+            <input type="email" name="email" required />
+          </div>
+          {!showOTP && (
+            <div style={styles.formGroup}>
+              <label>Password:</label>
+              <input type="password" name="password" required />
+            </div>
+          )}
+          {showOTP && (
+            <div style={styles.otpContainer}>
+              {otp.map((digit, index) => (
+                <TextField
+                  key={index}
+                  value={digit}
+                  onChange={(e) => handleOtpChange(e.target.value, index)}
+                  inputProps={{
+                    maxLength: 1,
+                    style: { textAlign: 'center' },
+                  }}
+                  variant="outlined"
+                  required
+                />
+              ))}
+            </div>
+          )}
+          <div style={styles.formGroup}>
+            <Button
+              type="button"
+              style={styles.otpButton}
+              onClick={handleOTPClick}
+            >
+              {showOTP ? 'Use Password' : 'Use OTP'}
+            </Button>
+          </div>
+          <Button type="submit" variant="contained" color="primary">
+            Login
+          </Button>
+          <Button
+            type="button"
+            onClick={onClose}
+            variant="contained"
+            color="secondary"
+            style={{ marginLeft: '10px' }}
+          >
+            Close
+          </Button>
+        </form>
+        <div style={styles.signupText}>
+          Don’t have an account?{' '}
+          <span style={styles.signupLink} onClick={openRegistrationPopup}>
+            Sign up for free
+          </span>
+        </div>
+      </div>
+      {isRegistrationOpen && <RegistrationPopup onClose={closeRegistrationPopup} />}
     </div>
-    <div className="loginBody">
-      <div className="inputGroup inputIcon">
-        <h4 className='space widget-align-left'>USER ID</h4>
-        <i className="fas fa-user widget-align-left"></i>
-        <input type="text" placeholder="" />
-      </div>
-      <div className="inputGroup inputIcon">
-        <h4 className='space widget-align-left'>PASSWORD</h4>
-        <i className="fas fa-lock widget-align-left"></i>
-        <input type="password" placeholder="" />
-      </div>
-      <div class="button-grid">
-      <button className="forgotPassword widget-align-left" >forgot password</button>
-      <button className="loginButton widget-align-right" onClick={handleLogin}>LOGIN</button>
-      </div>
-    </div>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
-  </div>
-</div> 
-</div>
   );
+};
+
+const styles = {
+  overlay: {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  popup: {
+    backgroundColor: '#fff',
+    padding: '20px',
+    borderRadius: '10px',
+    width: '300px',
+  },
+  formGroup: {
+    marginBottom: '15px',
+  },
+  otpContainer: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    gap: '10px',
+  },
+  otpButton: {
+    backgroundColor: 'transparent',
+    border: 'none',
+    color: '#007BFF',
+    textDecoration: 'underline',
+    cursor: 'pointer',
+  },
+  signupText: {
+    marginTop: '15px',
+    textAlign: 'center',
+    fontSize: '14px',
+    color: '#555',
+  },
+  signupLink: {
+    color: '#007BFF',
+    textDecoration: 'underline',
+    cursor: 'pointer',
+  },
 };
 
 export default LoginPopup;

@@ -94,7 +94,7 @@ const Navbar = ({ schoolName, schoolLogo, establishmentYear, establishmentID, em
               <medium>Establishment ID:</medium> {establishmentID}
             </Typography>
             <Typography variant="body2" style={{ marginBottom: '16px' }}>
-              <medium>School ID:</medium> {globalData?.data?.SCHOOL_ID || 'N/A'}
+              <medium>School ID:</medium> {globalData?.data?.school_id || 'N/A'}
             </Typography>
             <Typography variant="body2" style={{ marginBottom: '16px' }}>
               <medium>Email:</medium> {email}

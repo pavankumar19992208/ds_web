@@ -24,15 +24,17 @@ const SchoolLogin = ({ onClose }) => {
                 },
                 body: JSON.stringify({ schoolId, password }),
             });
-
+    
             if (!response.ok) {
                 throw new Error('Login failed');
             }
-
+    
             const data = await response.json();
             console.log(data);
             setGlobalData(data);
-            navigate('/school_dashboard');
+    
+            // Redirect to the respective school's dashboard
+            navigate(`/school_dashboard/${schoolId}`);
         } catch (error) {
             setError('Invalid school ID or password');
         } finally {

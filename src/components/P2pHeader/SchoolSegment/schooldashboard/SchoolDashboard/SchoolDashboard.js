@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { GlobalStateContext } from '../../../../../GlobalStateContext';
+import { useParams } from 'react-router-dom';
 import Navbar from '../Navbar/Navbar';
 import Sidebar from '../Sidebar/Sidebar';
 import Events from '../Events/Events';
@@ -11,23 +12,33 @@ import './SchoolDashboard.css';
 
 const SchoolDashboard = () => {
   const { globalData } = useContext(GlobalStateContext);
-
+  const { school_id } = useParams();
   const [studentCount, setStudentCount] = useState(0);
   const [staffCount, setStaffCount] = useState(0);
   const [showAcademicYear, setShowAcademicYear] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  console.log('Global Data:', globalData);
+
+  console.log('useParams output:', useParams());
+  console.log('School ID from useParams:', school_id);
+  
+  const schoolId = school_id || globalData?.data?.school_id;
+  console.log('Resolved School ID:', schoolId);
+
+
   useEffect(() => {
     if (!globalData) return;
-
+  
+    console.log('Global Data:', globalData); // Log only once when globalData is available
+  
     const targetStudentCount = 150;
     const targetStaffCount = 20;
     const duration = 1000;
     const interval = 10;
     const incrementStudent = targetStudentCount / (duration / interval);
     const incrementStaff = targetStaffCount / (duration / interval);
-    console.log(globalData);
-
+  
     const studentInterval = setInterval(() => {
       setStudentCount((prevCount) => {
         if (prevCount + incrementStudent >= targetStudentCount) {
@@ -37,7 +48,7 @@ const SchoolDashboard = () => {
         return prevCount + incrementStudent;
       });
     }, interval);
-
+  
     const staffInterval = setInterval(() => {
       setStaffCount((prevCount) => {
         if (prevCount + incrementStaff >= targetStaffCount) {
@@ -47,14 +58,14 @@ const SchoolDashboard = () => {
         return prevCount + incrementStaff;
       });
     }, interval);
-
+  
     setLoading(false);
-
+  
     return () => {
       clearInterval(studentInterval);
       clearInterval(staffInterval);
     };
-  }, [globalData]);
+  }, [globalData]); // Ensure this only runs when globalData changes
 
   if (loading || !globalData) {
     return (
@@ -72,14 +83,14 @@ const SchoolDashboard = () => {
     <div className='school-dashboard'>
       <div className="homepage">
         <Navbar 
-          schoolName={globalData.data.SCHOOL_NAME} 
-          schoolLogo={globalData.data.SCHOOL_LOGO} 
+          schoolName={globalData.data.school_name} 
+          schoolLogo={globalData.data.school_logo} 
           onStartNewAcademicYear={toggleAcademicYear}
         />
         <Sidebar visibleItems={['home', 'attachDocument', 'subjectAllocation', 'attendanceTracking', 'leaveApprovals', 'academicPerformance', 'schoolStatistics', 'teacherAlert', 'eventPlanning', 'careerGuidance', 'inventoryManagement']} showTitle={true} selectedItem="home" />
         <main className="main-content">
           <div className="cards-container">
-            <Cards schoolName={globalData.data.SCHOOL_NAME} schoolLogo={globalData.data.SCHOOL_LOGO} studentCount={studentCount} staffCount={staffCount} />
+            <Cards schoolName={globalData.data.school_name} schoolLogo={globalData.data.school_logo} studentCount={studentCount} staffCount={staffCount} />
           </div>
           <div className="carousel-events-container">
             <div className="carousel-container">
@@ -96,7 +107,7 @@ const SchoolDashboard = () => {
           )}
         </main>
         <div className="school-id-box">
-          School ID: {globalData.data.SCHOOL_ID}
+          School ID: {globalData.data.school_id}
         </div>
       </div>
     </div>

@@ -5,8 +5,9 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import P2pHeader from './components/P2pHeader/P2pHeader';
 import WelcomeBoard from './components/WelcomeBoard/WelcomeBoard';
-import SchoolLogin from './components/P2pHeader/SchoolSegment/SchoolLogin';
-import SchoolRegistration from './components/P2pHeader/SchoolRegistration';
+// import SchoolLogin from './components/P2pHeader/SchoolSegment/SchoolLogin';
+import SchoolRegistration from './components/popups/SchoolRegistration';
+import SchoolLogin from './components/popups/LoginPopup';
 import SchoolDashboard from './components/P2pHeader/SchoolSegment/schooldashboard/SchoolDashboard/SchoolDashboard';
 import StaffEnrollForm from './components/P2pHeader/SchoolSegment/schooldashboard/Cards/staff-enroll-form/StaffPrimaryForm/staffPrimaryForm';
 import StudentEnrollForm from './components/P2pHeader/SchoolSegment/schooldashboard/Cards/student-enroll-form/PrimaryForm/primaryForm';
@@ -31,7 +32,7 @@ import CartPage from './components/Ecommerce/Cart/cartPage';
 import LeaveApproval from './components/P2pHeader/SchoolSegment/schooldashboard/Sidebar/leave-approval/leaveApproval';
 import PayrollForm from './components/P2pHeader/SchoolSegment/schooldashboard/Cards/staff-payroll/payRoll';
 import SchoolStatistics from './components/P2pHeader/SchoolSegment/schooldashboard/Sidebar/school-statistics/schoolStatistics';
-
+// mysql://root:nXbyCttzErnSirxYRBZtYNJRprHnbTar@shuttle.proxy.rlwy.net:21943/railway
 function App() {
   return (
     <GlobalStateProvider>
@@ -42,7 +43,8 @@ function App() {
             <Route path="/p2pheader" element={<P2pHeader />} />
             <Route path="/schlogin" element={<SchoolLogin />} />
             <Route path="/register-school" element={<SchoolRegistration />} />
-            <Route path="/school_dashboard" element={<SchoolDashboard />} />
+            <Route path="/school_login" element={<SchoolLogin/>} />
+            <Route path="/school_dashboard/:school_id" element={<SchoolDashboard />} />
             <Route path="/staff-enroll" element={<StaffEnrollForm />} />
             <Route path="/student-enroll" element={<StudentEnrollForm />} />
             <Route path="/student-bulk-enroll" element={<StudentBulkEnroll />} />

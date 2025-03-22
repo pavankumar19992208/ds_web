@@ -1,38 +1,42 @@
+// src/components/NavBar.js
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import logo from '../images/large-dNk4O_UUZ-transformed (1).png';
-import { FaBars } from 'react-icons/fa'; // Import the pi-bars icon
+import { FaBars } from 'react-icons/fa';
 import LoginPopup from './popups/LoginPopup';
 import SchoolLogin from '../components/P2pHeader/SchoolSegment/SchoolLogin';
+import RegistrationPopup from '../components/popups/SchoolRegistration'; // Import the new RegistrationPopup
 
 const NavBar = ({ showButtons = true }) => {
   const [isHovered, setIsHovered] = useState({});
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-  const [isMenuOpen, setIsMenuOpen] = useState(false); // State to toggle the menu
-  const [showLoginPopup, setShowLoginPopup] = useState(false); // State to control the visibility of the LoginPopup
-  const [showSchoolLoginPopup, setShowSchoolLoginPopup] = useState(false); // State to control the visibility of the SchoolLoginPopup
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showLoginPopup, setShowLoginPopup] = useState(false);
+  const [showSchoolLoginPopup, setShowSchoolLoginPopup] = useState(false);
+  const [showRegistrationPopup, setShowRegistrationPopup] = useState(false); // State for registration popup
   const navigate = useNavigate();
-  
+
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Function to toggle the LoginPopup visibility
   const toggleLoginPopup = () => {
     setShowLoginPopup(!showLoginPopup);
   };
 
-  // Function to toggle the SchoolLoginPopup visibility
   const toggleSchoolLoginPopup = () => {
     setShowSchoolLoginPopup(!showSchoolLoginPopup);
+  };
+
+  const toggleRegistrationPopup = () => {
+    setShowRegistrationPopup(!showRegistrationPopup); // Toggle registration popup
   };
 
   const navBarStyle = {
     maxHeight: windowWidth < 768 ? '20vh' : '10vh',
     width: 'auto',
-    // backgroundColor: '#E9F4FA',
     display: 'flex',
     alignItems: 'center',
     justifyContent: windowWidth < 320 ? 'center' : 'flex-start',
@@ -123,7 +127,7 @@ const NavBar = ({ showButtons = true }) => {
         style={buttonStyle('shopNow')}
         onMouseEnter={() => setIsHovered({ ...isHovered, shopNow: true })}
         onMouseLeave={() => setIsHovered({ ...isHovered, shopNow: false })}
-        onClick={() => navigate('/ecommerce-dashboard')} // Redirect to the ecommerce page
+        onClick={() => navigate('/ecommerce-dashboard')}
       >
         Shop Now
       </button>
@@ -143,6 +147,14 @@ const NavBar = ({ showButtons = true }) => {
       >
         School Login
       </button>
+      <button
+        style={buttonStyle('register')}
+        onMouseEnter={() => setIsHovered({ ...isHovered, register: true })}
+        onMouseLeave={() => setIsHovered({ ...isHovered, register: false })}
+        onClick={toggleRegistrationPopup}
+      >
+        Register
+      </button>
     </div>
   );
 
@@ -155,7 +167,7 @@ const NavBar = ({ showButtons = true }) => {
             margin: '0',
             fontSize: windowWidth < 900 ? '0.4rem' : (windowWidth < 1000 ? '0.8rem' : '1.2rem'),
             fontFamily: "'Rubik Doodle Shadow', cursive",
-            fontWeight: '900' // Add this line
+            fontWeight: '900'
           }}>
             DIGITAL SCHOOLING
           </p>
@@ -165,7 +177,7 @@ const NavBar = ({ showButtons = true }) => {
           </p>
         </div>
         {windowWidth < 450 ? (
-          <FaBars onClick={() => setIsMenuOpen(!isMenuOpen)} /> // Render the pi-bars icon and toggle the menu on click
+          <FaBars onClick={() => setIsMenuOpen(!isMenuOpen)} />
         ) : (
           showButtons && renderButtons()
         )}
@@ -173,6 +185,7 @@ const NavBar = ({ showButtons = true }) => {
       </div>
       {showLoginPopup && <LoginPopup onClose={toggleLoginPopup} />}
       {showSchoolLoginPopup && <SchoolLogin onClose={toggleSchoolLoginPopup} />}
+      {showRegistrationPopup && <RegistrationPopup onClose={toggleRegistrationPopup} />}
     </>
   );
 };
