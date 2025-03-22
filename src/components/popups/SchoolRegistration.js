@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import BASE_URL from '../../config';
 import SuccessPopup from './successPopup'; // Import the SuccessPopup component
+import ErrorPopup from './errorPopup'; // Import the ErrorPopup component
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 
@@ -20,7 +21,9 @@ const AuthPopup = ({ onClose }) => {
   const [isLogin, setIsLogin] = useState(true); // State to toggle between login and registration
   const [showOTP, setShowOTP] = useState(false);
   const [otp, setOtp] = useState(['', '', '', '', '', '']); // Array to store each digit of the OTP
-  const [useMobileLogin, setUseMobileLogin] = useState(false); // State to toggle between email and mobile login
+  const [useMobileLogin, setUseMobileLogin] = useState(false); // State to toggle between schoolId and mobile login
+  const [errorMessage, setErrorMessage] = useState(''); // State to track error message
+  const [showError, setShowError] = useState(false); // State to toggle error popup
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -31,11 +34,20 @@ const AuthPopup = ({ onClose }) => {
     e.preventDefault();
     if (isLogin) {
       // Handle login logic
-      console.log('Login form submitted');
-      console.log('Payload being sent to backend:', {
-        schoolId: formData.schoolId,
-        password: formData.password,
-      });
+      const payload = useMobileLogin
+        ? { mobile_number: formData.mobile_number, password: formData.password }
+        : { schoolId: formData.schoolId, password: formData.password };
+
+      try {
+        console.log('Login payload:', payload);
+        const response = await axios.post(`${BASE_URL}/login`, payload);
+        console.log('Login successful:', response.data);
+        setIsSuccess(true); // Show success popup
+      } catch (error) {
+        console.error('Login failed:', error);
+        setErrorMessage('Invalid credentials. Please try again.'); // Set error message
+        setShowError(true); // Show error popup
+      }
     } else {
       // Handle registration logic
       try {
@@ -45,6 +57,8 @@ const AuthPopup = ({ onClose }) => {
         setIsSuccess(true); // Show success popup
       } catch (error) {
         console.error('Registration failed:', error);
+        setErrorMessage('Registration failed. Please try again.'); // Set error message
+        setShowError(true); // Show error popup
       }
     }
   };
@@ -52,6 +66,10 @@ const AuthPopup = ({ onClose }) => {
   const handleSuccessClose = () => {
     setIsSuccess(false); // Close success popup
     onClose(); // Close the auth popup
+  };
+
+  const handleErrorClose = () => {
+    setShowError(false); // Close error popup
   };
 
   const handleOTPClick = () => {
@@ -77,8 +95,13 @@ const AuthPopup = ({ onClose }) => {
       <div style={styles.popup}>
         {isSuccess ? (
           <SuccessPopup
-            message="Your school has been successfully registered."
+            message={isLogin ? 'Login successful!' : 'Your school has been successfully registered.'}
             onClose={handleSuccessClose}
+          />
+        ) : showError ? (
+          <ErrorPopup
+            message={errorMessage}
+            onClose={handleErrorClose}
           />
         ) : (
           <>
