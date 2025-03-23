@@ -13,6 +13,8 @@ import './SchoolDashboard.css';
 const SchoolDashboard = () => {
   const { globalData } = useContext(GlobalStateContext);
   const { school_id } = useParams();
+  const schoolId = school_id || globalData?.data?.school_id;
+  // const schoolName = globalData?.data?.school_name || 'School Name Not Available';
   const [studentCount, setStudentCount] = useState(0);
   const [staffCount, setStaffCount] = useState(0);
   const [showAcademicYear, setShowAcademicYear] = useState(false);
@@ -22,8 +24,6 @@ const SchoolDashboard = () => {
 
   console.log('useParams output:', useParams());
   console.log('School ID from useParams:', school_id);
-  
-  const schoolId = school_id || globalData?.data?.school_id;
   console.log('Resolved School ID:', schoolId);
 
 

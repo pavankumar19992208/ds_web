@@ -40,3 +40,26 @@
 .submit-button:hover {
     background-color: #45a049;
 }
+
+/**/
+.custom-input {
+    width: 40%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 2px solid #AEAEAE;
+    font-size: 14px;
+    background: none;
+    color: #fff;
+  }
+.custom-input::placeholder {
+    color: #AEAEAE; /* Placeholder color */
+    opacity: 1; /* Ensure the placeholder is fully visible */
+  }
+.reg-lgn-btn{
+    background-color: #fff;
+    border-radius: 12px;
+    padding : 12px;
+    color: #444781;
+    font-weight: 600;
+    font-size: 14px;
+}

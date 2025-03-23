@@ -153,7 +153,7 @@ const NavBar = ({ showButtons = true }) => {
         onMouseLeave={() => setIsHovered({ ...isHovered, register: false })}
         onClick={toggleRegistrationPopup}
       >
-        Register
+        Login
       </button>
     </div>
   );
