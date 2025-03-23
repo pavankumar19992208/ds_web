@@ -5,7 +5,6 @@ import BASE_URL from '../../config';
 import SuccessPopup from './successPopup'; // Import the SuccessPopup component
 import ErrorPopup from './errorPopup'; // Import the ErrorPopup component
 import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
 import logo from '../../images/logo.png'; 
 import { Close } from '@mui/icons-material';
 import { GlobalStateContext } from '../../GlobalStateContext';
@@ -112,8 +111,8 @@ const handleSuccessClose = () => {
   };
 
   return (
-    <div style={styles.overlay}>
-      <div style={styles.popup}>
+    <div style={styles.overlay} className='overlay'>
+      <div style={styles.popup} className='popup'>
 
         {isSuccess ? (
           <SuccessPopup
@@ -126,36 +125,37 @@ const handleSuccessClose = () => {
             onClose={handleErrorClose}
           />
         ) : (
-          <div style={styles.twoColumnLayout}>
+          <div style={styles.twoColumnLayout} className='two-column-layout'>
             {/* Left Column: Company Logo */}
-            <div style={styles.leftColumn}>
+            <div style={styles.leftColumn} className='left-column'>
   {/* NeuraLife Text */}
-  <h1 style={styles.neuraLifeText}>NeuraLife</h1>
+  <h1 style={styles.neuraLifeText} className='neuralife-text'>neuraLife</h1>
   
   {/* Centered Logo Container */}
-  <div style={styles.logoContainer}>
+  <div style={styles.logoContainer} className='logo-container'>
     <img
       src={logo} // Use the imported image
       alt="Company Logo"
       style={styles.logo}
+      className='logo'
     />
   </div>
 </div>
             {/* Right Column: Registration/Login Fields */}
-            <div style={styles.rightColumn}>
-  <div style={styles.headerContainer}>
-    <h2 style={styles.auth_title}>{isLogin ? 'Login' : 'Registration'}</h2>
-    <div style={styles.closeIconContainer} onClick={onClose}>
-      <Close style={styles.closeIcon} />
+            <div style={styles.rightColumn} className='right-column'>
+  <div style={styles.headerContainer} className='header-container'>
+    <h2 style={styles.auth_title} className='auth-title'>{isLogin ? 'Login' : 'Registration'}</h2>
+    <div style={styles.closeIconContainer} className='closeIcon-container' onClick={onClose}>
+      <Close style={styles.closeIcon} className='close-icon'/>
     </div>
   </div>
   {/* Form Container with Scroll */}
-  <div style={styles.formContainer}>
+  <div style={styles.formContainer} className='reg-form-container'>
     <form onSubmit={handleSubmit}>
       {/* Form fields remain unchanged */}
       {!isLogin && (
         <>
-          <div style={styles.formGroup}>
+          <div style={styles.formGroup} className='form-group'>
             <input
               type="text"
               name="school_name"
@@ -167,7 +167,7 @@ const handleSuccessClose = () => {
               className="custom-input"
             />
           </div>
-          <div style={styles.formGroup}>
+          <div style={styles.formGroup} className='form-group'>
             <input
               type="text"
               name="syllabus_type"
@@ -179,7 +179,7 @@ const handleSuccessClose = () => {
               className="custom-input"
             />
           </div>
-          <div style={styles.formGroup}>
+          <div style={styles.formGroup} className='form-group'>
             <input
               type="text"
               name="admin_name"
@@ -191,7 +191,7 @@ const handleSuccessClose = () => {
               className="custom-input"
             />
           </div>
-          <div style={styles.formGroup}>
+          <div style={styles.formGroup} className='form-group'>
             <input
               type="text"
               name="mobile_number"
@@ -203,7 +203,7 @@ const handleSuccessClose = () => {
               className="custom-input"
             />
           </div>
-          <div style={styles.formGroup}>
+          <div style={styles.formGroup} className='form-group'>
             <input
               type="email"
               name="email"
@@ -218,7 +218,7 @@ const handleSuccessClose = () => {
         </>
       )}
       {isLogin && !useMobileLogin && (
-        <div style={styles.formGroup}>
+        <div style={styles.formGroup} className='form-group'>
           <input
             type="text"
             name="schoolId"
@@ -232,7 +232,7 @@ const handleSuccessClose = () => {
         </div>
       )}
       {isLogin && useMobileLogin && (
-        <div style={styles.formGroup}>
+        <div style={styles.formGroup} className='form-group'>
           <input
             type="text"
             name="mobile_number"
@@ -246,7 +246,7 @@ const handleSuccessClose = () => {
         </div>
       )}
       {!showOTP && (
-        <div style={styles.formGroup}>
+        <div style={styles.formGroup} className='form-group'>
           <input
             type="password"
             name="password"
@@ -260,7 +260,7 @@ const handleSuccessClose = () => {
         </div>
       )}
       {showOTP && isLogin && (
-        <div style={styles.otpContainer}>
+        <div style={styles.otpContainer} className='otp-container'>
           {otp.map((digit, index) => (
             <TextField
               key={index}
@@ -272,45 +272,49 @@ const handleSuccessClose = () => {
               }}
               required
               style={styles.otpInputField}
+              className="otp-input-field"
             />
           ))}
         </div>
       )}
       {isLogin && (
         <>
-                  <div style={styles.btnGroup}>
-            <Button
+                  <div style={styles.btnGroup} className='reg-btn-group'>
+            <button
               type="button"
               style={styles.otpButton}
+              className='otp-button'
               onClick={handleOTPClick}
             >
               Forgot Password
-            </Button>
+            </button>
           </div>
-          <div style={styles.btnGroup}>
-            <Button
+          <div style={styles.btnGroup} className='reg-btn-group'>
+            <button
               type="button"
               style={styles.otpButton}
+              className='otp-button'
               onClick={handleOTPClick}
             >
               {showOTP ? 'Use Password' : 'Use OTP'}
-            </Button>
+            </button>
           </div>
-          <div style={styles.btnGroup}>
-            <Button
+          <div style={styles.btnGroup} className='reg-btn-group'>
+            <button
               type="button"
               style={styles.otpButton}
+              className='otp-button'
               onClick={toggleMobileLogin}
             >
               {useMobileLogin ? 'Login with School ID' : 'Login with Mobile'}
-            </Button>
+            </button>
           </div>
         </>
       )}
     </form>
   </div>
   {/* Button Container */}
-  <div style={styles.buttonContainer}>
+  <div style={styles.buttonContainer} className='button-container'>
   <button 
     type="submit" 
     className='reg-lgn-btn'
@@ -319,9 +323,9 @@ const handleSuccessClose = () => {
     {isLogin ? 'Login' : 'Register'}
   </button>
 </div>
-  <div style={styles.authToggleText}>
+  <div style={styles.authToggleText} className='auth-toggle-text'>
     {isLogin ? 'Don’t have an account? ' : 'Already have an account? '}
-    <span style={styles.authToggleLink} onClick={toggleAuthMode}>
+    <span style={styles.authToggleLink} className='auth-toggle-link' onClick={toggleAuthMode}>
       {isLogin ? 'Sign up for free' : 'Login'}
     </span>
   </div>
@@ -334,142 +338,8 @@ const handleSuccessClose = () => {
 };
 
 const styles = {
-  overlay: {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  popup: {
-    backgroundColor: '#fff',
-    borderRadius: '10px',
-    width: '1000px', // Increased width to accommodate two columns
-    height: '500px',
-    display: 'flex',
-    justifyContent: 'center',
-    border: '6px solid #444781',
-  },
-  headerContainer: {
-    display: 'flex',
-    justifyContent: 'space-between', // Space between title and close icon
-    alignItems: 'center', // Vertically center items
-    width: '100%', // Take full width of the right column
-  },
-  closeIconContainer: {
-    cursor: 'pointer', // Add pointer cursor for better UX
-  },
-  closeIcon: {
-    color: '#fff', // Match the text color
-    fontSize: '24px', // Adjust icon size
-  },
-  auth_title:{
-    marginBottom: '30px',
-    fontSize: '34px',
-    fontWeight: 700,
-  },
-  twoColumnLayout: {
-    display: 'grid',
-    gridTemplateColumns: '1fr 1fr', // Left column for logo, right column for form
-    width: '100%', // Take full width of the popup
-    height: '100%',
-  },
-  leftColumn: {
-    display: 'flex',
-    flexDirection: 'column', // Stack items vertically
-    justifyContent: 'flex-start', // Align items to the top
-    alignItems: 'flex-start', // Align text to the left
-    padding: '20px', // Add padding for spacing
-  },
 
-  neuraLifeText: {
-    color: '#444781', // Match the theme color
-    fontSize: '40px',
-    fontWeight: 'bold',
-    margin: '0', // Remove default margin
-  },
-  rightColumn: {
-    padding: '0px 30px', // Add padding for spacing
-    color: '#fff',
-    backgroundColor: '#444781',
-    display: 'flex',
-    flexDirection: 'column',
-    height: '100%',
-    overflow: 'hidden', // Prevent scrolling in the right column
-  },
-  formContainer: {
-    flex: 1, // Take remaining space
-    overflowY: 'auto', // Enable vertical scrolling
-    paddingRight: '10px', // Add padding to prevent scrollbar overlap
-  },
-  logoContainer: {
-    display: 'flex',
-    justifyContent: 'center', // Center the logo horizontally
-    alignItems: 'center', // Center the logo vertically
-    width: '100%', // Take full width of the left column
-    marginTop: '60px', // Add space between text and logo
-  },
-  logo: {
-    maxWidth: '100%',
-    height: '240px',
-  },
-  formGroup: {
-    marginBottom: '15px',
-  },
-  otpContainer: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    gap: '10px',
-    width: '80%',
-  },
-  otpInputField:{
-    border: '2px solid #AEAEAE',
-    borderRadius: '8px',
-  },
-  otpButton: {
-    backgroundColor: 'transparent',
-    border: 'none',
-    color: '#fff',
-    textDecoration: 'none',
-    cursor: 'pointer',
-    fontWeight: 'bold',
-    fontSize: '12px',
-  },
-  btnGroup:{
-    margin: '0',
-
-  },
-  authToggleText: {
-    marginTop: '15px',
-    textAlign: 'center',
-    fontSize: '14px',
-    color: '#fff',
-  },
-  authToggleLink: {
-    color: '#fff',
-    textDecoration: 'none',
-    fontWeight: 'semibold',
-    cursor: 'pointer',
-  },
-  buttonContainer: {
-    display: 'flex',
-    justifyContent: 'flex-end', // Align button to the right
-    marginTop: '20px', // Add some spacing above the button
-    paddingBottom: '20px', // Add padding at the bottom
-  },
-  // inputField: {
-  //   width: '40%',
-  //   padding: '10px',
-  //   borderRadius: '5px',
-  //   border: '1px solid #AEAEAE',
-  //   fontSize: '14px',
-  //   background: 'none',
-  //   color: '#fff',
-  // },
+ 
 };
 
 export default AuthPopup;

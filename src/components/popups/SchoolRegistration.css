@@ -1,4 +1,4 @@
-.school-registration-form {
+/* .school-registration-form {
     max-width: 600px;
     margin: 0 auto;
     padding: 20px;
@@ -39,9 +39,152 @@
 
 .submit-button:hover {
     background-color: #45a049;
-}
+} */
 
 /**/
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .popup {
+    background-color: #fff;
+    border-radius: 32px;
+    width: 60%; /* Increased width to accommodate two columns */
+    height: 70%;
+    display: flex;
+    justify-content: center;
+    border: 6px solid #444781;
+}
+.header-container {
+    display: flex;
+    justify-content: space-between; /* Space between title and close icon */
+    align-items: center; /* Vertically center items */
+    width: 100%; /* Take full width of the right column */
+}
+.close-icon-container {
+    cursor: pointer; /* Add pointer cursor for better UX */
+}
+.close-icon {
+    color: #fff; /* Match the text color */
+    font-size: 24px; /* Adjust icon size */
+}
+
+.auth-title {
+    margin-bottom: 30px;
+    font-size: 34px;
+    font-weight: 700;
+}
+
+.two-column-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Left column for logo, right column for form */
+    width: 100%; /* Take full width of the popup */
+    height: 100%;
+}
+
+.left-column {
+    display: flex;
+    flex-direction: column; /* Stack items vertically */
+    justify-content: flex-start; /* Align items to the top */
+    align-items: flex-start; /* Align text to the left */
+    padding: 20px; /* Add padding for spacing */
+}
+
+.neuralife-text {
+    color: #444781; /* Match the theme color */
+    font-size: 40px;
+    font-weight: bold;
+    margin: 0; /* Remove default margin */
+}
+
+.right-column {
+    padding: 0px 30px; /* Add padding for spacing */
+    color: #fff;
+    background-color: #444781;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden; /* Prevent scrolling in the right column */
+}
+
+.reg-form-container {
+    flex: 1; /* Take remaining space */
+    overflow-y: auto; /* Enable vertical scrolling */
+    padding-right: 10px; /* Add padding to prevent scrollbar overlap */
+}
+
+.logo-container {
+    display: flex;
+    justify-content: center; /* Center the logo horizontally */
+    align-items: center; /* Center the logo vertically */
+    width: 100%; /* Take full width of the left column */
+    margin-top: 60px; /* Add space between text and logo */
+}
+
+.logo {
+    max-width: 100%;
+    height: 240px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.otp-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    width: 80%;
+}
+
+.otp-input-field {
+    border: 2px solid #AEAEAE;
+    border-radius: 8px;
+}
+
+.otp-button {
+    background-color: transparent;
+    border: none;
+    color: #fff ;
+    text-decoration: none;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+    font-family: 'Poppins', sans-serif !important;
+
+}
+
+.reg-btn-group {
+    margin: 0;
+}
+
+.auth-toggle-text {
+    margin-top: 15px;
+    text-align: center;
+    font-size: 14px;
+    color: #fff;
+}
+
+.auth-toggle-link {
+    color: #fff;
+    text-decoration: none;
+    font-weight: semibold;
+    cursor: pointer;
+}
+
+.button-container {
+    display: flex;
+    justify-content: flex-end; /* Align button to the right */
+    margin: 20px 0; /* Add some spacing above the button */
+}
+
 .custom-input {
     width: 40%;
     padding: 10px;
@@ -58,8 +201,30 @@
 .reg-lgn-btn{
     background-color: #fff;
     border-radius: 12px;
-    padding : 12px;
+    padding : 12px 16px;
     color: #444781;
     font-weight: 600;
     font-size: 14px;
+}
+
+@media (max-width:1024px){
+    .popup {
+        width : 70%;
+    }
+    .neuralife-text{
+        font-size: 30px;
+    }
+    .logo-container{
+        margin-top: 40px;
+    }
+    .auth-title{
+        font-size: 30px;
+    }
+    .otp-button{
+        font-size: 12px;
+    }
+    .reg-lgn-btn{
+        font-size: 12px;
+        padding: 10px 14px;
+    }
 }
