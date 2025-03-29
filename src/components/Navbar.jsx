@@ -4,8 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import logo from '../images/large-dNk4O_UUZ-transformed (1).png';
 import { FaBars } from 'react-icons/fa';
 import LoginPopup from './popups/LoginPopup';
-import SchoolLogin from '../components/P2pHeader/SchoolSegment/SchoolLogin';
-import RegistrationPopup from '../components/popups/SchoolRegistration'; // Import the new RegistrationPopup
+import SchoolLogin from './P2pHeader/SchoolSegment/SchoolLogin';
+import RegistrationPopup from './popups/SchoolRegistration'; // Import the new RegistrationPopup
 
 const NavBar = ({ showButtons = true }) => {
   const [isHovered, setIsHovered] = useState({});

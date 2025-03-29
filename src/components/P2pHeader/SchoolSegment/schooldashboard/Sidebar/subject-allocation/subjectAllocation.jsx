@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { GlobalStateContext } from '../../../../../../GlobalStateContext';
 import Navbar from '../../Navbar/Navbar';
-import Sidebar from '../../Sidebar/Sidebar';
+import Sidebar from '../Sidebar';
 import BaseUrl from '../../../../../../config';
 import { Typography, Select, MenuItem, Box, IconButton, Button, Tabs, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';

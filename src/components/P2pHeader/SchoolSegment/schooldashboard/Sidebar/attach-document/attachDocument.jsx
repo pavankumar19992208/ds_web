@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Card, CardContent, Typography, Box } from '@mui/material';
 import Navbar from '../../Navbar/Navbar';
-import Sidebar from '../../Sidebar/Sidebar';
-import AttachDocumentStudent from '../attach-document/attach-document-student/attachDocumentStudent'; // Import the form component
+import Sidebar from '../Sidebar';
+import AttachDocumentStudent from './attach-document-student/attachDocumentStudent'; // Import the form component
 import { GlobalStateContext } from '../../../../../../GlobalStateContext';
 
 import './attachDocument.css'; // Import the CSS file

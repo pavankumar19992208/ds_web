@@ -1,7 +1,7 @@
 import './WelcomeBoard.css';
-import Navbar from '../../components/Navbar'
-import Services from '../../components/Services'
-import Welcome from '../../components/Welcome'
+import Navbar from '../Navbar'
+import Services from '../Services'
+import Welcome from '../Welcome'
 function WelcomeBoard() {
   return (
     <div className="App">

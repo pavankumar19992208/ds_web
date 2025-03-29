@@ -5,7 +5,6 @@ import Navbar from '../Navbar/Navbar';
 import Sidebar from '../Sidebar/Sidebar';
 import Events from '../Events/Events';
 import Cards from '../Cards/cards';
-import AcademicYear from '../AcademicYear/AcademicYearVerification';
 import HashLoader from 'react-spinners/HashLoader';
 import ImageCarousel from '../ImageCarousel/ImageCarousel';
 import './SchoolDashboard.css';
