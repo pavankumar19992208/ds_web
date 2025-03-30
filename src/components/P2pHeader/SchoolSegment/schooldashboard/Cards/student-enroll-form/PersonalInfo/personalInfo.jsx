@@ -3,16 +3,20 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
+import Button from '@mui/material/Button';
+import AddCircleOutline from '@mui/icons-material/AddCircleOutline';
+import RemoveCircleOutline from '@mui/icons-material/RemoveCircleOutline';
+import IconButton from '@mui/material/IconButton';
 import ListItemText from '@mui/material/ListItemText';
 import { makeStyles } from '@mui/styles';
+import Tooltip from '@mui/material/Tooltip';
 import { storage } from '../../../../../../connections/firebase';
 import { ref, uploadString, getDownloadURL } from 'firebase/storage';
+import BaseUrl from '../../../../../../../config';
+import axios from 'axios';
 import './personalInfo.css';
 
 const useStyles = makeStyles((theme) => ({
-  formContainer: {
-    // Removed overflow and maxHeight to fit content naturally
-  },
   basicInfoMargin: {
     marginBottom: theme.spacing(-3), // Adjust the value as needed
   },
@@ -50,10 +54,86 @@ export default function DetailsForm({ formData, setFormData }) {
   const classes = useStyles();
   const [fileName, setFileName] = useState(formData.personalInfo.PhotoName || '');
   const [errors, setErrors] = useState({});
-  const [selectedLanguages, setSelectedLanguages] = useState(formData.personalInfo.languagesKnown || []);
+  const [selectedLanguages, setSelectedLanguages] = useState(
+    formData.personalInfo.languagesKnown || []
+  );
   const [otherLanguage, setOtherLanguage] = useState(formData.personalInfo.otherLanguage || '');
   const [otherGender, setOtherGender] = useState(formData.personalInfo.otherGender || '');
-  const languages = ['Hindi', 'Telugu', 'English', 'Other'];
+  const [languages, setLanguages] = useState([]); // State to store fetched languages
+  const [languageEntries, setLanguageEntries] = useState(
+    formData.personalInfo.languagesKnown || [{ language_id: '', language_type: '' }]
+  );
+  const [religions, setReligions] = useState([]);
+
+  useEffect(() => {
+    const fetchReligions = async () => {
+      try {
+        const response = await axios.get(`${BaseUrl}/religions`);
+        setReligions(response.data.religions);
+      } catch (error) {
+        console.error("Error fetching religions:", error);
+      }
+    };
+    fetchReligions();
+  }, []);
+
+  const [nationalities, setNationalities] = useState([]);
+
+  useEffect(() => {
+    const fetchNationalities = async () => {
+      try {
+        const response = await axios.get(`${BaseUrl}/nationalities`);
+        setNationalities(response.data.nationalities);
+      } catch (error) {
+        console.error("Error fetching nationalities:", error);
+      }
+    };
+    fetchNationalities();
+  }, []);
+
+  const addLanguageEntry = () => {
+    setLanguageEntries([...languageEntries, { language_id: '', language_type: '' }]);
+  };
+
+  const removeLanguageEntry = (index) => {
+    const newEntries = [...languageEntries];
+    newEntries.splice(index, 1);
+    setLanguageEntries(newEntries);
+    setFormData(prev => ({
+      ...prev,
+      personalInfo: {
+        ...prev.personalInfo,
+        languagesKnown: newEntries
+      }
+    }));
+  };
+  
+
+  useEffect(() => {
+    const fetchLanguages = async () => {
+      try {
+        const response = await axios.get(`${BaseUrl}/languages`);
+        setLanguages(response.data.languages);
+        console.log('Languages fetched from API:', response.data.languages);
+      } catch (error) {
+        console.error("Error fetching languages:", error);
+        // You can access more detailed error info:
+        if (error.response) {
+          // The request was made and the server responded with a status code
+          console.error("Response data:", error.response.data);
+          console.error("Response status:", error.response.status);
+          console.error("Response headers:", error.response.headers);
+        } else if (error.request) {
+          // The request was made but no response was received
+          console.error("No response received:", error.request);
+        } else {
+          // Something happened in setting up the request
+          console.error("Request setup error:", error.message);
+        }
+      }
+    };
+    fetchLanguages();
+  }, []);
 
   useEffect(() => {
     setFileName(formData.personalInfo.PhotoName || '');
@@ -63,6 +143,10 @@ export default function DetailsForm({ formData, setFormData }) {
     const { name, value } = event.target;
     let isValid = true;
     let errorMessage = '';
+    if (name === 'Category' && value && !['SC', 'ST', 'OBC', 'GEN', 'EWS', 'PWD'].includes(value)) {
+      isValid = false;
+      errorMessage = 'Please select a valid category';
+    }
 
     if (['StudentName', 'PreviousSchool', 'Religion', 'Category', 'Nationality'].includes(name)) {
       isValid = validateAlphabets(value) || value === '';
@@ -143,25 +227,18 @@ export default function DetailsForm({ formData, setFormData }) {
     }
   };
 
-  const handleLanguageChange = (event) => {
-    const { value } = event.target;
-    setSelectedLanguages(value);
-
-    if (!value.includes('Other')) {
-      setOtherLanguage('');
+const handleLanguageChange = (index, field, value) => {
+  const newEntries = [...languageEntries];
+  newEntries[index][field] = value;
+  setLanguageEntries(newEntries);
+  setFormData(prev => ({
+    ...prev,
+    personalInfo: {
+      ...prev.personalInfo,
+      languagesKnown: newEntries
     }
-
-    const updatedLanguages = value.includes('Other') && otherLanguage ? [...value, otherLanguage] : value;
-
-    setFormData((prevData) => ({
-      ...prevData,
-      personalInfo: {
-        ...prevData.personalInfo,
-        languagesKnown: updatedLanguages,
-        otherLanguage: value.includes('Other') ? otherLanguage : '',
-      },
-    }));
-  };
+  }));
+};
 
   const handleOtherLanguageChange = (event) => {
     const { value } = event.target;
@@ -358,85 +435,119 @@ export default function DetailsForm({ formData, setFormData }) {
           </Typography>
         </Grid>
         <Grid item xs={12} sm={6}>
-          <TextField
-            id="languagesKnown"
-            name="languagesKnown"
-            label="Languages Known"
-            select
-            fullWidth
-            value={selectedLanguages}
-            onChange={handleLanguageChange}
-            className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
-            SelectProps={{
-              multiple: true,
-              renderValue: (selected) => selected.join(', '),
-            }}
-          >
-            {languages.map((language) => (
-              <MenuItem key={language} value={language}>
-                <ListItemText primary={language} />
-              </MenuItem>
-            ))}
-          </TextField>
-          {selectedLanguages.includes('Other') && (
-            <TextField
-              id="otherLanguage"
-              label="Other Language"
-              name="otherLanguage"
-              value={otherLanguage}
-              onChange={handleOtherLanguageChange}
-              fullWidth
-              className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
-              error={!!errors.otherLanguage}
-              helperText={errors.otherLanguage}
-            />
-          )}
-        </Grid>
+
+  {languageEntries.map((entry, index) => (
+    <Grid container spacing={2} key={index} style={{ marginBottom: '16px' }}>
+      <Grid item xs={6}>
+        <TextField
+          select
+          fullWidth
+          label="Language"
+          value={entry.language_id || ''}
+          onChange={(e) => handleLanguageChange(index, 'language_id', Number(e.target.value))}
+          className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
+        >
+          {languages.map((language) => (
+            <MenuItem key={language.language_id} value={language.language_id}>
+              {language.language_name}
+            </MenuItem>
+          ))}
+        </TextField>
+      </Grid>
+      <Grid item xs={5}>
+        <TextField
+          select
+          fullWidth
+          label="Language Type"
+          value={entry.language_type || ''}
+          onChange={(e) => handleLanguageChange(index, 'language_type', e.target.value)}
+          className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
+        >
+          <MenuItem value="mother_tongue">Mother Tongue</MenuItem>
+          <MenuItem value="secondary_language">Secondary Language</MenuItem>
+        </TextField>
+      </Grid>
+      <Grid item xs={1} style={{ display: 'flex', alignItems: 'center' }}>
+        {index > 0 && (
+          <IconButton onClick={() => removeLanguageEntry(index)}>
+            <RemoveCircleOutline color="error" />
+          </IconButton>
+        )}
+      </Grid>
+    </Grid>
+  ))}
+  
+  <Button 
+    variant="outlined" 
+    startIcon={<AddCircleOutline />}
+    onClick={addLanguageEntry}
+    style={{ marginLeft: '16px' }}
+  >
+    Add Language
+  </Button>
+</Grid>
+      
         <Grid item xs={12} sm={6}>
-          <TextField
-            id="Religion"
-            name="Religion"
-            label="Religion"
-            fullWidth
-            value={formData.personalInfo.Religion || ''}
-            onChange={handleChange}
-            // onKeyDown={handleKeyDown}
-            // onBlur={handleBlur}
-            className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
-            error={!!errors.Religion}
-            helperText={errors.Religion}
-          />
-        </Grid>
+  <TextField
+    id="Religion"
+    name="Religion"
+    label="Religion"
+    select
+    fullWidth
+    value={formData.personalInfo.Religion || ''}
+    onChange={handleChange}
+    className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
+    error={!!errors.Religion}
+    helperText={errors.Religion}
+  >
+    {religions.map((religion) => (
+      <MenuItem key={religion.religion_id} value={religion.religion_name}>
+        {religion.religion_name}
+      </MenuItem>
+    ))}
+  </TextField>
+</Grid>
         <Grid item xs={12} sm={6}>
-          <TextField
-            id="Category"
-            name="Category"
-            label="Category"
-            fullWidth
-            value={formData.personalInfo.Category || ''}
-            onChange={handleChange}
-            // onKeyDown={handleKeyDown}
-            // onBlur={handleBlur}
-            className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
-            error={!!errors.Category}
-            helperText={errors.Category}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            id="Nationality"
-            name="Nationality"
-            label="Nationality"
-            fullWidth
-            value={formData.personalInfo.Nationality || ''}
-            onChange={handleChange}
-            // onKeyDown={handleKeyDown}
-            // onBlur={handleBlur}
-            className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
-            error={!!errors.Nationality}
-            helperText={errors.Nationality}
-          />
-        </Grid>
+  <TextField
+    id="Category"
+    name="Category"
+    label="Category"
+    select
+    fullWidth
+    value={formData.personalInfo.Category || ''}
+    onChange={handleChange}
+    className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
+    error={!!errors.Category}
+    helperText={errors.Category}
+  >
+    <MenuItem value="SC">SC (Scheduled Caste)</MenuItem>
+    <MenuItem value="ST">ST (Scheduled Tribe)</MenuItem>
+    <MenuItem value="OBC">OBC (Other Backward Class)</MenuItem>
+    <MenuItem value="GEN">GEN (General)</MenuItem>
+    <MenuItem value="EWS">EWS (Economically Weaker Section)</MenuItem>
+    <MenuItem value="PWD">PWD (Person with Disability)</MenuItem>
+  </TextField>
+</Grid>
+<Grid item xs={12} sm={6}>
+  <TextField
+    id="Nationality"
+    name="Nationality"
+    label="Nationality"
+    select
+    fullWidth
+    value={formData.personalInfo.Nationality || ''}
+    onChange={handleChange}
+    className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
+    error={!!errors.Nationality}
+    helperText={errors.Nationality}
+  >
+    {nationalities.map((nationality) => (
+      <MenuItem key={nationality.nationality_id} value={nationality.nationality_name}>
+        {nationality.nationality_name}
+      </MenuItem>
+    ))}
+  </TextField>
+</Grid>
         <Grid item xs={12} sm={6}>
           <TextField
             required

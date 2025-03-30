@@ -311,59 +311,44 @@ export default function StudentEnrollForm() {
     }
 
     // Validate guardian info
-    if (activeStep === 1) {
-      if (!formData.guardianInfo.MotherName) {
-        errors.MotherName = 'Mother Name is required';
-      }
-      if (!formData.guardianInfo.FatherName) {
-        errors.FatherName = 'Father Name is required';
-      }
-      if (!formData.guardianInfo.ParentOccupation) {
-        errors.ParentOccupation = 'Parent Occupation is required';
-      }
-      if (!formData.guardianInfo.ParentQualification) {
-        errors.ParentQualification = 'Parent Qualification is required';
-      }
-      if (!formData.guardianInfo.EmergencyContact) {
-        errors.EmergencyContact = 'Emergency Contact is required';
-      }
-      if (!formData.guardianInfo.MobileNumber) {
-        errors.MobileNumber = 'Mobile Number is required';
-      }
-      if (!validateEmail(formData.guardianInfo.Email)) {
-        errors.Email = 'Invalid Email';
-      }
-      if (!formData.guardianInfo.currentAddress.line1) {
-        errors.currentAddressLine1 = 'Current Address Line 1 is required';
-      }
-      if (!formData.guardianInfo.currentAddress.city) {
-        errors.currentAddressCity = 'Current Address City is required';
-      }
-      if (!formData.guardianInfo.currentAddress.district) {
-        errors.currentAddressDistrict = 'Current Address District is required';
-      }
-      if (!formData.guardianInfo.currentAddress.state) {
-        errors.currentAddressState = 'Current Address State is required';
-      }
-      if (!formData.guardianInfo.currentAddress.pincode) {
-        errors.currentAddressPincode = 'Current Address Pincode is required';
-      }
-      if (!formData.guardianInfo.permanentAddress.line1) {
-        errors.permanentAddressLine1 = 'Permanent Address Line 1 is required';
-      }
-      if (!formData.guardianInfo.permanentAddress.city) {
-        errors.permanentAddressCity = 'Permanent Address City is required';
-      }
-      if (!formData.guardianInfo.permanentAddress.district) {
-        errors.permanentAddressDistrict = 'Permanent Address District is required';
-      }
-      if (!formData.guardianInfo.permanentAddress.state) {
-        errors.permanentAddressState = 'Permanent Address State is required';
-      }
-      if (!formData.guardianInfo.permanentAddress.pincode) {
-        errors.permanentAddressPincode = 'Permanent Address Pincode is required';
-      }
-    }
+    // if (activeStep === 1) {
+    //   if (!formData.guardianInfo.MotherName) {
+    //     errors.MotherName = 'Mother Name is required';
+    //   }
+    //   if (!formData.guardianInfo.FatherName) {
+    //     errors.FatherName = 'Father Name is required';
+    //   }
+    //   if (!formData.guardianInfo.ParentOccupation) {
+    //     errors.ParentOccupation = 'Parent Occupation is required';
+    //   }
+    //   if (!formData.guardianInfo.ParentQualification) {
+    //     errors.ParentQualification = 'Parent Qualification is required';
+    //   }
+    //   if (!formData.guardianInfo.EmergencyContact) {
+    //     errors.EmergencyContact = 'Emergency Contact is required';
+    //   }
+    //   if (!formData.guardianInfo.MobileNumber) {
+    //     errors.MobileNumber = 'Mobile Number is required';
+    //   }
+    //   if (!validateEmail(formData.guardianInfo.Email)) {
+    //     errors.Email = 'Invalid Email';
+    //   }
+    //   if (!formData.guardianInfo.currentAddress.line1) {
+    //     errors.currentAddressLine1 = 'Current Address Line 1 is required';
+    //   }
+    //   if (!formData.guardianInfo.currentAddress.city) {
+    //     errors.currentAddressCity = 'Current Address City is required';
+    //   }
+    //   if (!formData.guardianInfo.currentAddress.district) {
+    //     errors.currentAddressDistrict = 'Current Address District is required';
+    //   }
+    //   if (!formData.guardianInfo.currentAddress.state) {
+    //     errors.currentAddressState = 'Current Address State is required';
+    //   }
+    //   if (!formData.guardianInfo.currentAddress.pincode) {
+    //     errors.currentAddressPincode = 'Current Address Pincode is required';
+    //   }
+    // }
 
     return errors;
   };
@@ -512,7 +497,7 @@ export default function StudentEnrollForm() {
   
     // Prepare payload
     const payload = {
-      SchoolId: globalData.data.SCHOOL_ID,
+      SchoolId: globalData.data.school_id,
       StudentName: formData.personalInfo.StudentName,
       DOB: formData.personalInfo.DOB,
       Gender: formData.personalInfo.Gender === 'other' ? formData.personalInfo.otherGender : formData.personalInfo.Gender,
@@ -599,7 +584,7 @@ export default function StudentEnrollForm() {
       return (
         <div className='enroll-form'>
           <div className="enroll-form-container">
-            <Navbar schoolName={globalData.data.SCHOOL_NAME} schoolLogo={globalData.data.SCHOOL_LOGO} />
+            <Navbar schoolName={globalData.data.school_name} schoolLogo={globalData.data.school_logo} />
             <Sidebar visibleItems={['home', 'updateEnrollment']} hideProfile={true} showTitle={false} />
             <div className="form-paper-container">
             <Paper className="paper">
@@ -608,10 +593,10 @@ export default function StudentEnrollForm() {
               </Typography>
               <Grid container spacing={3}>
                 <Grid item xs={12} sm={6} style={{ marginTop: '20px', marginBottom: '12px' }}>
-                  <Typography variant="h6" className='school-name' style={{ fontSize: '1rem' }}>{globalData.data.SCHOOL_NAME}</Typography>
+                  <Typography variant="h6" className='school-name' style={{ fontSize: '1rem' }}>{globalData.data.school_name}</Typography>
                 </Grid>
                 <Grid item xs={12} sm={6} style={{ textAlign: 'right', marginTop: '16px' }}>
-                  <Typography variant="h6" className='school-id' style={{ fontSize: '1rem' }}>School ID : {globalData.data.SCHOOL_ID}</Typography>
+                  <Typography variant="h6" className='school-id' style={{ fontSize: '1rem' }}>School ID : {globalData.data.school_id}</Typography>
                 </Grid>
               </Grid>
               <Stack sx={{ width: '100%' }} spacing={4}>

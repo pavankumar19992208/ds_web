@@ -1,4 +1,4 @@
-import React, { useState,useContext  } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import BASE_URL from '../../config';
@@ -27,46 +27,64 @@ const AuthPopup = ({ onClose }) => {
   const [isSuccess, setIsSuccess] = useState(false); // State to track success
   const [isLogin, setIsLogin] = useState(true); // State to toggle between login and registration
   const [showOTP, setShowOTP] = useState(false);
-  const [otp, setOtp] = useState(['', '', '', '', '', '']); // Array to store each digit of the OTP
+  const [otp, setOtp] = useState(['', '', '', '']); // Array to store each digit of the OTP
+  const [otpTimer, setOtpTimer] = useState(0);
+  const [canResendOTP, setCanResendOTP] = useState(true);
   const [useMobileLogin, setUseMobileLogin] = useState(false); // State to toggle between schoolId and mobile login
   const [errorMessage, setErrorMessage] = useState(''); // State to track error message
   const [showError, setShowError] = useState(false); // State to toggle error popup
+  const [isSendingOTP, setIsSendingOTP] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
+  // Timer effect for OTP resend
+  useEffect(() => {
+    let interval;
+    if (otpTimer > 0) {
+      interval = setInterval(() => {
+        setOtpTimer(prev => prev - 1);
+      }, 1000);
+    } else if (otpTimer === 0) {
+      setCanResendOTP(true);
+    }
+    return () => clearInterval(interval);
+  }, [otpTimer]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (isLogin) {
-      // Handle login logic
-      const payload = useMobileLogin
-        ? { mobile_number: formData.mobile_number, password: formData.password }
-        : { schoolId: formData.schoolId, password: formData.password };
-  
       try {
-        console.log('Login payload:', payload);
-        const response = await axios.post(`${BASE_URL}/login`, payload);
-        console.log('Login successful:', response.data);
-  
-        // Extract school data from the response
-        const schoolData = response.data.school;
-  
-        // Set global data with the correct structure
-        setGlobalData({ data: schoolData });
-  
-        // Extract school_id from the school data
-        const schoolId = schoolData.school_id;
-  
-        // Navigate to the school dashboard with the respective school ID
-        navigate(`/school_dashboard/${schoolId}`);
-  
-        setIsSuccess(true); // Show success popup
+        if (showOTP) {
+          // Handle OTP login
+          const otpString = otp.join('');
+          const payload = useMobileLogin
+            ? { mobile_number: formData.mobile_number, otp: otpString }
+            : { schoolId: formData.schoolId, otp: otpString };
+          
+          const response = await axios.post(`${BASE_URL}/verify-otp-login`, payload);
+          const schoolData = response.data.school;
+          
+          setGlobalData({ data: schoolData });
+          navigate(`/school_dashboard/${schoolData.school_id}`);
+        } else {
+          // Handle password login (existing code)
+          const payload = useMobileLogin
+            ? { mobile_number: formData.mobile_number, password: formData.password }
+            : { schoolId: formData.schoolId, password: formData.password };
+          
+          const response = await axios.post(`${BASE_URL}/login`, payload);
+          const schoolData = response.data.school;
+          
+          setGlobalData({ data: schoolData });
+          navigate(`/school_dashboard/${schoolData.school_id}`);
+        }
       } catch (error) {
-        console.error('Login failed:', error);
-        setErrorMessage('Invalid credentials. Please try again.'); // Set error message
-        setShowError(true); // Show error popup
+        setErrorMessage(error.response?.data?.detail || 'Invalid credentials. Please try again.');
+        setShowError(true);
       }
     } else {
       // Handle registration logic
@@ -91,9 +109,9 @@ const handleSuccessClose = () => {
   const handleErrorClose = () => {
     setShowError(false); // Close error popup
   };
-
   const handleOTPClick = () => {
     setShowOTP(!showOTP);
+    setOtp(['', '', '', '']); // Reset OTP fields when toggling
   };
 
   const handleOtpChange = (value, index) => {
@@ -110,6 +128,29 @@ const handleSuccessClose = () => {
     setUseMobileLogin(!useMobileLogin);
   };
 
+  const handleSendOTP = async () => {
+    if ((!formData.mobile_number && !formData.schoolId) || !canResendOTP) return;
+  
+    setIsSendingOTP(true);
+    try {
+      const payload = useMobileLogin
+        ? { mobile_number: formData.mobile_number }
+        : { schoolId: formData.schoolId };
+      
+      await axios.post(`${BASE_URL}/send-otp`, payload);
+      
+      // Start the 30-second timer
+      setOtpTimer(30);
+      setCanResendOTP(false);
+      setSuccessMessage('OTP sent successfully!');
+      
+    } catch (error) {
+      setErrorMessage(error.response?.data?.detail || 'Failed to send OTP. Please try again.');
+      setShowError(true);
+    } finally {
+      setIsSendingOTP(false);
+    }
+  };
   return (
     <div style={styles.overlay} className='overlay'>
       <div style={styles.popup} className='popup'>
@@ -259,58 +300,85 @@ const handleSuccessClose = () => {
           />
         </div>
       )}
-      {showOTP && isLogin && (
-        <div style={styles.otpContainer} className='otp-container'>
-          {otp.map((digit, index) => (
-            <TextField
-              key={index}
-              value={digit}
-              onChange={(e) => handleOtpChange(e.target.value, index)}
-              inputProps={{
-                maxLength: 1,
-                style: { textAlign: 'center' },
-              }}
-              required
-              style={styles.otpInputField}
-              className="otp-input-field"
-            />
-          ))}
-        </div>
+
+{showOTP && isLogin && (
+    <div style={{ display: 'flex', flexDirection: 'column', marginBottom: '15px' }}>
+      <div style={styles.otpContainer} className='otp-container'>
+        {otp.map((digit, index) => (
+          <TextField
+            key={index}
+            value={digit}
+            onChange={(e) => handleOtpChange(e.target.value, index)}
+          inputProps={{
+            maxLength: 1,
+            style: { textAlign: 'center', color: '#fff' },
+          }}
+          sx={{
+            '& .MuiOutlinedInput-root': {
+              '& fieldset': {
+                borderColor: '#AEAEAE',
+              },
+              '&:hover fieldset': {
+                borderColor: '#AEAEAE',
+              },
+            },
+            input: { color: '#fff' },
+          }}
+          className="otp-input-field"
+        />
+      ))}
+    </div>
+    <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px' }}>
+        <button
+          type="button"
+          style={styles.sendOtpButton}
+          className='send-otp-button'
+          onClick={handleSendOTP}
+          disabled={!canResendOTP || isSendingOTP}
+        >
+          {isSendingOTP ? 'Sending...' : 
+           canResendOTP ? 'Send OTP' : `Resend OTP (${otpTimer}s)`}
+        </button>
+      </div>
+    </div>
+  )}
+  
+  {isLogin && (
+  <>
+    <div style={styles.btnGroup} className='reg-btn-group'>
+      {!showOTP && (
+        <button
+          type="button"
+          style={styles.otpButton}
+          className='otp-button'
+          onClick={handleOTPClick}
+        >
+          Forgot Password
+        </button>
       )}
-      {isLogin && (
-        <>
-                  <div style={styles.btnGroup} className='reg-btn-group'>
-            <button
-              type="button"
-              style={styles.otpButton}
-              className='otp-button'
-              onClick={handleOTPClick}
-            >
-              Forgot Password
-            </button>
-          </div>
-          <div style={styles.btnGroup} className='reg-btn-group'>
-            <button
-              type="button"
-              style={styles.otpButton}
-              className='otp-button'
-              onClick={handleOTPClick}
-            >
-              {showOTP ? 'Use Password' : 'Use OTP'}
-            </button>
-          </div>
-          <div style={styles.btnGroup} className='reg-btn-group'>
-            <button
-              type="button"
-              style={styles.otpButton}
-              className='otp-button'
-              onClick={toggleMobileLogin}
-            >
-              {useMobileLogin ? 'Login with School ID' : 'Login with Mobile'}
-            </button>
-          </div>
-        </>
-      )}
+    </div>
+    <div style={styles.btnGroup} className='reg-btn-group'>
+      <button
+        type="button"
+        style={styles.otpButton}
+        className='otp-button'
+        onClick={handleOTPClick}
+      >
+        {showOTP ? 'Use Password' : 'Use OTP'}
+      </button>
+    </div>
+    <div style={styles.btnGroup} className='reg-btn-group'>
+      <button
+        type="button"
+        style={styles.otpButton}
+        className='otp-button'
+        onClick={toggleMobileLogin}
+      >
+        {useMobileLogin ? 'Login with School ID' : 'Login with Mobile'}
+      </button>
+    </div>
+  </>
+)}
     </form>
   </div>
   {/* Button Container */}

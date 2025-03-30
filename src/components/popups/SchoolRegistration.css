@@ -141,11 +141,12 @@
     display: flex;
     justify-content: space-between;
     gap: 10px;
-    width: 80%;
+    width: 60%;
+    margin-bottom: 5px;
 }
 
 .otp-input-field {
-    border: 2px solid #AEAEAE;
+    border: 2px solid #AEAEAE !important;
     border-radius: 8px;
 }
 
@@ -160,6 +161,32 @@
     font-family: 'Poppins', sans-serif !important;
 
 }
+
+.send-otp-button {
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    font-size: 14px;
+    text-decoration: underline;
+    padding: 5px;
+    margin: 5px 0;
+    opacity: 1;
+    transition: opacity 0.3s;
+    font-family: 'Poppins', sans-serif;
+    font-weight: bold;
+  }
+  
+  .send-otp-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    text-decoration: none;
+  }
+  
+  .send-otp-button:hover:not(:disabled) {
+    text-decoration: none;
+    color: #f0f0f0;
+  }
 
 .reg-btn-group {
     margin: 0;
