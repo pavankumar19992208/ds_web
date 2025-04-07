@@ -73,7 +73,7 @@ export default function GuardianInfoForm({ formData, setFormData }) {
       state: '',
       country: 'India',
       pincode: '',
-      addressType: ''
+      address_type: ''
     };
     // Clean up any undefined values
     Object.keys(initialAddress).forEach(key => {
@@ -85,13 +85,15 @@ export default function GuardianInfoForm({ formData, setFormData }) {
   });
   const [errors, setErrors] = useState({});
   const [otherQualification, setOtherQualification] = useState(formData.guardianInfo.otherQualification || '');
-  const [occupations, setOccupations] = useState([]);
   const [filteredOccupations, setFilteredOccupations] = useState([]);
   const [occupationSearch, setOccupationSearch] = useState('');
   const [qualifications, setQualifications] = useState([]);
   const [loadingQualifications, setLoadingQualifications] = useState(false);
   const [qualificationError, setQualificationError] = useState(null);
   const [addressTypes, setAddressTypes] = useState(['School', 'Office', 'Residential', 'Other']);
+  const [occupations, setOccupations] = useState([]);
+  const [loadingOccupations, setLoadingOccupations] = useState(false);
+  const [occupationError, setOccupationError] = useState(null);
 
   useEffect(() => {
     const fetchQualifications = async () => {
@@ -157,7 +159,7 @@ export default function GuardianInfoForm({ formData, setFormData }) {
       errorMessage = 'Invalid numeric input';
     }
   
-    if (value === '' && ['line1', 'city', 'district', 'state', 'pincode', 'addressType'].includes(id)) {
+    if (value === '' && ['line1', 'city', 'district', 'state', 'pincode', 'address_type'].includes(id)) {
       isValid = false;
       errorMessage = 'This field is required';
     }
@@ -186,6 +188,54 @@ export default function GuardianInfoForm({ formData, setFormData }) {
     const { name, value } = event.target;
     let isValid = true;
     let errorMessage = '';
+
+    if (name === 'parent_qualification') {
+      if (value === 'Other') {
+        setFormData(prev => ({
+          ...prev,
+          guardianInfo: {
+            ...prev.guardianInfo,
+            parent_qualification: 'Other',
+            qualification_id: null
+          }
+        }));
+      } else {
+        const selectedQualification = qualifications.find(q => q.qualification_name === value);
+        setFormData(prev => ({
+          ...prev,
+          guardianInfo: {
+            ...prev.guardianInfo,
+            parent_qualification: selectedQualification ? selectedQualification.qualification_name : '',
+            qualification_id: selectedQualification ? selectedQualification.qualification_id : null
+          }
+        }));
+      }
+      return;
+    }
+
+    if (name === 'parent_occupation') {
+      if (value === 'Other') {
+        setFormData(prev => ({
+          ...prev,
+          guardianInfo: {
+            ...prev.guardianInfo,
+            parent_occupation: 'Other',
+            occupation_id: null
+          }
+        }));
+      } else {
+        const selectedOccupation = occupations.find(occ => occ.occupation_name === value);
+        setFormData(prev => ({
+          ...prev,
+          guardianInfo: {
+            ...prev.guardianInfo,
+            parent_occupation: selectedOccupation ? selectedOccupation.occupation_name : '',
+            occupation_id: selectedOccupation ? selectedOccupation.occupation_id : null
+          }
+        }));
+      }
+      return;
+    }
   
     if (['FatherName', 'MotherName', 'GuardianName', 'ParentOccupation'].includes(name)) {
       isValid = validateAlphabets(value) || value === '';
@@ -277,104 +327,162 @@ export default function GuardianInfoForm({ formData, setFormData }) {
         <Grid item xs={12} md={6}>
           <TextField
             required
-            id="FatherName"
-            name="FatherName"
+            id="father_name"
+            name="father_name"
             label="Father's Name"
             fullWidth
             autoComplete="fathers-name"
-            value={formData.guardianInfo.FatherName || ''}
+            value={formData.guardianInfo.father_name || ''}
             onChange={handleInputChange}
             className={classes.textField}
-            error={!!errors.FatherName}
-            helperText={errors.FatherName}
+            error={!!errors.father_name}
+            helperText={errors.father_name}
           />
         </Grid>
         <Grid item xs={12} md={6}>
           <TextField
             required
-            id="MotherName"
-            name="MotherName"
+            id="mother_name"
+            name="mother_name"
             label="Mother's Name"
             fullWidth
             autoComplete="mothers-name"
-            value={formData.guardianInfo.MotherName || ''}
+            value={formData.guardianInfo.mother_name || ''}
             onChange={handleInputChange}
             className={classes.textField}
-            error={!!errors.MotherName}
-            helperText={errors.MotherName}
+            error={!!errors.mother_name}
+            helperText={errors.mother_name}
           />
         </Grid>
         <Grid item xs={12} md={6}>
           <TextField
-            id="GuardianName"
-            name="GuardianName"
+            id="guardian_name"
+            name="guardian_name"
             label="Guardian (Optional)"
             fullWidth
             autoComplete="guardian"
-            value={formData.guardianInfo.GuardianName || ''}
+            value={formData.guardianInfo.guardian_name || ''}
             onChange={handleInputChange}
             className={classes.textField}
-            error={!!errors.GuardianName}
-            helperText={errors.GuardianName}
+            error={!!errors.guardian_name}
+            helperText={errors.guardian_name}
           />
         </Grid>
         <Grid item xs={12} md={6}>
-        <Autocomplete
-          id="ParentOccupation"
-          options={filteredOccupations}
-          getOptionLabel={(option) => option.occupation_name}
-          value={occupations.find(occ => occ.occupation_name === formData.guardianInfo.ParentOccupation) || null}
-          onChange={handleOccupationSelect}
-          onInputChange={(event, newInputValue) => {
-            setOccupationSearch(newInputValue);
+        <TextField
+          select
+          required
+          id="parent_occupation"
+          name="parent_occupation"
+          label="Parent Occupation"
+          fullWidth
+          value={formData.guardianInfo.parent_occupation || ''}
+          onChange={(e) => {
+            if (e.target.value === 'Other') {
+              setFormData(prev => ({
+                ...prev,
+                guardianInfo: {
+                  ...prev.guardianInfo,
+                  parent_occupation: 'Other',
+                  occupation_id: null
+                }
+              }));
+            } else {
+              const selectedOccupation = occupations.find(occ => occ.occupation_name === e.target.value);
+              setFormData(prev => ({
+                ...prev,
+                guardianInfo: {
+                  ...prev.guardianInfo,
+                  parent_occupation: selectedOccupation ? selectedOccupation.occupation_name : '',
+                  occupation_id: selectedOccupation ? selectedOccupation.occupation_id : null
+                }
+              }));
+            }
           }}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              required
-              label="Parent Occupation"
-              className={classes.textField}
-              error={!!errors.ParentOccupation}
-              helperText={errors.ParentOccupation}
-            />
+          className={classes.textField}
+          disabled={loadingOccupations}
+          error={!!occupationError || !!errors.parent_occupation}
+          helperText={occupationError || errors.parent_occupation}
+        >
+          {loadingOccupations ? (
+            <MenuItem disabled>Loading occupations...</MenuItem>
+          ) : occupationError ? (
+            <MenuItem disabled>{occupationError}</MenuItem>
+          ) : (
+            [
+              ...occupations.map((occupation) => (
+                <MenuItem 
+                  key={occupation.occupation_id} 
+                  value={occupation.occupation_name}
+                >
+                  {occupation.occupation_name}
+                </MenuItem>
+              )),
+              <MenuItem key="other" value="Other">
+                Other
+              </MenuItem>
+            ]
           )}
-          noOptionsText="No occupations found"
-          filterOptions={(options, state) => options}
-        />
+        </TextField>
       </Grid>
         <Grid item xs={12} md={6}>
-          <TextField
-            select
-            required
-            id="ParentQualification"
-            name="ParentQualification"
-            label="Parent Qualification"
-            fullWidth
-            autoComplete="parent-qualification"
-            value={formData.guardianInfo.ParentQualification || ''}
-            onChange={handleInputChange}
-            className={classes.textField}
-            disabled={loadingQualifications}
-            error={!!qualificationError || !!errors.ParentQualification}
-            helperText={qualificationError || errors.ParentQualification}
-          >
-            {loadingQualifications ? (
-              <MenuItem disabled>Loading qualifications...</MenuItem>
-            ) : qualificationError ? (
-              <MenuItem disabled>{qualificationError}</MenuItem>
-            ) : (
-              qualifications.map((qualification) => (
-                <MenuItem 
-                  key={qualification.qualification_id} 
-                  value={qualification.qualification_name}
-                >
-                  {qualification.qualification_name}
-                </MenuItem>
-              ))
-            )}
-            <MenuItem value="Other">Other</MenuItem>
-          </TextField>
-          {formData.guardianInfo.ParentQualification === 'Other' && (
+        <TextField
+  select
+  required
+  id="parent_qualification"
+  name="parent_qualification"
+  label="Parent Qualification"
+  fullWidth
+  autoComplete="parent-qualification"
+  value={formData.guardianInfo.parent_qualification || ''}
+  onChange={(e) => {
+    if (e.target.value === 'Other') {
+      setFormData(prev => ({
+        ...prev,
+        guardianInfo: {
+          ...prev.guardianInfo,
+          parent_qualification: 'Other',
+          qualification_id: null
+        }
+      }));
+    } else {
+      const selectedQualification = qualifications.find(q => q.qualification_name === e.target.value);
+      setFormData(prev => ({
+        ...prev,
+        guardianInfo: {
+          ...prev.guardianInfo,
+          parent_qualification: selectedQualification ? selectedQualification.qualification_name : '',
+          qualification_id: selectedQualification ? selectedQualification.qualification_id : null
+        }
+      }));
+    }
+  }}
+  className={classes.textField}
+  disabled={loadingQualifications}
+  error={!!qualificationError || !!errors.parent_qualification}
+  helperText={qualificationError || errors.parent_qualification}
+>
+  {loadingQualifications ? (
+    <MenuItem disabled>Loading qualifications...</MenuItem>
+  ) : qualificationError ? (
+    <MenuItem disabled>{qualificationError}</MenuItem>
+  ) : (
+    [
+      ...qualifications.map((qualification) => (
+        <MenuItem 
+          key={qualification.qualification_id} 
+          value={qualification.qualification_name}
+        >
+          {qualification.qualification_name}
+        </MenuItem>
+      )),
+      <MenuItem key="other" value="Other">
+        Other
+      </MenuItem>
+    ]
+  )}
+</TextField>
+          {formData.guardianInfo.parent_qualification === 'Other' && (
             <TextField
               id="otherQualification"
               name="otherQualification"
@@ -397,49 +505,49 @@ export default function GuardianInfoForm({ formData, setFormData }) {
         <Grid item xs={12} md={6}>
           <TextField
             required
-            id="MobileNumber"
-            name="MobileNumber"
+            id="mobile_number"
+            name="mobile_number"
             label="Phone Number"
             fullWidth
             autoComplete="phone-number"
-            value={formData.guardianInfo.MobileNumber || ''}
+            value={formData.guardianInfo.mobile_number || ''}
             onChange={handleInputChange}
             onKeyPress={handleKeyPress}
             className={classes.textField}
-            error={!!errors.MobileNumber}
-            helperText={errors.MobileNumber}
+            error={!!errors.mobile_number}
+            helperText={errors.mobile_number}
             inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
           />
         </Grid>
         <Grid item xs={12} md={6}>
           <TextField
             required
-            id="Email"
-            name="Email"
+            id="email"
+            name="email"
             label="Email"
             fullWidth
             autoComplete="email"
-            value={formData.guardianInfo.Email || ''}
+            value={formData.guardianInfo.email || ''}
             onChange={handleInputChange}
             className={classes.textField}
-            error={!!errors.Email}
-            helperText={errors.Email}
+            error={!!errors.email}
+            helperText={errors.email}
           />
         </Grid>
         <Grid item xs={12} md={6}>
           <TextField
             required
-            id="EmergencyContact"
-            name="EmergencyContact"
+            id="emergency_contact"
+            name="emergency_contact"
             label="Emergency Contact Number"
             fullWidth
             autoComplete="emergency-contact-number"
-            value={formData.guardianInfo.EmergencyContact || ''}
+            value={formData.guardianInfo.emergency_contact || ''}
             onChange={handleInputChange}
             onKeyPress={handleKeyPress}
             className={classes.textField}
-            error={!!errors.EmergencyContact}
-            helperText={errors.EmergencyContact}
+            error={!!errors.emergency_contact}
+            helperText={errors.emergency_contact}
             inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
           />
         </Grid>
@@ -575,17 +683,17 @@ export default function GuardianInfoForm({ formData, setFormData }) {
   <TextField
     select
     required
-    id="addressType"
-    name="addressType"
+    id="address_type"
+    name="address_type"
     label="Address Type"
     fullWidth
-    value={address.addressType || ''}
+    value={address.address_type || ''}
     onChange={(e) => {
-      setAddress(prev => ({ ...prev, addressType: e.target.value }));
+      setAddress(prev => ({ ...prev, address_type: e.target.value }));
     }}
     className={classes.textField}
-    error={!!errors.addressType}
-    helperText={errors.addressType}
+    error={!!errors.address_type}
+    helperText={errors.address_type}
   >
     {addressTypes.map((type) => (
       <MenuItem key={type} value={type}>

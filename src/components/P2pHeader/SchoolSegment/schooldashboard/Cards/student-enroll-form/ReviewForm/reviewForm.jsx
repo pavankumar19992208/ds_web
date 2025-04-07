@@ -4,7 +4,7 @@ import { Typography, Grid, Table, TableBody, TableRow, TableCell, IconButton } f
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 
-const personalInfoKeys = ['StudentName', 'DOB', 'Gender', 'Photo', 'Grade', 'PreviousSchool', 'languagesKnown', 'Religion', 'Category', 'Nationality', 'AadharNumber'];
+const personalInfoKeys = ['Student Name', 'DOB', 'Gender', 'Photo', 'Grade', 'PreviousSchool', 'languagesKnown', 'Religion', 'Category', 'Nationality', 'AadharNumber'];
 const guardianInfoKeys = ['MotherName', 'FatherName', 'GuardianName', 'MobileNumber', 'Email', 'EmergencyContact', 'ParentOccupation', 'ParentQualification'];
 const academicInfoKeys = ['PreviousPercentage', 'BloodGroup', 'MedicalDisability'];
 
@@ -33,19 +33,19 @@ function ReviewForm({ formData, expandedDoc, setExpandedDoc, classes }) {
                   <TableCell>
                     {key === 'Photo' ? (
                       <div>
-                        <Typography>{formData.personalInfo.PhotoName}</Typography>
+                        <Typography>{formData.personalInfo.photo}</Typography>
                         <IconButton onClick={() => setExpandedDoc(expandedDoc === key ? null : key)}>
                           {expandedDoc === key ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                         </IconButton>
                         {expandedDoc === key && (
-                          <img src={formData.personalInfo.Photo} alt="uploaded pic" style={{ width: '200px', height: '200px', objectFit: 'cover' }} />
+                          <img src={formData.personalInfo.photo} alt="uploaded pic" style={{ width: '200px', height: '200px', objectFit: 'cover' }} />
                         )}
                       </div>
                     ) : key === 'languagesKnown' ? (
                       formData.personalInfo.languagesKnown ? formData.personalInfo.languagesKnown.join(', ') : ''
                     ) : key === 'DOB' ? (
-                      formatDate(formData.personalInfo.DOB)
-                    ) : key === 'Gender' && formData.personalInfo.Gender === 'other' ? (
+                      formatDate(formData.personalInfo.dob)
+                    ) : key === 'Gender' && formData.personalInfo.gender === 'other' ? (
                       formData.personalInfo.otherGender
                     ) : (
                       typeof formData.personalInfo[key] === 'object' ? JSON.stringify(formData.personalInfo[key]) : formData.personalInfo[key] || ''
@@ -90,7 +90,7 @@ function ReviewForm({ formData, expandedDoc, setExpandedDoc, classes }) {
             </Table>
           </Grid>
         )}
-        {formData.guardianInfo.permanentAddress && Object.keys(formData.guardianInfo.permanentAddress).length > 0 && (
+        {/* {formData.guardianInfo.permanentAddress && Object.keys(formData.guardianInfo.permanentAddress).length > 0 && (
           <Grid item xs={12} sm={6}>
             <Typography variant="h6" className={classes.reviewSectionTitle}>Permanent Address</Typography>
             <Table>
@@ -104,7 +104,7 @@ function ReviewForm({ formData, expandedDoc, setExpandedDoc, classes }) {
               </TableBody>
             </Table>
           </Grid>
-        )}
+        )} */}
         <Grid item xs={12} sm={6}>
           <Typography variant="h6" className={classes.reviewSectionTitle}>Academic & Medical Info</Typography>
           <Table>

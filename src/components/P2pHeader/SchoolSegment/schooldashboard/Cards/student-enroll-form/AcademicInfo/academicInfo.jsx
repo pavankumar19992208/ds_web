@@ -96,12 +96,12 @@ export default function AcademicInfoForm({ formData, setFormData }) {
         <Grid item xs={12} md={6}>
           <TextField
             select
-            id="PreviousClass"
-            name="PreviousClass"
+            id="previous_class"
+            name="previous_class"
             label="Previous Class"
             fullWidth
             autoComplete="previous-class"
-            value={formData.academicInfo.PreviousClass || ''}
+            value={formData.academicInfo.previous_class || ''}
             onChange={handleChange}
             className={classes.textField}
           >
@@ -114,12 +114,12 @@ export default function AcademicInfoForm({ formData, setFormData }) {
         </Grid>
         <Grid item xs={12} md={6}>
           <TextField
-            id="PreviousPercentage"
-            name="PreviousPercentage"
+            id="previous_percentage"
+            name="previous_percentage"
             label="Percentage of Previous Class (Optional)"
             fullWidth
             autoComplete="previous-percentage"
-            value={formData.academicInfo.PreviousPercentage || ''}
+            value={formData.academicInfo.previous_percentage || ''}
             onChange={handleChange}
             className={classes.textField}
           />
@@ -134,12 +134,12 @@ export default function AcademicInfoForm({ formData, setFormData }) {
           <TextField
             select
             required
-            id="BloodGroup"
-            name="BloodGroup"
+            id="blood_group"
+            name="blood_group"
             label="Blood Group"
             fullWidth
             autoComplete="blood-group"
-            value={formData.academicInfo.BloodGroup || ''}
+            value={formData.academicInfo.blood_group || ''}
             onChange={handleChange}
             className={classes.textField}
           >
@@ -153,13 +153,23 @@ export default function AcademicInfoForm({ formData, setFormData }) {
         <Grid item xs={12} md={6}>
         <TextField
   select
-  id="MedicalDisability"
-  name="MedicalDisability"
+  id="medical_disability"
+  name="medical_disability"
   label="Medical Disability (Optional)"
   fullWidth
   autoComplete="medicaldisability"
-  value={formData.academicInfo.MedicalDisability || ''} // Ensure empty string is handled
-  onChange={handleChange}
+  value={formData.academicInfo.medical_disability || ''}
+  onChange={(e) => {
+    const selectedDisability = disabilities.find(d => d.disability_name === e.target.value);
+    setFormData(prev => ({
+      ...prev,
+      academicInfo: {
+        ...prev.academicInfo,
+        medical_disability: selectedDisability ? selectedDisability.disability_name : '',
+        disability_id: selectedDisability ? selectedDisability.disability_id : null
+      }
+    }));
+  }}
   className={classes.textField}
   disabled={loadingDisabilities}
   error={!!disabilityError}

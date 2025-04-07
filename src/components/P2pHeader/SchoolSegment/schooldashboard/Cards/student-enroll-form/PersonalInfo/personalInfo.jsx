@@ -54,16 +54,15 @@ export default function DetailsForm({ formData, setFormData }) {
   const classes = useStyles();
   const [fileName, setFileName] = useState(formData.personalInfo.PhotoName || '');
   const [errors, setErrors] = useState({});
-  const [selectedLanguages, setSelectedLanguages] = useState(
-    formData.personalInfo.languagesKnown || []
-  );
-  const [otherLanguage, setOtherLanguage] = useState(formData.personalInfo.otherLanguage || '');
   const [otherGender, setOtherGender] = useState(formData.personalInfo.otherGender || '');
-  const [languages, setLanguages] = useState([]); // State to store fetched languages
+  const [languages, setLanguages] = useState([]);
   const [languageEntries, setLanguageEntries] = useState(
     formData.personalInfo.languagesKnown || [{ language_id: '', language_type: '' }]
   );
   const [religions, setReligions] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [nationalities, setNationalities] = useState([]);
+
 
   useEffect(() => {
     const fetchReligions = async () => {
@@ -77,7 +76,6 @@ export default function DetailsForm({ formData, setFormData }) {
     fetchReligions();
   }, []);
 
-  const [nationalities, setNationalities] = useState([]);
 
   useEffect(() => {
     const fetchNationalities = async () => {
@@ -91,21 +89,31 @@ export default function DetailsForm({ formData, setFormData }) {
     fetchNationalities();
   }, []);
 
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get(`${BaseUrl}/categories`);
+        setCategories(response.data.categories);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+    fetchCategories();
+  }, []);
+
   const addLanguageEntry = () => {
-    setLanguageEntries([...languageEntries, { language_id: '', language_type: '' }]);
+    if (languageEntries.length < 3) {
+      const newEntries = [...languageEntries, { language_id: '', language_type: '' }];
+      updateFormDataLanguages(newEntries);
+    }
   };
 
   const removeLanguageEntry = (index) => {
-    const newEntries = [...languageEntries];
-    newEntries.splice(index, 1);
-    setLanguageEntries(newEntries);
-    setFormData(prev => ({
-      ...prev,
-      personalInfo: {
-        ...prev.personalInfo,
-        languagesKnown: newEntries
-      }
-    }));
+    if (languageEntries.length > 1) {
+      const newEntries = [...languageEntries];
+      newEntries.splice(index, 1);
+      updateFormDataLanguages(newEntries);
+    }
   };
   
 
@@ -138,6 +146,25 @@ export default function DetailsForm({ formData, setFormData }) {
   useEffect(() => {
     setFileName(formData.personalInfo.PhotoName || '');
   }, [formData.personalInfo.PhotoName]);
+
+  useEffect(() => {
+    if (formData.personalInfo.languagesKnown && formData.personalInfo.languagesKnown.length > 0) {
+      setLanguageEntries(formData.personalInfo.languagesKnown);
+    } else {
+      setLanguageEntries([{ language_id: '', language_type: '' }]);
+    }
+  }, [formData.personalInfo.languagesKnown]);
+
+  const updateFormDataLanguages = (entries) => {
+    setLanguageEntries(entries);
+    setFormData(prev => ({
+      ...prev,
+      personalInfo: {
+        ...prev.personalInfo,
+        languagesKnown: entries
+      }
+    }));
+  };
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -227,18 +254,21 @@ export default function DetailsForm({ formData, setFormData }) {
     }
   };
 
-const handleLanguageChange = (index, field, value) => {
-  const newEntries = [...languageEntries];
-  newEntries[index][field] = value;
-  setLanguageEntries(newEntries);
-  setFormData(prev => ({
-    ...prev,
-    personalInfo: {
-      ...prev.personalInfo,
-      languagesKnown: newEntries
+  const handleLanguageChange = (index, field, value) => {
+    const newEntries = [...languageEntries];
+    newEntries[index][field] = value;
+    
+    // Validate mother tongue uniqueness
+    if (field === 'language_type' && value === 'mother_tongue') {
+      for (let i = 0; i < newEntries.length; i++) {
+        if (i !== index && newEntries[i].language_type === 'mother_tongue') {
+          newEntries[i].language_type = 'secondary_language';
+        }
+      }
     }
-  }));
-};
+    
+    updateFormDataLanguages(newEntries);
+  };
 
   const handleOtherLanguageChange = (event) => {
     const { value } = event.target;
@@ -301,56 +331,56 @@ const handleLanguageChange = (index, field, value) => {
         <Grid item xs={12} sm={6}>
           <TextField
             required
-            id="StudentName"
-            name="StudentName"
+            id="student_name"
+            name="student_name"
             label="Student Full Name"
             fullWidth
             autoComplete="name"
-            value={formData.personalInfo.StudentName || ''}
+            value={formData.personalInfo.student_name || ''}
             onChange={handleChange}
             // onKeyDown={handleKeyDown}
             // onBlur={handleBlur}
             className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
-            error={!!errors.StudentName}
-            helperText={errors.StudentName}
+            error={!!errors.student_name}
+            helperText={errors.student_name}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
             required
-            id="DOB"
-            name="DOB"
+            id="dob"
+            name="dob"
             label="Date of Birth"
             type="date"
             fullWidth
             InputLabelProps={{
               shrink: true,
             }}
-            value={formData.personalInfo.DOB || ''}
+            value={formData.personalInfo.dob || ''}
             onChange={handleChange}
             // onKeyDown={handleKeyDown}
             // onBlur={handleBlur}
             className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
-            error={!!errors.DOB}
-            helperText={errors.DOB}
+            error={!!errors.dob}
+            helperText={errors.dob}
           />
         </Grid>
         {/* >>> */}
         <Grid item xs={12} sm={6}>
           <TextField
             required
-            id="Gender"
-            name="Gender"
+            id="gender"
+            name="gender"
             label="Gender"
             select
             fullWidth
-            value={formData.personalInfo.Gender || ''}
+            value={formData.personalInfo.gender || ''}
             onChange={handleChange}
             // onKeyDown={handleKeyDown}
             // onBlur={handleBlur}
             className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
-            error={!!errors.Gender}
-            helperText={errors.Gender}
+            error={!!errors.gender}
+            helperText={errors.gender}
           >
             <MenuItem value="male">Male</MenuItem>
             <MenuItem value="female">Female</MenuItem>
@@ -374,8 +404,8 @@ const handleLanguageChange = (index, field, value) => {
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
-            id="Photo"
-            name="Photo"
+            id="photo"
+            name="photo"
             label="Upload Photo"
             type="file"
             fullWidth
@@ -397,12 +427,12 @@ const handleLanguageChange = (index, field, value) => {
         <Grid item xs={12} sm={6}>
           <TextField
             required
-            id="Grade"
-            name="Grade"
+            id="grade"
+            name="grade"
             label="Class"
             select
             fullWidth
-            value={formData.personalInfo.Grade || ''}
+            value={formData.personalInfo.grade || ''}
             onChange={handleChange}
             // onKeyDown={handleKeyDown}
             // onBlur={handleBlur}
@@ -415,17 +445,17 @@ const handleLanguageChange = (index, field, value) => {
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
-            id="PreviousSchool"
-            name="PreviousSchool"
+            id="previous_school"
+            name="previous_school"
             label="Previous School Name"
             fullWidth
-            value={formData.personalInfo.PreviousSchool || ''}
+            value={formData.personalInfo.previous_school || ''}
             onChange={handleChange}
             // onKeyDown={handleKeyDown}
             // onBlur={handleBlur}
             className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
-            error={!!errors.PreviousSchool}
-            helperText={errors.PreviousSchool}
+            error={!!errors.previous_school}
+            helperText={errors.previous_school}
           />
         </Grid>
         {/* Section 3 */}
@@ -436,133 +466,169 @@ const handleLanguageChange = (index, field, value) => {
         </Grid>
         <Grid item xs={12} sm={6}>
 
-  {languageEntries.map((entry, index) => (
-    <Grid container spacing={2} key={index} style={{ marginBottom: '16px' }}>
-      <Grid item xs={6}>
-        <TextField
-          select
-          fullWidth
-          label="Language"
-          value={entry.language_id || ''}
-          onChange={(e) => handleLanguageChange(index, 'language_id', Number(e.target.value))}
-          className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
-        >
-          {languages.map((language) => (
-            <MenuItem key={language.language_id} value={language.language_id}>
-              {language.language_name}
-            </MenuItem>
-          ))}
-        </TextField>
-      </Grid>
-      <Grid item xs={5}>
-        <TextField
-          select
-          fullWidth
-          label="Language Type"
-          value={entry.language_type || ''}
-          onChange={(e) => handleLanguageChange(index, 'language_type', e.target.value)}
-          className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
-        >
-          <MenuItem value="mother_tongue">Mother Tongue</MenuItem>
-          <MenuItem value="secondary_language">Secondary Language</MenuItem>
-        </TextField>
-      </Grid>
-      <Grid item xs={1} style={{ display: 'flex', alignItems: 'center' }}>
-        {index > 0 && (
-          <IconButton onClick={() => removeLanguageEntry(index)}>
-            <RemoveCircleOutline color="error" />
-          </IconButton>
-        )}
-      </Grid>
-    </Grid>
-  ))}
-  
-  <Button 
-    variant="outlined" 
-    startIcon={<AddCircleOutline />}
-    onClick={addLanguageEntry}
-    style={{ marginLeft: '16px' }}
-  >
-    Add Language
-  </Button>
+        {languageEntries.map((entry, index) => (
+        <Grid container spacing={2} key={index} style={{ marginBottom: '16px' }}>
+          <Grid item xs={6}>
+            <TextField
+              select
+              required
+              fullWidth
+              label="Language"
+              value={entry.language_id || ''}
+              onChange={(e) => handleLanguageChange(index, 'language_id', Number(e.target.value))}
+              className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
+              error={!!errors[`language_${index}`]}
+              helperText={errors[`language_${index}`]}
+            >
+              <MenuItem value="">Select Language</MenuItem>
+              {languages.map((language) => (
+                <MenuItem key={language.language_id} value={language.language_id}>
+                  {language.language_name}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Grid>
+          <Grid item xs={5}>
+            <TextField
+              select
+              required
+              fullWidth
+              label="Language Type"
+              value={entry.language_type || ''}
+              onChange={(e) => handleLanguageChange(index, 'language_type', e.target.value)}
+              className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
+            >
+              <MenuItem value="mother_tongue">Mother Tongue</MenuItem>
+              <MenuItem value="secondary_language">Secondary Language</MenuItem>
+            </TextField>
+          </Grid>
+          <Grid item xs={1} style={{ display: 'flex', alignItems: 'center' }}>
+            {index > 0 && (
+              <IconButton onClick={() => removeLanguageEntry(index)}>
+                <RemoveCircleOutline color="error" />
+              </IconButton>
+            )}
+          </Grid>
+        </Grid>
+      ))}
+          
+          {languageEntries.length < 3 && (
+            <Button 
+              variant="outlined" 
+              startIcon={<AddCircleOutline />}
+              onClick={addLanguageEntry}
+              style={{ marginLeft: '16px' }}
+            >
+              Add Language
+            </Button>
+          )}
 </Grid>
       
         <Grid item xs={12} sm={6}>
   <TextField
-    id="Religion"
-    name="Religion"
-    label="Religion"
-    select
-    fullWidth
-    value={formData.personalInfo.Religion || ''}
-    onChange={handleChange}
-    className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
-    error={!!errors.Religion}
-    helperText={errors.Religion}
-  >
-    {religions.map((religion) => (
-      <MenuItem key={religion.religion_id} value={religion.religion_name}>
-        {religion.religion_name}
-      </MenuItem>
-    ))}
-  </TextField>
+id="religion"
+name="religion"
+label="Religion"
+select
+fullWidth
+value={formData.personalInfo.religion || ''}
+onChange={(e) => {
+  const selectedReligion = religions.find(r => r.religion_name === e.target.value);
+  setFormData(prev => ({
+    ...prev,
+    personalInfo: {
+      ...prev.personalInfo,
+      religion: e.target.value,
+      religion_id: selectedReligion ? selectedReligion.religion_id : null
+    }
+  }));
+}}
+className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
+error={!!errors.religion}
+helperText={errors.religion}
+>
+{religions.map((religion) => (
+  <MenuItem key={religion.religion_id} value={religion.religion_name}>
+    {religion.religion_name}
+  </MenuItem>
+))}
+</TextField>
 </Grid>
         <Grid item xs={12} sm={6}>
-  <TextField
-    id="Category"
-    name="Category"
-    label="Category"
-    select
-    fullWidth
-    value={formData.personalInfo.Category || ''}
-    onChange={handleChange}
-    className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
-    error={!!errors.Category}
-    helperText={errors.Category}
-  >
-    <MenuItem value="SC">SC (Scheduled Caste)</MenuItem>
-    <MenuItem value="ST">ST (Scheduled Tribe)</MenuItem>
-    <MenuItem value="OBC">OBC (Other Backward Class)</MenuItem>
-    <MenuItem value="GEN">GEN (General)</MenuItem>
-    <MenuItem value="EWS">EWS (Economically Weaker Section)</MenuItem>
-    <MenuItem value="PWD">PWD (Person with Disability)</MenuItem>
-  </TextField>
+        <TextField
+  id="category"
+  name="category"
+  label="Category"
+  select
+  fullWidth
+  value={formData.personalInfo.category || ''}
+  onChange={(e) => {
+    const selectedCategory = categories.find(c => c.category_name === e.target.value);
+    setFormData(prev => ({
+      ...prev,
+      personalInfo: {
+        ...prev.personalInfo,
+        category: selectedCategory ? selectedCategory.category_name : '',
+        category_id: selectedCategory ? selectedCategory.category_id : null
+      }
+    }));
+  }}
+  className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
+  error={!!errors.category}
+  helperText={errors.category}
+>
+  {categories.map((category) => (
+    <MenuItem key={category.category_id} value={category.category_name}>
+      {category.category_name} ({category.category_type})
+    </MenuItem>
+  ))}
+</TextField>
 </Grid>
 <Grid item xs={12} sm={6}>
-  <TextField
-    id="Nationality"
-    name="Nationality"
-    label="Nationality"
-    select
-    fullWidth
-    value={formData.personalInfo.Nationality || ''}
-    onChange={handleChange}
-    className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
-    error={!!errors.Nationality}
-    helperText={errors.Nationality}
-  >
-    {nationalities.map((nationality) => (
-      <MenuItem key={nationality.nationality_id} value={nationality.nationality_name}>
-        {nationality.nationality_name}
-      </MenuItem>
-    ))}
-  </TextField>
+<TextField
+  id="nationality"
+  name="nationality"
+  label="Nationality"
+  select
+  fullWidth
+  value={formData.personalInfo.nationality || ''}
+  onChange={(e) => {
+    const selectedNationality = nationalities.find(n => n.nationality_name === e.target.value);
+    setFormData(prev => ({
+      ...prev,
+      personalInfo: {
+        ...prev.personalInfo,
+        nationality: e.target.value,
+        nationality_id: selectedNationality ? selectedNationality.nationality_id : null
+      }
+    }));
+  }}
+  className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
+  error={!!errors.nationality}
+  helperText={errors.nationality}
+>
+  {nationalities.map((nationality) => (
+    <MenuItem key={nationality.nationality_id} value={nationality.nationality_name}>
+      {nationality.nationality_name}
+    </MenuItem>
+  ))}
+</TextField>
 </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
             required
-            id="AadharNumber"
-            name="AadharNumber"
+            id="aadhar_number"
+            name="aadhar_number"
             label="Aadhar Number"
             type="text" // Ensure the type is set to text
             fullWidth
-            value={formData.personalInfo.AadharNumber || ''}
+            value={formData.personalInfo.aadhar_number || ''}
             onChange={handleChange}
             // onKeyDown={handleKeyDown}
             // onBlur={handleBlur}
             className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
-            error={!!errors.AadharNumber}
-            helperText={errors.AadharNumber}
+            error={!!errors.aadhar_number}
+            helperText={errors.aadhar_number}
             inputProps={{ maxLength: 12, pattern: "[0-9]*" }} // Restrict input to numbers only
           />
         </Grid>

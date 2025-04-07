@@ -1,4 +1,5 @@
 import React, { useState, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
@@ -294,19 +295,19 @@ export default function StudentEnrollForm() {
     const errors = {};
 
     // Validate personal info
-    if (!formData.personalInfo.StudentName) {
+    if (!formData.personalInfo.student_name) {
       errors.StudentName = 'Student Name is required';
     }
-    if (!formData.personalInfo.DOB) {
+    if (!formData.personalInfo.dob) {
       errors.DOB = 'Date of Birth is required';
     }
-    if (!formData.personalInfo.Gender) {
+    if (!formData.personalInfo.gender) {
       errors.Gender = 'Gender is required';
     }
-    if (!formData.personalInfo.Grade) {
+    if (!formData.personalInfo.grade) {
       errors.Grade = 'Grade is required';
     }
-    if (!formData.personalInfo.AadharNumber) {
+    if (!formData.personalInfo.aadhar_number) {
       errors.AadharNumber = 'Aadhar Number is required';
     }
 
@@ -355,27 +356,27 @@ export default function StudentEnrollForm() {
 
   const validatePersonalInfo = () => {
     const errors = {};
-    const { StudentName, Religion, Category, Nationality, AadharNumber, DOB } = formData.personalInfo;
+    const { student_name, religion, category, nationality, aadhar_number, dob } = formData.personalInfo;
   
-    if (!validateAlphabets(StudentName)) {
+    if (!validateAlphabets(student_name)) {
       errors.StudentName = 'Invalid alphabetic input';
     }
-    if (!validateAlphabets(Religion)) {
+    if (!validateAlphabets(religion)) {
       errors.Religion = 'Invalid alphabetic input';
     }
-    if (!validateAlphabets(Category)) {
+    if (!validateAlphabets(category)) {
       errors.Category = 'Invalid alphabetic input';
     }
-    if (!validateAlphabets(Nationality)) {
+    if (!validateAlphabets(nationality)) {
       errors.Nationality = 'Invalid alphabetic input';
     }
-    if (!validateNumbers(AadharNumber)) {
+    if (!validateNumbers(aadhar_number)) {
       errors.AadharNumber = 'Invalid numeric input';
     }
   
     const currentDate = new Date().toISOString().split('T')[0];
-    if (DOB > currentDate) {
-      errors.DOB = 'Date of Birth cannot be in the future';
+    if (dob > currentDate) {
+      errors.dob = 'Date of Birth cannot be in the future';
     }
   
     return errors;
@@ -465,7 +466,7 @@ export default function StudentEnrollForm() {
     console.log('Form submitted:', formData);
   
     // Upload photo to Firebase and collect URL
-    let photoURL = formData.personalInfo.Photo;
+    let photoURL = formData.personalInfo.photo;
     if (photoURL && photoURL.startsWith('data:image/')) {
       const photoRef = ref(storage, `photos/${formData.personalInfo.PhotoName}`);
       try {
@@ -495,40 +496,31 @@ export default function StudentEnrollForm() {
       }
     }
   
-    // Prepare payload
     const payload = {
-      SchoolId: globalData.data.school_id,
-      StudentName: formData.personalInfo.StudentName,
-      DOB: formData.personalInfo.DOB,
-      Gender: formData.personalInfo.Gender === 'other' ? formData.personalInfo.otherGender : formData.personalInfo.Gender,
-      Photo: photoURL, // Use the URL of the uploaded photo
-      Grade: formData.personalInfo.Grade,
-      PreviousSchool: formData.personalInfo.PreviousSchool,
-      LanguagesKnown: formData.personalInfo.languagesKnown,
-      Religion: formData.personalInfo.Religion,
-      Category: formData.personalInfo.Category,
-      MotherName: formData.guardianInfo.MotherName,
-      FatherName: formData.guardianInfo.FatherName,
-      Nationality: formData.personalInfo.Nationality,
-      AadharNumber: formData.personalInfo.AadharNumber,
-      GuardianName: formData.guardianInfo.GuardianName,
-      MobileNumber: formData.guardianInfo.MobileNumber,
-      Email: formData.guardianInfo.Email,
-      EmergencyContact: formData.guardianInfo.EmergencyContact,
-      CurrentAddress: formData.guardianInfo.currentAddress,
-      PermanentAddress: formData.guardianInfo.permanentAddress,
-      PreviousPercentage: formData.academicInfo.PreviousPercentage,
-      BloodGroup: formData.academicInfo.BloodGroup,
-      MedicalDisability: formData.academicInfo.MedicalDisability,
-      Documents: uploadedDocuments.reduce((acc, doc) => {
-        acc[doc.type] = doc.url;
-        return acc;
-      }, {}),
-      ParentOccupation: formData.guardianInfo.ParentOccupation,
-      ParentQualification: formData.guardianInfo.ParentQualification === 'Other' ? formData.guardianInfo.otherQualification : formData.guardianInfo.ParentQualification,
+      school_id: globalData.data.school_id,
+      name: formData.personalInfo.student_name,
+      dob: formData.personalInfo.dob,
+      aadhar_number: formData.personalInfo.aadhar_number,
+      contact_number: formData.guardianInfo.mobile_number,
+      grade: formData.personalInfo.grade,
+      gender: formData.personalInfo.gender,
+      student_email: formData.guardianInfo.email,
+      previous_school: formData.personalInfo.previous_school,
+      mother_name: formData.guardianInfo.mother_name,
+      father_name: formData.guardianInfo.father_name,
+      guardian_name: formData.guardianInfo.guardian_name,
+      emergency_contact: formData.guardianInfo.emergency_contact,
+      previous_percentage: formData.academicInfo.previous_percentage,
+      religion_id: formData.personalInfo.religion_id,
+      category_id: formData.personalInfo.category_id,
+      nationality_id: formData.personalInfo.nationality_id,
+      medical_disability_id: formData.academicInfo.disability_id,
+      parent_qualification_id: formData.guardianInfo.qualification_id,
+      parent_occupation_id: formData.guardianInfo.occupation_id,
+      languages: formData.personalInfo.languagesKnown 
+
     };
-  
-    // Log payload to console
+    
     console.log('Payload to be sent:', payload);
   
     // Send formData and uploadedDocuments to backend
@@ -574,10 +566,12 @@ export default function StudentEnrollForm() {
       };
       
       const handleSuccessClose = () => {
+        const navigate = useNavigate(); // Initialize the navigate function
         setLoading(true);
         setSuccessDialogOpen(false);
         setTimeout(() => {
-          window.location.href = '/school_dashboard'; // Redirect to school dashboard
+          const schoolId = globalData.data.school_id; // Retrieve schoolId from globalData
+          navigate(`/school_dashboard/${schoolId}`); // Navigate to the school_dashboard with schoolId
         }, 1000);
       };
       
