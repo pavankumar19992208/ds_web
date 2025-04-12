@@ -1,0 +1,17 @@
+.landing-page {
+    height: 100vh; /* Viewport height */
+    overflow-y: scroll; /* Allows content to scroll */
+    scrollbar-width: none; 
+    align-items: center;
+    background-color: rgb(255, 255, 255);
+    display: flex;
+    flex-direction: column;
+}
+/* .main-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #fff;
+    width: 70%;
+} */

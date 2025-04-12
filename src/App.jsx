@@ -33,6 +33,7 @@ import CartPage from './components/Ecommerce/Cart/cartPage.jsx';
 import LeaveApproval from './components/P2pHeader/SchoolSegment/schooldashboard/Sidebar/leave-approval/leaveApproval.jsx';
 import PayrollForm from './components/P2pHeader/SchoolSegment/schooldashboard/Cards/staff-payroll/payRoll.jsx';
 import SchoolStatistics from './components/P2pHeader/SchoolSegment/schooldashboard/Sidebar/school-statistics/schoolStatistics.jsx';
+import LandingPage from './components/landingPage/landingPage.jsx';
 const theme = createTheme();
 // mysql://root:nXbyCttzErnSirxYRBZtYNJRprHnbTar@shuttle.proxy.rlwy.net:21943/railway
 function App() {
@@ -71,6 +72,7 @@ function App() {
             <Route path= "/leave-approval" element={<LeaveApproval/>} />
             <Route path="/update-staff-payroll" element={<PayrollForm />} />
             <Route path='/school-statistics' element={<SchoolStatistics/>} />
+            <Route path="/landing-page" element={<LandingPage />} />
           </Routes>
         </DndProvider>
       </Router>

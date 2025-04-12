@@ -175,6 +175,17 @@ export default function GuardianInfoForm({ formData, setFormData }) {
       });
       return updatedAddress;
     });
+
+    setFormData(prev => ({
+      ...prev,
+      guardianInfo: {
+        ...prev.guardianInfo,
+        address: {
+          ...prev.guardianInfo.address,
+          [id]: value
+        }
+      }
+    }));
   
     if (isValid) {
       setErrors(prevErrors => ({ ...prevErrors, [id]: '' }));

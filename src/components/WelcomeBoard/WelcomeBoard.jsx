@@ -6,7 +6,7 @@ function WelcomeBoard() {
   return (
     <div className="App">
       <div className='Navbar'><Navbar/></div>
-      <div classNmae='Welcome'><Welcome/></div>
+      <div className='Welcome'><Welcome/></div>
       <div className='service_tabs'><Services/></div>
     </div>
   );

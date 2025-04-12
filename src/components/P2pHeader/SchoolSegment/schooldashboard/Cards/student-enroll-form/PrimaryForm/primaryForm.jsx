@@ -260,21 +260,33 @@ export default function StudentEnrollForm() {
       FatherName: '',
       ParentOccupation: '',
       ParentQualification: '',
-      currentAddress: {
+      // currentAddress: {
+      //   line1: '',
+      //   line2: '',
+      //   city: '',
+      //   district: '',
+      //   state: '',
+      //   pincode: ''
+      // },
+      // permanentAddress: {
+      //   line1: '',
+      //   line2: '',
+      //   city: '',
+      //   district: '',
+      //   state: '',
+      //   pincode: ''
+      // },
+      address: {
         line1: '',
         line2: '',
+        landmark: '',
+        locality: '',
         city: '',
         district: '',
         state: '',
-        pincode: ''
-      },
-      permanentAddress: {
-        line1: '',
-        line2: '',
-        city: '',
-        district: '',
-        state: '',
-        pincode: ''
+        country: 'India',
+        pincode: '',
+        address_type: ''
       },
       EmergencyContact: '',
       MobileNumber: '',
@@ -517,14 +529,26 @@ export default function StudentEnrollForm() {
       medical_disability_id: formData.academicInfo.disability_id,
       parent_qualification_id: formData.guardianInfo.qualification_id,
       parent_occupation_id: formData.guardianInfo.occupation_id,
-      languages: formData.personalInfo.languagesKnown 
+      languages: formData.personalInfo.languagesKnown,
+      address: {
+        line1: formData.guardianInfo.address.line1,
+        line2: formData.guardianInfo.address.line2 || '',
+        landmark: formData.guardianInfo.address.landmark || '',
+        locality: formData.guardianInfo.address.locality || '',
+        city: formData.guardianInfo.address.city,
+        district: formData.guardianInfo.address.district,
+        state: formData.guardianInfo.address.state,
+        country: formData.guardianInfo.address.country || 'India',
+        pincode: formData.guardianInfo.address.pincode,
+        address_type: formData.guardianInfo.address.address_type
+      } 
 
     };
     
     console.log('Payload to be sent:', payload);
   
     // Send formData and uploadedDocuments to backend
-    try {
+     try {
       const response = await fetch(`${BaseUrl}/registerstudent`, {
         method: 'POST',
         headers: {
@@ -532,22 +556,20 @@ export default function StudentEnrollForm() {
         },
         body: JSON.stringify(payload),
       });
-  
+    
+      const data = await response.json();
+    
       if (!response.ok) {
         if (response.status === 409) { // Assuming 409 is the status code for user already exists
-          const data = await response.json();
-          setSuccessDialogOpen(true);
-          setUserId('');
-          setPassword('');
+          console.warn('User already exists:', data.detail);
           alert(data.detail); // Show the error message from the backend
         } else {
           throw new Error('Form submission failed');
         }
       } else {
-        const data = await response.json();
         console.log('Form data sent to backend successfully:', data);
-        setUserId(data.UserId);
-        setPassword(data.Password);
+        setUserId(data.user_id || ''); // Use the returned user_id if available
+        setPassword(data.password || ''); // Use the returned password if available
         // Clear local storage after successful submission
         localStorage.removeItem('uploadedDocuments');
         // Open success dialog
@@ -555,11 +577,11 @@ export default function StudentEnrollForm() {
       }
     } catch (error) {
       console.error('Error sending form data to backend:', error);
+      alert('An error occurred while submitting the form. Please try again.');
     } finally {
       setLoading(false);
     }
-  };
-      
+  }
       const handleDocumentClick = (doc) => {
         setSelectedDoc(doc);
         setOpen(true);
