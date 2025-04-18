@@ -9,8 +9,8 @@ function LandingPage() {
       <div className='landing-page'>
         {/* <Header/> */}
         <HeroSection/>
-        {/* <div className='features'><Features/></div>
-        <div className='footer'><Footer/></div> */}
+        <div className='features'><Features/></div>
+        <div className='footer'><Footer/></div>
       </div>
     );
   }

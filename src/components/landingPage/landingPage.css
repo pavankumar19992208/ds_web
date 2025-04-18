@@ -1,11 +1,14 @@
 .landing-page {
-    height: 100vh; /* Viewport height */
+    height: auto; /* Viewport height */
     overflow-y: scroll; /* Allows content to scroll */
     scrollbar-width: none; 
     align-items: center;
     background-color: rgb(255, 255, 255);
-    display: flex;
-    flex-direction: column;
+    bottom: 20px;
+    position: relative;
+
+    /* display: flex;
+    flex-direction: column; */
 }
 /* .main-header{
     display: flex;

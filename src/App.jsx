@@ -43,7 +43,8 @@ function App() {
       <Router>
         <DndProvider backend={HTML5Backend}>
           <Routes>
-            <Route path="/" element={<WelcomeBoard />} />
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/welcome-board" element={<WelcomeBoard />} />
             <Route path="/p2pheader" element={<P2pHeader />} />
             <Route path="/schlogin" element={<SchoolLogin />} />
             <Route path="/register-school" element={<SchoolRegistration />} />
@@ -72,7 +73,6 @@ function App() {
             <Route path= "/leave-approval" element={<LeaveApproval/>} />
             <Route path="/update-staff-payroll" element={<PayrollForm />} />
             <Route path='/school-statistics' element={<SchoolStatistics/>} />
-            <Route path="/landing-page" element={<LandingPage />} />
           </Routes>
         </DndProvider>
       </Router>

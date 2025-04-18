@@ -33,3 +33,19 @@
     color: #fff;
     background-color: #1F309B;
 }
+
+.lp-header-button {
+    border: none;
+    background: none;
+    color: #1F309B;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 8px 16px;
+    border-radius: 20px;
+    transition: background 0.3s ease;
+}
+
+.lp-header-button:hover {
+    background: rgba(31, 48, 155, 0.1); /* Light blue overlay */
+}

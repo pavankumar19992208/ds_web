@@ -108,6 +108,8 @@
     padding: 0px 30px; /* Add padding for spacing */
     color: #fff;
     background-color: #444781;
+    background: linear-gradient(135deg, #1F309B 0%, #444781 100%);
+        border-radius: 20px;
     display: flex;
     flex-direction: column;
     height: 100%;
