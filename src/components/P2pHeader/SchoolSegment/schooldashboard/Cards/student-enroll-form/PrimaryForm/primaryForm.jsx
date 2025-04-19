@@ -423,6 +423,16 @@ export default function StudentEnrollForm() {
   //     alert('Please fill all required fields.');
   //   }
   // };
+        
+  const handleSuccessClose = () => {
+    const navigate = useNavigate(); // Initialize the navigate function
+    setLoading(true);
+    setSuccessDialogOpen(false);
+    setTimeout(() => {
+      const schoolId = globalData.data.school_id; // Retrieve schoolId from globalData
+      navigate(`/school_dashboard/${schoolId}`); // Navigate to the school_dashboard with schoolId
+    }, 1000);
+  };
 
   const handleEnrollMore = () => {
     setActiveStep(0);
@@ -473,41 +483,75 @@ export default function StudentEnrollForm() {
     setSuccessDialogOpen(false);
   };
 
-  const handleSubmit = async () => {
-    setLoading(true);
-    console.log('Form submitted:', formData);
-  
-    // Upload photo to Firebase and collect URL
-    let photoURL = formData.personalInfo.photo;
-    if (photoURL && photoURL.startsWith('data:image/')) {
-      const photoRef = ref(storage, `photos/${formData.personalInfo.PhotoName}`);
-      try {
-        await uploadString(photoRef, photoURL, 'data_url');
-        photoURL = await getDownloadURL(photoRef);
-        console.log(`Photo uploaded: ${formData.personalInfo.PhotoName} - URL: ${photoURL}`);
-      } catch (error) {
-        console.error("Error uploading photo: ", error);
-      }
+  const getDocumentTypeId = (documentType) => {
+    // This should exactly match your document_type table in the database
+    const typeMap = {
+      'aadhar': 16,                // Aadhar Card
+      'birth_certificate': 15,      // Birth Certificate
+      'medical_history': 19,        // Medical Certificate
+      'previous_school_tc': 17,     // Transfer Certificate
+      'passport_photo': 20,         // Passport Photo
+      'parent_id_proof': 21,        // Parent ID Proof
+      'caste_certificate': 18       // Caste Certificate
+    };
+    
+    const typeId = typeMap[documentType];
+    
+    if (!typeId) {
+      console.error(`Unknown document type: ${documentType}`);
+      console.log('Available document types:', Object.keys(typeMap));
     }
+    
+    return typeId;
+  };
+
+const handleSubmit = async () => {
+  setLoading(true);
   
-    // Upload documents to Firebase and collect URLs
-    const uploadedDocuments = [];
-    for (const doc of formData.documents) {
-      const storageRef = ref(storage, `documents/${doc.type}/${doc.name}`);
-      try {
-        await uploadString(storageRef, doc.data, 'data_url');
-        const downloadURL = await getDownloadURL(storageRef);
-        uploadedDocuments.push({
-          name: doc.name,
-          type: doc.type,
-          url: downloadURL,
-        });
-        console.log(`Document uploaded: ${doc.type} - ${doc.name} - URL: ${downloadURL}`);
-      } catch (error) {
-        console.error("Error uploading document: ", error);
-      }
+  // Upload photo to Firebase
+  let photoURL = '';
+  if (formData.personalInfo.photo && formData.personalInfo.photo.startsWith('data:image/')) {
+    const photoRef = ref(storage, `student_photos/${formData.personalInfo.aadhar_number}_photo`);
+    try {
+      await uploadString(photoRef, formData.personalInfo.photo, 'data_url');
+      photoURL = await getDownloadURL(photoRef);
+    } catch (error) {
+      console.error("Error uploading photo: ", error);
     }
-  
+  }
+
+  // Upload documents to Firebase and prepare payload
+  const documentsPayload = [];
+  for (const doc of formData.documents) {
+    const storageRef = ref(storage, `student_documents/${formData.personalInfo.aadhar_number}/${doc.type}_${Date.now()}`);
+    try {
+      await uploadString(storageRef, doc.data, 'data_url');
+      const downloadURL = await getDownloadURL(storageRef);
+      
+      const documentTypeId = getDocumentTypeId(doc.type);
+      if (!documentTypeId) {
+        console.error(`Unknown document type: ${doc.type}`);
+        continue;
+      }
+
+      // Calculate file size in KB (base64 string length * 3/4 / 1024)
+      const fileSizeKB = (doc.data.length * (3/4)) / 1024;
+      
+      // Extract file type from data URL
+      const fileType = doc.data.match(/^data:(.*?);/)[1];
+
+      documentsPayload.push({
+        document_type_id: documentTypeId,
+        document_url: downloadURL,
+        file_name: doc.name,
+        file_size_kb: fileSizeKB,
+        file_type: fileType
+      });
+    } catch (error) {
+      console.error(`Error uploading ${doc.type}: `, error);
+    }
+  }
+
     const payload = {
       school_id: globalData.data.school_id,
       name: formData.personalInfo.student_name,
@@ -541,14 +585,16 @@ export default function StudentEnrollForm() {
         country: formData.guardianInfo.address.country || 'India',
         pincode: formData.guardianInfo.address.pincode,
         address_type: formData.guardianInfo.address.address_type
-      } 
+      }, 
+      photo_url: photoURL,
+      documents: documentsPayload
 
     };
     
     console.log('Payload to be sent:', payload);
   
     // Send formData and uploadedDocuments to backend
-     try {
+    try {
       const response = await fetch(`${BaseUrl}/registerstudent`, {
         method: 'POST',
         headers: {
@@ -586,16 +632,7 @@ export default function StudentEnrollForm() {
         setSelectedDoc(doc);
         setOpen(true);
       };
-      
-      const handleSuccessClose = () => {
-        const navigate = useNavigate(); // Initialize the navigate function
-        setLoading(true);
-        setSuccessDialogOpen(false);
-        setTimeout(() => {
-          const schoolId = globalData.data.school_id; // Retrieve schoolId from globalData
-          navigate(`/school_dashboard/${schoolId}`); // Navigate to the school_dashboard with schoolId
-        }, 1000);
-      };
+
       
       return (
         <div className='enroll-form'>
