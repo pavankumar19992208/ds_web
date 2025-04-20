@@ -117,7 +117,6 @@ export default function DocumentsUpload({ formData, setFormData }) {
             type="file"
             id="passport_photo"
             name="passport_photo"
-            label="Upload Passport Photo"
             fullWidth
             InputLabelProps={{ shrink: true }}
             inputProps={{ accept: "image/*" }}
@@ -140,7 +139,7 @@ export default function DocumentsUpload({ formData, setFormData }) {
             type="file"
             id="aadhar"
             name="aadhar"
-            label="Upload Aadhar Card"
+            // label="Upload Aadhar Card"
             fullWidth
             InputLabelProps={{ shrink: true }}
             onChange={(event) => handleDocumentUpload(event, 'aadhar')}
@@ -161,7 +160,6 @@ export default function DocumentsUpload({ formData, setFormData }) {
           <TextField
             type="file"
             id="birth_certificate"
-            label="Upload Birth Certificate"
             fullWidth
             InputLabelProps={{ shrink: true }}
             onChange={(event) => handleDocumentUpload(event, 'birth_certificate')}
@@ -182,7 +180,6 @@ export default function DocumentsUpload({ formData, setFormData }) {
           <TextField
             type="file"
             id="medical_history"
-            label="Upload Medical History"
             fullWidth
             InputLabelProps={{ shrink: true }}
             onChange={(event) => handleDocumentUpload(event, 'medical_history')}
@@ -203,7 +200,6 @@ export default function DocumentsUpload({ formData, setFormData }) {
           <TextField
             type="file"
             id="previous_school_tc"
-            label="Upload Transfer Certificate"
             fullWidth
             InputLabelProps={{ shrink: true }}
             onChange={(event) => handleDocumentUpload(event, 'previous_school_tc')}
@@ -224,7 +220,6 @@ export default function DocumentsUpload({ formData, setFormData }) {
           <TextField
             type="file"
             id="parent_id_proof"
-            label="Upload Parent ID Proof"
             fullWidth
             InputLabelProps={{ shrink: true }}
             onChange={(event) => handleDocumentUpload(event, 'parent_id_proof')}
@@ -246,7 +241,6 @@ export default function DocumentsUpload({ formData, setFormData }) {
             <TextField
               type="file"
               id="caste_certificate"
-              label="Upload Caste Certificate"
               fullWidth
               InputLabelProps={{ shrink: true }}
               onChange={(event) => handleDocumentUpload(event, 'caste_certificate')}
@@ -260,7 +254,7 @@ export default function DocumentsUpload({ formData, setFormData }) {
           </Grid>
         )}
 
-        {/* Declaration Checkbox */}
+        {/* Declaration Checkbox
         <Grid item xs={12}>
           <div className={classes.checkboxContainer}>
             <FormControlLabel
@@ -277,7 +271,7 @@ export default function DocumentsUpload({ formData, setFormData }) {
               label="I hereby declare that all the documents uploaded are genuine and belong to the student/parents as applicable. I understand that providing false documents may lead to cancellation of admission."
             />
           </div>
-        </Grid>
+        </Grid> */}
       </Grid>
 
       {showAlert && (

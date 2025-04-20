@@ -55,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const validateAlphabets = (value) => /^[A-Za-z\s]*$/.test(value);
+const validateAlphabets = (value) => /^[A-Za-z\s.'-]*$/.test(value);
 const validateNumbers = (value) => /^[0-9]{0,10}$/.test(value);
 const validateOtherQualification = (value) => /^[A-Za-z\s.,-]*$/.test(value);
 const validateEmail = (value) => value.endsWith('@gmail.com');
@@ -195,80 +195,52 @@ export default function GuardianInfoForm({ formData, setFormData }) {
   };
     // console.log('Updated Address:', address);
 
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    let isValid = true;
-    let errorMessage = '';
+// In guardianInfo.jsx, update the handleInputChange function:
+const handleInputChange = (event) => {
+  const { name, value } = event.target;
+  let isValid = true;
+  let errorMessage = '';
 
-    if (name === 'parent_qualification') {
-      if (value === 'Other') {
-        setFormData(prev => ({
-          ...prev,
-          guardianInfo: {
-            ...prev.guardianInfo,
-            parent_qualification: 'Other',
-            qualification_id: null
-          }
-        }));
-      } else {
-        const selectedQualification = qualifications.find(q => q.qualification_name === value);
-        setFormData(prev => ({
-          ...prev,
-          guardianInfo: {
-            ...prev.guardianInfo,
-            parent_qualification: selectedQualification ? selectedQualification.qualification_name : '',
-            qualification_id: selectedQualification ? selectedQualification.qualification_id : null
-          }
-        }));
-      }
-      return;
+  // For name fields, prevent any number input
+  if (['father_name', 'mother_name', 'guardian_name'].includes(name)) {
+    // Remove any numbers that might have been pasted
+    const cleanedValue = value.replace(/[0-9]/g, '');
+    if (value !== cleanedValue) {
+      event.target.value = cleanedValue; // Update the input field value
     }
-
-    if (name === 'parent_occupation') {
-      if (value === 'Other') {
-        setFormData(prev => ({
-          ...prev,
-          guardianInfo: {
-            ...prev.guardianInfo,
-            parent_occupation: 'Other',
-            occupation_id: null
-          }
-        }));
-      } else {
-        const selectedOccupation = occupations.find(occ => occ.occupation_name === value);
-        setFormData(prev => ({
-          ...prev,
-          guardianInfo: {
-            ...prev.guardianInfo,
-            parent_occupation: selectedOccupation ? selectedOccupation.occupation_name : '',
-            occupation_id: selectedOccupation ? selectedOccupation.occupation_id : null
-          }
-        }));
-      }
-      return;
-    }
-  
-    if (['FatherName', 'MotherName', 'GuardianName', 'ParentOccupation'].includes(name)) {
-      isValid = validateAlphabets(value) || value === '';
-      errorMessage = 'Invalid alphabetic input';
-    } else if (['MobileNumber', 'EmergencyContact'].includes(name)) {
-      isValid = validateNumbers(value) || value === '';
-      if (value.length !== 10 && value !== '') {
-        isValid = false;
-        errorMessage = 'Phone number must be 10 digits';
-      }
-    } else if (name === 'Email') {
-      isValid = validateEmail(value) || value === '';
-      errorMessage = 'Email must end with @gmail.com';
-    } else if (name === 'ParentQualification' && value === 'Other') {
-      setOtherQualification('');
-    }
-
-    if (value === '' && ['FatherName', 'MotherName', 'ParentOccupation', 'MobileNumber', 'Email', 'EmergencyContact'].includes(name)) {
+    
+    isValid = validateAlphabets(cleanedValue) || cleanedValue === '';
+    errorMessage = 'Only alphabetic characters are allowed';
+    
+    // Update form data with cleaned value
+    setFormData((prevData) => ({
+      ...prevData,
+      guardianInfo: {
+        ...prevData.guardianInfo,
+        [name]: cleanedValue,
+      },
+    }));
+  } 
+  else if (['mobile_number', 'emergency_contact'].includes(name)) {
+    isValid = validateNumbers(value) || value === '';
+    if (value.length !== 10 && value !== '') {
       isValid = false;
-      errorMessage = 'This field is required';
+      errorMessage = 'Must be 10 digits';
     }
-  
+  } 
+  else if (name === 'email') {
+    isValid = validateEmail(value) || value === '';
+    errorMessage = 'Email must end with @gmail.com';
+  }
+
+  // Required field validation
+  if (value === '' && ['father_name', 'mother_name', 'mobile_number', 'email', 'emergency_contact'].includes(name)) {
+    isValid = false;
+    errorMessage = 'This field is required';
+  }
+
+  // Only update form data if not a name field (name fields are handled above)
+  if (!['father_name', 'mother_name', 'guardian_name'].includes(name)) {
     setFormData((prevData) => ({
       ...prevData,
       guardianInfo: {
@@ -276,19 +248,20 @@ export default function GuardianInfoForm({ formData, setFormData }) {
         [name]: value,
       },
     }));
-  
-    if (isValid) {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        [name]: '',
-      }));
-    } else {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        [name]: errorMessage,
-      }));
-    }
-  };
+  }
+
+  setErrors((prevErrors) => ({
+    ...prevErrors,
+    [name]: isValid ? '' : errorMessage,
+  }));
+};
+
+const handleNameKeyDown = (event) => {
+  // Prevent number keys (0-9) from being entered
+  if (event.key >= '0' && event.key <= '9') {
+    event.preventDefault();
+  }
+};
 
   const handleOtherQualificationChange = (event) => {
     const { value } = event.target;
@@ -313,15 +286,15 @@ export default function GuardianInfoForm({ formData, setFormData }) {
     }
   };
 
-  const handleOccupationSelect = (event, value) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      guardianInfo: {
-        ...prevData.guardianInfo,
-        ParentOccupation: value ? value.occupation_name : '',
-      },
-    }));
-  };
+  // const handleOccupationSelect = (event, value) => {
+  //   setFormData((prevData) => ({
+  //     ...prevData,
+  //     guardianInfo: {
+  //       ...prevData.guardianInfo,
+  //       ParentOccupation: value ? value.occupation_name : '',
+  //     },
+  //   }));
+  // };
 
   const handleKeyPress = (event) => {
     if (!/[0-9]/.test(event.key)) {

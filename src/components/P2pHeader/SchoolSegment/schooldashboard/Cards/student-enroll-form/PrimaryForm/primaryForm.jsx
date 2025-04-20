@@ -303,114 +303,161 @@ export default function StudentEnrollForm() {
   const [UserId, setUserId] = useState('');
   const [Password, setPassword] = useState('');
 
-  const validateForm = () => {
-    const errors = {};
-
-    // Validate personal info
-    if (!formData.personalInfo.student_name) {
-      errors.StudentName = 'Student Name is required';
-    }
-    if (!formData.personalInfo.dob) {
-      errors.DOB = 'Date of Birth is required';
-    }
-    if (!formData.personalInfo.gender) {
-      errors.Gender = 'Gender is required';
-    }
-    if (!formData.personalInfo.grade) {
-      errors.Grade = 'Grade is required';
-    }
-    if (!formData.personalInfo.aadhar_number) {
-      errors.AadharNumber = 'Aadhar Number is required';
-    }
-
-    // Validate guardian info
-    // if (activeStep === 1) {
-    //   if (!formData.guardianInfo.MotherName) {
-    //     errors.MotherName = 'Mother Name is required';
-    //   }
-    //   if (!formData.guardianInfo.FatherName) {
-    //     errors.FatherName = 'Father Name is required';
-    //   }
-    //   if (!formData.guardianInfo.ParentOccupation) {
-    //     errors.ParentOccupation = 'Parent Occupation is required';
-    //   }
-    //   if (!formData.guardianInfo.ParentQualification) {
-    //     errors.ParentQualification = 'Parent Qualification is required';
-    //   }
-    //   if (!formData.guardianInfo.EmergencyContact) {
-    //     errors.EmergencyContact = 'Emergency Contact is required';
-    //   }
-    //   if (!formData.guardianInfo.MobileNumber) {
-    //     errors.MobileNumber = 'Mobile Number is required';
-    //   }
-    //   if (!validateEmail(formData.guardianInfo.Email)) {
-    //     errors.Email = 'Invalid Email';
-    //   }
-    //   if (!formData.guardianInfo.currentAddress.line1) {
-    //     errors.currentAddressLine1 = 'Current Address Line 1 is required';
-    //   }
-    //   if (!formData.guardianInfo.currentAddress.city) {
-    //     errors.currentAddressCity = 'Current Address City is required';
-    //   }
-    //   if (!formData.guardianInfo.currentAddress.district) {
-    //     errors.currentAddressDistrict = 'Current Address District is required';
-    //   }
-    //   if (!formData.guardianInfo.currentAddress.state) {
-    //     errors.currentAddressState = 'Current Address State is required';
-    //   }
-    //   if (!formData.guardianInfo.currentAddress.pincode) {
-    //     errors.currentAddressPincode = 'Current Address Pincode is required';
-    //   }
-    // }
-
-    return errors;
-  };
 
   const validatePersonalInfo = () => {
     const errors = {};
-    const { student_name, religion, category, nationality, aadhar_number, dob } = formData.personalInfo;
+    const { 
+      student_name, 
+      dob, 
+      gender, 
+      grade, 
+      aadhar_number,
+      religion,
+      category,
+      nationality,
+      languagesKnown
+    } = formData.personalInfo;
   
-    if (!validateAlphabets(student_name)) {
-      errors.StudentName = 'Invalid alphabetic input';
-    }
-    if (!validateAlphabets(religion)) {
-      errors.Religion = 'Invalid alphabetic input';
-    }
-    if (!validateAlphabets(category)) {
-      errors.Category = 'Invalid alphabetic input';
-    }
-    if (!validateAlphabets(nationality)) {
-      errors.Nationality = 'Invalid alphabetic input';
-    }
-    if (!validateNumbers(aadhar_number)) {
-      errors.AadharNumber = 'Invalid numeric input';
+    // Required field validation
+    if (!student_name) errors.student_name = 'Student name is required';
+    if (!dob) errors.dob = 'Date of birth is required';
+    if (!gender) errors.gender = 'Gender is required';
+    if (!grade) errors.grade = 'Class is required';
+    if (!aadhar_number) errors.aadhar_number = 'Aadhar number is required';
+    if (!religion) errors.religion = 'Religion is required';
+    if (!category) errors.category = 'Category is required';
+    if (!nationality) errors.nationality = 'Nationality is required';
+    
+    // Validate languages
+    if (!languagesKnown || languagesKnown.length === 0 || 
+        languagesKnown.some(lang => !lang.language_id || !lang.language_type)) {
+      errors.languages = 'At least one language is required';
     }
   
-    const currentDate = new Date().toISOString().split('T')[0];
-    if (dob > currentDate) {
-      errors.dob = 'Date of Birth cannot be in the future';
+    // Format validation
+    if (student_name && !validateAlphabets(student_name)) {
+      errors.student_name = 'Invalid alphabetic input';
+    }
+    if (aadhar_number && !validateNumbers(aadhar_number)) {
+      errors.aadhar_number = 'Invalid numeric input';
+    }
+    if (dob) {
+      const currentDate = new Date().toISOString().split('T')[0];
+      if (dob > currentDate) {
+        errors.dob = 'Date of Birth cannot be in the future';
+      }
     }
   
     return errors;
   };
 
-  const handleNext = () => {
-    const errors = validateForm();
-    if (Object.keys(errors).length > 0) {
-      alert('Please fill all required fields.');
-      return;
-    }
+// Update the validateGuardianInfo function in primaryForm.jsx
+const validateGuardianInfo = (formData) => {
+  const errors = {};
+  const { 
+    father_name,
+    mother_name,
+    parent_occupation,
+    parent_qualification,
+    mobile_number,
+    email,
+    emergency_contact,
+    address
+  } = formData.guardianInfo;
+
+  // Parent Information validation
+  if (!father_name) errors.father_name = "Father's name is required";
+  if (!mother_name) errors.mother_name = "Mother's name is required";
+  if (!parent_occupation) errors.parent_occupation = "Parent occupation is required";
+  if (!parent_qualification) errors.parent_qualification = "Parent qualification is required";
+
+  // Contact Information validation
+  if (!mobile_number) {
+    errors.mobile_number = "Phone number is required";
+  } else if (!validateNumbers(mobile_number)) {
+    errors.mobile_number = "Invalid phone number (must be 10 digits)";
+  } else if (mobile_number.length !== 10) {
+    errors.mobile_number = "Phone number must be 10 digits";
+  }
+
+  if (!email) {
+    errors.email = "Email is required";
+  } else if (!validateEmail(email)) {
+    errors.email = "Email must end with @gmail.com";
+  }
+
+  if (!emergency_contact) {
+    errors.emergency_contact = "Emergency contact is required";
+  } else if (!validateNumbers(emergency_contact)) {
+    errors.emergency_contact = "Invalid emergency contact";
+  } else if (emergency_contact.length !== 10) {
+    errors.emergency_contact = "Emergency contact must be 10 digits";
+  }
+
+  // Address Information validation
+  if (!address?.line1) errors.line1 = "Address line 1 is required";
+  if (!address?.city) errors.city = "City is required";
+  if (!address?.district) errors.district = "District is required";
+  if (!address?.state) errors.state = "State is required";
+  if (!address?.pincode) {
+    errors.pincode = "Pincode is required";
+  } else if (!validateNumbers(address.pincode)) {
+    errors.pincode = "Invalid pincode (must be numbers)";
+  } else if (address.pincode.length !== 6) {
+    errors.pincode = "Pincode must be 6 digits";
+  }
+  if (!address?.address_type) errors.address_type = "Address type is required";
+
+  if (father_name && !validateAlphabets(father_name)) {
+    errors.father_name = 'Invalid alphabetic input';
+  }
+  if (mother_name && !validateAlphabets(mother_name)) {
+    errors.mother_name = 'Invalid alphabetic input';
+  }
+
+  return errors;
+};
+
+const validateAcademicInfo = (formData) => {
+  const errors = {};
+  const{
+    blood_group
+  } = formData.academicInfo;
+
+  if (!blood_group) {
+    errors.blood_group = "Blood group is required";
+  }
   
-    if (activeStep === 0) {
-      const personalInfoErrors = validatePersonalInfo();
-      if (Object.keys(personalInfoErrors).length > 0) {
-        alert('Please correct the errors in the personal information.');
-        return;
-      }
-    }
+  return errors;
+};
+
+const handleNext = () => {
+  let errors = {};
+  let isValid = true;
   
-    setActiveStep(activeStep + 1);
-  };
+  if (activeStep === 0) {
+    errors = validatePersonalInfo(formData);
+  } else if (activeStep === 1) {
+    errors = validateGuardianInfo(formData);
+  }
+  else if (activeStep === 2) {
+    errors = validateAcademicInfo(formData);
+  }
+  // Add validation for other steps as needed
+
+  // Check if there are any errors
+  isValid = Object.keys(errors).length === 0;
+
+  if (!isValid) {
+    // Show all errors in an alert
+    const errorMessages = Object.values(errors).filter(msg => msg).join('\n• ');
+    alert(`Please fix the following errors:\n\n• ${errorMessages}`);
+    return;
+  }
+
+  // Only proceed if validation passes
+  setActiveStep(activeStep + 1);
+};
 
   const handleBack = () => {
     setActiveStep(activeStep - 1);

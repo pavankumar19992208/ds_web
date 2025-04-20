@@ -7,9 +7,7 @@ import Button from '@mui/material/Button';
 import AddCircleOutline from '@mui/icons-material/AddCircleOutline';
 import RemoveCircleOutline from '@mui/icons-material/RemoveCircleOutline';
 import IconButton from '@mui/material/IconButton';
-import ListItemText from '@mui/material/ListItemText';
 import { makeStyles } from '@mui/styles';
-import Tooltip from '@mui/material/Tooltip';
 import { storage } from '../../../../../../connections/firebase';
 import { ref, uploadString, getDownloadURL } from 'firebase/storage';
 import BaseUrl from '../../../../../../../config';
@@ -52,7 +50,6 @@ export const validateNumbers = (value) => /^[0-9]{0,12}$/.test(value);
 
 export default function DetailsForm({ formData, setFormData }) {
   const classes = useStyles();
-  const [fileName, setFileName] = useState(formData.personalInfo.PhotoName || '');
   const [errors, setErrors] = useState({});
   const [otherGender, setOtherGender] = useState(formData.personalInfo.otherGender || '');
   const [languages, setLanguages] = useState([]);
@@ -144,10 +141,6 @@ export default function DetailsForm({ formData, setFormData }) {
   }, []);
 
   useEffect(() => {
-    setFileName(formData.personalInfo.PhotoName || '');
-  }, [formData.personalInfo.PhotoName]);
-
-  useEffect(() => {
     if (formData.personalInfo.languagesKnown && formData.personalInfo.languagesKnown.length > 0) {
       setLanguageEntries(formData.personalInfo.languagesKnown);
     } else {
@@ -170,15 +163,15 @@ export default function DetailsForm({ formData, setFormData }) {
     const { name, value } = event.target;
     let isValid = true;
     let errorMessage = '';
-    if (name === 'Category' && value && !['SC', 'ST', 'OBC', 'GEN', 'EWS', 'PWD'].includes(value)) {
+  
+    // Common validation for required fields
+    if (['student_name', 'gender', 'grade', 'aadhar_number', 'religion', 'category', 'nationality'].includes(name) && !value) {
       isValid = false;
-      errorMessage = 'Please select a valid category';
-    }
-
-    if (['StudentName', 'PreviousSchool', 'Religion', 'Category', 'Nationality'].includes(name)) {
+      errorMessage = 'This field is required';
+    } else if (name === 'student_name') {
       isValid = validateAlphabets(value) || value === '';
       errorMessage = 'Invalid alphabetic input';
-    } else if (name === 'AadharNumber') {
+    } else if (name === 'aadhar_number') {
       isValid = /^[0-9]*$/.test(value); // Ensure only numbers are entered
       if (!isValid) {
         errorMessage = 'Aadhar number must contain only digits';
@@ -186,7 +179,7 @@ export default function DetailsForm({ formData, setFormData }) {
         isValid = false;
         errorMessage = 'Aadhar number must be 12 digits';
       }
-    } else if (name === 'DOB') {
+    } else if (name === 'dob') {
       const currentDate = new Date().toISOString().split('T')[0];
       if (value > currentDate) {
         isValid = false;
@@ -195,7 +188,7 @@ export default function DetailsForm({ formData, setFormData }) {
     }
 
     // Check if the field is required and empty
-    if (['StudentName', 'DOB', 'Gender', 'Grade', 'AadharNumber'].includes(name) && value === '') {
+    if (['student_name', 'dob', 'gender', 'grade', 'aadhar_number', 'language'].includes(name) && value === '') {
       isValid = false;
       errorMessage = 'This field is required';
     }
@@ -207,52 +200,25 @@ export default function DetailsForm({ formData, setFormData }) {
         [name]: value,
       },
     }));
-
-    if (isValid) {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        [name]: '',
-      }));
-    } else {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        [name]: errorMessage,
-      }));
-    }
+  
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: isValid ? '' : errorMessage,
+    }));
   };
 
-  const handleFileChange = async (event) => {
-    const { name, files } = event.target;
-    const file = files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = async (e) => {
-        const fileData = e.target.result;
-        if (fileData.startsWith('data:image/')) {
-          const storageRef = ref(storage, `photos/${file.name}`);
-          try {
-            await uploadString(storageRef, fileData, 'data_url');
-            const downloadURL = await getDownloadURL(storageRef);
-            setFormData((prevData) => ({
-              ...prevData,
-              personalInfo: {
-                ...prevData.personalInfo,
-                [name]: downloadURL,
-                PhotoName: file.name,
-              },
-            }));
-            setFileName(file.name);
-            console.log(`Photo uploaded: ${file.name} - URL: ${downloadURL}`);
-          } catch (error) {
-            console.error("Error uploading photo: ", error);
-          }
-        } else {
-          console.error("Invalid file format. Please upload an image.");
-        }
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+  //   if (isValid) {
+  //     setErrors((prevErrors) => ({
+  //       ...prevErrors,
+  //       [name]: '',
+  //     }));
+  //   } else {
+  //     setErrors((prevErrors) => ({
+  //       ...prevErrors,
+  //       [name]: errorMessage,
+  //     }));
+  //   }
+  // };
 
   const handleLanguageChange = (index, field, value) => {
     const newEntries = [...languageEntries];
@@ -268,31 +234,6 @@ export default function DetailsForm({ formData, setFormData }) {
     }
     
     updateFormDataLanguages(newEntries);
-  };
-
-  const handleOtherLanguageChange = (event) => {
-    const { value } = event.target;
-    if (validateAlphabets(value) || value === '') {
-      setOtherLanguage(value);
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        otherLanguage: '',
-      }));
-
-      setFormData((prevData) => ({
-        ...prevData,
-        personalInfo: {
-          ...prevData.personalInfo,
-          otherLanguage: value,
-          languagesKnown: selectedLanguages.includes('Other') ? [...selectedLanguages.filter(lang => lang !== 'Other'), value] : selectedLanguages,
-        },
-      }));
-    } else {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        otherLanguage: 'Invalid alphabetic input',
-      }));
-    }
   };
 
   const handleOtherGenderChange = (event) => {
@@ -330,7 +271,6 @@ export default function DetailsForm({ formData, setFormData }) {
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
-            required
             id="student_name"
             name="student_name"
             label="Student Full Name"
@@ -343,11 +283,11 @@ export default function DetailsForm({ formData, setFormData }) {
             className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
             error={!!errors.student_name}
             helperText={errors.student_name}
+            required
           />
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
-            required
             id="dob"
             name="dob"
             label="Date of Birth"
@@ -363,12 +303,12 @@ export default function DetailsForm({ formData, setFormData }) {
             className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
             error={!!errors.dob}
             helperText={errors.dob}
+            required
           />
         </Grid>
         {/* >>> */}
         <Grid item xs={12} sm={6}>
           <TextField
-            required
             id="gender"
             name="gender"
             label="Gender"
@@ -381,6 +321,7 @@ export default function DetailsForm({ formData, setFormData }) {
             className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
             error={!!errors.gender}
             helperText={errors.gender}
+            required
           >
             <MenuItem value="male">Male</MenuItem>
             <MenuItem value="female">Female</MenuItem>
@@ -391,31 +332,15 @@ export default function DetailsForm({ formData, setFormData }) {
               id="otherGender"
               name="otherGender"
               label="Please specify"
-              // onBlur={handleBlur}
-              // onKeyDown={handleKeyDown}
               fullWidth
               value={otherGender}
               onChange={handleOtherGenderChange}
               className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
               error={!!errors.otherGender}
               helperText={errors.otherGender}
+              required
             />
           )}
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            id="photo"
-            name="photo"
-            label="Upload Photo"
-            type="file"
-            fullWidth
-            InputLabelProps={{
-              shrink: true,
-            }}
-            onChange={handleFileChange}
-            className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
-          />
-          {fileName && <Typography variant="body2" className={classes.coloredTypography}>{fileName}</Typography>}
         </Grid>
 
         {/* Section 2 */}
@@ -426,7 +351,6 @@ export default function DetailsForm({ formData, setFormData }) {
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
-            required
             id="grade"
             name="grade"
             label="Class"
@@ -434,9 +358,8 @@ export default function DetailsForm({ formData, setFormData }) {
             fullWidth
             value={formData.personalInfo.grade || ''}
             onChange={handleChange}
-            // onKeyDown={handleKeyDown}
-            // onBlur={handleBlur}
             className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
+            required
           >
             {[...Array(10).keys()].map(i => (
               <MenuItem key={i + 1} value={i + 1}>{i + 1}</MenuItem>
@@ -447,12 +370,10 @@ export default function DetailsForm({ formData, setFormData }) {
           <TextField
             id="previous_school"
             name="previous_school"
-            label="Previous School Name"
+            label="Previous School Name (Optional)"
             fullWidth
             value={formData.personalInfo.previous_school || ''}
             onChange={handleChange}
-            // onKeyDown={handleKeyDown}
-            // onBlur={handleBlur}
             className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
             error={!!errors.previous_school}
             helperText={errors.previous_school}
@@ -471,14 +392,16 @@ export default function DetailsForm({ formData, setFormData }) {
           <Grid item xs={6}>
             <TextField
               select
-              required
               fullWidth
+              id={`language_${index}`}
+              name={`language_${index}`}
               label="Language"
               value={entry.language_id || ''}
               onChange={(e) => handleLanguageChange(index, 'language_id', Number(e.target.value))}
               className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
               error={!!errors[`language_${index}`]}
               helperText={errors[`language_${index}`]}
+              required
             >
               <MenuItem value="">Select Language</MenuItem>
               {languages.map((language) => (
@@ -491,12 +414,16 @@ export default function DetailsForm({ formData, setFormData }) {
           <Grid item xs={5}>
             <TextField
               select
-              required
               fullWidth
+              id={`language_type_${index}`}
+              name={`language_type_${index}`}
               label="Language Type"
               value={entry.language_type || ''}
               onChange={(e) => handleLanguageChange(index, 'language_type', e.target.value)}
               className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
+              error={!!errors[`language_type_${index}`]}
+              helperText={errors[`language_type_${index}`]}
+              required
             >
               <MenuItem value="mother_tongue">Mother Tongue</MenuItem>
               <MenuItem value="secondary_language">Secondary Language</MenuItem>
@@ -546,6 +473,7 @@ onChange={(e) => {
 className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
 error={!!errors.religion}
 helperText={errors.religion}
+required
 >
 {religions.map((religion) => (
   <MenuItem key={religion.religion_id} value={religion.religion_name}>
@@ -556,33 +484,31 @@ helperText={errors.religion}
 </Grid>
         <Grid item xs={12} sm={6}>
         <TextField
-  id="category"
-  name="category"
-  label="Category"
-  select
-  fullWidth
-  value={formData.personalInfo.category || ''}
-  onChange={(e) => {
-    const selectedCategory = categories.find(c => c.category_name === e.target.value);
-    setFormData(prev => ({
-      ...prev,
-      personalInfo: {
-        ...prev.personalInfo,
-        category: selectedCategory ? selectedCategory.category_name : '',
-        category_id: selectedCategory ? selectedCategory.category_id : null
-      }
-    }));
-  }}
-  className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
-  error={!!errors.category}
-  helperText={errors.category}
->
-  {categories.map((category) => (
-    <MenuItem key={category.category_id} value={category.category_name}>
-      {category.category_name} ({category.category_type})
-    </MenuItem>
-  ))}
-</TextField>
+         id="category"
+         name="category"
+         label="Category"
+         select
+         fullWidth
+         value={formData.personalInfo.category || ''}
+         onChange={(e) => {
+           const selectedCategory = categories.find(c => c.category_name === e.target.value);
+           setFormData(prev => ({
+             ...prev,
+             personalInfo: {
+               ...prev.personalInfo,
+               category: selectedCategory ? selectedCategory.category_name : '',
+               category_id: selectedCategory ? selectedCategory.category_id : null
+             }
+           }));
+         }}
+         className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
+         required>
+        {categories.map((category) => (
+          <MenuItem key={category.category_id} value={category.category_name}>
+            {category.category_name} ({category.category_type})
+          </MenuItem>
+        ))}
+      </TextField>
 </Grid>
 <Grid item xs={12} sm={6}>
 <TextField
@@ -604,8 +530,7 @@ helperText={errors.religion}
     }));
   }}
   className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
-  error={!!errors.nationality}
-  helperText={errors.nationality}
+  required
 >
   {nationalities.map((nationality) => (
     <MenuItem key={nationality.nationality_id} value={nationality.nationality_name}>
@@ -616,7 +541,6 @@ helperText={errors.religion}
 </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
-            required
             id="aadhar_number"
             name="aadhar_number"
             label="Aadhar Number"
@@ -624,12 +548,11 @@ helperText={errors.religion}
             fullWidth
             value={formData.personalInfo.aadhar_number || ''}
             onChange={handleChange}
-            // onKeyDown={handleKeyDown}
-            // onBlur={handleBlur}
             className={`${classes.fieldMargin} ${classes.reducedWidth} urbanist-font`}
             error={!!errors.aadhar_number}
             helperText={errors.aadhar_number}
             inputProps={{ maxLength: 12, pattern: "[0-9]*" }} // Restrict input to numbers only
+            required
           />
         </Grid>
       </Grid>

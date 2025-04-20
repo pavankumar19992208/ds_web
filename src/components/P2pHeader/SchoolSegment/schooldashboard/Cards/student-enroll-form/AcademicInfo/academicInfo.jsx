@@ -62,25 +62,39 @@ export default function AcademicInfoForm({ formData, setFormData }) {
     fetchDisabilities();
   }, []);
 
+  const [errors, setErrors] = useState({
+    blood_group: '',
+    previous_percentage: ''
+  });
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     let isValid = true;
     let errorMessage = '';
-
-    if (name === 'PreviousPercentage') {
+  
+    if (name === 'previous_percentage') {
       isValid = validatePercentage(value);
       errorMessage = 'Invalid percentage input';
     }
-
-    if (isValid) {
-      setFormData((prevData) => ({
-        ...prevData,
-        academicInfo: {
-          ...prevData.academicInfo,
-          [name]: value,
-        },
+  
+    // Update form data
+    setFormData((prevData) => ({
+      ...prevData,
+      academicInfo: {
+        ...prevData.academicInfo,
+        [name]: value,
+      },
+    }));
+  
+    // Clear any existing error when field is changed
+    if (errors[name]) {
+      setErrors(prevErrors => ({
+        ...prevErrors,
+        [name]: ''
       }));
-    } else {
+    }
+  
+    if (!isValid) {
       alert(errorMessage);
     }
   };
@@ -142,6 +156,8 @@ export default function AcademicInfoForm({ formData, setFormData }) {
             value={formData.academicInfo.blood_group || ''}
             onChange={handleChange}
             className={classes.textField}
+            error={!!errors.blood_group}
+            helperText={errors.blood_group}
           >
             {bloodGroups.map((group) => (
               <MenuItem key={group} value={group}>
