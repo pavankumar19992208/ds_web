@@ -19,17 +19,16 @@ const SchoolDashboard = () => {
   const [showAcademicYear, setShowAcademicYear] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  console.log('Global Data:', globalData);
+  // console.log('Global Data:', globalData);
 
-  console.log('useParams output:', useParams());
-  console.log('School ID from useParams:', school_id);
-  console.log('Resolved School ID:', schoolId);
+  // console.log('useParams output:', useParams());
+  // console.log('School ID from useParams:', school_id);
+  // console.log('Resolved School ID:', schoolId);
 
 
   useEffect(() => {
     if (!globalData) return;
   
-    console.log('Global Data:', globalData); // Log only once when globalData is available
   
     const targetStudentCount = 150;
     const targetStaffCount = 20;
@@ -59,11 +58,14 @@ const SchoolDashboard = () => {
     }, interval);
   
     setLoading(false);
+    console.log('Global Data:', globalData); // Log only once when globalData is available
+
   
     return () => {
       clearInterval(studentInterval);
       clearInterval(staffInterval);
     };
+    
   }, [globalData]); // Ensure this only runs when globalData changes
 
   if (loading || !globalData) {
@@ -73,6 +75,8 @@ const SchoolDashboard = () => {
       </div>
     );
   }
+
+
 
   const toggleAcademicYear = () => {
     setShowAcademicYear(!showAcademicYear);

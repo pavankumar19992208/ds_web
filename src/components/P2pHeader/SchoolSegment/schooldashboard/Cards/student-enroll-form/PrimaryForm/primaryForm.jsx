@@ -238,6 +238,7 @@ function getStepContent(step, formData, setFormData, handleDocumentClick, expand
 }
 
 export default function StudentEnrollForm() {
+  const navigate = useNavigate(); // Initialize the navigate function
   const classes = useStyles();
   const { globalData } = useContext(GlobalStateContext);
   const [activeStep, setActiveStep] = useState(0);
@@ -302,7 +303,30 @@ export default function StudentEnrollForm() {
   const [loading, setLoading] = useState(false); // Add loading state
   const [UserId, setUserId] = useState('');
   const [Password, setPassword] = useState('');
+  const [duplicateUserDialogOpen, setDuplicateUserDialogOpen] = useState(false);
+  const [failureDialogOpen, setFailureDialogOpen] = useState(false);
 
+  // Modify handleSuccessClose to navigate
+  const handleSuccessClose = () => {
+    setLoading(true);
+    setSuccessDialogOpen(false);
+    setTimeout(() => {
+      const schoolId = globalData.data.school_id;
+      navigate(`/school_dashboard/${schoolId}`);
+    }, 1000);
+  };
+
+    // New handler for duplicate user case
+    const handleDuplicateUserClose = () => {
+      setDuplicateUserDialogOpen(false);
+      // Optionally reset form or take other action
+    };
+  
+    // New handler for failure case
+    const handleFailureClose = () => {
+      setFailureDialogOpen(false);
+      // Optionally allow user to try again
+    };
 
   const validatePersonalInfo = () => {
     const errors = {};
@@ -427,7 +451,7 @@ const validateAcademicInfo = (formData) => {
   if (!blood_group) {
     errors.blood_group = "Blood group is required";
   }
-  
+
   return errors;
 };
 
@@ -471,15 +495,7 @@ const handleNext = () => {
   //   }
   // };
         
-  const handleSuccessClose = () => {
-    const navigate = useNavigate(); // Initialize the navigate function
-    setLoading(true);
-    setSuccessDialogOpen(false);
-    setTimeout(() => {
-      const schoolId = globalData.data.school_id; // Retrieve schoolId from globalData
-      navigate(`/school_dashboard/${schoolId}`); // Navigate to the school_dashboard with schoolId
-    }, 1000);
-  };
+
 
   const handleEnrollMore = () => {
     setActiveStep(0);
@@ -653,29 +669,32 @@ const handleSubmit = async () => {
       const data = await response.json();
     
       if (!response.ok) {
-        if (response.status === 409) { // Assuming 409 is the status code for user already exists
-          console.warn('User already exists:', data.detail);
-          alert(data.detail); // Show the error message from the backend
-        } else {
-          throw new Error('Form submission failed');
+        if (response.status === 409) {
+          // Handle duplicate student case
+          setDuplicateUserDialogOpen(true);
+          setUserId(data.user_id || ''); 
+          setPassword(''); // No password for existing user
+          return;
         }
-      } else {
-        console.log('Form data sent to backend successfully:', data);
-        setUserId(data.user_id || ''); // Use the returned user_id if available
-        setPassword(data.password || ''); // Use the returned password if available
-        // Clear local storage after successful submission
-        localStorage.removeItem('uploadedDocuments');
-        // Open success dialog
-        setSuccessDialogOpen(true);
-      }
+        throw new Error(data.detail || 'Form submission failed');
+      } 
+      
+      // Success case
+      console.log('Form data sent to backend successfully:', data);
+      setUserId(data.user_id || '');
+      setPassword(data.password || '');
+      setSuccessDialogOpen(true);
+      localStorage.removeItem('uploadedDocuments');
+  
     } catch (error) {
       console.error('Error sending form data to backend:', error);
-      alert('An error occurred while submitting the form. Please try again.');
+      setFailureDialogOpen(true);
     } finally {
       setLoading(false);
     }
   }
-      const handleDocumentClick = (doc) => {
+     
+  const handleDocumentClick = (doc) => {
         setSelectedDoc(doc);
         setOpen(true);
       };
@@ -733,41 +752,74 @@ const handleSubmit = async () => {
                 <HashLoader color="#ffffff" size={50} />
               </div>
             )}
-            <Dialog open={successDialogOpen}
-              onClose={handleSuccessClose}
-              PaperProps={{
-                style: {
-                  width: UserId ? 'auto' : '400px',
-                  height: UserId ? 'auto' : '200px',
-                },
-              }}>
-              <DialogTitle>{UserId ? 'Success' : 'Failed'}</DialogTitle>
-              <DialogContent>
-                <DialogContentText>
-                  {UserId ? (
-                    <>
-                      The form has been submitted successfully.
-                      <br />
-                      User ID: <strong>{UserId}</strong>
-                      <br />
-                      Password: <strong>{Password}</strong>
-                    </>
-                  ) : (
-                    'User already exists.'
-                  )}
-                </DialogContentText>
-              </DialogContent>
-              <DialogActions>
-                <Button onClick={handleSuccessClose} color="primary">
-                  Close
-                </Button>
-                {UserId && (
-                  <Button onClick={handleEnrollMore} color="primary">
-                    Enroll More
-                  </Button>
-                )}
-              </DialogActions>
-            </Dialog>
+            <Dialog open={successDialogOpen} onClose={handleSuccessClose}>
+          <DialogTitle>Registration Successful</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              The form has been submitted successfully.
+              <br />
+              User ID: <strong>{UserId}</strong>
+              <br />
+              Password: <strong>{Password}</strong>
+              <br />
+              <br />
+              Please note these credentials for future reference.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleSuccessClose} color="primary" variant="contained">
+              Done
+            </Button>
+            <Button onClick={handleEnrollMore} color="secondary" variant="outlined">
+              Enroll Another Student
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        {/* Duplicate User Dialog */}
+        <Dialog open={duplicateUserDialogOpen} onClose={handleDuplicateUserClose}>
+          <DialogTitle>Student Already Exists</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              A student with this Aadhar number is already registered.
+              <br />
+              {/* Existing User ID: <strong>{UserId}</strong> */}
+              <br />
+              {/* Please contact the school administration if you need assistance. */}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleDuplicateUserClose} color="primary" variant="contained">
+              OK
+            </Button>
+            {/* <Button onClick={handleEnrollMore} color="secondary" variant="outlined">
+              Try with Different Details
+            </Button> */}
+          </DialogActions>
+        </Dialog>
+
+        {/* Failure Dialog */}
+        <Dialog open={failureDialogOpen} onClose={handleFailureClose}>
+          <DialogTitle>Registration Failed</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              There was an error submitting the form.
+              <br />
+              Please check your information and try again.
+              <br />
+              <br />
+              If the problem persists, contact the school administration.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleFailureClose} color="primary" variant="contained">
+              OK
+            </Button>
+            <Button onClick={() => { handleFailureClose(); handleSubmit(); }} color="secondary" variant="outlined">
+              Try Again
+            </Button>
+          </DialogActions>
+        </Dialog>
             </div>
           </div>
         </div>
