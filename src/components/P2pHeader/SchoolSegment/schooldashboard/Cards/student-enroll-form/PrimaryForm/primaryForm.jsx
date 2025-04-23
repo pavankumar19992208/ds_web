@@ -553,7 +553,7 @@ const handleNext = () => {
       'birth_certificate': 15,      // Birth Certificate
       'medical_history': 19,        // Medical Certificate
       'previous_school_tc': 17,     // Transfer Certificate
-      'passport_photo': 20,         // Passport Photo
+      'passport_photo': 11,         // Passport Photo
       'parent_id_proof': 21,        // Parent ID Proof
       'caste_certificate': 18       // Caste Certificate
     };
