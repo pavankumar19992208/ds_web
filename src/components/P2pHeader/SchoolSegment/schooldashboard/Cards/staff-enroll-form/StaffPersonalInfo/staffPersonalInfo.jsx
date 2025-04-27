@@ -23,13 +23,35 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 500 ,
     marginLeft: 16, // Add left margin to all fields
     marginRight: 16, // Add right margin to all fields
-    width: '96%', // Set the width of all fields to 92%
+    width: '92%', // Set the width of all fields to 92%
   },
 }));
 
 export default function StaffPersonalInfo({ formData, setFormData }) {
   const [errors, setErrors] = useState({});
   const classes = useStyles();
+  const [addressTypes, setAddressTypes] = useState(['School', 'Office', 'Residential', 'Other']);
+  const [address, setAddress] = useState(() => {
+    const initialAddress = formData?.staffPersonalInfo?.address || {
+      line1: '',
+      line2: '',
+      landmark: '',
+      locality: '',
+      city: '',
+      district: '',
+      state: '',
+      country: 'India',
+      pincode: '',
+      address_type: ''
+    };
+    // Clean up any undefined values
+    Object.keys(initialAddress).forEach(key => {
+      if (initialAddress[key] === undefined) {
+        initialAddress[key] = '';
+      }
+    });
+    return initialAddress;
+  });  
   const validateNumbers = (value) => /^[0-9]{0,10}$/.test(value);
   const validateField = (name, value) => {
     let error = '';
@@ -37,7 +59,7 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
       if (!/^[a-zA-Z\s]+$/.test(value)) {
         error = 'Only alphabets are allowed';
       }
-    } else if (['pinCode', 'contactNumber'].includes(name)) {
+    } else if (['pinCode', 'contact_number'].includes(name)) {
       if (!/^\d+$/.test(value)) {
         error = 'Only numbers are allowed';
       }
@@ -77,7 +99,7 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
       error = 'This field is required';
     }
 
-    if (name === 'contactNumber') {
+    if (name === 'contact_number') {
       isValid = validateNumbers(value) || value === '';
       if (value.length > 10) {
         isValid = false;
@@ -113,6 +135,65 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
       }));
     }
   };
+
+  const handleAddressChange = (event) => {
+    const { id, value } = event.target;
+    let isValid = true;
+    let errorMessage = '';
+  
+    if (['city', 'district', 'state', 'country', 'locality', 'landmark'].includes(id)) {
+      isValid = validateAlphabets(value) || value === '';
+      errorMessage = 'Invalid alphabetic input';
+    } else if (id === 'pincode') {
+      isValid = validateNumbers(value) || value === '';
+      errorMessage = 'Invalid numeric input';
+    }
+  
+    if (value === '' && ['line1', 'city', 'district', 'state', 'pincode', 'address_type'].includes(id)) {
+      isValid = false;
+      errorMessage = 'This field is required';
+    }
+
+useEffect(() => {
+  setFormData((prevData) => ({
+    ...prevData,
+    guardianInfo: {
+      ...prevData.guardianInfo,
+      address,
+    },
+  }));
+}, [address, setFormData]);
+  
+    // Update the address state properly
+    setAddress(prev => {
+      const updatedAddress = { ...prev, [id]: value };
+      // Remove any undefined properties that might have been accidentally added
+      Object.keys(updatedAddress).forEach(key => {
+        if (updatedAddress[key] === undefined) {
+          delete updatedAddress[key];
+        }
+      });
+      return updatedAddress;
+    });
+
+    setFormData(prev => ({
+      ...prev,
+      guardianInfo: {
+        ...prev.guardianInfo,
+        address: {
+          ...prev.guardianInfo.address,
+          [id]: value
+        }
+      }
+    }));
+  
+    if (isValid) {
+      setErrors(prevErrors => ({ ...prevErrors, [id]: '' }));
+    } else {
+      setErrors(prevErrors => ({ ...prevErrors, [id]: errorMessage }));
+    }
+  };
+
 
   const handleCheckboxChange = (e) => {
     const checked = e.target.checked;
@@ -166,19 +247,6 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
-            id="profilePic"
-            name="profilePic"
-            label="Profile Picture"
-            type="file"
-            fullWidth
-            className={`${classes.fieldMargin} heading`}
-            InputLabelProps={{ shrink: true }}
-            onChange={handleProfilePicUpload}
-          />
-          {formData.personalInfo.profilePicName && <Typography variant="body2" className={`${classes.fieldMargin} heading`}>{formData.personalInfo.profilePicName}</Typography>}
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
             required
             id="dob"
             name="dob"
@@ -227,16 +295,16 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
         <Grid item xs={12} sm={6}>
           <TextField
             required
-            id="contactNumber"
-            name="contactNumber"
+            id="contact_number"
+            name="contact_number"
             label="Contact Number"
             fullWidth
             className={`${classes.fieldMargin} heading`}
             autoComplete="tel"
-            value={formData.personalInfo.contactNumber}
+            value={formData.personalInfo.contact_number}
             onChange={(e) => handleInputChange(e, 'personalInfo')}
-            error={!!errors.contactNumber}
-            helperText={errors.contactNumber}
+            error={!!errors.contact_number}
+            helperText={errors.contact_number}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -255,202 +323,161 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
             helperText={errors.email}
           />
         </Grid>
+
         <Grid item xs={12}>
-          <Typography variant="h6" className='heading' style={{marginBottom:'0px', marginTop:'12px'}}>
-            Current Address :
-          </Typography>
+        <Typography variant="h6" gutterBottom className='heading' style={{marginBottom:'0px', marginTop:'12px'}} >
+        Address Information :
+        </Typography>
         </Grid>
+        {/* <Grid container spacing={3}> */}
         <Grid item xs={12}>
           <TextField
             required
-            id="currentAddressLine1"
-            name="line1"
+            id="line1"
             label="Address Line 1"
             fullWidth
-            className={`${classes.addressField} heading`}
-            value={formData.personalInfo.currentAddress.line1}
-            onChange={(e) => handleInputChange(e, 'address', 'currentAddress')}
-            error={!!errors['currentAddress.line1']}
-            helperText={errors['currentAddress.line1']}
+            autoComplete="address-line1"
+            value={address.line1}
+            onChange={handleAddressChange}
+            className={`${classes.addressField} heading`} 
+            error={!!errors.line1}
+            helperText={errors.line1}
           />
         </Grid>
         <Grid item xs={12}>
           <TextField
-            id="currentAddressLine2"
-            name="line2"
+            id="line2"
             label="Address Line 2"
             fullWidth
+            autoComplete="address-line2"
+            value={address.line2}
+            onChange={handleAddressChange}
             className={`${classes.addressField} heading`}
-            value={formData.personalInfo.currentAddress.line2}
-            onChange={(e) => handleInputChange(e, 'address', 'currentAddress')}
-            error={!!errors['currentAddress.line2']}
-            helperText={errors['currentAddress.line2']}
+            error={!!errors.line2}
+            helperText={errors.line2}
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={12} md={6}>
+          <TextField
+            id="landmark"
+            label="Landmark"
+            fullWidth
+            autoComplete="landmark"
+            value={address.landmark}
+            onChange={handleAddressChange}
+            className={`${classes.addressField} heading`} 
+            error={!!errors.landmark}
+            helperText={errors.landmark}
+          />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <TextField
+            id="locality"
+            label="Locality"
+            fullWidth
+            autoComplete="locality"
+            value={address.locality}
+            onChange={handleAddressChange}
+            className={`${classes.addressField} heading`} 
+            error={!!errors.locality}
+            helperText={errors.locality}
+          />
+        </Grid>
+        <Grid item xs={12} md={6}>
           <TextField
             required
-            id="currentCity"
-            name="city"
+            id="city"
             label="City"
             fullWidth
-            className={`${classes.fieldMargin} heading`}
-            value={formData.personalInfo.currentAddress.city}
-            onChange={(e) => handleInputChange(e, 'address', 'currentAddress')}
-            error={!!errors['currentAddress.city']}
-            helperText={errors['currentAddress.city']}
+            autoComplete="address-city"
+            value={address.city}
+            onChange={handleAddressChange}
+            className={`${classes.addressField} heading`} 
+            error={!!errors.city}
+            helperText={errors.city}
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={12} md={6}>
           <TextField
             required
-            id="currentDistrict"
-            name="district"
+            id="district"
             label="District"
             fullWidth
-            className={`${classes.fieldMargin} heading`}
-            value={formData.personalInfo.currentAddress.district}
-            onChange={(e) => handleInputChange(e, 'address', 'currentAddress')}
-            error={!!errors['currentAddress.district']}
-            helperText={errors['currentAddress.district']}
+            autoComplete="address-district"
+            value={address.district}
+            onChange={handleAddressChange}
+            className={`${classes.addressField} heading`} 
+            error={!!errors.district}
+            helperText={errors.district}
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={12} md={6}>
           <TextField
             required
-            id="currentState"
-            name="state"
+            id="state"
             label="State"
             fullWidth
-            className={`${classes.fieldMargin} heading`}
-            value={formData.personalInfo.currentAddress.state}
-            onChange={(e) => handleInputChange(e, 'address', 'currentAddress')}
-            error={!!errors['currentAddress.state']}
-            helperText={errors['currentAddress.state']}
+            autoComplete="address-state"
+            value={address.state}
+            onChange={handleAddressChange}
+            className={`${classes.addressField} heading`} 
+            error={!!errors.state}
+            helperText={errors.state}
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={12} md={6}>
           <TextField
             required
-            id="currentPinCode"
-            name="pinCode"
-            label="Pin Code"
+            id="pincode"
+            label="Pincode"
             fullWidth
-            className={`${classes.fieldMargin} heading`}
-            value={formData.personalInfo.currentAddress.pinCode}
-            onChange={(e) => handleInputChange(e, 'address', 'currentAddress')}
-            error={!!errors['currentAddress.pinCode']}
-            helperText={errors['currentAddress.pinCode']}
+            autoComplete="address-pincode"
+            value={address.pincode}
+            onChange={handleAddressChange}
+            className={`${classes.addressField} heading`} 
+            error={!!errors.pincode}
+            helperText={errors.pincode}
           />
         </Grid>
-        <Grid item xs={12}>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={formData.personalInfo.sameAsCurrent}
-                onChange={handleCheckboxChange}
-                color="primary"
-                className='heading'
-              />
-            }
-            label="Same as Current Address"
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <Typography variant="h6" className='heading' style={{ marginTop:'12px'}}>
-            Permanent Address :
-          </Typography>
-        </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={12} md={6}>
           <TextField
-            required
-            id="permanentAddressLine1"
-            name="line1"
-            label="Address Line 1"
+            id="country"
+            label="Country"
             fullWidth
-            className={`${classes.addressField} heading`}
-            value={formData.personalInfo.permanentAddress.line1}
-            onChange={(e) => handleInputChange(e, 'address', 'permanentAddress')}
-            disabled={formData.personalInfo.sameAsCurrent}
-            error={!!errors['permanentAddress.line1']}
-            helperText={errors['permanentAddress.line1']}
+            autoComplete="country"
+            value={address.country}
+            onChange={handleAddressChange}
+            className={`${classes.addressField} heading`} 
+            error={!!errors.country}
+            helperText={errors.country}
           />
         </Grid>
-        <Grid item xs={12}>
-          <TextField
-            id="permanentAddressLine2"
-            name="line2"
-            label="Address Line 2"
-            fullWidth
-            className={`${classes.addressField} heading`}
-            value={formData.personalInfo.permanentAddress.line2}
-            onChange={(e) => handleInputChange(e, 'address', 'permanentAddress')}
-            disabled={formData.personalInfo.sameAsCurrent}
-            error={!!errors['permanentAddress.line2']}
-            helperText={errors['permanentAddress.line2']}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            required
-            id="permanentCity"
-            name="city"
-            label="City"
-            fullWidth
-            className={`${classes.fieldMargin} heading`}
-            value={formData.personalInfo.permanentAddress.city}
-            onChange={(e) => handleInputChange(e, 'address', 'permanentAddress')}
-            disabled={formData.personalInfo.sameAsCurrent}
-            error={!!errors['permanentAddress.city']}
-            helperText={errors['permanentAddress.city']}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            required
-            id="permanentDistrict"
-            name="district"
-            label="District"
-            fullWidth
-            className={`${classes.fieldMargin} heading`}
-            value={formData.personalInfo.permanentAddress.district}
-            onChange={(e) => handleInputChange(e, 'address', 'permanentAddress')}
-            disabled={formData.personalInfo.sameAsCurrent}
-            error={!!errors['permanentAddress.district']}
-            helperText={errors['permanentAddress.district']}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            required
-            id="permanentState"
-            name="state"
-            label="State"
-            fullWidth
-            className={`${classes.fieldMargin} heading`}
-            value={formData.personalInfo.permanentAddress.state}
-            onChange={(e) => handleInputChange(e, 'address', 'permanentAddress')}
-            disabled={formData.personalInfo.sameAsCurrent}
-            error={!!errors['permanentAddress.state']}
-            helperText={errors['permanentAddress.state']}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            required
-            id="permanentPinCode"
-            name="pinCode"
-            label="Pin Code"
-            fullWidth
-            className={`${classes.fieldMargin} heading`}
-            value={formData.personalInfo.permanentAddress.pinCode}
-            onChange={(e) => handleInputChange(e, 'address', 'permanentAddress')}
-            disabled={formData.personalInfo.sameAsCurrent}
-            error={!!errors['permanentAddress.pinCode']}
-            helperText={errors['permanentAddress.pinCode']}
-          />
-        </Grid>
+        <Grid item xs={12} md={6}>
+  <TextField
+    select
+    required
+    id="address_type"
+    name="address_type"
+    label="Address Type"
+    fullWidth
+    value={address.address_type || ''}
+    onChange={(e) => {
+      setAddress(prev => ({ ...prev, address_type: e.target.value }));
+    }}
+    className={`${classes.addressField} heading`} 
+    error={!!errors.address_type}
+    helperText={errors.address_type}
+  >
+    {addressTypes.map((type) => (
+      <MenuItem key={type} value={type}>
+        {type}
+      </MenuItem>
+    ))}
+  </TextField>
+</Grid>
       </Grid>
+      {/* </Grid> */}
+
     </React.Fragment>
   );
 }

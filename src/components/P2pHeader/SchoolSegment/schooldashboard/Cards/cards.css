@@ -1,316 +1,298 @@
+:root {
+  --primary-color: #0E5E9D;
+  --primary-dark: #003353;
+  --error-color: #f44336;
+  --error-dark: #d32f2f;
+  --white: #fff;
+  --border-light: hsla(220, 20%, 80%, 0.4);
+  --shadow: 3px 3px 12px rgba(0, 0, 0, 0.1);
+  --border-radius-sm: 12px;
+  --border-radius-md: 16px;
+  --border-radius-lg: 12px;
+  --border-radius-xl: 15px;
+  --border-radius-xxl: 16px;
+  --transition: all 0.3s ease-in-out;
+}
+
 .cards-container {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr); /* 3 columns */
-    grid-template-rows: repeat(3, auto); /* 2 rows */
-    justify-content: center; /* Distributes the cards evenly */
-    align-items: center;
-  }
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(3, auto);
+  gap: 32px;
+  justify-content: center;
+  align-items: center;
+  padding: 8px;
+}
 
-.card {
-    background: #fff;
-    border: 1px solid hsla(220, 20%, 80%, 0.4);
-    border-radius: 12px; 
-    padding: 16px 0px;
-    /* margin: 12px; */
-    /* box-shadow: 6px 6px 16px rgba(0, 0, 0, 0.1); */
-    /* width: 180px; */
-    height: 110px; 
-    text-align: center;
-    position: relative;
-    box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.1); /* Add box shadow to the right side */
+.sd-card {
+  background: var(--white);
+  border: 1px solid var(--border-light);
+  border-radius: var(--border-radius-lg); 
+  padding: 16px 0;
+  height: 110px; 
+  position: relative;
+  transition: var(--transition);
+}
 
+.sd-card:hover {
+  box-shadow: var(--shadow);
+
+  transform: translateY(-2px);
+}
+
+.card-title {
+  color: var(--white);
+  padding: 5px 10px;
+  border-radius: var(--border-radius-md);
+  display: inline-block;
+  position: relative;
+  top: -30px;
+  left: 14px;
+  font-weight: 600;
+  font-size: 0.8rem;
+  z-index: 1;
+  transition: all 0.3s ease; /* Add transition for smooth effect */
+  transform-origin: left center; /* Set transform origin to left */
+}
+
+.sd-card:hover .card-title {
+  transform: scaleX(1.05); /* Increase width by 10% */
+}
+
+.count-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 10px 15px;
+  padding: 0 10px;
+}
+
+.count-icon {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  /* font-size: 20px; */
+}
+
+.count-container svg {
+  color: var(--primary-dark);
+  font-size: 20px;
+}
+
+.count-row {
+  padding: 0 40px;
+  margin: -10px 0;
+}
+
+.count-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.count-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.count-number {
+  font-family: "Urbanist", sans-serif;
+  font-size: 26px;
+  font-weight: bold;
+}
+
+.count-right {
+  /* font-family: "Ramabhadra", sans-serif; */
+  font-size: 14px;
+  color: var(--primary-dark);
+  opacity: 0.8;
+}
+
+.count-content svg {
+  color: var(--primary-dark);
+  font-size: 20px;
+}
+
+.sd-card .count {
+  font-family: "Urbanist", sans-serif;
+  font-size: 18px;
+  font-weight: bold;
+  transition: opacity 0.5s ease-in-out;
+  margin: 0;
+}
+
+.card-description {
+  font-size: 13px;
+  color: #555;
+  margin: 0;
+  text-align: center;
+}
+.sd-card-icon{
+  border: 3px solid #003353;
+  background-color: #fff;
+  border-radius: 50%;
+  padding: 6px;
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);}
+
+.button-group {
+  display: flex;
+  justify-content: center;
+  width: 80%;
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  gap: 10px;
+}
+
+.button-group button {
+  padding: 4px 20px;
+  border-radius: var(--border-radius-sm); 
+  cursor: pointer;
+  font-family: urbanist, sans-serif;
+  font-weight: 600;
+  transition: var(--transition);
+}
+
+#enroll-btn {
+  background: none;
+  border: 1px solid var(--primary-color);
+  color: var(--primary-color);
+}
+
+#enroll-btn:hover {
+  background-color: var(--primary-color);
+  color: var(--white);
+}
+
+.button-group button:not(#enroll-btn) {
+  background: var(--primary-color);
+  color: var(--white);
+  border: none;
+}
+
+.button-group button:not(#enroll-btn):hover {
+  background: none;
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+}
+
+/* Dialog styles */
+.dialog-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+.enroll-box {
+  padding: 12px !important;
+}
+
+.dialog-button-group {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  margin-top: 20px;
+  gap: 16px;
+}
+
+.dialog-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 16px !important;
+  border-radius: var(--border-radius-xxl) !important;
+  font-weight: 600 !important;
+  border: 1px solid var(--primary-color) !important;
+  color: var(--primary-dark) !important;
+  width: 45%;
+}
+
+.dialog-button .MuiButton-startIcon {
+  margin-bottom: 5px;
+}
+
+.dialog-button .MuiButton-startIcon svg {
+  font-size: 5rem;
+  color: var(--primary-dark);
+}
+
+.close-button {
+  background-color: var(--error-color) !important;
+  color: var(--white) !important;
+  border-radius: var(--border-radius-md) !important;
+  padding: 8px 16px !important;
+  margin-top: 8px !important;
+}
+
+.close-button:hover {
+  background-color: var(--error-dark) !important;
+}
+
+/* Loader styles */
+.loader-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Responsive styles */
+@media (max-width: 767.98px) {
+  .cards-container {
+    grid-template-columns: 1fr;
   }
   
-  .card h2 {
-    margin: 0 0 2px;
-    font-size: 14px;
-    border-bottom: 1px solid hsla(220, 20%, 80%, 0.4);
-    padding-bottom: 2px;
-    font-family: "Ramabhadra", sans-serif;
-    font-weight: 400;
-    font-style: normal;
+  .sd-card {
+    width: 100% !important;
+    max-width: 300px;
+    margin: 0 auto;
   }
+}
 
-  .card .count {
-    font-family: "Urbanist", sans-serif;
-    font-optical-sizing: auto;
-    font-style: normal;
-    font-size: 18px;
-    font-weight: bold;
-    margin: 10px 0;
-    transition: opacity 0.5s ease-in-out;
+@media (min-width: 992px) and (max-width: 1199.98px) {
+  .sd-card {
+    /* width: 260px !important; */
+    height: 96px;
+    padding: 12px 0;
   }
   
   .button-group {
-    display: flex;
-    justify-content: center;
-    width: 80%;
-    position: absolute; /* Position the button group absolutely */
-    bottom: 20px; /* Adjust the bottom position as needed */
-    left: 50%;
-    transform: translateX(-50%);
-    gap: 10px;
+    bottom: 14px;
   }
   
-  #enroll-btn{
-    background: none;
-    border: 1px solid #0E5E9D;
-    color: #0E5E9D ;
-    font-family: "Ramabhadra", sans-serif;
-    font-weight: 400;
-    font-style: normal;
-  
-  }
-  #enroll-btn:hover{
-    background-color: #0E5E9D;
-    color: #fff;
-  }
-  .card button {
-    padding: 2px 20px;
-    border: none;
-    background: #0E5E9D;
-    color: #fff;
-    border-radius: 4px; 
-    cursor: pointer;
-    font-family: "Ramabhadra", sans-serif;
-    font-weight: 400;
-    font-style: normal;
-  }
-  
-  .card button:hover {
-    background: none;
-    color: #0E5E9D;
-    border:1px solid #0E5E9D ;
-  }
-  
-  /* Existing styles... */
-  
-  .dialogContainer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-  }
-  .enroll-box{
-    padding: 12px !important;
-
-    
-  }
-    
-  .dialogButtonGroup {
-    display: flex;
-    justify-content: space-around;
-    width: 100%;
-    margin-top: 20px;
-  }
-
-  .addSingleButton, .addBulkButton {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 10px;
-}
-
-.addSingleButton .MuiButton-startIcon, .addBulkButton .MuiButton-startIcon {
-    margin-bottom: 5px; /* Adjust the spacing between the icon and text */
-}
-
-.addSingleButton .MuiButton-startIcon svg, .addBulkButton .MuiButton-startIcon svg {
-  font-size: 5rem; /* Increase the size of the icons */
-  color: #003353;
-}
-
-  .addSingleButton {
-    width: 45%;
-    border: 1px solid #0E5E9D !important;
-    border-radius: 16px !important;
-    padding: 16px !important;
-    background-color: none !important;
-    color: #003353 !important;
-    font-weight: 600 !important;
-  }
-  .addBulkButton {
-    width: 45%;
-    border: 1px solid #0E5E9D !important;
-    border-radius: 16px !important;
-    padding: 16px !important;
-    background-color: none !important;
-    color: #003353 !important;
-    font-weight: 600 !important;
-  }
-  
-  .dialogButton {
-    width: 45%;
-  }
-
-    .closeButton {
-    background-color: #f44336 !important; /* Red background */
-    color: white !important; /* White text */
-    border-radius: 8px !important; /* Rounded corners */
-    padding: 8px 16px !important; /* Padding */
-    margin-top: 8px !important; /* Margin at the top */
-  }
-  
-  .closeButton:hover {
-    background-color: #d32f2f; /* Darker red on hover */
-  }
-  
-
-    .loaderContainer {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-  }
-
-  /* @media (max-width: 1024px) {
-    .card {
-      padding: 12px;
-    }
-    .card h2 {
-      font-size: 16px;
-    }
-    .card .count {
-      font-size: 18px;
-  
-    }
-  
-    .card button {
-      padding: 2px 16px;
-    }
-    
-    
-  } */
-
-    /* Extra small devices (phones, less than 576px) */
-  @media (max-width: 575.98px) {
-    /* Your styles for extra small devices */
-  }
-  
-  /* Small devices (tablets, 576px and up) */
-  @media (min-width: 576px) and (max-width: 767.98px) {
-    /* Your styles for small devices */
-  }
-  
-  /* Medium devices (landscape tablets, 768px and up) */
-  @media (min-width: 768px) and (max-width: 991.98px) {
-    /* Your styles for medium devices */
-  }
-  
-  /* Large devices (laptops/desktops, 992px and up) */
-  @media (min-width: 992px) and (max-width: 1199.98px) {
-    /* Your styles for large devices */
-    .card{
-      width: 220px !important;
-      height: 96px;
-      padding: 12px 0px;
-    }
-    .button-group {
-      width: 80%;
-      gap: 8px;
-      bottom: 14px;
-    } 
-    .card .count{
-      font-size: 16px;
-    }
-    .card button{
-      padding: 2px 16px;
-      font-size: 12px;
-    }   
-  }
-  
-  /* Extra large devices (large laptops and desktops, 1200px and up) */
-  @media (min-width: 1200px) {
-    /* Your styles for extra large devices */
-  }
-  
-  /* Large screens (desktops) */
-/* @media (max-width: 1440px) {
-  .cards-container {
-    grid-template-columns: repeat(3, 1fr); 
-    grid-template-rows: repeat(2, auto); 
-  }
-} */
-
-/* Medium screens (laptops) */
-/* @media (max-width: 1024px) {
-  .cards-container {
-    grid-template-columns: repeat(2, 1fr); 
-    grid-template-rows: repeat(3, auto); 
-  }
-
-  .card {
-    padding: 12px;
-  }
-
-  .card h2 {
+  .sd-card .count {
     font-size: 16px;
   }
-
-  .card .count {
-    font-size: 18px;
-  }
-
-  .card button {
+  
+  .sd-card button {
     padding: 2px 16px;
-  }
-} */
-
-/* Small screens (tablets) */
-/* @media (max-width: 768px) {
-  .cards-container {
-    grid-template-columns: 1fr; 
-    grid-template-rows: repeat(6, auto); 
+    font-size: 12px;
   }
 
-  .card {
-    padding: 8px;
-    height: auto;
+  .count-row{
+    padding: 0 20px;
+    margin: -10px 0;
   }
-
-  .card h2 {
-    font-size: 18px;
+  .card-title {
+    font-size: 0.7rem;
+    top: -25px;
   }
-
-  .card .count {
-    font-size: 20px;
+  .count-right {
+    font-size: 12px;
   }
-
-  .card button {
-    padding: 4px 12px;
+  .card-description {
+    font-size: 12px;
+    padding: 0 10px;
   }
-} */
-
-/* Extra small screens (mobile) */
-/* @media (max-width: 480px) {
-  .cards-container {
-    grid-template-columns: 1fr; 
-    grid-template-rows: repeat(6, auto); 
-  }
-
-  .card {
-    padding: 4px;
-    height: auto;
-  }
-
-  .card h2 {
-    font-size: 16px;
-  }
-
-  .card .count {
-    font-size: 18px;
-  }
-
-  .card button {
-    padding: 2px 8px;
-  }
-} */
-  
+}

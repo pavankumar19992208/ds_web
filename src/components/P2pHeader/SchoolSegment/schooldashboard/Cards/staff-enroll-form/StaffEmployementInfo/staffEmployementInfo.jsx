@@ -21,9 +21,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const employmentTypes = [
-  { value: 'Full-time', label: 'Full-time' },
-  { value: 'Part-time', label: 'Part-time' },
-  { value: 'Contractual', label: 'Contractual' },
+  { value: 'Permanent', label: 'Permanent' },
+  { value: 'Temporary', label: 'Temporary' },
+  { value: 'Contract', label: 'Contract' },
   { value: 'Other', label: 'Other' },
 ];
 

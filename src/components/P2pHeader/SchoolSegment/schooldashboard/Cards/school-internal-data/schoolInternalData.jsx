@@ -316,6 +316,7 @@ const SchoolInternalData = () => {
         // Include other_curriculum only if curriculum is "other"
         ...(curriculum === 'other' && { other_curriculum: otherCurriculum }),
         ...(assessmentCriteria === 'other' && { other_assessment_criteria: otherAssessmentCriteria }),
+        subjects: selectedSubjects.map(subject => subject.id), // Add selected subject IDs
       };
   
       console.log("Final payload:", payload);
@@ -743,7 +744,7 @@ const SchoolInternalData = () => {
               />
             </Grid> */}
   
-            <Grid item xs={12} sm={12}>
+                        <Grid item xs={12} sm={12}>
               <Typography variant="h6" className={`${classes.extraCircularProgramsTitle} urbanist-font`}>
                 Subjects Taught:
               </Typography>
@@ -761,7 +762,7 @@ const SchoolInternalData = () => {
                       {selected.map((subject) => (
                         <Chip
                           key={subject.id}
-                          label={`${subject.name} (${subject.code})`}
+                          label={`${subject.name || 'Unknown'} (${subject.type || 'N/A'})`}
                           onDelete={handleDeleteSubject(subject)}
                           onMouseDown={(event) => event.stopPropagation()}
                         />
@@ -775,13 +776,13 @@ const SchoolInternalData = () => {
                       value={subject}
                       style={{ display: 'flex', justifyContent: 'space-between' }}
                     >
-                      <span>{subject.name}</span>
+                      <span>{subject.name || 'Unknown'}</span>
                       <span style={{ 
                         fontSize: '0.8rem', 
                         color: '#666',
                         marginLeft: '8px'
                       }}>
-                        {subject.code} | {subject.type}
+                        {subject.code || 'N/A'} | {subject.type || 'N/A'}
                       </span>
                     </MenuItem>
                   ))}

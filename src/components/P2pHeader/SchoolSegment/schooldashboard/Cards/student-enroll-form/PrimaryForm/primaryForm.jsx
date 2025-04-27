@@ -549,13 +549,13 @@ const handleNext = () => {
   const getDocumentTypeId = (documentType) => {
     // This should exactly match your document_type table in the database
     const typeMap = {
-      'aadhar': 16,                // Aadhar Card
-      'birth_certificate': 15,      // Birth Certificate
-      'medical_history': 19,        // Medical Certificate
-      'previous_school_tc': 17,     // Transfer Certificate
+      'aadhar': 7,                // Aadhar Card
+      'birth_certificate': 6,      // Birth Certificate
+      'medical_history': 10,        // Medical Certificate
+      'previous_school_tc': 8,     // Transfer Certificate
       'passport_photo': 11,         // Passport Photo
-      'parent_id_proof': 21,        // Parent ID Proof
-      'caste_certificate': 18       // Caste Certificate
+      'parent_id_proof': 12,        // Parent ID Proof
+      'caste_certificate': 9       // Caste Certificate
     };
     
     const typeId = typeMap[documentType];

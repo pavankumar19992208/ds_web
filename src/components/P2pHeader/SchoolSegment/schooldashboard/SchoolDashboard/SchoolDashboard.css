@@ -1,4 +1,4 @@
-.school-dashboard {
+/* .school-dashboard {
   overflow-x: hidden;
   overflow-y: hidden; 
   display: flex; 
@@ -88,5 +88,168 @@
     width: 180px;
     padding: 10px 12px;
     font-size: 14px;
+  }
+} */
+:root {
+  --primary-bg: #003353;
+  --secondary-bg: linear-gradient(to right, #ffffff, #edf3f7);
+  --sidebar-width: 70px;
+  --navbar-height: 50px;
+  --border-radius-lg: 15px;
+  --border-radius-md: 12px;
+  --shadow: 3px 3px 12px rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s ease-in-out;
+}
+
+.school-dashboard {
+  overflow: hidden;
+  display: flex; 
+  background-color: var(--primary-bg);
+  height: 100vh;
+} 
+
+.sd-homepage {
+  background: var(--secondary-bg) !important;
+  overflow: hidden;
+  margin: var(--navbar-height) 0;
+  border-top-left-radius: var(--border-radius-lg);
+  height: calc(100vh - var(--navbar-height));
+  transition: margin-left var(--transition);
+  flex-grow: 1;
+  margin-left: var(--sidebar-width);
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  display: flex;
+  width: 92%;
+  padding: 20px 0;
+  gap: 30px;
+  height: calc(100% - 60px);
+  margin-top: 1%;
+  margin-left: 4%;
+}
+
+.sd-left-column {
+  width: 60%;
+  display: flex;
+  flex-direction: column;
+  padding: 0 4%;
+}
+
+.sd-right-column {
+  width: 40%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.sd-carousel-container {
+  flex: 1;
+  background-color: var(--primary-bg);
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+  min-height: 0;
+  width: 90%;
+}
+
+.sd-events-container {
+  flex: 1;
+  min-height: 0;
+  width: 87%;
+}
+
+.school-id-box {
+  position: fixed;
+  bottom: 20px;
+  left: 10px;
+  background-color: #ffffff;
+  padding: 8px 6px;
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+  font-size: 12px;
+  color: #333;
+  width: 200px;
+  text-align: center;
+  z-index: 1000;
+  font-family: 'Roboto Mono', monospace;
+}
+
+.academic-year-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 20px;
+  width: 100vw;
+  z-index: 1003;
+}
+
+.loader-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Specific styles for 1024px screens */
+@media (min-width: 992px) and (max-width: 1199.98px) {
+  .main-content {
+    width: 94%;
+    margin-left: 5%;
+    gap: 50px;
+  }
+  .sd-left-column {
+    padding: 0% 1%;
+    width: 65%;
+  }
+  .sd-right-column {
+    width: 35%;
+  }
+  
+  .sd-carousel-container {
+    width: 80%;
+    height: 45vh;
+  }
+  
+  .sd-events-container {
+    width: 76%;
+    height: 45vh;
+  }
+  
+  .school-id-box {
+    bottom: 14px;
+    left: 14px;
+    width: 180px;
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+}
+
+/* Tablet and smaller screens */
+@media (max-width: 991.98px) {
+  .main-content {
+    flex-direction: column;
+    height: auto;
+    width: 90%;
+    margin-left: 5%;
+  }
+  
+  .sd-left-column, 
+  .sd-right-column {
+    width: 100%;
+  }
+  
+  .sd-carousel-container,
+  .sd-events-container {
+    width: 100%;
+    height: 300px;
   }
 }

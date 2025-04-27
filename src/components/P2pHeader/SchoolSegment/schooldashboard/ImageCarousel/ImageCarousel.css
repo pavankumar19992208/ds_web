@@ -12,6 +12,7 @@
 .carousel-image {
  height: auto;
   object-fit: cover;
-  margin: 0 auto ;
+  margin: 0 ;
   border-radius: 20px;
+
 }

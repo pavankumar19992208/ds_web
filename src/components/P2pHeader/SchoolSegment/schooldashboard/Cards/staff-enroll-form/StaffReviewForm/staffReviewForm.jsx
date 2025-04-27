@@ -4,7 +4,7 @@ import { Grid, Typography, Table, TableBody, TableCell, TableRow, IconButton } f
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 
-const personalInfoKeys = ['fullName', 'dob', 'gender', 'contactNumber', 'email'];
+const personalInfoKeys = ['fullName', 'dob', 'gender', 'contact_number', 'email'];
 const professionalInfoKeys = ['position', 'experience', 'qualification', 'certifications'];
 const employmentInfoKeys = ['joiningDate', 'employmentType', 'previousSchool'];
 const emergencyContactInfoKeys = ['emergencyContactName', 'emergencyContactNumber', 'relationshipToTeacher'];
@@ -77,7 +77,7 @@ function ReviewForm({ formData, expandedDoc, setExpandedDoc, classes }) {
             </TableBody>
           </Table>
         </Grid>
-        <Grid item xs={12} sm={6}>
+        {/* <Grid item xs={12} sm={6}>
           <Typography variant="h6" className={classes.reviewSectionTitle}>Subject Specialization</Typography>
           <Table>
             <TableBody>
@@ -89,7 +89,7 @@ function ReviewForm({ formData, expandedDoc, setExpandedDoc, classes }) {
               ))}
             </TableBody>
           </Table>
-        </Grid>
+        </Grid> */}
         <Grid item xs={12} sm={6}>
           <Typography variant="h6" className={classes.reviewSectionTitle}>Employment Info</Typography>
           <Table>

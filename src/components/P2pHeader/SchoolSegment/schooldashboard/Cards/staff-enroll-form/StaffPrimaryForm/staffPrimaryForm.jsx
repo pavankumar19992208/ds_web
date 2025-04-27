@@ -250,8 +250,20 @@ export default function StaffPrimaryForm() {
       profilepic: "",
       dob: "",
       gender: "",
-      contactNumber: "",
+      contact_number: "",
       email: "",
+      address: {
+        line1: '',
+        line2: '',
+        landmark: '',
+        locality: '',
+        city: '',
+        district: '',
+        state: '',
+        country: 'India',
+        pincode: '',
+        address_type: ''
+      },
       currentAddress: {
         line1: "",
         line2: "",
@@ -306,7 +318,7 @@ export default function StaffPrimaryForm() {
 
   const validatePersonalInfo = () => {
     const { personalInfo } = formData;
-    const requiredFields = ['fullName', 'dob', 'gender', 'email', 'contactNumber'];
+    const requiredFields = ['fullName', 'dob', 'gender', 'email', 'contact_number'];
     const requiredAddressFields = ['line1', 'city', 'district', 'state', 'pinCode'];
     let isValid = true;
     let newErrors = {};
@@ -416,26 +428,26 @@ export default function StaffPrimaryForm() {
   };
 
   const handleNext = () => {
-    if (activeStep === 0 && !validatePersonalInfo()) {
-      alert("Please fill out all required fields in Personal Details.");
-      return;
-    }
-    if (activeStep === 1 && !validateProfessionalInfo()) {
-      alert("Please fill out all required fields in Professional Details. Ensure each grade has a value and at least one subject.");
-      return;
-    }
-    if (activeStep === 2 && !validateEmploymentInfo()) {
-      alert("Please fill out all required fields in Employment Details.");
-      return;
-    }
-    if (activeStep === 3 && !validateEmergencyContactInfo()) {
-      alert("Please fill out all required fields in Emergency Contact Info.");
-      return;
-    }
-    if (activeStep === 4 && !validateDocumentUpload()) {
-      alert("Please upload all required documents.");
-      return;
-    }
+    // if (activeStep === 0 && !validatePersonalInfo()) {
+    //   alert("Please fill out all required fields in Personal Details.");
+    //   return;
+    // }
+    // if (activeStep === 1 && !validateProfessionalInfo()) {
+    //   alert("Please fill out all required fields in Professional Details. Ensure each grade has a value and at least one subject.");
+    //   return;
+    // }
+    // if (activeStep === 2 && !validateEmploymentInfo()) {
+    //   alert("Please fill out all required fields in Employment Details.");
+    //   return;
+    // }
+    // if (activeStep === 3 && !validateEmergencyContactInfo()) {
+    //   alert("Please fill out all required fields in Emergency Contact Info.");
+    //   return;
+    // }
+    // if (activeStep === 4 && !validateDocumentUpload()) {
+    //   alert("Please upload all required documents.");
+    //   return;
+    // }
     setActiveStep(activeStep + 1);
   };
 
@@ -484,7 +496,7 @@ export default function StaffPrimaryForm() {
         profilepic: "",
         dob: "",
         gender: "",
-        contactNumber: "",
+        contact_number: "",
         email: "",
         currentAddress: {
           line1: "",
@@ -552,37 +564,51 @@ export default function StaffPrimaryForm() {
     };
     
         const payload = {
-      SchoolId: globalData.data.SCHOOL_ID,
-      fullName: formData.personalInfo.fullName,
-      profilepic: formData.personalInfo.profilePic,
-      dob: formData.personalInfo.dob,
-      gender: formData.personalInfo.gender === 'other' ? formData.personalInfo.customGender : formData.personalInfo.gender,
-      contactNumber: formData.personalInfo.contactNumber,
-      email: formData.personalInfo.email,
-      currentAddress: formData.personalInfo.currentAddress,
-      permanentAddress: formData.personalInfo.permanentAddress,
-      position: formData.professionalInfo.position.filter(pos => pos !== ''),
-      subjectSpecialization: formData.professionalInfo.grades.reduce((acc, grade) => {
-        const gradeText = gradeMapping[grade.value] || grade.value ;
-        acc[gradeText] = grade.subjects || [];
-        return acc;
-      }, {}),
-      experience: formData.professionalInfo.experience,
-      qualification: formData.professionalInfo.qualification === 'Other' ? formData.professionalInfo.otherQualification : formData.professionalInfo.qualification,      certifications: formData.professionalInfo.certifications,
-      joiningDate: formData.employmentInfo.joiningDate,
-      employmentType: formData.employmentInfo.employmentType === 'Other' ? formData.employmentInfo.otherEmploymentType : formData.employmentInfo.employmentType,
-      previousSchool: formData.employmentInfo.previousSchool,
-      emergencyContactName: formData.emergencyContactInfo.emergencyContactName,
-      emergencyContactNumber: formData.emergencyContactInfo.emergencyContactNumber,
-      relationshipToTeacher: formData.emergencyContactInfo.relationshipToTeacher,
-      languagesKnown: formData.additionalInfo.languagesKnown,
-      interests: formData.additionalInfo.interests,
-      availabilityOfExtraCirricularActivities: formData.additionalInfo.availabilityOfExtraCirricularActivities,
-      documents: formData.documents.reduce((acc, doc) => {
-        acc[doc.type] = doc.url;
-        return acc;
-      }, {}),
-    };
+          school_id: globalData.data.school_id,
+          name: formData.personalInfo.fullName,
+          // profile_pic: formData.personalInfo.profilePic,
+          teacher_dob: formData.personalInfo.dob,
+          gender: formData.personalInfo.gender === 'other' ? formData.personalInfo.customGender : formData.personalInfo.gender,
+          contact_number: formData.personalInfo.contact_number,
+          email: formData.personalInfo.email,
+          // current_address: formData.personalInfo.currentAddress,
+          // permanent_address: formData.personalInfo.permanentAddress,
+          // position: formData.professionalInfo.position.filter(pos => pos !== ''),
+          // subject_specialization: formData.professionalInfo.grades.reduce((acc, grade) => {
+          //   const gradeText = gradeMapping[grade.value] || grade.value;
+          //   acc[gradeText] = grade.subjects || [];
+          //   return acc;
+          // }, {}),
+          // experience: formData.professionalInfo.experience,
+          // qualification: formData.professionalInfo.qualification === 'Other' ? formData.professionalInfo.otherQualification : formData.professionalInfo.qualification,
+          // certifications: formData.professionalInfo.certifications,
+          joining_date: formData.employmentInfo.joiningDate,
+          employment_type: formData.employmentInfo.employmentType === 'Other' 
+          ? formData.employmentInfo.otherEmploymentType 
+          : formData.employmentInfo.employmentType, 
+          // address: {
+          //   line1: formData.personalInfo.address.line1,
+          //   line2: formData.personalInfo.address.line2 || '',
+          //   landmark: formData.personalInfo.address.landmark || '',
+          //   locality: formData.personalInfo.address.locality || '',
+          //   city: formData.personalInfo.address.city,
+          //   district: formData.personalInfo.address.district,
+          //   state: formData.personalInfo.address.state,
+          //   country: formData.personalInfo.address.country || 'India',
+          //   pincode: formData.personalInfo.address.pincode,
+          //   address_type: formData.personalInfo.address.address_type
+          // },          // previous_school: formData.employmentInfo.previousSchool,
+          // emergency_contact_name: formData.emergencyContactInfo.emergencyContactName,
+          // emergency_contact_number: formData.emergencyContactInfo.emergencyContactNumber,
+          // relationship_to_teacher: formData.emergencyContactInfo.relationshipToTeacher,
+          // languages_known: formData.additionalInfo.languagesKnown,
+          // interests: formData.additionalInfo.interests,
+          // availability_of_extra_cirricular_activities: formData.additionalInfo.availabilityOfExtraCirricularActivities,
+          // documents: formData.documents.reduce((acc, doc) => {
+          //   acc[doc.type] = doc.url;
+          //   return acc;
+          // }, {}),
+        };
 
     console.log('Payload to be sent:', payload);
     try {
@@ -629,8 +655,8 @@ export default function StaffPrimaryForm() {
     <div className="enroll-form-container">
 
       <Navbar
-        schoolName={globalData.data.SCHOOL_NAME}
-        schoolLogo={globalData.data.SCHOOL_LOGO}
+        schoolName={globalData.data.school_name}
+        schoolLogo={globalData.data.school_logo}
       />
       <Sidebar
           visibleItems={["home", "updateEnrollment"]}
@@ -644,10 +670,10 @@ export default function StaffPrimaryForm() {
           </Typography>
           <Grid container spacing={3}>
             <Grid item xs={12} sm={6} style={{ marginTop: '20px', marginBottom: '12px' }}>
-              <Typography variant="h6" className="school-name" style={{ fontSize: '1rem' }}>{globalData.data.SCHOOL_NAME}</Typography>
+              <Typography variant="h6" className="school-name" style={{ fontSize: '1rem' }}>{globalData.data.school_name}</Typography>
             </Grid>
             <Grid item xs={12} sm={6} style={{ textAlign: 'right', marginTop: '16px' }}>
-              <Typography variant="h6" className="school-id" style={{ fontSize: '1rem' }}>School ID : {globalData.data.SCHOOL_ID}</Typography>
+              <Typography variant="h6" className="school-id" style={{ fontSize: '1rem' }}>School ID : {globalData.data.school_id}</Typography>
             </Grid>
           </Grid>
           <Stack sx={{ width: '100%' }} spacing={4} className="stepperContainer">
