@@ -41,7 +41,7 @@
 }
 
 .card-title {
-  color: var(--white);
+  color: var(--primary-dark);
   padding: 5px 10px;
   border-radius: var(--border-radius-md);
   display: inline-block;
@@ -53,10 +53,15 @@
   z-index: 1;
   transition: all 0.3s ease; /* Add transition for smooth effect */
   transform-origin: left center; /* Set transform origin to left */
+  border: 1px solid var(--border-light);
+  background: var(--white);
+
 }
 
 .sd-card:hover .card-title {
   transform: scaleX(1.05); /* Increase width by 10% */
+  box-shadow: var(--shadow);
+
 }
 
 .count-container {
@@ -131,7 +136,7 @@
 .sd-card-icon{
   border: 3px solid #003353;
   background-color: #fff;
-  border-radius: 50%;
+  border-radius: 30%;
   padding: 6px;
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);}
 
@@ -187,15 +192,15 @@
 }
 
 .enroll-box {
-  padding: 12px !important;
+  padding: 0 20px 24px !important;
 }
 
 .dialog-button-group {
   display: flex;
   justify-content: space-around;
   width: 100%;
-  margin-top: 20px;
-  gap: 16px;
+  /* margin-top: 20px; */
+      gap: 16px;
 }
 
 .dialog-button {
@@ -204,20 +209,21 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 16px !important;
-  border-radius: var(--border-radius-xxl) !important;
+  padding: 32px !important;
+  border-radius: 200px !important;
+  font-size: 0.8rem !important;
   font-weight: 600 !important;
   border: 1px solid var(--primary-color) !important;
   color: var(--primary-dark) !important;
-  width: 45%;
+  /* width: 46%; */
 }
 
 .dialog-button .MuiButton-startIcon {
-  margin-bottom: 5px;
+  /* margin-bottom: 12px; */
 }
 
 .dialog-button .MuiButton-startIcon svg {
-  font-size: 5rem;
+  font-size: 3rem;
   color: var(--primary-dark);
 }
 
@@ -226,12 +232,20 @@
   color: var(--white) !important;
   border-radius: var(--border-radius-md) !important;
   padding: 8px 16px !important;
-  margin-top: 8px !important;
+  /* margin-top: 8px !important; */
 }
 
 .close-button:hover {
   background-color: var(--error-dark) !important;
 }
+
+/* .dialog-button add-bulk{
+  background-color: var(--primary-color) !important;
+  color: var(--white) !important;
+  border-radius: var(--border-radius-md) !important;
+  padding: 8px 16px !important;
+  margin-top: 8px !important;
+} */
 
 /* Loader styles */
 .loader-container {

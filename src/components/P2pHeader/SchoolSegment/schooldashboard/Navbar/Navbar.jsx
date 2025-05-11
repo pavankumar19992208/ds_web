@@ -28,7 +28,7 @@ const Navbar = ({ schoolName, schoolLogo, establishmentYear, establishmentID, em
 
   const handleLogout = () => {
     setGlobalData(null); // Clear global data
-    navigate('/schlogin'); // Redirect to SchoolLogin page
+    navigate('/'); // Redirect to Landing page
   };
 
   return (

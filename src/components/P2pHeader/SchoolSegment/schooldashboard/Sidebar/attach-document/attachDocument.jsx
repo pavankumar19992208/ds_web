@@ -23,7 +23,7 @@ const AttachDocument = () => {
   return (
     <div className="school-dashboard">
       <div className='homepage'>
-      <Navbar schoolName={globalData.data.SCHOOL_NAME} schoolLogo={globalData.data.SCHOOL_LOGO} />
+      <Navbar schoolName={globalData.data.school_name} schoolLogo={globalData.data.school_logo} />
       <Sidebar visibleItems={['home', 'attachDocument', 'subjectAllocation', 'attendanceTracking', 'leaveApprovals', 'academicPerformance', 'teacherAlert', 'eventPlanning', 'careerGuidance', 'inventoryManagement']} />
       <Box className={`attach-document-container ${showForm ? 'show-form' : ''}`}>
         <Card className="card" onClick={handleStudentCardClick}>

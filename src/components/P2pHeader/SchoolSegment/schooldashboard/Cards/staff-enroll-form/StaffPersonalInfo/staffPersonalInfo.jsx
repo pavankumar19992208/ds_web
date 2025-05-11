@@ -3,8 +3,6 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
-import Checkbox from '@mui/material/Checkbox';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import { makeStyles } from '@mui/styles';
 import { storage } from '../../../../../../connections/firebase'; // Adjust the import path as necessary
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
@@ -32,7 +30,7 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
   const classes = useStyles();
   const [addressTypes, setAddressTypes] = useState(['School', 'Office', 'Residential', 'Other']);
   const [address, setAddress] = useState(() => {
-    const initialAddress = formData?.staffPersonalInfo?.address || {
+    const initialAddress = formData?.personalInfo?.address || {
       line1: '',
       line2: '',
       landmark: '',
@@ -141,11 +139,12 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
     let isValid = true;
     let errorMessage = '';
   
+    // Validation logic remains the same
     if (['city', 'district', 'state', 'country', 'locality', 'landmark'].includes(id)) {
-      isValid = validateAlphabets(value) || value === '';
+      isValid = /^[A-Za-z\s.'-]*$/.test(value) || value === '';
       errorMessage = 'Invalid alphabetic input';
     } else if (id === 'pincode') {
-      isValid = validateNumbers(value) || value === '';
+      isValid = /^[0-9]{0,10}$/.test(value) || value === '';
       errorMessage = 'Invalid numeric input';
     }
   
@@ -153,76 +152,42 @@ export default function StaffPersonalInfo({ formData, setFormData }) {
       isValid = false;
       errorMessage = 'This field is required';
     }
-
-useEffect(() => {
-  setFormData((prevData) => ({
-    ...prevData,
-    guardianInfo: {
-      ...prevData.guardianInfo,
-      address,
-    },
-  }));
-}, [address, setFormData]);
   
-    // Update the address state properly
+    // Update the address state
     setAddress(prev => {
-      const updatedAddress = { ...prev, [id]: value };
-      // Remove any undefined properties that might have been accidentally added
+      const updatedAddress = { 
+        ...prev, 
+        [id]: value 
+      };
+      
+      // Clean up any undefined values
       Object.keys(updatedAddress).forEach(key => {
         if (updatedAddress[key] === undefined) {
-          delete updatedAddress[key];
+          updatedAddress[key] = '';
         }
       });
+      
       return updatedAddress;
     });
-
-    setFormData(prev => ({
-      ...prev,
-      guardianInfo: {
-        ...prev.guardianInfo,
-        address: {
-          ...prev.guardianInfo.address,
-          [id]: value
-        }
-      }
-    }));
   
-    if (isValid) {
-      setErrors(prevErrors => ({ ...prevErrors, [id]: '' }));
-    } else {
-      setErrors(prevErrors => ({ ...prevErrors, [id]: errorMessage }));
-    }
-  };
-
-
-  const handleCheckboxChange = (e) => {
-    const checked = e.target.checked;
-    setFormData((prev) => ({
-      ...prev,
-      personalInfo: {
-        ...prev.personalInfo,
-        sameAsCurrent: checked,
-        permanentAddress: checked ? prev.personalInfo.currentAddress : prev.personalInfo.permanentAddress || {
-          line1: '',
-          line2: '',
-          city: '',
-          district: '',
-          state: '',
-          pinCode: '',
-        },
-      },
+    // Update errors state
+    setErrors(prevErrors => ({ 
+      ...prevErrors, 
+      [id]: isValid ? '' : errorMessage 
     }));
   };
 
   useEffect(() => {
-    setFormData((prev) => ({
+    setFormData(prev => ({
       ...prev,
       personalInfo: {
         ...prev.personalInfo,
-        sameAsCurrent: prev.personalInfo.sameAsCurrent || false,
-      },
+        address: {
+          ...address
+        }
+      }
     }));
-  }, [setFormData]);
+  }, [address, setFormData]);
 
   return (
     <React.Fragment>
@@ -476,7 +441,6 @@ useEffect(() => {
   </TextField>
 </Grid>
       </Grid>
-      {/* </Grid> */}
 
     </React.Fragment>
   );

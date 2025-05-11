@@ -11,6 +11,8 @@ import GroupIcon from '@mui/icons-material/Group';
 import PersonIcon from '@mui/icons-material/Person';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt'; // For staff icon
 import BaseUrl from '../../../../../config'; // Adjust the import path as necessary
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
 import axios from 'axios';
 
 const cardActions = [
@@ -112,19 +114,7 @@ const Cards = () => {
     <div className="cards-container">
       {cardActions.map((card, index) => (
         <div className="sd-card" key={index}>
-          <div
-            className="card-title"
-            style={{
-              backgroundColor: [
-                '#ffac81', // Red
-                '#ffac81', // Green
-                '#758e4f', // Blue
-                '#758e4f', // Yellow
-                '#78290f', // Purple
-                '#78290f', // Orange
-              ][index % 6],
-            }}
-          >
+          <div className="card-title">
             {card.title}
           </div>
           {card.countKey && (
@@ -167,9 +157,14 @@ const Cards = () => {
         open={open} 
         onClose={handleClose} 
         className="dialog-container" 
-        PaperProps={{ style: { borderRadius: 15 } }}
+        PaperProps={{ style: { borderRadius: 16 } }}
       >
         <DialogContent className='enroll-box'>
+        <DialogActions>
+        <IconButton onClick={handleClose} className="close-icon">
+        <CloseIcon />
+      </IconButton>
+          </DialogActions>  
           <div className="dialog-button-group">
             <Button
               color="primary"
@@ -177,22 +172,17 @@ const Cards = () => {
               onClick={actionHandlers.handleAddSingleStudent}
               className="dialog-button add-single"
             >
-              Add Single Student
+              Single Student
             </Button>
             <Button
-              color="secondary"
+              // color="secondary"
               startIcon={<GroupIcon />}
               className="dialog-button add-bulk"
               onClick={actionHandlers.handleAddBulkStudent}
             >
-              Add Bulk Students
+              Bulk Students
             </Button>
           </div>
-          <DialogActions>
-            <Button onClick={handleClose} color="primary" className="close-button">
-              Cancel
-            </Button>
-          </DialogActions>
         </DialogContent>
       </Dialog>
     </div>

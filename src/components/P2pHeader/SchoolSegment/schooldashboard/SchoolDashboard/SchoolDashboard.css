@@ -1,95 +1,3 @@
-/* .school-dashboard {
-  overflow-x: hidden;
-  overflow-y: hidden; 
-  display: flex; 
-  background-size: cover;
-  height: 100vh;
-  background-color: #003353;
-} 
-
-.homepage {
-  background: linear-gradient(to right, #ffffff, #edf3f7) !important;
-  overflow: hidden;
-  margin: 50px 0;
-  border-top-left-radius: 15px;
-  height: 93%;
-  transition: margin-left 0.3s ease-in-out;
-  flex-grow: 1;
-  margin-left: 70px;
-  display: flex;
-}
-
-.main-content {
-  display: flex;
-  width: 92%;
-  margin-left: 14%;
-}
-
-.cards-container {
-  width: 50%;
-  margin: 30px 0 0 30px;
-}
-
-.carousel-events-container {
-  margin-top: 50px;
-  width: 50%;
-  display: flex;
-  flex-direction: column;
-}
-
-.carousel-container {
-  background-color: #003353;
-  height: 45vh;
-  flex: 1;
-  margin-bottom: 20px;
-  width: 64%;
-  border-radius: 20px;
-}
-
-.events-container {
-  flex: 1;
-}
-
-.school-id-box {
-  position: fixed;
-  bottom: 20px;
-  left: 10px;
-  background-color: #ffffff;
-  padding: 8px 6px;
-  border-radius: 20px;
-  box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.1);
-  font-size: 12px;
-  color: #333;
-  width: 200px;
-  text-align: center;
-  z-index: 1000 !important;
-  font-family: 'Roboto Mono', monospace !important;
-  font-optical-sizing: auto !important;
-  font-weight: 400 !important;
-}
-
-.academic-year-popup {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  padding: 20px;
-  width: 100vw;
-  z-index: 1003;
-}
-
-@media (min-width: 992px) and (max-width: 1199.98px) {
-  .main-content {
-    left: 20vh;
-  }
-  .school-id-box {
-    bottom: 14px;
-    left: 14px;
-    width: 180px;
-    padding: 10px 12px;
-    font-size: 14px;
-  }
-} */
 :root {
   --primary-bg: #003353;
   --secondary-bg: linear-gradient(to right, #ffffff, #edf3f7);
@@ -152,12 +60,15 @@
   overflow: hidden;
   min-height: 0;
   width: 90%;
+  box-shadow: var(--shadow);
+
 }
 
 .sd-events-container {
   flex: 1;
   min-height: 0;
   width: 87%;
+  
 }
 
 .school-id-box {

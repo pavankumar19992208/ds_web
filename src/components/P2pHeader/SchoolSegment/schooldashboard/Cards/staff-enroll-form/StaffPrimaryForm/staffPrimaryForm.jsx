@@ -586,18 +586,19 @@ export default function StaffPrimaryForm() {
           employment_type: formData.employmentInfo.employmentType === 'Other' 
           ? formData.employmentInfo.otherEmploymentType 
           : formData.employmentInfo.employmentType, 
-          // address: {
-          //   line1: formData.personalInfo.address.line1,
-          //   line2: formData.personalInfo.address.line2 || '',
-          //   landmark: formData.personalInfo.address.landmark || '',
-          //   locality: formData.personalInfo.address.locality || '',
-          //   city: formData.personalInfo.address.city,
-          //   district: formData.personalInfo.address.district,
-          //   state: formData.personalInfo.address.state,
-          //   country: formData.personalInfo.address.country || 'India',
-          //   pincode: formData.personalInfo.address.pincode,
-          //   address_type: formData.personalInfo.address.address_type
-          // },          // previous_school: formData.employmentInfo.previousSchool,
+          address: {
+            line1: formData.personalInfo.address.line1,
+            line2: formData.personalInfo.address.line2 || '',
+            landmark: formData.personalInfo.address.landmark || '',
+            locality: formData.personalInfo.address.locality || '',
+            city: formData.personalInfo.address.city,
+            district: formData.personalInfo.address.district,
+            state: formData.personalInfo.address.state,
+            country: formData.personalInfo.address.country || 'India',
+            pincode: formData.personalInfo.address.pincode,
+            address_type: formData.personalInfo.address.address_type || ''
+          },          
+          // previous_school: formData.employmentInfo.previousSchool,
           // emergency_contact_name: formData.emergencyContactInfo.emergencyContactName,
           // emergency_contact_number: formData.emergencyContactInfo.emergencyContactNumber,
           // relationship_to_teacher: formData.emergencyContactInfo.relationshipToTeacher,

@@ -1,4 +1,6 @@
-import * as React from 'react';
+import React, {useContext} from 'react';
+// import React, { useState, useContext } from 'react';
+
 import { styled } from '@mui/material/styles';
 import { Link, useLocation } from 'react-router-dom';
 import Box from '@mui/material/Box';
@@ -17,6 +19,8 @@ import InfoRoundedIcon from '@mui/icons-material/InfoRounded';
 import EditCalendarRoundedIcon from '@mui/icons-material/EditCalendarRounded';
 import FlightTakeoffRoundedIcon from '@mui/icons-material/FlightTakeoffRounded';
 import Inventory2RoundedIcon from '@mui/icons-material/Inventory2Rounded';
+import { GlobalStateContext } from '../../../../../GlobalStateContext';
+
 import { FaUserEdit } from "react-icons/fa"; // Import the new icon
 
 const drawerWidth = 260;
@@ -76,6 +80,8 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 export default function MiniDrawer({ visibleItems }) {
   const [open, setOpen] = React.useState(false);
   const location = useLocation();
+  const { globalData } = useContext(GlobalStateContext);
+  
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -85,8 +91,10 @@ export default function MiniDrawer({ visibleItems }) {
     setOpen(false);
   };
 
+  const schoolId = globalData?.data?.school_id;
+
   const menuItems = [
-    { text: 'Dashboard', path: '/school_dashboard', icon: <Home />, key: 'home' },
+    { text: 'Dashboard', path: `/school_dashboard/${schoolId}`, icon: <Home />, key: 'home' },
     { text: 'Attach Documents', path: '/attach-document', icon: <AttachFileRoundedIcon />, key: 'attachDocument' },
     { text: 'Subject Allocation', path: '/subject-allocation', icon: <AccountTreeRoundedIcon />, key: 'subjectAllocation' },
     { text: 'Leave Approval', path: '/leave-approval', icon: <HowToRegRoundedIcon />, key: 'leaveApprovals' },
