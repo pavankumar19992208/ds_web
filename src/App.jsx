@@ -1,4 +1,5 @@
 import React from 'react';
+import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { GlobalStateProvider } from './GlobalStateContext';
 import { DndProvider } from 'react-dnd';
@@ -30,15 +31,19 @@ import EcomDash from './components/Ecommerce/EcommerceDashboard/ecomDash.jsx';
 import ProductsList from './components/Ecommerce/ProductsList/productsList.jsx';
 import ProductOverview from './components/Ecommerce/ProductOverview/productOverview.jsx';
 import CartPage from './components/Ecommerce/Cart/cartPage.jsx';
+import OrdersPage from './components/Ecommerce/Orders/Orders.jsx';
 import LeaveApproval from './components/P2pHeader/SchoolSegment/schooldashboard/Sidebar/leave-approval/leaveApproval.jsx';
 import PayrollForm from './components/P2pHeader/SchoolSegment/schooldashboard/Cards/staff-payroll/payRoll.jsx';
 import SchoolStatistics from './components/P2pHeader/SchoolSegment/schooldashboard/Sidebar/school-statistics/schoolStatistics.jsx';
 import LandingPage from './components/landingPage/landingPage.jsx';
 import EventPlanning from './components/P2pHeader/SchoolSegment/schooldashboard/Sidebar/event-planning/eventPlanning.jsx';
+import { UserContext } from './context/UserContext';
 const theme = createTheme();
 // mysql://root:nXbyCttzErnSirxYRBZtYNJRprHnbTar@shuttle.proxy.rlwy.net:21943/railway
 function App() {
+  const [user, setUser] = useState(null); // Manage user state here
   return (
+    <UserContext.Provider value={{ user, setUser }}>
     <ThemeProvider theme={theme}>
     <GlobalStateProvider>
       <Router>
@@ -71,6 +76,7 @@ function App() {
             <Route path="/products" element={<ProductsList/>}/>
             <Route path="/product-overview/:productId" element={<ProductOverview />} />
             <Route path="/cart" element={<CartPage />} />
+            <Route path="/orders" element={<OrdersPage />} />
             <Route path= "/leave-approval" element={<LeaveApproval/>} />
             <Route path="/update-staff-payroll" element={<PayrollForm />} />
             <Route path='/school-statistics' element={<SchoolStatistics/>} />
@@ -80,6 +86,7 @@ function App() {
       </Router>
     </GlobalStateProvider>
     </ThemeProvider>
+    </UserContext.Provider>
   );
 }
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { use, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Slider from "react-slick";
 import EcommerceNavbar from '../EcommerceNavbar/ecommerceNavbar';
@@ -7,182 +7,202 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Modal from 'react-modal';
 import { FaTimes } from 'react-icons/fa';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+Modal.setAppElement('#root');
 
 const ProductOverview = () => {
   const { productId } = useParams();
   const [product, setProduct] = useState(null);
+  const [quantity, setQuantity] = useState(1);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  
   useEffect(() => {
     const fetchProduct = async () => {
+      setIsLoading(true);
+      setError(null);
       try {
         const response = await fetch(`http://localhost:8001/products/${productId}`);
+        if (!response.ok) throw new Error('Product not found');
         const data = await response.json();
         setProduct(data);
-      } catch (error) {
-        console.error("Error fetching product:", error);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setIsLoading(false);
       }
     };
 
     fetchProduct();
   }, [productId]);
 
-  if (!product) {
-    return <p>Loading...</p>;
-  }
+  const handleAddToCart = async () => {
+    console.log('Product ID:', productId, 'Type:', typeof productId);
+    console.log('Quantity:', quantity, 'Type:', typeof quantity);
 
-  const handleAddToCart = () => {
-    console.log(`Add to Cart clicked for product ID: ${productId}`);
-    // Implement add to cart functionality here
-  };
+    try {
+      const response = await fetch('http://localhost:8001/cart', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          user_id: 1,
+          id: parseInt(productId),
+          quantity: quantity
+        })
+      });
 
-  const handleAddToFavourites = () => {
-    console.log(`Add to Favourites clicked for product ID: ${productId}`);
-    // Implement add to favourites functionality here
-  };
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to add to cart');
+      }
 
-  const handleBuyNow = () => {
-    console.log(`Buy Now clicked for product ID: ${productId}`);
-    // Implement buy now functionality here
+      const data = await response.json();
+      toast.success(data.message);
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
 
   const toggleDescription = (e) => {
     e.preventDefault();
+    e.stopPropagation();
     setIsDescriptionExpanded(!isDescriptionExpanded);
   };
 
   const renderDescription = () => {
+    if (!product) return '';
     if (isDescriptionExpanded || product.description.length <= 300) {
       return product.description;
     }
     return `${product.description.substring(0, 300)}...`;
   };
 
-  const openModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
-
-  const NextArrow = (props) => {
-    const { onClick } = props;
-    return (
-      <div className="slick-arrow slick-next" onClick={onClick} style={{ backgroundColor: 'gray', zIndex: 1, marginRight: '10px', padding: '12px 10px 10px' }}>
-        Next
-      </div>
-    );
-  };
+  // Slider arrows components
+  const NextArrow = ({ onClick }) => (
+    <div className="slick-arrow slick-next" onClick={onClick}>Next</div>
+  );
   
-  const PrevArrow = (props) => {
-    const { onClick } = props;
-    return (
-      <div className="slick-arrow slick-prev" onClick={onClick} style={{ backgroundColor: 'gray', zIndex: 1, marginLeft: '10px', padding: '12px 10px 10px' }}>
-        Prev
-      </div>
-    );
-  };
+  const PrevArrow = ({ onClick }) => (
+    <div className="slick-arrow slick-prev" onClick={onClick}>Prev</div>
+  );
 
-  const mainSliderSettings = {
-    dots: Array.isArray(product.imageUrls) && product.imageUrls.length > 1,
-    infinite: Array.isArray(product.imageUrls) && product.imageUrls.length > 1,
+  // Slider settings
+  const sliderSettings = (arrows = false) => ({
+    dots: product?.imageUrls?.length > 1,
+    infinite: product?.imageUrls?.length > 1,
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
-    autoplay: Array.isArray(product.imageUrls) && product.imageUrls.length > 1,
-    autoplaySpeed: 2000, // 2 seconds,
+    autoplay: product?.imageUrls?.length > 1,
+    autoplaySpeed: 2000,
     appendDots: dots => (
       <div style={{ position: 'absolute', bottom: '10px', width: '100%' }}>
-        <ul style={{ margin: '0px' }}> {dots} </ul>
+        <ul style={{ margin: '0px' }}>{dots}</ul>
       </div>
     ),
-    arrows: false // Remove arrows from the main slider
-  };
+    arrows,
+    nextArrow: arrows ? <NextArrow /> : null,
+    prevArrow: arrows ? <PrevArrow /> : null
+  });
 
-  const modalSliderSettings = {
-    dots: Array.isArray(product.imageUrls) && product.imageUrls.length > 1,
-    infinite: Array.isArray(product.imageUrls) && product.imageUrls.length > 1,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    autoplay: Array.isArray(product.imageUrls) && product.imageUrls.length > 1,
-    autoplaySpeed: 2000, // 2 seconds,
-    appendDots: dots => (
-      <div style={{ position: 'absolute', bottom: '10px', width: '100%' }}>
-        <ul style={{ margin: '0px' }}> {dots} </ul>
-      </div>
-    ),
-    nextArrow: Array.isArray(product.imageUrls) && product.imageUrls.length > 1 ? <NextArrow /> : null,
-    prevArrow: Array.isArray(product.imageUrls) && product.imageUrls.length > 1 ? <PrevArrow /> : null
-  };
+  if (isLoading) return <div className="loading">Loading product...</div>;
+  if (error) return <div className="error">Error: {error}</div>;
+  if (!product) return <div className="not-found">Product not found</div>;
 
   return (
     <>
-    <EcommerceNavbar />
-    <div className="product-overview">
-      <div className="product-overview-grid">
-      <div className="product-image" onClick={openModal}>
-          <Slider {...mainSliderSettings} className="custom-slider">
-            {Array.isArray(product.imageUrls) && product.imageUrls.map((url, index) => (
-              <div key={index}>
-                <img src={url} alt={product.name} style={{ width:'100%', height: '380px', objectFit: 'contain'}} />
+      <EcommerceNavbar />
+      <div className="product-overview-container">
+        <div className="product-overview-grid">
+          <div className="product-image-container">
+            <Slider {...sliderSettings()} className="main-slider">
+              {product.imageUrls?.map((url, index) => (
+                <div key={index} className="slider-image-wrapper">
+                  <img 
+                    src={url} 
+                    alt={product.name} 
+                    className="product-image"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsModalOpen(true);
+                    }}
+                  />
+                </div>
+              ))}
+            </Slider>
+          </div>
+
+          <div className="product-info-container">
+            <div className="product-header">
+              <h1>{product.name}</h1>
+              <p className="product-price">₹{product.price}</p>
+            </div>
+
+            <div className="product-description-section">
+              <h3>Description</h3>
+              <div className="description-content">
+                <span dangerouslySetInnerHTML={{ __html: renderDescription() }} />
+                {product.description.length > 300 && (
+                  <button 
+                    onClick={toggleDescription} 
+                    className="description-toggle"
+                  >
+                    {isDescriptionExpanded ? 'Show less' : 'Show more'}
+                  </button>
+                )}
+              </div>
+            </div>
+
+            <div className="product-actions">
+              <div className="quantity-selector">
+                <label>Quantity:</label>
+                <input
+                  type="number"
+                  min="1"
+                  value={quantity}
+                  onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+                />
+              </div>
+
+              <div className="action-buttons">
+                <button className="secondary-btn" onClick={() => console.log('Added to favorites')}>
+                  Add to Favorites
+                </button>
+                <button className="primary-btn" onClick={handleAddToCart}>
+                  Add to Cart
+                </button>
+                <button className="buy-now-btn" onClick={() => console.log('Buy now')}>
+                  Buy Now
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Image Modal */}
+        <Modal
+          isOpen={isModalOpen}
+          onRequestClose={() => setIsModalOpen(false)}
+          className="image-modal"
+          overlayClassName="modal-overlay"
+        >
+          <FaTimes 
+            className="modal-close" 
+            onClick={() => setIsModalOpen(false)} 
+          />
+          <Slider {...sliderSettings(true)} className="modal-slider">
+            {product.imageUrls?.map((url, index) => (
+              <div key={index} className="modal-slide">
+                <img src={url} alt={product.name} className="modal-image" />
               </div>
             ))}
           </Slider>
-        </div>
-        <div className="product-info">
-          <div className="product-details">
-            <h1>{product.name}</h1>
-            <p><strong>Price :</strong> <span className='price-text'>₹{product.price}</span></p>
-          </div>
-          <div className="product-description-buttons">
-          <div className="product-description">
-            <p><strong>Description :</strong> <br/>
-              <span dangerouslySetInnerHTML={{ __html: renderDescription() }} />
-            </p>
-            {product.description.length > 300 && (
-                <button onClick={toggleDescription} style={{ background: 'none', border: 'none', color: 'blue', textDecoration: 'underline', cursor: 'pointer' }}>
-                {isDescriptionExpanded ? 'less' : 'more'}
-              </button>
-            )}
-          </div>
-            <div className="btns">
-              <button onClick={handleAddToFavourites}>Add to Favourites</button>
-              <button onClick={handleAddToCart}>Add to Cart</button>
-              <button onClick={handleBuyNow}>Buy Now</button>
-            </div>
-          </div>
-        </div>
+        </Modal>
       </div>
-      <Modal
-       isOpen={isModalOpen}
-       onRequestClose={closeModal} 
-       contentLabel="Product Images"
-       style={{
-        content: {
-          top: '55%',
-          left: '50%',
-          right: 'auto',
-          bottom: 'auto',
-          marginRight: '-50%',
-          transform: 'translate(-50%, -50%)',
-          width: '92%',
-          height: '80%'
-        }
-      }}
-      >
-        <FaTimes onClick={closeModal} style={{ cursor: 'pointer', position: 'absolute', top: '10px', right: '10px', fontSize: '24px' }} />
-        <Slider {...modalSliderSettings} className="custom-slider">
-          {Array.isArray(product.imageUrls) && product.imageUrls.map((url, index) => (
-            <div key={index}>
-              <img src={url} alt={product.name} style={{ width:'100%', height: '508px', objectFit: 'contain'}} />
-            </div>
-          ))}
-        </Slider>
-      </Modal>
-    </div>
     </>
   );
 };

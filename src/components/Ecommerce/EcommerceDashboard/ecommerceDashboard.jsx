@@ -72,10 +72,10 @@ function EcommerceDashboard() {
         <Grid container spacing={2}>
           <Grid item xs={12}>
             {demandedProducts.length > 0 && (
-              <div className='demanded-container' style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', backgroundColor: '#fff', borderRadius: '12px', padding: '20px', marginBottom: '20px', height: '60vh' }}>
+              <div className='demanded-container' onClick={() => handleGridClick(demandedProducts[0].id)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', backgroundColor: '#fff', borderRadius: '12px', padding: '20px', marginBottom: '20px', height: '60vh' }}>
                 <div style={{ flex: '0 0 50%' }}>
                   <h3>{demandedProducts[0].name}</h3>
-                  <Button style={{ left: '20%' }} variant="contained" color="primary" onClick={() => handleGridClick(demandedProducts[0].id)}>Buy Now</Button>
+                  <Button style={{ left: '20%' }} variant="contained" color="primary">Buy Now</Button>
                 </div>
                 <div style={{ flex: '0 0 50%' }}>
                   {demandedProducts[0].mainImageUrl ? (

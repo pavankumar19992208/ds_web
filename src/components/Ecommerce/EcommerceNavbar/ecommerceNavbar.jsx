@@ -143,7 +143,7 @@ function EcommerceNavbar() {
           </Badge>
           </IconButton>
         <IconButton color="inherit" sx={{ mx: 1.5 }}>
-        <span style={{ color: 'white', fontSize: '1rem' }} className='en-urbanist-regular'>Orders</span>
+        <span style={{ color: 'white', fontSize: '1rem' }} className='en-urbanist-regular' onClick={() => navigate('/orders')}>Orders</span>
         </IconButton>
         <IconButton color="inherit" sx={{ mx: 1.5 }}>
         <span style={{ color: 'white', fontSize: '1rem' }} className='en-urbanist-regular'>Favorites</span>
