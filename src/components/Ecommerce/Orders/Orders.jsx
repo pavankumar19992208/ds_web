@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import EcommerceNavbar from '../EcommerceNavbar/ecommerceNavbar';
 import './orders.css';
+import BaseUrl from '../../../config';
 
 const OrdersPage = () => {
   const [orders, setOrders] = useState([]);
@@ -13,12 +14,12 @@ const OrdersPage = () => {
     const fetchData = async () => {
       try {
         // Fetch orders data
-        const ordersResponse = await fetch('http://localhost:8001/orders?user_id=1');
+        const ordersResponse = await fetch(`${BaseUrl}/orders?user_id=1`);
         const ordersData = await ordersResponse.json();
         setOrders(ordersData);
 
         // Fetch products data
-        const productsResponse = await fetch('http://localhost:8001/products');
+        const productsResponse = await fetch(`${BaseUrl}/products`);
         const productsData = await productsResponse.json();
         setProducts(productsData);
       } catch (error) {

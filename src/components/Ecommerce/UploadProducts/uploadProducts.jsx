@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { storage } from "../../connections/firebase"; // Adjust the import path as necessary
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import BaseUrl from "../../../config"; // Adjust the import path as necessary
 import {
     Container,
     TextField,
@@ -46,7 +47,7 @@ function AdminUploadPage() {
     useEffect(() => {
         const fetchDemandedProducts = async () => {
             try {
-                const response = await fetch("http://localhost:8001/demanded-products");
+                const response = await fetch(`${BaseUrl}/demanded-products`);
                 const data = await response.json();
                 setDemandedProducts(data);
             } catch (error) {
@@ -131,7 +132,7 @@ function AdminUploadPage() {
         imageUrls.forEach((url, index) => formData.append(`imageUrls`, url)); // Append as individual items
 
         try {
-            const response = await fetch("http://localhost:8001/upload", {
+            const response = await fetch(`${BaseUrl}/upload`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -152,7 +153,7 @@ function AdminUploadPage() {
 
     const handleReplace = async (productId, productName) => {
         try {
-            const response = await fetch("http://localhost:8001/products");
+            const response = await fetch(`${BaseUrl}/products`);
             const data = await response.json();
             setFetchedProducts(data); // Update state with fetched products
             setSelectedProductId(productId); // Set the selected product ID
@@ -165,7 +166,7 @@ function AdminUploadPage() {
 
     const handleConfirmReplace = async (newProductId) => {
         try {
-            const response = await fetch(`http://localhost:8001/replace-demanded-product`, {
+            const response = await fetch(`${BaseUrl}/replace-demanded-product`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -180,7 +181,7 @@ function AdminUploadPage() {
                 alert(data.message);
                 setOpen(false);
                 // Refresh demanded products list
-                const demandedResponse = await fetch("http://localhost:8001/demanded-products");
+                const demandedResponse = await fetch(`${BaseUrl}/demanded-products`);
                 const demandedData = await demandedResponse.json();
                 setDemandedProducts(demandedData);
             } else {

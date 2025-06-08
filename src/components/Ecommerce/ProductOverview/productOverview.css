@@ -197,3 +197,41 @@
     right: 0;
   }
 }
+
+/* Add to Cart button states */
+.primary-btn {
+  background-color: #4CAF50;
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.primary-btn.added-to-cart {
+  background-color: #2E7D32; /* Darker green */
+  cursor: not-allowed;
+}
+
+.primary-btn:hover:not(.added-to-cart) {
+  background-color: #45a049;
+}
+
+/* Toast notifications customization */
+.Toastify__toast-container {  
+  font-size: 14px;
+}
+
+.Toastify__toast--success {
+  background-color: #4CAF50;
+}
+
+.Toastify__toast--error {
+  background-color: #f44336;
+}
+
+.Toastify__toast--info {
+  background-color: #2196F3;
+}
+
+.toast-bold-yellow {
+  font-weight: bold;
+  color: #ffcc00;
+}

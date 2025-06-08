@@ -2,31 +2,39 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import EcommerceNavbar from '../EcommerceNavbar/ecommerceNavbar';
 import './cartPage.css';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import BaseUrl from '../../../config';
+
 
 const CartPage = () => {
   const [cartItems, setCartItems] = useState([]);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [itemToRemove, setItemToRemove] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCartItems = async () => {
       try {
-        const response = await fetch('http://localhost:8001/cart/1');
+        const response = await fetch(`${BaseUrl}/cart/1`);
         const data = await response.json();
         setCartItems(data);
       } catch (error) {
         console.error("Error fetching cart items:", error);
+        toast.error("Failed to load cart items");
       }
     };
 
     const fetchProducts = async () => {
       try {
-        const response = await fetch('http://localhost:8001/products');
+        const response = await fetch(`${BaseUrl}/products`);
         const data = await response.json();
         setProducts(data);
       } catch (error) {
         console.error("Error fetching products:", error);
+        toast.error("Failed to load products");
       }
     };
 
@@ -38,23 +46,37 @@ const CartPage = () => {
     return products.find(product => product.id === productId);
   };
 
-  const handleRemoveItem = async (productId) => {
+  const confirmRemoveItem = (productId) => {
+    setItemToRemove(productId);
+    setShowConfirmModal(true);
+  };
+
+  const handleRemoveItem = async () => {
+    if (!itemToRemove) return;
+    
     try {
-      const response = await fetch(`http://localhost:8001/cart/1/${productId}`, {
+      const response = await fetch(`${BaseUrl}/cart/1/${itemToRemove}`, {
         method: 'DELETE'
       });
       if (response.ok) {
-        setCartItems(cartItems.filter(item => item.id !== productId));
+        setCartItems(cartItems.filter(item => item.id !== itemToRemove));
+        toast.success("Item removed from cart successfully");
+      } else {
+        throw new Error('Failed to remove item');
       }
     } catch (error) {
       console.error("Error removing item from cart:", error);
+      toast.error("Failed to remove item from cart");
+    } finally {
+      setShowConfirmModal(false);
+      setItemToRemove(null);
     }
   };
 
   const handleQuantityChange = async (productId, newQuantity) => {
     const quantity = Math.max(1, newQuantity);
     try {
-      const response = await fetch(`http://localhost:8001/cart/1/${productId}`, {
+      const response = await fetch(`${BaseUrl}/cart/1/${productId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ quantity }),
@@ -63,8 +85,10 @@ const CartPage = () => {
       setCartItems(cartItems.map(item => 
         item.id === productId ? { ...item, quantity } : item
       ));
+      toast.success("Quantity updated successfully");
     } catch (error) {
       console.error("Error updating quantity:", error);
+      toast.error("Failed to update quantity");
     }
   };
 
@@ -80,7 +104,10 @@ const CartPage = () => {
   };
 
   const handleCheckout = async () => {
-    if (cartItems.length === 0) return;
+    if (cartItems.length === 0) {
+      toast.warning("Your cart is empty");
+      return;
+    }
     
     setLoading(true);
     try {
@@ -96,7 +123,7 @@ const CartPage = () => {
       };
 
       // Create order
-      const response = await fetch('http://localhost:8001/orders/', {
+      const response = await fetch(`${BaseUrl}/orders/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(orderData)
@@ -109,15 +136,16 @@ const CartPage = () => {
       // Clear cart after successful order creation
       await Promise.all(
         cartItems.map(item => 
-          fetch(`http://localhost:8001/cart/1/${item.id}`, { method: 'DELETE' })
+          fetch(`${BaseUrl}/cart/1/${item.id}`, { method: 'DELETE' })
         )
       );
       
       setCartItems([]);
+      toast.success("Order placed successfully!");
       navigate(`/order-confirmation/${result.order_id}`);
     } catch (error) {
       console.error("Checkout error:", error);
-      alert("Checkout failed. Please try again.");
+      toast.error("Checkout failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -127,12 +155,36 @@ const CartPage = () => {
     navigate(`/product-overview/${productId}`);
   };
 
+  const navigateToOrders = () => {
+    navigate('/orders');
+  };
+
+// In cartPage.jsx, modify the handlePayment function:
+const handlePayment = () => {
+  navigate('/checkout', {
+    state: {
+      items: cartItems.map(item => {
+        const product = getProductDetails(item.id);
+        return {
+          id: item.id,
+          name: product?.name || 'Unknown Product',
+          price: product?.price || 0,
+          quantity: item.quantity
+        };
+      }),
+      subtotal: calculateSubtotal()
+    }
+  });
+};
+
   return (
     <>
       <EcommerceNavbar />
       <div className="cart-page">
         <div className="cart-items-container">
-          <h1>Your Shopping Cart</h1>
+          <div className="cart-header">
+            <h2>Your Shopping Cart</h2>
+          </div>
           {cartItems.length > 0 ? (
             cartItems.map((item) => {
               const product = getProductDetails(item.id);
@@ -161,7 +213,7 @@ const CartPage = () => {
                       />
                     </div>
                     <button 
-                      onClick={() => handleRemoveItem(item.id)}
+                      onClick={() => confirmRemoveItem(item.id)}
                       className="remove-button"
                     >
                       Remove
@@ -171,7 +223,15 @@ const CartPage = () => {
               ) : null;
             })
           ) : (
-            <p>Your cart is empty</p>
+            <div className="empty-cart">
+              <p>Your cart is empty</p>
+              <button 
+                onClick={() => navigate('/ecommerce-dashboard')}
+                className="continue-shopping-button"
+              >
+                Continue Shopping
+              </button>
+            </div>
           )}
         </div>
 
@@ -187,12 +247,39 @@ const CartPage = () => {
               <span>₹{calculateSubtotal()}</span>
             </div>
             <button 
-              onClick={handleCheckout}
+              onClick={handlePayment}
               className="checkout-button"
               disabled={loading}
             >
               {loading ? 'Processing...' : 'Proceed to Checkout'}
             </button>
+          </div>
+        )}
+
+        {/* Confirmation Modal */}
+        {showConfirmModal && (
+          <div className="modal-overlay">
+            <div className="confirmation-modal">
+              <h3>Confirm Removal</h3>
+              <p>Are you sure you want to remove this item from your cart?</p>
+              <div className="modal-buttons">
+                <button 
+                  onClick={() => {
+                    setShowConfirmModal(false);
+                    setItemToRemove(null);
+                  }}
+                  className="cancel-button"
+                >
+                  Cancel
+                </button>
+                <button 
+                  onClick={handleRemoveItem}
+                  className="confirm-button"
+                >
+                  Remove
+                </button>
+              </div>
+            </div>
           </div>
         )}
       </div>

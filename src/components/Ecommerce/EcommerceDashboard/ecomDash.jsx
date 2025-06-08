@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Grid } from '@mui/material';
 import './ecomDash.css';
+import BaseUrl from '../../../config';
 
 const EcommerceDashboard = () => {
     const [demandedProducts, setDemandedProducts] = useState([]);
@@ -9,7 +10,7 @@ const EcommerceDashboard = () => {
     useEffect(() => {
         const fetchDemandedProducts = async () => {
             try {
-                const response = await fetch('http://localhost:8001/demanded-products');
+                const response = await fetch(`${BaseUrl}/demanded-products`);
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }

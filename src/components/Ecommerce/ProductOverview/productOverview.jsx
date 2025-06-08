@@ -1,4 +1,4 @@
-import React, { use, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Slider from "react-slick";
 import EcommerceNavbar from '../EcommerceNavbar/ecommerceNavbar';
@@ -6,9 +6,13 @@ import './productOverview.css';
 import "slick-carousel/slick/slick.css"; 
 import "slick-carousel/slick/slick-theme.css";
 import Modal from 'react-modal';
+import { ToastContainer } from 'react-toastify';
 import { FaTimes } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Lottie from 'lottie-react';
+import loadingAnimation from '../loader/loader.json'; // Import your Lottie JSON file
+import BaseUrl from '../../../config';
 
 Modal.setAppElement('#root');
 
@@ -20,18 +24,34 @@ const ProductOverview = () => {
   const [error, setError] = useState(null);
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAddedToCart, setIsAddedToCart] = useState(false);
+
+    const loaderStyle = {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100vh',
+    width: '100vw',
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    zIndex: 9999
+  };
+  
   
   useEffect(() => {
     const fetchProduct = async () => {
       setIsLoading(true);
       setError(null);
       try {
-        const response = await fetch(`http://localhost:8001/products/${productId}`);
+        const response = await fetch(`${BaseUrl}/products/${productId}`);
         if (!response.ok) throw new Error('Product not found');
         const data = await response.json();
         setProduct(data);
       } catch (err) {
         setError(err.message);
+        toast.error(err.message);
       } finally {
         setIsLoading(false);
       }
@@ -41,11 +61,8 @@ const ProductOverview = () => {
   }, [productId]);
 
   const handleAddToCart = async () => {
-    console.log('Product ID:', productId, 'Type:', typeof productId);
-    console.log('Quantity:', quantity, 'Type:', typeof quantity);
-
     try {
-      const response = await fetch('http://localhost:8001/cart', {
+      const response = await fetch(`${BaseUrl}/cart`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -61,9 +78,37 @@ const ProductOverview = () => {
       }
 
       const data = await response.json();
-      toast.success(data.message);
+      
+      toast.success(
+        <div>
+          {product.name} <span className="toast-bold-yellow">added to cart!</span>
+        </div>, 
+        {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        }
+      );
+      
+      setIsAddedToCart(true);
+      setTimeout(() => {
+        setIsAddedToCart(false);
+      }, 3000);
+      
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.message, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     }
   };
 
@@ -108,6 +153,18 @@ const ProductOverview = () => {
     nextArrow: arrows ? <NextArrow /> : null,
     prevArrow: arrows ? <PrevArrow /> : null
   });
+  
+  if (isLoading) {
+    return (
+      <div style={loaderStyle}>
+        <Lottie 
+          animationData={loadingAnimation} 
+          loop={true} 
+          style={{ width: 300, height: 300 }}
+        />
+      </div>
+    );
+  }
 
   if (isLoading) return <div className="loading">Loading product...</div>;
   if (error) return <div className="error">Error: {error}</div>;
@@ -117,6 +174,17 @@ const ProductOverview = () => {
     <>
       <EcommerceNavbar />
       <div className="product-overview-container">
+        <ToastContainer 
+        position="top-right"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
         <div className="product-overview-grid">
           <div className="product-image-container">
             <Slider {...sliderSettings()} className="main-slider">
@@ -169,13 +237,20 @@ const ProductOverview = () => {
               </div>
 
               <div className="action-buttons">
-                <button className="secondary-btn" onClick={() => console.log('Added to favorites')}>
+                <button className="secondary-btn" onClick={() => toast.info("Added to favorites!")}>
                   Add to Favorites
                 </button>
-                <button className="primary-btn" onClick={handleAddToCart}>
-                  Add to Cart
+                <button 
+                  className={`primary-btn ${isAddedToCart ? 'added-to-cart' : ''}`} 
+                  onClick={handleAddToCart}
+                  disabled={isAddedToCart}
+                >
+                  {isAddedToCart ? 'Added to Cart!' : 'Add to Cart'}
                 </button>
-                <button className="buy-now-btn" onClick={() => console.log('Buy now')}>
+                <button 
+                  className="buy-now-btn" 
+                  onClick={() => toast.info("Proceeding to checkout!")}
+                >
                   Buy Now
                 </button>
               </div>

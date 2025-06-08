@@ -5,6 +5,7 @@ import { styled } from '@mui/material/styles';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import SearchIcon from '@mui/icons-material/Search';
 import './ecommerceNavbar.css';
+import BaseUrl from '../../../config';
 
 const Search = styled('div')(({ theme }) => ({
   '--theme-shape-border-radius': theme.shape.borderRadius,
@@ -46,7 +47,7 @@ function EcommerceNavbar() {
   const fetchProducts = async (query) => {
     try {
       console.log(`Fetching products for query: ${query}`);
-      const response = await fetch(`http://localhost:8001/products?keywords=${query}`);
+      const response = await fetch(`${BaseUrl}/products?keywords=${query}`);
       const data = await response.json();
       console.log('Fetched products:', data);
       if (Array.isArray(data) && data.length === 0) {

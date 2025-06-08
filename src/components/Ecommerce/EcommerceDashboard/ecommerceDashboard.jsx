@@ -7,6 +7,9 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import EcommerceNavbar from '../EcommerceNavbar/ecommerceNavbar';
 import Categories from '../Categories/categories';
+import Lottie from 'lottie-react';
+import loadingAnimation from '../loader/loader.json'; // Import your Lottie JSON file
+import BaseUrl from '../../../config';
 
 const dashboardStyle = {
   fontFamily: 'Arial, sans-serif',
@@ -14,36 +17,48 @@ const dashboardStyle = {
 
 const contentStyle = {
   marginTop: '80px',
-  maxWidth: '1800px', // Adjust the maxWidth as needed
+  maxWidth: '1800px',
+};
+
+const loaderStyle = {
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  height: '100vh',
+  width: '100vw',
+  position: 'fixed',
+  top: 0,
+  left: 0,
+  backgroundColor: 'rgba(255, 255, 255, 0.8)',
+  zIndex: 9999
 };
 
 function EcommerceDashboard() {
   const [demandedProducts, setDemandedProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:8001/products");
-        const data = await response.json();
-        setDemandedProducts(data);
+        setIsLoading(true);
+        const [productsResponse, demandedResponse] = await Promise.all([
+          fetch(`${BaseUrl}/products`),
+          fetch(`${BaseUrl}/demanded-products`)
+        ]);
+
+        const productsData = await productsResponse.json();
+        const demandedData = await demandedResponse.json();
+        
+        setDemandedProducts(demandedData.length > 0 ? demandedData : productsData);
       } catch (error) {
         console.error("Error fetching products:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    const fetchDemandedProducts = async () => {
-      try {
-        const response = await fetch("http://localhost:8001/demanded-products");
-        const data = await response.json();
-        setDemandedProducts(data);
-      } catch (error) {
-        console.error("Error fetching demanded products:", error);
-      }
-    };
-
-    fetchProducts();
-    fetchDemandedProducts();
+    fetchData();
   }, []);
 
   const settings = {
@@ -53,7 +68,7 @@ function EcommerceDashboard() {
     slidesToShow: 1,
     slidesToScroll: 1,
     autoplay: true,
-    autoplaySpeed: 2000, // 2 seconds,
+    autoplaySpeed: 2000,
     appendDots: dots => (
       <div style={{ position: 'absolute', bottom: '10px', width: '100%' }}>
         <ul style={{ margin: '0px' }}> {dots} </ul>
@@ -64,6 +79,18 @@ function EcommerceDashboard() {
   const handleGridClick = (productId) => {
     navigate(`/product-overview/${productId}`);
   };
+
+  if (isLoading) {
+    return (
+      <div style={loaderStyle}>
+        <Lottie 
+          animationData={loadingAnimation} 
+          loop={true} 
+          style={{ width: 300, height: 300 }}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="dashboardStyle" style={dashboardStyle}>

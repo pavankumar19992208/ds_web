@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import EcommerceNavbar from '../EcommerceNavbar/ecommerceNavbar';
+import BaseUrl from '../../../config';
 import './productsList.css';
 
 const ProductsList = () => {
@@ -14,7 +15,7 @@ const ProductsList = () => {
         const params = new URLSearchParams(location.search);
         const category = params.get('category');
         const search = params.get('search');
-        let url = 'http://localhost:8001/products';
+        let url = `${BaseUrl}/products`;
         if (category) {
           url += `?category=${category}`;
         } else if (search) {
@@ -35,7 +36,7 @@ const ProductsList = () => {
     console.log(`Add to Cart clicked for product ID: ${productId}`);
     // Implement add to cart functionality here
     try {
-      const response = await fetch('http://localhost:8001/cart', {
+      const response = await fetch(`${BaseUrl}/cart`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
