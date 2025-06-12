@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Grid, Container, Button } from '@mui/material';
 import Slider from "react-slick";
 import { useNavigate } from 'react-router-dom';
@@ -8,15 +8,17 @@ import "slick-carousel/slick/slick-theme.css";
 import EcommerceNavbar from '../EcommerceNavbar/ecommerceNavbar';
 import Categories from '../Categories/categories';
 import Lottie from 'lottie-react';
-import loadingAnimation from '../loader/loader.json'; // Import your Lottie JSON file
+import loadingAnimation from '../loader/loader.json';
 import BaseUrl from '../../../config';
+import AuthWrapper from '../Authentication/AuthWrapper';
+import { GlobalStateContext } from '../GlobalStateContext';
 
 const dashboardStyle = {
   fontFamily: 'Arial, sans-serif',
 };
 
 const contentStyle = {
-  marginTop: '80px',
+  marginTop: '70px',
   maxWidth: '1800px',
 };
 
@@ -36,7 +38,50 @@ const loaderStyle = {
 function EcommerceDashboard() {
   const [demandedProducts, setDemandedProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [showRegistration, setShowRegistration] = useState(() => {
+    // Only show registration if not authenticated and not previously logged in this session
+    return !localStorage.getItem('isLoggedIn');
+  });
+  const [userData, setUserData] = useState(null);
+  const { user, isAuthenticated } = useContext(GlobalStateContext);
   const navigate = useNavigate();
+
+  // Hide registration popup if already logged in
+  useEffect(() => {
+    if (isAuthenticated && user && user.id) {
+      setShowRegistration(false);
+      localStorage.setItem('isLoggedIn', 'true');
+    }
+  }, [isAuthenticated, user]);
+
+  // Remove login flag on logout or browser close (optional: you can enhance this logic)
+  useEffect(() => {
+    const handleLogoutOrClose = () => {
+      if (!isAuthenticated) {
+        localStorage.removeItem('isLoggedIn');
+      }
+    };
+    window.addEventListener('beforeunload', handleLogoutOrClose);
+    return () => window.removeEventListener('beforeunload', handleLogoutOrClose);
+  }, [isAuthenticated]);
+
+  // Fetch user data after login
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (user && user.id) {
+        try {
+          const res = await fetch(`${BaseUrl}/user/${user.id}`);
+          if (res.ok) {
+            const data = await res.json();
+            setUserData(data);
+          }
+        } catch (err) {
+          console.error('Failed to fetch user data:', err);
+        }
+      }
+    };
+    fetchUserData();
+  }, [user]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -46,10 +91,8 @@ function EcommerceDashboard() {
           fetch(`${BaseUrl}/products`),
           fetch(`${BaseUrl}/demanded-products`)
         ]);
-
         const productsData = await productsResponse.json();
         const demandedData = await demandedResponse.json();
-        
         setDemandedProducts(demandedData.length > 0 ? demandedData : productsData);
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -57,7 +100,6 @@ function EcommerceDashboard() {
         setIsLoading(false);
       }
     };
-
     fetchData();
   }, []);
 
@@ -80,6 +122,11 @@ function EcommerceDashboard() {
     navigate(`/product-overview/${productId}`);
   };
 
+  const handleCloseRegistration = () => {
+    setShowRegistration(false);
+    localStorage.setItem('isLoggedIn', 'true');
+  };
+
   if (isLoading) {
     return (
       <div style={loaderStyle}>
@@ -96,6 +143,11 @@ function EcommerceDashboard() {
     <div className="dashboardStyle" style={dashboardStyle}>
       <EcommerceNavbar />
       <Container style={contentStyle}>
+        {isAuthenticated && userData && (
+          <div style={{ marginBottom: '14px', background: '#fefae0', padding: '10px 22px', borderRadius: '200px' }}>
+            <h3>Welcome, {userData.name}!</h3>
+          </div>
+        )}
         <Grid container spacing={2}>
           <Grid item xs={12}>
             {demandedProducts.length > 0 && (
@@ -149,6 +201,10 @@ function EcommerceDashboard() {
         </Grid>
         <Categories />
       </Container>
+      {/* Show registration popup only if not authenticated and not previously logged in */}
+      {!isAuthenticated && showRegistration && (
+        <AuthWrapper onClose={handleCloseRegistration} />
+      )}
     </div>
   );
 }

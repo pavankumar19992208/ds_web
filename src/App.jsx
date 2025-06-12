@@ -1,7 +1,8 @@
 import React from 'react';
 import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { GlobalStateProvider } from './GlobalStateContext';
+// import { GlobalStateProvider } from './GlobalStateContext';
+import { GlobalStateProvider } from './components/Ecommerce/GlobalStateContext.jsx';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
@@ -39,6 +40,7 @@ import SchoolStatistics from './components/P2pHeader/SchoolSegment/schooldashboa
 import LandingPage from './components/landingPage/landingPage.jsx';
 import EventPlanning from './components/P2pHeader/SchoolSegment/schooldashboard/Sidebar/event-planning/eventPlanning.jsx';
 import { UserContext } from './context/UserContext';
+import AuthWrapper from './components/Ecommerce/Authentication/AuthWrapper.jsx';
 
 const theme = createTheme();
 // mysql://root:nXbyCttzErnSirxYRBZtYNJRprHnbTar@shuttle.proxy.rlwy.net:21943/railway
@@ -57,6 +59,7 @@ function App() {
             <Route path="/schlogin" element={<SchoolLogin />} />
             <Route path="/register-school" element={<SchoolRegistration />} />
             <Route path="/school_login" element={<SchoolLogin/>} />
+            <Route path="/ecommerce_registration" element={<AuthWrapper />} />
             <Route path="/school_dashboard/:school_id" element={<SchoolDashboard />} />
             <Route path="/staff-enroll" element={<StaffEnrollForm />} />
             <Route path="/student-enroll" element={<StudentEnrollForm />} />

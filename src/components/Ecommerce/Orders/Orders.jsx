@@ -1,20 +1,28 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import EcommerceNavbar from '../EcommerceNavbar/ecommerceNavbar';
 import './orders.css';
 import BaseUrl from '../../../config';
+import { GlobalStateContext } from '../GlobalStateContext'; // <-- Import context
 
 const OrdersPage = () => {
   const [orders, setOrders] = useState([]);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const { user, isAuthenticated } = useContext(GlobalStateContext); // <-- Get user
 
   useEffect(() => {
+    if (!user || !user.id) return; // Wait for user to be available
+
     const fetchData = async () => {
       try {
         // Fetch orders data
-        const ordersResponse = await fetch(`${BaseUrl}/orders?user_id=1`);
+        const ordersResponse = await fetch(`${BaseUrl}/orders?user_id=${user.id}`, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        });
         const ordersData = await ordersResponse.json();
         setOrders(ordersData);
 
@@ -30,7 +38,7 @@ const OrdersPage = () => {
     };
 
     fetchData();
-  }, []);
+  }, [user]);
 
   const getProductDetails = (productId) => {
     return products.find(product => product.id === productId);
@@ -45,8 +53,90 @@ const OrdersPage = () => {
     navigate(`/product-overview/${productId}`);
   };
 
+  const handlePayment = async (orderId, amount) => {
+    try {
+      // Create Razorpay order
+      const razorpayResponse = await fetch(`${BaseUrl}/api/create-razorpay-order`, {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({
+          amount: Math.round(amount * 100),
+          currency: 'INR',
+          receipt: `order_${orderId}`,
+          order_id: orderId
+        })
+      });
+
+      const razorpayData = await razorpayResponse.json();
+
+      // Load Razorpay script
+      const script = document.createElement('script');
+      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      script.onload = () => {
+        const options = {
+          key: razorpayData.key,
+          amount: razorpayData.amount,
+          currency: razorpayData.currency,
+          name: 'Your Store',
+          description: `Order #${orderId}`,
+          order_id: razorpayData.id,
+          handler: async (response) => {
+            try {
+              const verifyResponse = await fetch(`${BaseUrl}/api/verify-payment`, {
+                method: 'POST',
+                headers: { 
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${localStorage.getItem('token')}`
+                },
+                body: JSON.stringify({
+                  razorpay_order_id: response.razorpay_order_id,
+                  razorpay_payment_id: response.razorpay_payment_id,
+                  razorpay_signature: response.razorpay_signature,
+                  order_id: orderId
+                })
+              });
+
+              const result = await verifyResponse.json();
+              if (!verifyResponse.ok || result.status !== 'success') {
+                alert('Payment verification failed');
+                return;
+              }
+              
+              // Refresh orders after successful payment
+              const updatedOrders = await fetch(`${BaseUrl}/orders?user_id=${user.id}`, {
+                headers: {
+                  'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+              });
+              setOrders(await updatedOrders.json());
+            } catch (err) {
+              console.error('Payment verification error:', err);
+            }
+          },
+          theme: {
+            color: '#3399cc'
+          }
+        };
+
+        const rzp = new window.Razorpay(options);
+        rzp.open();
+      };
+      document.body.appendChild(script);
+    } catch (error) {
+      console.error('Payment initiation error:', error);
+    }
+  };
+
   if (loading) {
-    return <div className="loading">Loading your orders...</div>;
+    return (
+      <>
+        <EcommerceNavbar />
+        <div className="loading">Loading your orders...</div>
+      </>
+    );
   }
 
   return (
@@ -96,12 +186,22 @@ const OrdersPage = () => {
                   <div className="order-total">
                     <p>Total: ₹{order.total_amount.toFixed(2)}</p>
                   </div>
-                  <button 
-                    className="track-button"
-                    onClick={() => navigate(`/order-tracking/${order.order_id}`)}
-                  >
-                    Track Order
-                  </button>
+                  <div className="order-actions">
+                    {order.status.toLowerCase() === 'created' && (
+                      <button 
+                        className="pay-now-button"
+                        onClick={() => handlePayment(order.order_id, order.total_amount)}
+                      >
+                        Complete Payment
+                      </button>
+                    )}
+                    <button 
+                      className="track-button"
+                      onClick={() => navigate(`/order-tracking/${order.order_id}`)}
+                    >
+                      Track Order
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}

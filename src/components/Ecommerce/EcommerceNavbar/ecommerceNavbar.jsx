@@ -6,6 +6,7 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import SearchIcon from '@mui/icons-material/Search';
 import './ecommerceNavbar.css';
 import BaseUrl from '../../../config';
+import EcommerceSidebar from '../EcommerceSidebar/EcommerceSidebar';
 
 const Search = styled('div')(({ theme }) => ({
   '--theme-shape-border-radius': theme.shape.borderRadius,
@@ -42,14 +43,13 @@ function EcommerceNavbar() {
   const [searchInput, setSearchInput] = useState('');
   const [products, setProducts] = useState([]);
   const [error, setError] = useState('');
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
 
   const fetchProducts = async (query) => {
     try {
-      console.log(`Fetching products for query: ${query}`);
       const response = await fetch(`${BaseUrl}/products?keywords=${query}`);
       const data = await response.json();
-      console.log('Fetched products:', data);
       if (Array.isArray(data) && data.length === 0) {
         setError('No products found');
       } else {
@@ -57,7 +57,6 @@ function EcommerceNavbar() {
       }
       setProducts(data);
     } catch (error) {
-      console.error("Error fetching products:", error);
       setError('Error fetching products');
       setProducts([]);
     }
@@ -135,24 +134,27 @@ function EcommerceNavbar() {
         </Search>
         <IconButton color="inherit" sx={{ mx: 1.5 }} onClick={() => navigate('/cart')}>
           <Badge badgeContent={4} color="secondary" sx={{ '& .MuiBadge-badge': { fontSize: '0.75rem', padding: '0 4px', marginTop: '-6px'} }}>
-          <span style={{ color: 'white', fontSize: '1rem' }} className='en-urbanist-regular'>Cart</span>
+            <span style={{ color: 'white', fontSize: '1rem' }} className='en-urbanist-regular'>Cart</span>
           </Badge>
         </IconButton>
         <IconButton color="inherit" sx={{ mx: 1.5 }}>
           <Badge badgeContent={17} color="secondary" sx={{ '& .MuiBadge-badge': { fontSize: '0.75rem', padding: '0 4px', marginTop: '-6px' }}}>
-          <span style={{ color: 'white', fontSize: '1rem' }} className='en-urbanist-regular'>Mail</span>
+            <span style={{ color: 'white', fontSize: '1rem' }} className='en-urbanist-regular'>Mail</span>
           </Badge>
-          </IconButton>
-        <IconButton color="inherit" sx={{ mx: 1.5 }}>
-        <span style={{ color: 'white', fontSize: '1rem' }} className='en-urbanist-regular' onClick={() => navigate('/orders')}>Orders</span>
         </IconButton>
         <IconButton color="inherit" sx={{ mx: 1.5 }}>
-        <span style={{ color: 'white', fontSize: '1rem' }} className='en-urbanist-regular'>Favorites</span>
+          <span style={{ color: 'white', fontSize: '1rem' }} className='en-urbanist-regular' onClick={() => navigate('/orders')}>Orders</span>
         </IconButton>
-        <IconButton edge="start" color="inherit" sx={{ mx: 1.5 }}>
-        <AccountCircle sx={{color:'white'}}/>
+        <IconButton color="inherit" sx={{ mx: 1.5 }}>
+          <span style={{ color: 'white', fontSize: '1rem' }} className='en-urbanist-regular'>Favorites</span>
+        </IconButton>
+        {/* Sidebar trigger */}
+        <IconButton edge="end" color="inherit" sx={{ mx: 1.5 }} onClick={() => setSidebarOpen(true)}>
+          <AccountCircle sx={{color:'white'}}/>
         </IconButton>
       </div>
+      {/* Sidebar Drawer */}
+      <EcommerceSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
     </div>
   );
 }

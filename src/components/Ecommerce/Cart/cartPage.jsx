@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import EcommerceNavbar from '../EcommerceNavbar/ecommerceNavbar';
 import './cartPage.css';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import BaseUrl from '../../../config';
-
+import { GlobalStateContext } from '../GlobalStateContext'; // <-- Import context
 
 const CartPage = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -13,14 +13,19 @@ const CartPage = () => {
   const [loading, setLoading] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [itemToRemove, setItemToRemove] = useState(null);
+  const [selectedItems, setSelectedItems] = useState([]);
   const navigate = useNavigate();
+  const { user, isAuthenticated } = useContext(GlobalStateContext); // <-- Get user
 
   useEffect(() => {
+    if (!user || !user.id) return; // Wait for user to be available
     const fetchCartItems = async () => {
       try {
-        const response = await fetch(`${BaseUrl}/cart/1`);
+        const response = await fetch(`${BaseUrl}/cart/${user.id}`);
         const data = await response.json();
         setCartItems(data);
+        // Initialize all items as selected by default
+        setSelectedItems(data.map(item => item.id));
       } catch (error) {
         console.error("Error fetching cart items:", error);
         toast.error("Failed to load cart items");
@@ -40,7 +45,7 @@ const CartPage = () => {
 
     fetchCartItems();
     fetchProducts();
-  }, []);
+  }, [user]);
 
   const getProductDetails = (productId) => {
     return products.find(product => product.id === productId);
@@ -55,11 +60,12 @@ const CartPage = () => {
     if (!itemToRemove) return;
     
     try {
-      const response = await fetch(`${BaseUrl}/cart/1/${itemToRemove}`, {
+      const response = await fetch(`${BaseUrl}/cart/${user.id}/${itemToRemove}`, {
         method: 'DELETE'
       });
       if (response.ok) {
         setCartItems(cartItems.filter(item => item.id !== itemToRemove));
+        setSelectedItems(selectedItems.filter(id => id !== itemToRemove));
         toast.success("Item removed from cart successfully");
       } else {
         throw new Error('Failed to remove item');
@@ -76,7 +82,7 @@ const CartPage = () => {
   const handleQuantityChange = async (productId, newQuantity) => {
     const quantity = Math.max(1, newQuantity);
     try {
-      const response = await fetch(`${BaseUrl}/cart/1/${productId}`, {
+      const response = await fetch(`${BaseUrl}/cart/${user.id}/${productId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ quantity }),
@@ -94,35 +100,39 @@ const CartPage = () => {
 
   const calculateSubtotal = () => {
     return cartItems.reduce((total, item) => {
+      if (!selectedItems.includes(item.id)) return total;
       const product = getProductDetails(item.id);
       return product ? total + (product.price * item.quantity) : total;
     }, 0);
   };
 
   const calculateTotalItems = () => {
-    return cartItems.reduce((total, item) => total + item.quantity, 0);
+    return cartItems.reduce((total, item) => {
+      return selectedItems.includes(item.id) ? total + item.quantity : total;
+    }, 0);
   };
 
   const handleCheckout = async () => {
-    if (cartItems.length === 0) {
-      toast.warning("Your cart is empty");
+    const itemsToCheckout = cartItems.filter(item => selectedItems.includes(item.id));
+    
+    if (itemsToCheckout.length === 0) {
+      toast.warning("Please select at least one item to checkout");
       return;
     }
     
     setLoading(true);
     try {
-      // Prepare order data
+      // Prepare order data with only selected items
       const orderData = {
-        user_id: 1, // Hardcoded for now, replace with actual user ID
-        items: cartItems.map(item => ({
+        user_id: user.id,
+        items: itemsToCheckout.map(item => ({
           product_id: item.id,
           quantity: item.quantity
         })),
-        shipping_address: "123 Main St, Anytown, USA", // Replace with actual address
-        payment_method: "Credit Card" // Replace with actual payment method
+        shipping_address: "123 Main St, Anytown, USA",
+        payment_method: "Credit Card"
       };
 
-      // Create order
       const response = await fetch(`${BaseUrl}/orders/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -133,14 +143,18 @@ const CartPage = () => {
 
       const result = await response.json();
       
-      // Clear cart after successful order creation
+      // Remove only the selected items from cart after successful order
       await Promise.all(
-        cartItems.map(item => 
-          fetch(`${BaseUrl}/cart/1/${item.id}`, { method: 'DELETE' })
+        itemsToCheckout.map(item => 
+          fetch(`${BaseUrl}/cart/${user.id}/${item.id}`, { method: 'DELETE' })
         )
       );
       
-      setCartItems([]);
+      // Update cart and selected items state
+      const remainingItems = cartItems.filter(item => !selectedItems.includes(item.id));
+      setCartItems(remainingItems);
+      setSelectedItems([]);
+      
       toast.success("Order placed successfully!");
       navigate(`/order-confirmation/${result.order_id}`);
     } catch (error) {
@@ -159,23 +173,45 @@ const CartPage = () => {
     navigate('/orders');
   };
 
-// In cartPage.jsx, modify the handlePayment function:
-const handlePayment = () => {
-  navigate('/checkout', {
-    state: {
-      items: cartItems.map(item => {
-        const product = getProductDetails(item.id);
-        return {
-          id: item.id,
-          name: product?.name || 'Unknown Product',
-          price: product?.price || 0,
-          quantity: item.quantity
-        };
-      }),
-      subtotal: calculateSubtotal()
+  const handlePayment = () => {
+    const itemsToCheckout = cartItems.filter(item => selectedItems.includes(item.id));
+    
+    if (itemsToCheckout.length === 0) {
+      toast.warning("Please select at least one item to checkout");
+      return;
     }
-  });
-};
+    
+    navigate('/checkout', {
+      state: {
+        items: itemsToCheckout.map(item => {
+          const product = getProductDetails(item.id);
+          return {
+            id: item.id,
+            name: product?.name || 'Unknown Product',
+            price: product?.price || 0,
+            quantity: item.quantity
+          };
+        }),
+        subtotal: calculateSubtotal()
+      }
+    });
+  };
+
+  const toggleItemSelection = (productId) => {
+    setSelectedItems(prev => 
+      prev.includes(productId)
+        ? prev.filter(id => id !== productId)
+        : [...prev, productId]
+    );
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedItems.length === cartItems.length) {
+      setSelectedItems([]);
+    } else {
+      setSelectedItems(cartItems.map(item => item.id));
+    }
+  };
 
   return (
     <>
@@ -184,12 +220,35 @@ const handlePayment = () => {
         <div className="cart-items-container">
           <div className="cart-header">
             <h2>Your Shopping Cart</h2>
+            {cartItems.length > 0 && (
+              <div className="select-all">
+                <input
+                  type="checkbox"
+                  checked={selectedItems.length === cartItems.length && cartItems.length > 0}
+                  onChange={toggleSelectAll}
+                  id="select-all"
+                />
+                <label htmlFor="select-all">
+                  {selectedItems.length === cartItems.length && cartItems.length > 0 
+                    ? 'Deselect All' 
+                    : 'Select All'}
+                </label>
+              </div>
+            )}
           </div>
           {cartItems.length > 0 ? (
             cartItems.map((item) => {
               const product = getProductDetails(item.id);
               return product ? (
                 <div key={item.id} className="cart-item">
+                  <div className="item-selection">
+                    <input
+                      type="checkbox"
+                      checked={selectedItems.includes(item.id)}
+                      onChange={() => toggleItemSelection(item.id)}
+                      id={`select-${item.id}`}
+                    />
+                  </div>
                   <div className="image-container">
                     {product.mainImageUrl && (
                       <img 
@@ -239,7 +298,7 @@ const handlePayment = () => {
           <div className="cart-summary">
             <h2>Cart Summary</h2>
             <div className="summary-item">
-              <span>Total Items:</span>
+              <span>Selected Items:</span>
               <span>{calculateTotalItems()}</span>
             </div>
             <div className="summary-item">
@@ -249,7 +308,7 @@ const handlePayment = () => {
             <button 
               onClick={handlePayment}
               className="checkout-button"
-              disabled={loading}
+              disabled={loading || selectedItems.length === 0}
             >
               {loading ? 'Processing...' : 'Proceed to Checkout'}
             </button>
