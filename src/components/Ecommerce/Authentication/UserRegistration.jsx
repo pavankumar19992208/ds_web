@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import BASE_URL from '../../../config';
@@ -6,13 +6,13 @@ import SuccessPopup from './successPopup';
 import ErrorPopup from './errorPopup';
 import TextField from '@mui/material/TextField';
 import { Close, ArrowBack  } from '@mui/icons-material';
-import { GlobalStateContext } from '../../../GlobalStateContext';
+import { GlobalStateContext } from '../GlobalStateContext';
 import './UserRegistration.css';
 import logo from '../../../images/logo.png'; // Adjust the path as necessary
 
 const RegistrationPopup = ({ onClose, toggleAuthMode }) => {
   const navigate = useNavigate();
-  const { setGlobalData } = useContext(GlobalStateContext);
+  const { setUser } = useContext(GlobalStateContext);
 
   const [registrationData, setRegistrationData] = useState({
     name: '',
@@ -23,7 +23,6 @@ const RegistrationPopup = ({ onClose, toggleAuthMode }) => {
   });
 
   const [isSuccess, setIsSuccess] = useState(false);
-  const [showOTP, setShowOTP] = useState(false);
   const [otp, setOtp] = useState(['', '', '', '']);
   const [otpTimer, setOtpTimer] = useState(0);
   const [canResendOTP, setCanResendOTP] = useState(true);
@@ -34,71 +33,113 @@ const RegistrationPopup = ({ onClose, toggleAuthMode }) => {
   const [successMessage, setSuccessMessage] = useState('');
   const [registrationStep, setRegistrationStep] = useState(1);
 
+    useEffect(() => {
+    let interval;
+    if (otpTimer > 0) {
+      interval = setInterval(() => {
+        setOtpTimer(prev => prev - 1);
+      }, 1000);
+    } else if (otpTimer === 0 && !canResendOTP) {
+      setCanResendOTP(true);
+    }
+    return () => clearInterval(interval);
+  }, [otpTimer, canResendOTP]);
+
   const handleRegistrationChange = (e) => {
     const { name, value } = e.target;
     setRegistrationData({ ...registrationData, [name]: value });
   };
 
 const handleRegistrationSubmit = async (e) => {
-  e.preventDefault();
-  
-  if (registrationStep === 1) {
-    if (!registrationData.email && !registrationData.mobile_number) {
-      setErrorMessage('Please enter either email or mobile number');
-      setShowError(true);
-      return;
-    }
+    e.preventDefault();
     
-    try {
-      const payload = useMobileLogin
-        ? { mobile_number: registrationData.mobile_number }
-        : { email: registrationData.email };
-      
-      const response = await axios.post(`${BASE_URL}/send-otp`, payload);
-      setSuccessMessage('OTP sent successfully!');
-      setRegistrationStep(2); // Only move to step 2 if OTP send is successful
-    } catch (error) {
-      setErrorMessage(error.response?.data?.detail || 'Failed to send OTP');
-      setShowError(true);
-    }
-  } else {
-    if (registrationData.password !== registrationData.confirmPassword) {
-      setErrorMessage('Passwords do not match');
-      setShowError(true);
-      return;
-    }
-    
-    try {
-      const otpString = otp.join('');
-      const verifyPayload = useMobileLogin
-        ? { mobile_number: registrationData.mobile_number, otp: otpString }
-        : { email: registrationData.email, otp: otpString };
-      
-      // Verify OTP first
-      await axios.post(`${BASE_URL}/verify-otp`, verifyPayload);
-      
-      // Then register the user
-      const registrationPayload = {
-        name: registrationData.name,
-        email: registrationData.email,
-        mobile_number: registrationData.mobile_number,
-        password: registrationData.password,
-        confirmPassword: registrationData.confirmPassword
-      };
-      
-      const response = await axios.post(`${BASE_URL}/userregister`, registrationPayload);
-      setIsSuccess(true);
-      setSuccessMessage('Registration successful!');
-    } catch (error) {
-      if (error.response?.status === 400) {
-        setErrorMessage(error.response?.data?.detail || 'Registration validation failed');
-      } else {
-        setErrorMessage(error.response?.data?.detail || 'Registration failed. Please try again.');
+    if (registrationStep === 1) {
+      // Validate step 1
+      if (!registrationData.email && !registrationData.mobile_number) {
+        setErrorMessage('Please enter either email or mobile number');
+        setShowError(true);
+        return;
       }
-      setShowError(true);
+      
+      try {
+        setIsSendingOTP(true);
+        const payload = useMobileLogin
+          ? { mobile_number: registrationData.mobile_number }
+          : { email: registrationData.email };
+        
+        await axios.post(`${BASE_URL}/send-otp`, payload);
+        setSuccessMessage('OTP sent successfully!');
+        setRegistrationStep(2);
+      } catch (error) {
+        setErrorMessage(error.response?.data?.detail || 'Failed to send OTP');
+        setShowError(true);
+      } finally {
+        setIsSendingOTP(false);
+      }
+    } else {
+      // Validate step 2
+      if (!registrationData.name) {
+        setErrorMessage('Name is required');
+        setShowError(true);
+        return;
+      }
+      
+      if (registrationData.password !== registrationData.confirmPassword) {
+        setErrorMessage('Passwords do not match');
+        setShowError(true);
+        return;
+      }
+      
+      if (otp.some(digit => digit === '')) {
+        setErrorMessage('Please enter the complete OTP');
+        setShowError(true);
+        return;
+      }
+      
+      try {
+        const otpString = otp.join('');
+        // Verify OTP first
+        const verifyPayload = useMobileLogin
+          ? { mobile_number: registrationData.mobile_number, otp: otpString }
+          : { email: registrationData.email, otp: otpString };
+        
+        await axios.post(`${BASE_URL}/verify-otp`, verifyPayload);
+        
+        // Then register the user
+        const registrationPayload = {
+          name: registrationData.name,
+          email: useMobileLogin ? null : registrationData.email,
+          mobile_number: useMobileLogin ? registrationData.mobile_number : null,
+          password: registrationData.password,
+          confirmPassword: registrationData.confirmPassword
+        };
+        
+        const response = await axios.post(`${BASE_URL}/userregister`, registrationPayload);
+        
+        // Handle successful registration
+if (response.data.token) {
+  localStorage.setItem('authToken', response.data.token);
+  setUser({
+    id: response.data.user_id,
+    name: response.data.name,
+    email: response.data.email,
+    mobile_number: response.data.mobile_number
+  });
+}
+        
+        setIsSuccess(true);
+        setSuccessMessage('Registration successful!');
+      } catch (error) {
+        console.error('Registration error:', error);
+        setErrorMessage(
+          error.response?.data?.detail || 
+          error.response?.data?.message || 
+          'Registration failed. Please try again.'
+        );
+        setShowError(true);
+      }
     }
-  }
-};
+  };
 
   const handleSuccessClose = () => {
     setIsSuccess(false);

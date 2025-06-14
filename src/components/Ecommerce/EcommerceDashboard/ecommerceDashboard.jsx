@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Grid, Container, Button } from '@mui/material';
+import { Grid, Container, Button, Typography } from '@mui/material';
 import Slider from "react-slick";
 import { useNavigate } from 'react-router-dom';
 import './ecommerceDashboard.css';
@@ -18,7 +18,7 @@ const dashboardStyle = {
 };
 
 const contentStyle = {
-  marginTop: '70px',
+  marginTop: '90px',
   maxWidth: '1800px',
 };
 
@@ -38,32 +38,10 @@ const loaderStyle = {
 function EcommerceDashboard() {
   const [demandedProducts, setDemandedProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [showRegistration, setShowRegistration] = useState(() => {
-    // Only show registration if not authenticated and not previously logged in this session
-    return !localStorage.getItem('isLoggedIn');
-  });
   const [userData, setUserData] = useState(null);
-  const { user, isAuthenticated } = useContext(GlobalStateContext);
+  const [showAuth, setShowAuth] = useState(false); // State to control auth modal visibility
+  const { user, isAuthenticated, loginUser, logoutUser } = useContext(GlobalStateContext);
   const navigate = useNavigate();
-
-  // Hide registration popup if already logged in
-  useEffect(() => {
-    if (isAuthenticated && user && user.id) {
-      setShowRegistration(false);
-      localStorage.setItem('isLoggedIn', 'true');
-    }
-  }, [isAuthenticated, user]);
-
-  // Remove login flag on logout or browser close (optional: you can enhance this logic)
-  useEffect(() => {
-    const handleLogoutOrClose = () => {
-      if (!isAuthenticated) {
-        localStorage.removeItem('isLoggedIn');
-      }
-    };
-    window.addEventListener('beforeunload', handleLogoutOrClose);
-    return () => window.removeEventListener('beforeunload', handleLogoutOrClose);
-  }, [isAuthenticated]);
 
   // Fetch user data after login
   useEffect(() => {
@@ -122,9 +100,12 @@ function EcommerceDashboard() {
     navigate(`/product-overview/${productId}`);
   };
 
-  const handleCloseRegistration = () => {
-    setShowRegistration(false);
-    localStorage.setItem('isLoggedIn', 'true');
+  const handleCloseAuth = () => {
+    setShowAuth(false);
+  };
+
+  const handleOpenAuth = () => {
+    setShowAuth(true);
   };
 
   if (isLoading) {
@@ -141,11 +122,11 @@ function EcommerceDashboard() {
 
   return (
     <div className="dashboardStyle" style={dashboardStyle}>
-      <EcommerceNavbar />
+      <EcommerceNavbar onLoginClick={handleOpenAuth} />
       <Container style={contentStyle}>
         {isAuthenticated && userData && (
-          <div style={{ marginBottom: '14px', background: '#fefae0', padding: '10px 22px', borderRadius: '200px' }}>
-            <h3>Welcome, {userData.name}!</h3>
+          <div style={{ marginBottom: '14px', background: '#fefae0', border: '1px #fefae0', padding: '10px 22px', borderRadius: '200px' }}>
+            <Typography  style={{ fontWeight: '600'}} >Welcome, {userData.name}!</Typography>
           </div>
         )}
         <Grid container spacing={2}>
@@ -201,9 +182,10 @@ function EcommerceDashboard() {
         </Grid>
         <Categories />
       </Container>
-      {/* Show registration popup only if not authenticated and not previously logged in */}
-      {!isAuthenticated && showRegistration && (
-        <AuthWrapper onClose={handleCloseRegistration} />
+      
+      {/* Auth modal - only shown when explicitly triggered */}
+      {showAuth && (
+        <AuthWrapper onClose={handleCloseAuth} />
       )}
     </div>
   );

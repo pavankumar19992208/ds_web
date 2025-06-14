@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import EcommerceNavbar from '../EcommerceNavbar/ecommerceNavbar';
 import './checkout.css';
 import BaseUrl from '../../../config';
+import { GlobalStateContext } from '../GlobalStateContext'; // Import the context
 
 const loadRazorpay = () => {
   return new Promise((resolve, reject) => {
@@ -23,7 +24,7 @@ const loadRazorpay = () => {
   });
 };
 
-const CheckoutForm = ({ orderDetails, onPaymentSuccess }) => {
+const CheckoutForm = ({ orderDetails, onPaymentSuccess, user }) => { // Add user prop
   const [error, setError] = useState(null);
   const [processing, setProcessing] = useState(false);
 
@@ -46,14 +47,14 @@ const CheckoutForm = ({ orderDetails, onPaymentSuccess }) => {
         throw new Error('Invalid order total amount');
       }
 
-      const orderResponse = await fetch(`${BaseUrl}/orders`, {
+      const orderResponse = await fetch(`${BaseUrl}/orders/public`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
         body: JSON.stringify({
-          user_id: 1,
+          user_id: user.id, // Use the actual user ID from context
           items: orderDetails.items.map(item => ({
             product_id: item.id,
             quantity: item.quantity
@@ -169,10 +170,11 @@ const CheckoutForm = ({ orderDetails, onPaymentSuccess }) => {
 const CheckoutPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { user } = useContext(GlobalStateContext); // Get user from context
   
   const [orderDetails, setOrderDetails] = useState({
     orderId: '',
-    userId: localStorage.getItem('userId') || '',
+    userId: user?.id || '', // Use user ID from context
     items: [],
     shippingInfo: {
       name: '',
@@ -206,7 +208,8 @@ const CheckoutPage = () => {
           setOrderDetails(prev => ({
             ...prev,
             items: location.state.items || [],
-            orderId: location.state.orderId || Date.now().toString()
+            orderId: location.state.orderId || Date.now().toString(),
+            userId: user?.id || '' // Ensure user ID is set
           }));
           setLoading(false);
           return;
@@ -223,7 +226,8 @@ const CheckoutPage = () => {
           setOrderDetails(prev => ({
             ...prev,
             items: cartData.items || [],
-            orderId: cartData.orderId || Date.now().toString()
+            orderId: cartData.orderId || Date.now().toString(),
+            userId: user?.id || '' // Ensure user ID is set
           }));
         }
       } catch (error) {
@@ -233,8 +237,10 @@ const CheckoutPage = () => {
       }
     };
 
-    fetchCartData();
-  }, [location.state]);
+    if (user?.id) { // Only fetch if user is available
+      fetchCartData();
+    }
+  }, [location.state, user]); // Add user to dependencies
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -383,6 +389,7 @@ const CheckoutPage = () => {
                   <CheckoutForm 
                     orderDetails={{...orderDetails, total: displayTotal}} 
                     onPaymentSuccess={handlePaymentSuccess} 
+                    user={user} // Pass user to CheckoutForm
                   />
                 </div>
               </>

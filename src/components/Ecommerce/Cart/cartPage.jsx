@@ -5,7 +5,22 @@ import './cartPage.css';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import BaseUrl from '../../../config';
+import Lottie from 'lottie-react';
+import loadingAnimation from '../loader/loader.json';
 import { GlobalStateContext } from '../GlobalStateContext'; // <-- Import context
+
+const loaderStyle = {
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  height: '100vh',
+  width: '100vw',
+  position: 'fixed',
+  top: 0,
+  left: 0,
+  backgroundColor: 'rgba(255, 255, 255, 0.8)',
+  zIndex: 9999
+};
 
 const CartPage = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -14,6 +29,7 @@ const CartPage = () => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [itemToRemove, setItemToRemove] = useState(null);
   const [selectedItems, setSelectedItems] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   const { user, isAuthenticated } = useContext(GlobalStateContext); // <-- Get user
 
@@ -21,6 +37,7 @@ const CartPage = () => {
     if (!user || !user.id) return; // Wait for user to be available
     const fetchCartItems = async () => {
       try {
+        setIsLoading(true);
         const response = await fetch(`${BaseUrl}/cart/${user.id}`);
         const data = await response.json();
         setCartItems(data);
@@ -29,6 +46,8 @@ const CartPage = () => {
       } catch (error) {
         console.error("Error fetching cart items:", error);
         toast.error("Failed to load cart items");
+      }finally {
+        setIsLoading(false);
       }
     };
 
@@ -133,11 +152,19 @@ const CartPage = () => {
         payment_method: "Credit Card"
       };
 
-      const response = await fetch(`${BaseUrl}/orders/`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(orderData)
-      });
+      const response = await fetch(`${BaseUrl}/orders/public`, {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      },
+      body: JSON.stringify({
+        items: itemsToCheckout.map(item => ({
+          product_id: item.id,
+          quantity: item.quantity
+        }))
+      })
+    });
 
       if (!response.ok) throw new Error('Failed to create order');
 
@@ -173,29 +200,30 @@ const CartPage = () => {
     navigate('/orders');
   };
 
-  const handlePayment = () => {
-    const itemsToCheckout = cartItems.filter(item => selectedItems.includes(item.id));
-    
-    if (itemsToCheckout.length === 0) {
-      toast.warning("Please select at least one item to checkout");
-      return;
+const handlePayment = () => {
+  const itemsToCheckout = cartItems.filter(item => selectedItems.includes(item.id));
+  
+  if (itemsToCheckout.length === 0) {
+    toast.warning("Please select at least one item to checkout");
+    return;
+  }
+  
+  navigate('/checkout', {
+    state: {
+      user_id: user.id, // <-- Make sure this is included
+      items: itemsToCheckout.map(item => {
+        const product = getProductDetails(item.id);
+        return {
+          id: item.id,
+          name: product?.name || 'Unknown Product',
+          price: product?.price || 0,
+          quantity: item.quantity
+        };
+      }),
+      subtotal: calculateSubtotal()
     }
-    
-    navigate('/checkout', {
-      state: {
-        items: itemsToCheckout.map(item => {
-          const product = getProductDetails(item.id);
-          return {
-            id: item.id,
-            name: product?.name || 'Unknown Product',
-            price: product?.price || 0,
-            quantity: item.quantity
-          };
-        }),
-        subtotal: calculateSubtotal()
-      }
-    });
-  };
+  });
+};
 
   const toggleItemSelection = (productId) => {
     setSelectedItems(prev => 
@@ -212,6 +240,18 @@ const CartPage = () => {
       setSelectedItems(cartItems.map(item => item.id));
     }
   };
+
+  if (isLoading) {
+    return (
+      <div style={loaderStyle}>
+        <Lottie 
+          animationData={loadingAnimation} 
+          loop={true} 
+          style={{ width: 300, height: 300 }}
+        />
+      </div>
+    );
+  }
 
   return (
     <>

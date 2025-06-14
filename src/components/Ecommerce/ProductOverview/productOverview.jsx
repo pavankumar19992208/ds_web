@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import Slider from "react-slick";
 import EcommerceNavbar from '../EcommerceNavbar/ecommerceNavbar';
@@ -11,8 +11,10 @@ import { FaTimes } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Lottie from 'lottie-react';
-import loadingAnimation from '../loader/loader.json'; // Import your Lottie JSON file
+import loadingAnimation from '../loader/loader.json';
 import BaseUrl from '../../../config';
+import zIndex from '@mui/material/styles/zIndex';
+import { GlobalStateContext } from '../GlobalStateContext'; // <-- Import context
 
 Modal.setAppElement('#root');
 
@@ -25,8 +27,9 @@ const ProductOverview = () => {
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAddedToCart, setIsAddedToCart] = useState(false);
+  const { user } = useContext(GlobalStateContext) || {}; // <-- Get user from context
 
-    const loaderStyle = {
+  const loaderStyle = {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
@@ -38,8 +41,7 @@ const ProductOverview = () => {
     backgroundColor: 'rgba(255, 255, 255, 0.8)',
     zIndex: 9999
   };
-  
-  
+
   useEffect(() => {
     const fetchProduct = async () => {
       setIsLoading(true);
@@ -61,12 +63,16 @@ const ProductOverview = () => {
   }, [productId]);
 
   const handleAddToCart = async () => {
+    if (!user || !user.id) {
+      toast.error("Please login to add to cart.");
+      return;
+    }
     try {
       const response = await fetch(`${BaseUrl}/cart`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          user_id: 1,
+          user_id: user.id, // <-- Use logged-in user's id
           id: parseInt(productId),
           quantity: quantity
         })
@@ -210,7 +216,36 @@ const ProductOverview = () => {
               <p className="product-price">₹{product.price}</p>
             </div>
 
-            <div className="product-description-section">
+            <div className="product-actions">
+              <div className="quantity-selector">
+                <label>Quantity:</label>
+                <input
+                  type="number"
+                  min="1"
+                  value={quantity}
+                  onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+                />
+              </div>
+
+              <div className="action-buttons">
+                <button className="fav-btn" onClick={() => toast.info("Added to favorites!")}>
+                  Add to Favorites
+                </button>
+                <button 
+                  className={`cart-btn ${isAddedToCart ? 'added-to-cart' : ''}`} 
+                  onClick={handleAddToCart}
+                  disabled={isAddedToCart}
+                >
+                  {isAddedToCart ? 'Added to Cart!' : 'Add to Cart'}
+                </button>
+                <button 
+                  className="buy-now-btn" 
+                  onClick={() => toast.info("Proceeding to checkout!")}
+                >
+                  Buy Now
+                </button>
+              </div>
+               <div className="product-description-section">
               <h3>Description</h3>
               <div className="description-content">
                 <span dangerouslySetInnerHTML={{ __html: renderDescription() }} />
@@ -224,36 +259,6 @@ const ProductOverview = () => {
                 )}
               </div>
             </div>
-
-            <div className="product-actions">
-              <div className="quantity-selector">
-                <label>Quantity:</label>
-                <input
-                  type="number"
-                  min="1"
-                  value={quantity}
-                  onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-                />
-              </div>
-
-              <div className="action-buttons">
-                <button className="secondary-btn" onClick={() => toast.info("Added to favorites!")}>
-                  Add to Favorites
-                </button>
-                <button 
-                  className={`primary-btn ${isAddedToCart ? 'added-to-cart' : ''}`} 
-                  onClick={handleAddToCart}
-                  disabled={isAddedToCart}
-                >
-                  {isAddedToCart ? 'Added to Cart!' : 'Add to Cart'}
-                </button>
-                <button 
-                  className="buy-now-btn" 
-                  onClick={() => toast.info("Proceeding to checkout!")}
-                >
-                  Buy Now
-                </button>
-              </div>
             </div>
           </div>
         </div>

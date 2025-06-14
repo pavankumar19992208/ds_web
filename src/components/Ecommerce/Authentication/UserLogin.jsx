@@ -1,14 +1,13 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import BASE_URL from '../../../config';
 import ErrorPopup from './errorPopup';
 import TextField from '@mui/material/TextField';
 import { Close } from '@mui/icons-material';
-import { GlobalStateContext } from '../GlobalStateContext'
+import { GlobalStateContext } from '../GlobalStateContext';
 import './UserRegistration.css';
-import logo from '../../../images/logo.png'; // Adjust the path as necessary
-
+import logo from '../../../images/logo.png';
 
 const LoginPopup = ({ onClose, toggleAuthMode }) => {
   const navigate = useNavigate();
@@ -28,6 +27,16 @@ const LoginPopup = ({ onClose, toggleAuthMode }) => {
   const [errorMessage, setErrorMessage] = useState('');
   const [showError, setShowError] = useState(false);
   const [isSendingOTP, setIsSendingOTP] = useState(false);
+
+  // OTP timer countdown effect
+  useEffect(() => {
+    if (otpTimer > 0) {
+      const timer = setTimeout(() => setOtpTimer(otpTimer - 1), 1000);
+      return () => clearTimeout(timer);
+    } else {
+      setCanResendOTP(true);
+    }
+  }, [otpTimer]);
 
   const handleLoginChange = (e) => {
     const { name, value } = e.target;
@@ -54,15 +63,46 @@ const handleLoginSubmit = async (e) => {
       response = await axios.post(`${BASE_URL}/login`, payload);
     }
 
-    // Store user data in global context and localStorage
+    console.log('Full response:', response); // Debug the complete response
+
+    // Verify response structure - now checking for both token and user
+    if (!response.data?.token || !response.data?.user) {
+      console.error('Invalid response structure:', response.data);
+      throw new Error('Invalid response structure from server');
+    }
+
+    // Store token and user data
+    localStorage.setItem('token', response.data.token);
+    localStorage.setItem('user', JSON.stringify(response.data.user));
+    
+    // Update global state
     loginUser(response.data.user);
     
-    // Close the popup and redirect
+    // Set default authorization header
+    axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
+    
     onClose();
     navigate('/ecommerce-dashboard');
+
   } catch (error) {
-    setErrorMessage(error.response?.data?.detail || 'Invalid credentials. Please try again.');
+    console.error('Login error details:', {
+      error: error,
+      response: error.response,
+      message: error.message
+    });
+    
+    setErrorMessage(
+      error.response?.data?.message || 
+      error.response?.data?.detail || 
+      error.message || 
+      'Login failed. Please try again.'
+    );
     setShowError(true);
+    
+    // Clear any partial auth state
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    delete axios.defaults.headers.common['Authorization'];
   }
 };
 
@@ -100,7 +140,10 @@ const handleLoginSubmit = async (e) => {
       setOtpTimer(30);
       setCanResendOTP(false);
     } catch (error) {
-      setErrorMessage(error.response?.data?.detail || 'Failed to send OTP. Please try again.');
+      const errorMsg = error.response?.data?.message || 
+                      error.response?.data?.detail || 
+                      'Failed to send OTP. Please try again.';
+      setErrorMessage(errorMsg);
       setShowError(true);
     } finally {
       setIsSendingOTP(false);

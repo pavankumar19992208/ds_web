@@ -3,42 +3,129 @@ import { useNavigate } from 'react-router-dom';
 import EcommerceNavbar from '../EcommerceNavbar/ecommerceNavbar';
 import './orders.css';
 import BaseUrl from '../../../config';
-import { GlobalStateContext } from '../GlobalStateContext'; // <-- Import context
+import Lottie from 'lottie-react';
+import loadingAnimation from '../loader/loader.json';
+import { GlobalStateContext } from '../GlobalStateContext';
+import { FaFilter } from 'react-icons/fa';
+
+const loaderStyle = {
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  height: '100vh',
+  width: '100vw',
+  position: 'fixed',
+  top: 0,
+  left: 0,
+  backgroundColor: 'rgba(255, 255, 255, 0.8)',
+  zIndex: 9999
+};
 
 const OrdersPage = () => {
   const [orders, setOrders] = useState([]);
+  const [allOrders, setAllOrders] = useState([]);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const { user, isAuthenticated } = useContext(GlobalStateContext); // <-- Get user
+  const [isLoading, setIsLoading] = useState(true);
+  const { user, isAuthenticated } = useContext(GlobalStateContext);
+  const [showFilterDropdown, setShowFilterDropdown] = useState(false);
+  const [selectedMonth, setSelectedMonth] = useState('');
+  const [selectedYear, setSelectedYear] = useState('');
+  const [error, setError] = useState(null);
+  
+  // Generate month options
+  const months = [
+    { value: '', label: 'All Months' },
+    { value: '01', label: 'January' },
+    { value: '02', label: 'February' },
+    { value: '03', label: 'March' },
+    { value: '04', label: 'April' },
+    { value: '05', label: 'May' },
+    { value: '06', label: 'June' },
+    { value: '07', label: 'July' },
+    { value: '08', label: 'August' },
+    { value: '09', label: 'September' },
+    { value: '10', label: 'October' },
+    { value: '11', label: 'November' },
+    { value: '12', label: 'December' }
+  ];
+  
+  // Generate year options (last 5 years and next 1 year)
+  const currentYear = new Date().getFullYear();
+  const years = [
+    { value: '', label: 'All Years' },
+    ...Array.from({ length: 6 }, (_, i) => ({
+      value: (currentYear - 4 + i).toString(),
+      label: (currentYear - 4 + i).toString()
+    }))
+  ];
 
-  useEffect(() => {
-    if (!user || !user.id) return; // Wait for user to be available
+useEffect(() => {
+    if (!user || !user.id) return;
 
     const fetchData = async () => {
       try {
-        // Fetch orders data
-        const ordersResponse = await fetch(`${BaseUrl}/orders?user_id=${user.id}`, {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
-        });
+        setIsLoading(true);
+        setError(null);
+        
+        console.log(`Fetching orders for user ID: ${user.id}`);
+        const ordersResponse = await fetch(`${BaseUrl}/orders/user/${user.id}`);
+        
+        console.log('Response status:', ordersResponse.status);
         const ordersData = await ordersResponse.json();
+        console.log('Full response:', ordersData);
+        
+        if (!ordersResponse.ok) {
+          throw new Error(ordersData.detail || `HTTP error! status: ${ordersResponse.status}`);
+        }
+        
+        if (!Array.isArray(ordersData)) {
+          throw new Error('Invalid orders data format');
+        }
+        
+        console.log('Orders received:', ordersData);
         setOrders(ordersData);
+        setAllOrders(ordersData);
 
-        // Fetch products data
+        // Fetch products
         const productsResponse = await fetch(`${BaseUrl}/products`);
         const productsData = await productsResponse.json();
         setProducts(productsData);
+        
       } catch (error) {
         console.error("Error fetching data:", error);
+        setError(error.message);
+        setOrders([]);
+        setAllOrders([]);
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     };
 
     fetchData();
   }, [user]);
+
+  // Apply filters when month or year changes
+  useEffect(() => {
+    if (!selectedMonth && !selectedYear) {
+      setOrders(allOrders);
+      return;
+    }
+
+    const filtered = allOrders.filter(order => {
+      const orderDate = new Date(order.order_date);
+      const orderMonth = String(orderDate.getMonth() + 1).padStart(2, '0');
+      const orderYear = String(orderDate.getFullYear());
+      
+      const monthMatch = !selectedMonth || orderMonth === selectedMonth;
+      const yearMatch = !selectedYear || orderYear === selectedYear;
+      
+      return monthMatch && yearMatch;
+    });
+
+    setOrders(filtered);
+  }, [selectedMonth, selectedYear, allOrders]);
 
   const getProductDetails = (productId) => {
     return products.find(product => product.id === productId);
@@ -53,26 +140,31 @@ const OrdersPage = () => {
     navigate(`/product-overview/${productId}`);
   };
 
-  const handlePayment = async (orderId, amount) => {
-    try {
-      // Create Razorpay order
-      const razorpayResponse = await fetch(`${BaseUrl}/api/create-razorpay-order`, {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-        body: JSON.stringify({
-          amount: Math.round(amount * 100),
-          currency: 'INR',
-          receipt: `order_${orderId}`,
-          order_id: orderId
-        })
-      });
+const handlePayment = async (orderId, amount) => {
+  try {
+    // Payment endpoints should still require authentication
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/login');
+      return;
+    }
 
+    const razorpayResponse = await fetch(`${BaseUrl}/api/create-razorpay-order`, {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        amount: Math.round(amount * 100),
+        currency: 'INR',
+        receipt: `order_${orderId}`,
+        order_id: orderId
+      })
+    });
+    
       const razorpayData = await razorpayResponse.json();
 
-      // Load Razorpay script
       const script = document.createElement('script');
       script.src = 'https://checkout.razorpay.com/v1/checkout.js';
       script.onload = () => {
@@ -80,7 +172,7 @@ const OrdersPage = () => {
           key: razorpayData.key,
           amount: razorpayData.amount,
           currency: razorpayData.currency,
-          name: 'Your Store',
+          name: 'Shoppers',
           description: `Order #${orderId}`,
           order_id: razorpayData.id,
           handler: async (response) => {
@@ -105,13 +197,14 @@ const OrdersPage = () => {
                 return;
               }
               
-              // Refresh orders after successful payment
               const updatedOrders = await fetch(`${BaseUrl}/orders?user_id=${user.id}`, {
                 headers: {
                   'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }
               });
-              setOrders(await updatedOrders.json());
+              const data = await updatedOrders.json();
+              setOrders(data);
+              setAllOrders(data);
             } catch (err) {
               console.error('Payment verification error:', err);
             }
@@ -130,12 +223,21 @@ const OrdersPage = () => {
     }
   };
 
-  if (loading) {
+  const resetFilters = () => {
+    setSelectedMonth('');
+    setSelectedYear('');
+    setShowFilterDropdown(false);
+  };
+
+  if (isLoading) {
     return (
-      <>
-        <EcommerceNavbar />
-        <div className="loading">Loading your orders...</div>
-      </>
+      <div style={loaderStyle}>
+        <Lottie 
+          animationData={loadingAnimation} 
+          loop={true} 
+          style={{ width: 300, height: 300 }}
+        />
+      </div>
     );
   }
 
@@ -143,11 +245,79 @@ const OrdersPage = () => {
     <>
       <EcommerceNavbar />
       <div className="orders-page">
-        <h1>Your Orders</h1>
-        
-        {orders.length > 0 ? (
-          <div className="orders-container">
-            {orders.map((order) => (
+        <div className="orders-container">
+          <div className="orders-header">
+            <h1>Your Orders</h1>
+            {allOrders.length > 0 && (
+              <div className="filter-container">
+                <button 
+                  className="filter-button"
+                  onClick={() => setShowFilterDropdown(!showFilterDropdown)}
+                >
+                  <FaFilter /> Filter
+                </button>
+                {showFilterDropdown && (
+                  <div className="filter-dropdown">
+                    <div className="filter-section">
+                      <label>Month:</label>
+                      <select
+                        value={selectedMonth}
+                        onChange={(e) => setSelectedMonth(e.target.value)}
+                      >
+                        {months.map(month => (
+                          <option key={month.value} value={month.value}>
+                            {month.label}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="filter-section">
+                      <label>Year:</label>
+                      <select
+                        value={selectedYear}
+                        onChange={(e) => setSelectedYear(e.target.value)}
+                      >
+                        {years.map(year => (
+                          <option key={year.value} value={year.value}>
+                            {year.label}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <button 
+                      className="reset-filters"
+                      onClick={resetFilters}
+                    >
+                      Reset Filters
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+          
+          {allOrders.length === 0 ? (
+            <div className="no-orders">
+              <p>You haven't placed any orders yet.</p>
+              <button 
+                className="shop-now-button"
+                onClick={() => navigate('/ecommerce-dashboard')}
+              >
+                Shop Now
+              </button>
+            </div>
+          ) : orders.length === 0 ? (
+            <div className="no-orders">
+              <p>No orders found matching your filters</p>
+              <button 
+                className="reset-filters-button"
+                onClick={resetFilters}
+              >
+                Reset Filters
+              </button>
+            </div>
+          ) : (
+            orders.map((order) => (
               <div key={order.order_id} className="order-card">
                 <div className="order-header">
                   <div>
@@ -184,7 +354,7 @@ const OrdersPage = () => {
 
                 <div className="order-footer">
                   <div className="order-total">
-                    <p>Total: ₹{order.total_amount.toFixed(2)}</p>
+                    <p>Total: ₹{Number(order.total_amount).toFixed(2)}</p>       
                   </div>
                   <div className="order-actions">
                     {order.status.toLowerCase() === 'created' && (
@@ -204,19 +374,9 @@ const OrdersPage = () => {
                   </div>
                 </div>
               </div>
-            ))}
-          </div>
-        ) : (
-          <div className="no-orders">
-            <p>You haven't placed any orders yet.</p>
-            <button 
-              className="shop-now-button"
-              onClick={() => navigate('/ecommerce-dashboard')}
-            >
-              Shop Now
-            </button>
-          </div>
-        )}
+            ))
+          )}
+        </div>
       </div>
     </>
   );
