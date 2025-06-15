@@ -41,6 +41,7 @@ import LandingPage from './components/landingPage/landingPage.jsx';
 import EventPlanning from './components/P2pHeader/SchoolSegment/schooldashboard/Sidebar/event-planning/eventPlanning.jsx';
 import { UserContext } from './context/UserContext';
 import AuthWrapper from './components/Ecommerce/Authentication/AuthWrapper.jsx';
+import Addresses from './components/Ecommerce/EcommerceSidebar/Addresses/Addresses.jsx';
 
 const theme = createTheme();
 // mysql://root:nXbyCttzErnSirxYRBZtYNJRprHnbTar@shuttle.proxy.rlwy.net:21943/railway
@@ -87,6 +88,7 @@ function App() {
             <Route path="/update-staff-payroll" element={<PayrollForm />} />
             <Route path='/school-statistics' element={<SchoolStatistics/>} />
             <Route path="/event-planning" element={<EventPlanning />} />
+            <Route path="/addresses" element={<Addresses />} />
           </Routes>
         </DndProvider>
       </Router>

@@ -163,12 +163,12 @@ function EcommerceNavbar() {
     <div className='ecommerce-navbar'>
       <div className='toolbar'>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <IconButton edge="start" color="inherit" onClick={() => console.log('Logo clicked')}>
+          <IconButton edge="start" color="inherit" onClick={() => navigate('/ecommerce-dashboard')}>
             <img src={logo} alt="Logo" style={{ width: 38, height: 38 }}/>
           </IconButton>
-          <Typography variant="h6" sx={{ color: '#1F309B', marginLeft: 1, fontSize: '18px', fontWeight: 'bold' }} className='nav-heading'>
+          <button  className='nav-heading' onClick={() => navigate('/ecommerce-dashboard')}>
             neuraLife
-          </Typography>
+          </button>
           
           <Search className="search">
             <StyledInputBase

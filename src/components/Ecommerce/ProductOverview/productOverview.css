@@ -1,13 +1,13 @@
-/* Base Styles */
-body {
-  font-family: 'Arial', sans-serif;
+
+.product-overview-page{
   background: linear-gradient(to top, #ffffff, #edeeef) !important; /* Gradient from light pink to a lighter shade */
-  color: #343a40;
+
+
 }
 .product-overview-container {
   max-width: 1400px;
-  margin: 6rem auto;
-  padding: 0 1rem;
+  margin: 5rem auto;
+  padding: 2rem 0;
 }
 
 .product-overview-grid {

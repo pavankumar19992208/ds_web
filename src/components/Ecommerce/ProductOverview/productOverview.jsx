@@ -179,6 +179,7 @@ const ProductOverview = () => {
   return (
     <>
       <EcommerceNavbar />
+      <div className='product-overview-page'>
       <div className="product-overview-container">
         <ToastContainer 
         position="top-right"
@@ -282,6 +283,7 @@ const ProductOverview = () => {
             ))}
           </Slider>
         </Modal>
+      </div>
       </div>
     </>
   );

@@ -320,16 +320,16 @@ const handlePayment = async (orderId, amount) => {
             orders.map((order) => (
               <div key={order.order_id} className="order-card">
                 <div className="order-header">
-                  <div>
-                    <h3>Order #{order.order_id}</h3>
-                    <p className="order-date">Placed on {formatDate(order.order_date)}</p>
-                  </div>
-                  <div className="order-status">
-                    <span className={`status-badge ${order.status.toLowerCase()}`}>
-                      {order.status}
-                    </span>
-                  </div>
-                </div>
+  <div>
+    <h3>Order #{order.order_id}</h3>
+    <p className="order-date">Placed on {formatDate(order.order_date)}</p>
+  </div>
+  <div className="order-status">
+    <span className={`status-badge ${order.status.toLowerCase()}`}>
+      {order.status}
+    </span>
+  </div>
+</div>
 
                 <div className="order-items">
                   {order.items.map((item) => {

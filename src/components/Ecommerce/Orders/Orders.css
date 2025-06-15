@@ -2,8 +2,8 @@
   /* max-width: 1000px; */
   margin: 5rem auto;
   padding: 0 1rem;
-  /* height: 100vh; */
-    background: linear-gradient(to top, #ffffff, #edeeef) !important; /* Gradient from light pink to a lighter shade */
+  height: 100vh;
+      background: linear-gradient(to top, #ffffff, #edeeef) !important; /* Gradient from light pink to a lighter shade */
 }
 .orders-container{
   max-width: 1000px;

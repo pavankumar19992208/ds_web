@@ -26,9 +26,20 @@
 .nav-heading {
   font-family: "Urbanist", serif;
   font-optical-sizing: auto;
-  font-weight: 600;
+  font-weight: 700;
   font-style: normal;
   font-size: 1.5rem;
+  color: #1F309B; 
+  border: none;
+  background: none;
+  cursor: pointer;
+    padding: 4px 16px;
+
+} 
+.nav-heading:hover{
+  border: 1.8px solid #1F309B;
+  border-radius: 32px;
+
 }
 
 .ecommerce-navbar {
