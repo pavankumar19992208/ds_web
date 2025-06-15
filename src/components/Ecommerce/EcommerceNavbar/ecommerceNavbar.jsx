@@ -245,10 +245,11 @@ function EcommerceNavbar() {
           <Button
             color="inherit"
             sx={{
-              color: 'white',
-              border: '1px solid white',
-              borderRadius: '4px',
-              padding: '6px 16px',
+              color: '#1F309B',
+              fontWeight: 'bold',
+              border: '2px solid #1F309B',
+              borderRadius: '20px',
+              padding: '6px 24px',
               '&:hover': {
                 backgroundColor: 'rgba(255, 255, 255, 0.08)'
               }

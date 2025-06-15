@@ -39,7 +39,7 @@ function EcommerceDashboard() {
   const [demandedProducts, setDemandedProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [userData, setUserData] = useState(null);
-  const [showAuth, setShowAuth] = useState(false); // State to control auth modal visibility
+  const [showAuth, setShowAuth] = useState(false);
   const { user, isAuthenticated, loginUser, logoutUser } = useContext(GlobalStateContext);
   const navigate = useNavigate();
 
@@ -120,66 +120,136 @@ function EcommerceDashboard() {
     );
   }
 
+  // Ensure we have at least 6 products to display
+  const productsToDisplay = demandedProducts.length >= 6 ? demandedProducts : [
+    ...demandedProducts,
+    ...Array(6 - demandedProducts.length).fill({ id: `placeholder-${Math.random()}`, isPlaceholder: true })
+  ];
+
   return (
     <div className="dashboardStyle" style={dashboardStyle}>
       <EcommerceNavbar onLoginClick={handleOpenAuth} />
       <Container style={contentStyle}>
         {isAuthenticated && userData && (
-          <div style={{ marginBottom: '14px', background: '#fefae0', border: '1px #fefae0', padding: '10px 22px', borderRadius: '200px' }}>
-            <Typography  style={{ fontWeight: '600'}} >Welcome, {userData.name}!</Typography>
+          <div style={{ background: '#fefae0', border: '1px #fefae0', padding: '10px 22px', borderRadius: '200px' }}>
+            <Typography style={{ fontWeight: '600'}}>Welcome, {userData.name}!</Typography>
           </div>
         )}
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            {demandedProducts.length > 0 && (
-              <div className='demanded-container' onClick={() => handleGridClick(demandedProducts[0].id)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', backgroundColor: '#fff', borderRadius: '12px', padding: '20px', marginBottom: '20px', height: '60vh' }}>
-                <div style={{ flex: '0 0 50%' }}>
-                  <h3>{demandedProducts[0].name}</h3>
-                  <Button style={{ left: '20%' }} variant="contained" color="primary">Buy Now</Button>
-                </div>
-                <div style={{ flex: '0 0 50%' }}>
-                  {demandedProducts[0].mainImageUrl ? (
-                    <img src={demandedProducts[0].mainImageUrl} alt={demandedProducts[0].name} style={{ width:'100%', height: '400px', objectFit: 'contain'}} />
-                  ) : (
-                    <p>No image available</p>
-                  )}
-                </div>
-              </div>
-            )}
-          </Grid>
-          <Grid item xs={6}>
-            {demandedProducts.length > 0 && (
-              <div className='boxes' key={demandedProducts[0].id} style={{ backgroundColor: '#fff', height: '416px', borderRadius: '12px', overflow: 'hidden', position: 'relative' }} onClick={() => handleGridClick(demandedProducts[0].id)}>
-                {Array.isArray(demandedProducts[0].imageUrls) && demandedProducts[0].imageUrls.length > 0 ? (
-                  <Slider {...settings} className="custom-slider">
-                    {demandedProducts[0].imageUrls.map((url, index) => (
-                      <div key={index}>
-                        <img src={url} alt={demandedProducts[0].name} style={{ width:'100%', height: '400px', objectFit: 'contain'}} />
-                      </div>
-                    ))}
-                  </Slider>
-                ) : (
-                  <p>No image available</p>
-                )}
-              </div>
-            )}
-          </Grid>
-          <Grid item xs={6}>
-            <Grid container spacing={2}>
-              {demandedProducts.slice(1, 7).map((product) => (
-                <Grid item xs={4} key={product.id}>
-                  <div className='boxes' style={{ backgroundColor: '#fff', height: '200px', borderRadius: '12px', overflow: 'hidden', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => handleGridClick(product.id)}>
-                    {product.mainImageUrl ? (
-                      <img src={product.mainImageUrl} alt={product.name} style={{ display: 'block', margin: 'auto', width: '90%', height: '90%', objectFit: 'contain' }} />
+        
+        <div className="new-container">
+          <div className="new-main-area">
+            <div style={{display: 'flex', flexDirection: 'column', width: '100%'}}>
+              {/* Box 1 - Main featured product with name and buy button */}
+              <div className="new-box-1" onClick={() => productsToDisplay[0]?.id && !productsToDisplay[0]?.isPlaceholder && handleGridClick(productsToDisplay[0].id)}>
+                <div className="box-1-content">
+                  <div className="box-1-text">
+                    <h3>{productsToDisplay[0]?.name || "Featured Product"}</h3>
+                    <button className="buy-now-button">Buy Now</button>
+                  </div>
+                  <div className="box-1-image">
+                    {productsToDisplay[0]?.mainImageUrl ? (
+                      <img src={productsToDisplay[0].mainImageUrl} alt={productsToDisplay[0].name}/>
                     ) : (
-                      <p>No image available</p>
+                      <div className="placeholder-image">No image available</div>
                     )}
                   </div>
-                </Grid>
-              ))}
-            </Grid>
-          </Grid>
-        </Grid>
+                </div>
+              </div>
+              
+              <div className="new-bottom-container">
+                <div className="new-bottom-row">
+                  {/* Box 4 */}
+                  <div 
+                    className="new-box-4" 
+                    onClick={() => productsToDisplay[3]?.id && !productsToDisplay[3]?.isPlaceholder && handleGridClick(productsToDisplay[3].id)}
+                  >
+                    {productsToDisplay[3]?.mainImageUrl ? (
+                      <>
+                        <img src={productsToDisplay[3].mainImageUrl} alt={productsToDisplay[3].name}/>
+                        <div className="slider-arrows">
+                          <span className="arrow right">→</span>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="placeholder-image">No image available</div>
+                    )}
+                  </div>
+                  
+                  {/* Box 5 */}
+                  <div 
+                    className="new-box-5" 
+                    onClick={() => productsToDisplay[4]?.id && !productsToDisplay[4]?.isPlaceholder && handleGridClick(productsToDisplay[4].id)}
+                  >
+                    {productsToDisplay[4]?.mainImageUrl ? (
+                      <>
+                        <img src={productsToDisplay[4].mainImageUrl} alt={productsToDisplay[4].name}/>
+                        <div className="slider-arrows">
+                          <span className="arrow right">→</span>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="placeholder-image">No image available</div>
+                    )}
+                  </div>
+                  
+                  {/* Box 6 */}
+                  <div 
+                    className="new-box-6" 
+                    onClick={() => productsToDisplay[5]?.id && !productsToDisplay[5]?.isPlaceholder && handleGridClick(productsToDisplay[5].id)}
+                  >
+                    {productsToDisplay[5]?.mainImageUrl ? (
+                      <>
+                        <img src={productsToDisplay[5].mainImageUrl} alt={productsToDisplay[5].name}/>
+                        <div className="slider-arrows">
+                          <span className="arrow right">→</span>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="placeholder-image">No image available</div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="new-side-column">
+              {/* Box 2 */}
+              <div 
+                className="new-box-2" 
+                onClick={() => productsToDisplay[1]?.id && !productsToDisplay[1]?.isPlaceholder && handleGridClick(productsToDisplay[1].id)}
+              >
+                {productsToDisplay[1]?.mainImageUrl ? (
+                  <>
+                    <img src={productsToDisplay[1].mainImageUrl} alt={productsToDisplay[1].name}/>
+                    <div className="slider-arrows">
+                      <span className="arrow right">→</span>
+                    </div>
+                  </>
+                ) : (
+                  <div className="placeholder-image">No image available</div>
+                )}
+              </div>
+              
+              {/* Box 3 */}
+              <div 
+                className="new-box-3" 
+                onClick={() => productsToDisplay[2]?.id && !productsToDisplay[2]?.isPlaceholder && handleGridClick(productsToDisplay[2].id)}
+              >
+                {productsToDisplay[2]?.mainImageUrl ? (
+                  <>
+                    <img src={productsToDisplay[2].mainImageUrl} alt={productsToDisplay[2].name}/>
+                    <div className="slider-arrows">
+                      <span className="arrow right">→</span>
+                    </div>
+                  </>
+                ) : (
+                  <div className="placeholder-image">No image available</div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
         <Categories />
       </Container>
       
