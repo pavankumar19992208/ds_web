@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import EcommerceNavbar from '../EcommerceNavbar/ecommerceNavbar';
-import './orders.css';
+import './Orders.css';
 import BaseUrl from '../../../config';
 import Lottie from 'lottie-react';
 import loadingAnimation from '../loader/loader.json';
