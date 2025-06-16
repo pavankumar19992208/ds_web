@@ -1,0 +1,20 @@
+.slick-prev:before, .slick-next:before {
+  color: black;
+}
+
+.slick-dots li button:before {
+  color: black;
+}
+
+.slick-dots li.slick-active button:before {
+  color: black;
+}
+.carousel-image {
+ height: auto;
+  object-fit: cover;
+  margin: 0 ;
+  border-radius: 20px;
+  box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.1);
+
+
+}

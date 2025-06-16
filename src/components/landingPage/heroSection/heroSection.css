@@ -1,0 +1,153 @@
+.lp-hero-section-container {
+    background: linear-gradient(to bottom, #F1F1F150, #F7FCFF50);
+    width: 98%;
+    height: 100vh;
+    border-radius: 40px;
+    margin: 20px auto 0;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    position: relative;
+    top: 16px;
+    overflow: hidden;
+}
+
+.lp-hs-header-container {
+    position: absolute;
+    top: 20px;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    z-index: 10;
+}
+.lp-hs-grid-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+    background-size: 80px 80px;
+    pointer-events: none; /* Ensures the grid doesn't interfere with interactions */
+}
+
+/* Hero Content Layout */
+.lp-hs-hero-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    height: 100%;
+    position: relative;
+    z-index: 1;
+    padding: 0px 60px;
+}
+
+/* Left Column Styles */
+.lp-hs-left-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 0 5%;
+}
+
+.lp-hs-quote-carousel {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+}
+
+.lp-hs-quote {
+    display: none;
+}
+
+.lp-hs-quote.active {
+    display: block;
+    animation: fadeIn 0.5s ease;
+}
+
+.lp-hs-quote h2 {
+    font-size: 1.5rem;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.lp-hs-quote p {
+    font-size: 1.2rem;
+    color: #666;
+    font-style: italic;
+}
+
+.lp-hs-carousel-controls {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.lp-hs-arrow-btn {
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid #ddd;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.lp-hs-arrow-btn:hover {
+    background: #fff;
+    transform: scale(1.05);
+}
+
+.lp-hs-join-community-btn {
+    margin-top: 3rem;
+    padding: 12px 30px;
+    background: #1F309B;
+    color: white;
+    border: none;
+    border-radius: 30px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.lp-hs-join-community-btn:hover {
+    background: #3d4fc3;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Right Column Styles */
+.lp-hs-right-column {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+}
+
+.lp-hs-hero-image {
+    width: 80%;
+    max-width: 800px;
+    height: auto;
+    border-radius: 20px;
+    overflow: hidden;
+
+    /* box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); */
+}
+
+.lp-hs-hero-image img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}

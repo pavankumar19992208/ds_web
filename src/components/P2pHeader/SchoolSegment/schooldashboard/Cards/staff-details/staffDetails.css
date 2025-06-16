@@ -1,0 +1,14 @@
+.staff-details {
+    height: 100vh;
+    background-color: #003353;
+    overflow: hidden;
+  }
+  .staff-details-container{
+    margin: 50px 0 0 70px;
+    border-top-left-radius: 15px;
+    background: linear-gradient(to right, #ffffff, #edf3f7) !important;
+    overflow: hidden;
+    height: 93%;
+    padding: 16px;
+    position: relative;
+  }

@@ -8,25 +8,39 @@
   height: auto; /* Ensure the height adjusts automatically */
 }
 
-.layout {
-  display: flex;
-  flex-direction: row; /* Ensure Sidebar and form are in a row */
-  justify-content: center; /* Center horizontally */
-  align-items: flex-start; /* Align items to the start vertically */
-  height: 95vh; /* Full viewport height */
-  width: 100%; /* Full viewport width */
-  padding: 16px; /* theme.spacing(2) */
+.enroll-form {
+  overflow-x: hidden;
+  overflow-y: hidden; 
+  display: flex; 
+  background-size: cover;
+  height: 100vh;
+  background-color: #003353;
+} 
+
+.enroll-form-container {
+  background: linear-gradient(to right, #ffffff, #edf3f7) !important;
+  overflow: hidden !important;
+  margin: 50px 0;
+  border-top-left-radius: 15px;
+  transition: margin-left 0.3s ease-in-out;
+  flex-grow: 1;
+  margin-left: 70px;
+  height: 100vh;
+  
+}
+.form-paper-container{
+  max-height: calc(100vh - 60px); 
   overflow: auto;
-  position: absolute;
+
 }
 
 .paper {
-  width: 100% ;
+  width: 80% ;
   max-width: 1000px; /* Max width of the form */
-  margin: 24px; /* theme.spacing(3) */
+  margin: 40px auto; /* theme.spacing(3) */
   padding: 16px; /* theme.spacing(2) */
-  margin-top: 80px; /* theme.spacing(10) */
   overflow: auto; /* Allow scrolling within the form */
+
 }
 .headline{
   font-size: 2rem !important;

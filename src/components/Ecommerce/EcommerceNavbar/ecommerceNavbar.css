@@ -1,50 +1,104 @@
+.en-urbanist-regular {
+  font-family: "Urbanist", serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
+}
+
+.en-urbanist-regular::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  display: block;
+  margin-top: 5px;
+  right: 0;
+  background: white;
+  transition: width 0.3s ease;
+}
+
+.en-urbanist-regular:hover::after {
+  width: 100%;
+  left: 0;
+  background: white;
+}
+
+.nav-heading {
+  font-family: "Urbanist", serif;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-style: normal;
+  font-size: 1.5rem;
+  color: #1F309B; 
+  border: none;
+  background: none;
+  cursor: pointer;
+    padding: 4px 16px;
+
+} 
+.nav-heading:hover{
+  border: 1.8px solid #1F309B;
+  border-radius: 32px;
+
+}
+
 .ecommerce-navbar {
-    background-color: #0b2e44 !important;
-    border-radius: 50px;
-    width: 98%; /* Decrease the width */
-    margin: 12px auto; /* Center the navbar */
+  background: #edeeef !important; /* Gradient from light pink to a lighter shade */
+    width: 100%; /* Decrease the width */
     display: flex;
     justify-content: center;
-    padding: 8px ;
-    box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.1); /* Add box shadow to the right side */
+    align-items: center; /* Center vertically */
+    height: 86px; /* Adjust height as needed */
+    position: fixed;
+    top: 0;
+    z-index: 1000;
+
 }
 
 .toolbar {
-    width: 100%;
-    max-width: 1300px; /* Adjust this value as needed */
+    background-color: #ffffff84 !important;
+    width: 80%; /* Decrease the width */
     display: flex;
-    align-items: center;
+    justify-content: center;
+    align-items: center; /* Center vertically */
+    padding: 6px 32px;
+    position: fixed;
+    top: 10px;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    z-index: 1;
+    border-radius: 120px;
 }
 
 .search {
   position: relative;
-  border-radius: var(--theme-shape-border-radius);
+  border-radius: 50px !important;
   background-color: var(--theme-palette-common-white);
-  margin-right: var(--theme-spacing-2);
-  margin-left: 0;
+  margin-left: 20px;
   width: 100%;
-  border-radius: 20px;
+  max-width: 500px;
+  border-radius: 6px;
+  padding: 3px 15px;
 }
 
 .search:hover {
   background-color: var(--theme-palette-common-white);
 }
 
-@media (min-width: 600px) {
-  .search {
-    margin-left: var(--theme-spacing-3);
-    width: auto;
-  }
-}
-
 .searchIconWrapper {
-  padding: var(--theme-spacing-0-2);
-  height: 100%;
-  position: absolute;
-  pointer-events: none;
+  height: 36px;
+  width: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
+  z-index: 1000;
+  position: relative;
+  right: 8px !important; /* Adjusted to position the search icon */
+ border-radius: 20px !important;
+  bottom: 5px !important; /* Adjusted to position the search icon */
 }
 
 .styledInputBase {
@@ -53,7 +107,6 @@
 
 .styledInputBase .MuiInputBase-input {
   padding: var(--theme-spacing-1-1-1-0);
-  padding-left: calc(1em + var(--theme-spacing-4));
   transition: var(--theme-transitions-create-width);
   width: 100%;
   color: black;
@@ -61,6 +114,6 @@
 
 @media (min-width: 960px) {
   .styledInputBase .MuiInputBase-input {
-    width: 30ch;
+    width: 100%;
   }
 }

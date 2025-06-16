@@ -1,0 +1,40 @@
+.view-students-container {
+  margin-top: 16px;
+  border: 1px solid #ccc;
+  border-radius: 16px;
+  padding: 16px;
+}
+
+.header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0px !important;
+}
+
+.select-class-dropdown {
+  width: 16%;
+  border-radius: 16px !important;
+}
+
+.strength-container {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.strength-container span {
+  margin: 0 10px;
+}
+
+.MuiDivider-vertical {
+  height: 28px;
+  margin: 0 10px;
+}
+
+.loading-animation {
+  margin-top: 5%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

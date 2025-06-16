@@ -1,0 +1,66 @@
+.student-view-details {
+    height: 100vh;
+    background-color: #003353;
+    overflow: hidden;
+  }
+  .student-view-details-container{
+    margin: 50px 0 0 70px;
+    border-top-left-radius: 15px;
+    background: linear-gradient(to right, #ffffff, #edf3f7) !important;
+    overflow: hidden;
+    height: 93%;
+    padding: 16px;
+    position: relative;
+  }
+  .student-details-main-grid{
+    width: 80%;
+    padding: 20px;
+    margin-top: 20px;
+    gap: 20px;
+    display: grid;
+    grid-template-columns: 20% 80%;
+  }
+  .student-photo {
+    width: 150px;
+    height: 220px;
+    border-radius: 20px;
+    object-fit: cover;
+    border: 2px solid #ccc;
+  }
+
+  .student-photo-placeholder {
+    width: 150px;
+    height: 150px;
+    border-radius: 20px;
+    background-color: #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 16px;
+  }
+  .student-details-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 12px;
+  }
+  .student-details-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    gap: 30px;
+    height: auto;
+}
+  .student-detail {
+    height: 100% !important;
+  }
+  .student-label {
+    font-weight: bold;
+  }
+  
+  .student-field {
+    color: #333;
+    border: solid 1px #ccc;
+    padding: 12px;
+    border-radius: 8px;
+  }

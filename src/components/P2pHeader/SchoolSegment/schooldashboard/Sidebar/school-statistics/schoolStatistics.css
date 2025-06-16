@@ -1,0 +1,546 @@
+.stats-dashboard {
+  display: flex;
+  background-color: #003353;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.stats-container {
+  background: linear-gradient(to right, #ffffff, #edf3f7) !important;
+  margin: 50px 0 0;
+  border-top-left-radius: 15px;
+  transition: margin-left 0.3s ease-in-out;
+  flex-grow: 1;
+  margin-left: 70px;
+  display: flex;
+  height: calc(100vh - 50px);
+  overflow: hidden !important;
+  position: relative;
+}
+
+.stats-main-content {
+  scroll-behavior: smooth;
+  width: 100%;
+  padding: 20px;
+  overflow-y: auto;
+  height: 93%;
+  position: relative;
+}
+
+.stats-title {
+  margin: 0 0 20px 0;
+  font-family: 'Urbanist', sans-serif !important;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  /* height: calc(100% - 56px); */
+  height: 540px;
+}
+
+.stats-main-column {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.stats-row {
+  background-color: #fff;
+  border-radius: 15px;
+  padding: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.stats-cards-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.stats-card {
+  height: 140px;
+  background-color: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stats-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.stats-card h3 {
+  font-size: 1.1rem;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.stats-card p {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #007bff;
+  margin: 0;
+}
+
+.stats-charts-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.gender-chart-container,
+.attendance-chart-container {
+  background-color: #ffffff;
+  border-radius: 15px;
+  padding: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.gender-chart-container h3,
+.attendance-chart-container h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 1.1rem;
+  color: #333;
+}
+
+/* Attendance chart header */
+.attendance-chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.more-button {
+  background: none;
+  border: 1px solid #3B82F6;
+  color: #3B82F6;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  border-radius: 20px;
+}
+
+.more-button:hover {
+  background-color: #f0f7ff;
+}
+
+.arrow {
+  font-size: 0.7rem;
+  transition: transform 0.3s ease;
+}
+
+.arrow.down {
+  transform: rotate(0deg);
+}
+
+.arrow.up {
+  transform: rotate(180deg);
+}
+
+/* Top performers section */
+.top-performers-column {
+  background-color: #fff;
+  border-radius: 15px;
+  padding: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.top-performers-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.top-performers-container h2 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 1.3rem;
+  color: #333;
+}
+
+.performers-table-container {
+  flex-grow: 1;
+  overflow-y: auto;
+  position: relative;
+  height: 100%;
+  overflow: visible;
+}
+
+.performers-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  position: relative;
+}
+
+.table-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: #f5f5f5;
+}
+
+.table-header th {
+  position: sticky;
+  top: 0;
+  background-color: #f5f5f5;
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
+  font-weight: 600;
+  color: #333;
+}
+
+.performers-table tr {
+  position: relative;
+}
+
+.performers-table th,
+.performers-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 0.9rem;
+}
+
+.performers-table tr:hover {
+  background-color: #95b2be;
+  cursor: pointer;
+}
+
+.performers-table tr:nth-child(1),
+.performers-table tr:nth-child(2),
+.performers-table tr:nth-child(3),
+.performers-table tr:nth-child(4),
+.performers-table tr:nth-child(5),
+.performers-table tr:nth-child(6),
+.performers-table tr:nth-child(7) td {
+  color: #2c7815;
+  font-weight: 600;
+}
+
+.performers-table tr:nth-child(8),
+.performers-table tr:nth-child(9),
+.performers-table tr:nth-child(10),
+.performers-table tr:nth-child(11),
+.performers-table tr:nth-child(12),
+.performers-table tr:nth-child(13) td {
+  color: #fa8c0f;
+  font-weight: 600;
+}
+
+/* Holidays section */
+.holidays-container {
+  background-color: #fff;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-top: 26px;
+  transition: margin-top 0.3s ease;
+  width: 40%;
+}
+
+.holidays-container.with-table {
+  margin-top: 20px;
+}
+
+.holidays-container h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #333;
+  font-size: 1.3rem;
+}
+
+.holidays-boxes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.holiday-box {
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  padding: 15px;
+  transition: transform 0.3s ease;
+}
+
+.holiday-box:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.today-holiday {
+  background-color: #e3f2fd;
+  border-left: 4px solid #2196f3;
+}
+
+.holiday-label {
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 10px;
+  font-size: 0.9rem;
+}
+
+.holiday-date {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.holiday-occasion {
+  font-size: 1rem;
+  color: #666;
+}
+
+/* Attendance details table */
+.attendance-table-container {
+  background-color: #fff;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.3s ease;
+  scroll-margin-top: 20px; /* Creates space when scrolling to this element */
+
+}
+
+.attendance-table-shown {
+  margin-top: 26px;
+}
+
+.class-performers-container {
+  background-color: #fff;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-top: 26px;
+  animation: fadeIn 0.3s ease;
+}
+
+.class-selector-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.class-selector {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.class-selector label {
+  font-weight: 600;
+  color: #333;
+}
+
+.class-selector select {
+  padding: 8px 12px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  background-color: #fff;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.class-selector select:focus {
+  outline: none;
+  border-color: #3B82F6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.attendance-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.attendance-table th,
+.attendance-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.attendance-table th {
+  background-color: #f5f5f5;
+  font-weight: 600;
+  color: #333;
+}
+
+.attendance-table tr:hover {
+  background-color: #f9f9f9;
+}
+
+/* Student Profile Card */
+.student-profile-card {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  width: 300px;
+  padding: 15px;
+  transition: all 0.3s ease;
+  border: 1px solid #e0e0e0;
+  position: fixed;
+  z-index: 1000;
+  pointer-events: none;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.profile-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.profile-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #3B82F6;
+  margin-bottom: 10px;
+}
+
+.profile-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.profile-class {
+  font-size: 0.9rem;
+  color: #666;
+  background-color: #f0f7ff;
+  padding: 3px 10px;
+  border-radius: 12px;
+}
+
+.profile-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.profile-detail {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+}
+
+.detail-label {
+  font-weight: 600;
+  color: #555;
+}
+
+.detail-value {
+  color: #333;
+  text-align: right;
+  max-width: 160px;
+  word-break: break-word;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .student-profile-card {
+    width: 240px;
+    padding: 12px;
+  }
+  
+  .profile-avatar {
+    width: 70px;
+    height: 70px;
+  }
+}
+
+@media (max-width: 768px) {
+  .student-profile-card {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    max-width: 300px;
+  }
+}
+
+/* Responsive styles */
+@media (max-width: 1024px) {
+  .stats-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .stats-charts-container {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .stats-card {
+    height: 100px;
+  }
+  
+  .stats-card h3 {
+    font-size: 1rem;
+  }
+  
+  .stats-card p {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+    .class-selector-container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  .holidays-container {
+    width: 100%;
+  }
+
+  .holidays-boxes {
+    grid-template-columns: 1fr;
+  }
+  
+  .attendance-chart-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  .more-button {
+    align-self: flex-end;
+  }
+  
+  .attendance-table th,
+  .attendance-table td {
+    padding: 8px 10px;
+    font-size: 0.9rem;
+  }
+}
