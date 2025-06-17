@@ -5,7 +5,7 @@ import BASE_URL from '../../../config';
 import ErrorPopup from './errorPopup';
 import TextField from '@mui/material/TextField';
 import { Close } from '@mui/icons-material';
-import { GlobalStateContext } from '../GlobalStateContext';
+import { GlobalStateContext } from '../GlobalState';
 import './UserRegistration.css';
 import logo from '../../../images/logo.png';
 

@@ -11,7 +11,7 @@ import Lottie from 'lottie-react';
 import loadingAnimation from '../loader/loader.json';
 import BaseUrl from '../../../config';
 import AuthWrapper from '../Authentication/AuthWrapper';
-import { GlobalStateContext } from '../GlobalStateContext';
+import { GlobalStateContext } from '../GlobalState';
 
 const dashboardStyle = {
   fontFamily: 'Arial, sans-serif',

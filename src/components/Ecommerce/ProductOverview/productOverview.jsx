@@ -14,7 +14,7 @@ import Lottie from 'lottie-react';
 import loadingAnimation from '../loader/loader.json';
 import BaseUrl from '../../../config';
 import zIndex from '@mui/material/styles/zIndex';
-import { GlobalStateContext } from '../GlobalStateContext'; // <-- Import context
+import { GlobalStateContext } from '../GlobalState'; // <-- Import context
 
 Modal.setAppElement('#root');
 

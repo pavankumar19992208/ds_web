@@ -5,7 +5,7 @@ import './Orders.css';
 import BaseUrl from '../../../config';
 import Lottie from 'lottie-react';
 import loadingAnimation from '../loader/loader.json';
-import { GlobalStateContext } from '../GlobalStateContext';
+import { GlobalStateContext } from '../GlobalState';
 import { FaFilter } from 'react-icons/fa';
 
 const loaderStyle = {

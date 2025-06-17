@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import EcommerceNavbar from '../EcommerceNavbar/ecommerceNavbar';
 import './checkout.css';
 import BaseUrl from '../../../config';
-import { GlobalStateContext } from '../GlobalStateContext'; // Import the context
+import { GlobalStateContext } from '../GlobalState'; // Import the context
 
 const loadRazorpay = () => {
   return new Promise((resolve, reject) => {
