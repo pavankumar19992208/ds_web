@@ -2,7 +2,7 @@ import React, { createContext, useState, useEffect } from 'react';
 
 export const GlobalStateContext = createContext();
 
-export const GlobalStateProvider = ({ children }) => {
+export const EcommerceStateProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 

@@ -5,7 +5,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import PersonIcon from '@mui/icons-material/Person';
 import HomeIcon from '@mui/icons-material/Home';
 import CloseIcon from '@mui/icons-material/Close';
-import { GlobalStateContext } from '../GlobalStateContext';
+import { GlobalStateContext } from '../GlobalState';
 import './EcommerceSidebar.css'; // Ensure you have the correct path for your CSS file
 
 function EcommerceSidebar({ open, onClose }) {

@@ -7,7 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import BaseUrl from '../../../config';
 import Lottie from 'lottie-react';
 import loadingAnimation from '../loader/loader.json';
-import { GlobalStateContext } from '../GlobalStateContext'; // <-- Import context
+import { GlobalStateContext } from '../GlobalState'; // <-- Import context
 
 const loaderStyle = {
   display: 'flex',

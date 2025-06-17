@@ -8,7 +8,7 @@ import './ecommerceNavbar.css';
 import BaseUrl from '../../../config';
 import EcommerceSidebar from '../EcommerceSidebar/EcommerceSidebar';
 import AuthWrapper from '../Authentication/AuthWrapper';
-import { GlobalStateContext } from '../GlobalStateContext';
+import { GlobalStateContext } from '../GlobalState';
 import logo from '../../../images/logo.png'; // Adjust the path as needed
 import orders from '../../../images/orders.png'; // Adjust the path as needed
 import { FcLike } from "react-icons/fc";

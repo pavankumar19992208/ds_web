@@ -1,8 +1,8 @@
 import React from 'react';
 import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-// import { GlobalStateProvider } from './GlobalStateContext';
-import { GlobalStateProvider } from './components/Ecommerce/GlobalStateContext.jsx';
+import { GlobalStateProvider } from './GlobalStateContext';
+import { EcommerceStateProvider } from './components/Ecommerce/GlobalState.jsx';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
@@ -51,6 +51,7 @@ function App() {
     <UserContext.Provider value={{ user, setUser }}>
     <ThemeProvider theme={theme}>
     <GlobalStateProvider>
+      <EcommerceStateProvider>
       <Router>
         <DndProvider backend={HTML5Backend}>
           <Routes>
@@ -92,6 +93,7 @@ function App() {
           </Routes>
         </DndProvider>
       </Router>
+      </EcommerceStateProvider>
     </GlobalStateProvider>
     </ThemeProvider>
     </UserContext.Provider>
