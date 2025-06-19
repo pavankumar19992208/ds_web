@@ -1,42 +1,64 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { FaPlus, FaEdit, FaTrash } from 'react-icons/fa';
 import EcommerceNavbar from '../../EcommerceNavbar/ecommerceNavbar';
+import BaseUrl from '../../../../config';
+import { GlobalStateContext } from '../../GlobalState';
 import './Addresses.css'; 
 
-const Addresses = ({ userId }) => {
+const Addresses = () => {
   const [addresses, setAddresses] = useState([]);
   const [showForm, setShowForm] = useState(false);
-  const [formData, setFormData] = useState({
-    name: '',
-    phone: '',
-    address: '',
-    city: '',
-    state: '',
-    zip: '',
-    country: 'India',
-    isDefault: false
-  });
+  const { user } = useContext(GlobalStateContext) || {};
+
+  const indianStates = [
+  "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh",
+  "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand", "Karnataka",
+  "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya", "Mizoram",
+  "Nagaland", "Odisha", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana",
+  "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal", "Andaman and Nicobar Islands",
+  "Chandigarh", "Dadra and Nagar Haveli and Daman and Diu", "Delhi", "Jammu and Kashmir",
+  "Ladakh", "Lakshadweep", "Puducherry"
+];
+
+const [formData, setFormData] = useState({
+  fullName: '',
+  mobileNumber: '',
+  pincode: '',
+  flatNo: '',
+  area: '',
+  landmark: '',
+  city: '',
+  state: '',
+  isDefault: false,
+  lat: null,
+  lon: null
+});
 
   // Fetch addresses from API
-  useEffect(() => {
-    const fetchAddresses = async () => {
-      try {
-        const response = await fetch(`${BaseUrl}/api/addresses?user_id=${userId}`, {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
-        });
-        const data = await response.json();
-        setAddresses(data);
-      } catch (error) {
-        console.error('Error fetching addresses:', error);
-      }
-    };
+useEffect(() => {
+  const fetchAddresses = async (id) => {
+    try {
+      const response = await fetch(`${BaseUrl}/user/addresses/${user.id}`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
 
-    if (userId) {
-      fetchAddresses();
+      const data = await response.json();
+      console.log('Fetched address data:', data); 
+      setAddresses(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error('Error fetching addresses:', error);
     }
-  }, [userId]);
+  };
+
+  if (user?.id && typeof user.id === 'number') {
+    fetchAddresses(user.id);
+  } else {
+    console.warn('Invalid or missing user.id:', user?.id);
+  }
+}, [user]);
+
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -46,41 +68,63 @@ const Addresses = ({ userId }) => {
     });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await fetch(`${BaseUrl}/api/addresses`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-        body: JSON.stringify({ ...formData, user_id: userId })
-      });
-      
-      if (response.ok) {
-        const newAddress = await response.json();
-        setAddresses([...addresses, newAddress]);
-        setShowForm(false);
-        setFormData({
-          name: '',
-          phone: '',
-          address: '',
-          city: '',
-          state: '',
-          zip: '',
-          country: 'India',
-          isDefault: false
-        });
-      }
-    } catch (error) {
-      console.error('Error adding address:', error);
-    }
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  // Map frontend fields to backend fields
+  const payload = {
+    user_id: user.id,
+    full_name: formData.fullName,
+    mobile_number: formData.mobileNumber,
+    pincode: formData.pincode,
+    line1: `${formData.flatNo}, ${formData.area}`,
+    line2: '', // You can add a separate field if needed
+    landmark: formData.landmark,
+    city: formData.city,
+    state: formData.state,
+    country: 'India',
+    is_default: formData.isDefault,
+    lat: formData.lat,
+    lon: formData.lon
   };
+
+  console.log('Submitting address payload:', payload);
+
+  try {
+    const response = await fetch(`${BaseUrl}/user/addresses`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      },
+      body: JSON.stringify(payload)
+    });
+    
+    if (response.ok) {
+      const newAddress = await response.json();
+      setAddresses([...addresses, newAddress]);
+      setShowForm(false);
+      setFormData({
+        fullName: '',
+        mobileNumber: '',
+        pincode: '',
+        flatNo: '',
+        area: '',
+        landmark: '',
+        city: '',
+        state: '',
+        isDefault: false,
+        lat: null,
+        lon: null
+      });
+    }
+  } catch (error) {
+    console.error('Error adding address:', error);
+  }
+};
 
   const deleteAddress = async (id) => {
     try {
-      await fetch(`${BaseUrl}/api/addresses/${id}`, {
+      await fetch(`${BaseUrl}/user/addresses/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -100,7 +144,7 @@ const Addresses = ({ userId }) => {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
-        body: JSON.stringify({ address_id: id, user_id: userId })
+        body: JSON.stringify({ address_id: id, user_id: user.user_id })
       });
       
       setAddresses(addresses.map(addr => ({
@@ -112,165 +156,226 @@ const Addresses = ({ userId }) => {
     }
   };
 
+const handleAutofill = async () => {
+  if (!navigator.geolocation) {
+    alert("Geolocation is not supported by your browser.");
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(async (position) => {
+    const { latitude, longitude } = position.coords;
+
+    try {
+      const response = await fetch(`https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=d796b29e46d84caebda6f2d39a91f766`);
+      const data = await response.json();
+      
+      if (data.results.length > 0) {
+        const location = data.results[0].components;
+
+        setFormData((prev) => ({
+          ...prev,
+          city: location.city || location.town || location.village || '',
+          state: location.state || '',
+          pincode: location.postcode || '',
+          area: location.suburb || location.neighbourhood || '',
+          flatNo: '',
+          landmark: '',
+          lat: latitude,
+          lon: longitude
+        }));
+      } else {
+        alert("Could not autofill the address. Please fill it manually.");
+      }
+    } catch (error) {
+      console.error('Autofill error:', error);
+      alert("Failed to fetch location data.");
+    }
+  }, (err) => {
+    console.error(err);
+    alert("Unable to fetch your location.");
+  });
+};
+
   return (
     <div className="addresses-page">
-    <EcommerceNavbar />
+      <EcommerceNavbar />
 
-    <div className="address-container">
-
-      <h2>Saved Addresses</h2>
-      
-      <div className="address-grid">
-        {/* Add New Address Card */}
-        <div className="address-card add-new" onClick={() => setShowForm(true)}>
-          <FaPlus size={24} />
-          <span>Add New Address</span>
-        </div>
+      <div className="address-container">
+        <h2>Saved Addresses</h2>
         
-        {/* Existing Address Cards */}
-        {addresses.map(address => (
-          <div key={address.id} className={`address-card ${address.isDefault ? 'default' : ''}`}>
-            {address.isDefault && <div className="default-badge">Default</div>}
-            <div className="address-content">
-              <h3>{address.name}</h3>
-              <p>{address.address}</p>
-              <p>{address.city}, {address.state} - {address.zip}</p>
-              <p>{address.country}</p>
-              <p>Phone: {address.phone}</p>
-            </div>
-            <div className="address-actions">
-              <button 
-                onClick={() => setDefaultAddress(address.id)}
-                disabled={address.isDefault}
-              >
-                {address.isDefault ? 'Default' : 'Set Default'}
-              </button>
-              <div>
-                <button className="icon-btn" title="Edit">
-                  <FaEdit />
-                </button>
-                <button 
-                  className="icon-btn" 
-                  title="Delete"
-                  onClick={() => deleteAddress(address.id)}
-                >
-                  <FaTrash />
-                </button>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-      
-      {/* Add Address Form Modal */}
-      {showForm && (
-        <div className="address-modal">
-          <div className="add-modal-content">
-            <h3>Add New Address</h3>
-            <button className="add-close-btn" onClick={() => setShowForm(false)}>×</button>
-            
-            <form onSubmit={handleSubmit}>
-              <div className="add-form-row">
-                <div className="add-form-group">
-                  <label>Full Name*</label>
-                  <input 
-                    type="text" 
-                    name="name" 
-                    value={formData.name}
-                    onChange={handleInputChange}
-                    required 
-                  />
-                </div>
-                <div className="add-form-group">
-                  <label>Phone Number*</label>
-                  <input 
-                    type="tel" 
-                    name="phone" 
-                    value={formData.phone}
-                    onChange={handleInputChange}
-                    required 
-                  />
-                </div>
+        <div className="address-layout">
+          {/* Left side - Address cards */}
+          <div className="address-list">
+            <div className="address-grid">
+              {/* Add New Address Card */}
+              <div className="address-card add-new" onClick={() => setShowForm(true)}>
+                <FaPlus size={24} />
+                <span>Add New Address</span>
               </div>
               
-              <div className="add-form-group">
-                <label>Address*</label>
-                <textarea 
-                  name="address" 
-                  value={formData.address}
-                  onChange={handleInputChange}
-                  required 
-                />
-              </div>
-              
-              <div className="add-form-row">
-                <div className="form-group">
-                  <label>City*</label>
-                  <input 
-                    type="text" 
-                    name="city" 
-                    value={formData.city}
-                    onChange={handleInputChange}
-                    required 
-                  />
-                </div>
-                <div className="add-form-group">
-                  <label>State*</label>
-                  <input 
-                    type="text" 
-                    name="state" 
-                    value={formData.state}
-                    onChange={handleInputChange}
-                    required 
-                  />
-                </div>
-                <div className="add-form-group">
-                  <label>ZIP Code*</label>
-                  <input 
-                    type="text" 
-                    name="zip" 
-                    value={formData.zip}
-                    onChange={handleInputChange}
-                    required 
-                  />
-                </div>
-              </div>
-              
-              <div className="add-form-group">
-                <label>Country</label>
-                <input 
-                  type="text" 
-                  name="country" 
-                  value={formData.country}
-                  onChange={handleInputChange}
-                  required 
-                />
-              </div>
-              
-              <div className="add-form-check">
-                <input 
-                  type="checkbox" 
-                  id="defaultAddress" 
-                  name="isDefault" 
-                  checked={formData.isDefault}
-                  onChange={handleInputChange}
-                />
-                <label htmlFor="defaultAddress">Set as default address</label>
-              </div>
-              
-              <div className="add-form-actions">
-                <button type="button" onClick={() => setShowForm(false)}>
-                  Cancel
-                </button>
-                <button type="submit" className="primary">
-                  Save Address
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+              {/* Existing Address Cards */}
+{addresses.map(address => (
+  <div key={address.id} className={`address-card ${address.is_default ? 'default' : ''}`}>
+    {address.is_default && <div className="default-badge">Default</div>}
+    <div className="address-content">
+      <h3>{address.full_name}</h3>
+      <p>{address.line1}</p>
+      {address.landmark && <p>Landmark: {address.landmark}</p>}
+      <p>{address.city}, {address.state} - {address.pincode}</p>
+      <p>{address.country}</p>
+      <p>Phone: {address.mobile_number}</p>
+      {address.lat && address.lon && (
+        <p>Lat/Lon: {address.lat}, {address.lon}</p>
       )}
     </div>
+    <div className="address-actions">
+      <button 
+        onClick={() => setDefaultAddress(address.id)}
+        disabled={address.is_default}
+      >
+        {address.is_default ? 'Default' : 'Set Default'}
+      </button>
+      <div>
+        <button className="icon-btn" title="Edit">
+          <FaEdit />
+        </button>
+        <button 
+          className="icon-btn" 
+          title="Delete"
+          onClick={() => deleteAddress(address.id)}
+        >
+          <FaTrash />
+        </button>
+      </div>
+    </div>
+  </div>
+))}
+            </div>
+          </div>
+
+          {/* Right side - Address form (conditionally rendered) */}
+          {showForm && (
+  <div className="address-form-sidebar">
+    <div className="address-form-container">
+      <h3>Add New Address</h3>
+      <button className="close-btn" onClick={() => setShowForm(false)}>×</button>
+
+      {/* Autofill Button */}
+      <div className="autofill-section">
+        <span>Save time. Autofill your current location.</span>
+        <button type="button" className="autofill-btn" onClick={handleAutofill}>
+          Autofill
+        </button>
+      </div>
+
+      <form onSubmit={handleSubmit}>
+        <div className="add-form-group">
+          <label>Full Name (First and Last Name)*</label>
+          <input
+            type="text"
+            name="fullName"
+            value={formData.fullName}
+            onChange={handleInputChange}
+            required
+          />
+        </div>
+        <div className="add-form-group">
+          <label>Mobile Number*</label>
+          <input
+            type="tel"
+            name="mobileNumber"
+            value={formData.mobileNumber}
+            onChange={handleInputChange}
+            required
+          />
+        </div>
+        <div className="add-form-group">
+          <label>Pincode*</label>
+          <input
+            type="text"
+            name="pincode"
+            value={formData.pincode}
+            onChange={handleInputChange}
+            required
+          />
+        </div>
+        <div className="add-form-group">
+          <label>Flat, House No, Building, Company, Apartment*</label>
+          <input
+            type="text"
+            name="flatNo"
+            value={formData.flatNo}
+            onChange={handleInputChange}
+            required
+          />
+        </div>
+        <div className="add-form-group">
+          <label>Area, Street, Sector, Village*</label>
+          <input
+            type="text"
+            name="area"
+            value={formData.area}
+            onChange={handleInputChange}
+            required
+          />
+        </div>
+        <div className="add-form-group">
+          <label>Landmark</label>
+          <input
+            type="text"
+            name="landmark"
+            value={formData.landmark}
+            onChange={handleInputChange}
+          />
+        </div>
+        <div className="add-form-group">
+          <label>Town/City*</label>
+          <input
+            type="text"
+            name="city"
+            value={formData.city}
+            onChange={handleInputChange}
+            required
+          />
+        </div>
+        <div className="add-form-group">
+          <label>State*</label>
+          <select
+            name="state"
+            value={formData.state}
+            onChange={handleInputChange}
+            required
+          >
+            <option value="">Select State</option>
+            {indianStates.map(state => (
+              <option key={state} value={state}>{state}</option>
+            ))}
+          </select>
+        </div>
+        <div className="add-form-check">
+          <input
+            type="checkbox"
+            id="defaultAddress"
+            name="isDefault"
+            checked={formData.isDefault}
+            onChange={handleInputChange}
+          />
+          <label htmlFor="defaultAddress">Make this default</label>
+        </div>
+        <div className="add-form-actions">
+          <button type="button" onClick={() => setShowForm(false)}>
+            Cancel
+          </button>
+          <button type="submit" className="primary">
+            Save Address
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+)}
+        </div>
+      </div>
     </div>
   );
 };
