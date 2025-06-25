@@ -34,6 +34,11 @@ const [formData, setFormData] = useState({
   lon: null
 });
 
+const GOOGLE_MAPS_API_KEY = 'AIzaSyA33bhLoHraG_lpDnNmMomRpRck-TnlI1Y';
+// const GOOGLE_MAPS_API_KEY = 'AIzaSyDMlKtbI7GuZAE7J3fppNFhIdLAXUU53X8';
+
+
+
   // Fetch addresses from API
 useEffect(() => {
   const fetchAddresses = async (id) => {
@@ -70,26 +75,33 @@ useEffect(() => {
 
 const handleSubmit = async (e) => {
   e.preventDefault();
+
+  // Compose address string for geocoding
+  const addressString = `${formData.flatNo}, ${formData.area}, ${formData.city}, ${formData.state}, ${formData.pincode}, India`;
   // Map frontend fields to backend fields
-  const payload = {
-    user_id: user.id,
-    full_name: formData.fullName,
-    mobile_number: formData.mobileNumber,
-    pincode: formData.pincode,
-    line1: `${formData.flatNo}, ${formData.area}`,
-    line2: '', // You can add a separate field if needed
-    landmark: formData.landmark,
-    city: formData.city,
-    state: formData.state,
-    country: 'India',
-    is_default: formData.isDefault,
-    lat: formData.lat,
-    lon: formData.lon
-  };
-
-  console.log('Submitting address payload:', payload);
-
   try {
+    // Get coordinates from Google Maps API
+    const { lat, lon } = await geocodeAddress(addressString);
+
+        // Map frontend fields to backend fields
+    const payload = {
+      user_id: user.id,
+      full_name: formData.fullName,
+      mobile_number: formData.mobileNumber,
+      pincode: formData.pincode,
+      line1: `${formData.flatNo}, ${formData.area}`,
+      line2: '',
+      landmark: formData.landmark,
+      city: formData.city,
+      state: formData.state,
+      country: 'India',
+      is_default: formData.isDefault,
+      lat,
+      lon
+    };
+
+        console.log('Submitting address payload:', payload);
+
     const response = await fetch(`${BaseUrl}/user/addresses`, {
       method: 'POST',
       headers: {
@@ -98,7 +110,7 @@ const handleSubmit = async (e) => {
       },
       body: JSON.stringify(payload)
     });
-    
+
     if (response.ok) {
       const newAddress = await response.json();
       setAddresses([...addresses, newAddress]);
@@ -119,8 +131,9 @@ const handleSubmit = async (e) => {
     }
   } catch (error) {
     console.error('Error adding address:', error);
+    alert('Failed to save address. Please check the address details.');
   }
-};
+  }
 
   const deleteAddress = async (id) => {
     try {
@@ -165,25 +178,35 @@ const handleAutofill = async () => {
   navigator.geolocation.getCurrentPosition(async (position) => {
     const { latitude, longitude } = position.coords;
 
+    // Print fetched lat/lon for debug
+    console.log('Autofill fetched lat/lon:', latitude, longitude);
+
     try {
-      const response = await fetch(`https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=d796b29e46d84caebda6f2d39a91f766`);
+      // Use Google Maps Geocoding API for reverse geocoding
+      const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${GOOGLE_MAPS_API_KEY}`;
+      const response = await fetch(url);
       const data = await response.json();
-      
-      if (data.results.length > 0) {
-        const location = data.results[0].components;
+
+      if (data.status === 'OK' && data.results.length > 0) {
+        const addressComponents = data.results[0].address_components;
+
+        // Helper to extract component by type
+        const getComponent = (type) =>
+          addressComponents.find(comp => comp.types.includes(type))?.long_name || '';
 
         setFormData((prev) => ({
           ...prev,
-          city: location.city || location.town || location.village || '',
-          state: location.state || '',
-          pincode: location.postcode || '',
-          area: location.suburb || location.neighbourhood || '',
+          city: getComponent('locality') || getComponent('administrative_area_level_2') || '',
+          state: getComponent('administrative_area_level_1') || '',
+          pincode: getComponent('postal_code') || '',
+          area: getComponent('sublocality_level_1') || getComponent('neighborhood') || '',
           flatNo: '',
           landmark: '',
           lat: latitude,
           lon: longitude
         }));
       } else {
+        console.error('Autofill error:', error);
         alert("Could not autofill the address. Please fill it manually.");
       }
     } catch (error) {
@@ -194,6 +217,19 @@ const handleAutofill = async () => {
     console.error(err);
     alert("Unable to fetch your location.");
   });
+};
+
+
+
+const geocodeAddress = async (addressString) => {
+  const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(addressString)}&key=${GOOGLE_MAPS_API_KEY}`;
+  const response = await fetch(url);
+  const data = await response.json();
+  if (data.status === 'OK' && data.results.length > 0) {
+    const location = data.results[0].geometry.location;
+    return { lat: location.lat, lon: location.lng };
+  }
+  throw new Error('Unable to geocode address');
 };
 
   return (

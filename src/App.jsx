@@ -41,6 +41,9 @@ import EventPlanning from './components/P2pHeader/SchoolSegment/schooldashboard/
 import { UserContext } from './context/UserContext';
 import AuthWrapper from './components/Ecommerce/Authentication/AuthWrapper.jsx';
 import Addresses from './components/Ecommerce/EcommerceSidebar/Addresses/Addresses.jsx';
+import AgentDashboard from './components/Ecommerce/DeliveryAgent/AgentDashboard/agentDashboard.jsx';
+import AgentLogin from './components/Ecommerce/DeliveryAgent/AgentLogin/agentLogin.jsx';
+import AgentRegistration from './components/Ecommerce/DeliveryAgent/AgentRegister/agentRegister.jsx';
 
 const theme = createTheme();
 // mysql://root:nXbyCttzErnSirxYRBZtYNJRprHnbTar@shuttle.proxy.rlwy.net:21943/railway
@@ -88,6 +91,9 @@ function App() {
             <Route path='/school-statistics' element={<SchoolStatistics/>} />
             <Route path="/event-planning" element={<EventPlanning />} />
             <Route path="/addresses" element={<Addresses />} />
+            <Route path="/agent-registration" element={<AgentRegistration/>}/>
+            <Route path="/agent-login" element={<AgentLogin />} />
+            <Route path="/agent-dashboard" element={<AgentDashboard/>}/>
           </Routes>
         </DndProvider>
       </Router>
