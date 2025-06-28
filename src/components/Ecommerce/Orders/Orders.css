@@ -35,6 +35,10 @@
   position: relative;
 }
 
+.od-address-name{
+  margin: 0;
+}
+
 .filter-button {
   background-color: #f0f0f0;
   border: 1px solid #ddd;
@@ -321,4 +325,71 @@
   padding: 2rem;
   font-size: 1.2rem;
   color: #666;
+}
+
+/* Add these styles to your existing Orders.css */
+
+.order-details-button {
+  background-color: #f0f0f0;
+  color: #333;
+  border: 1px solid #ddd;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.order-details-button:hover {
+  background-color: #e0e0e0;
+}
+
+.order-details-expanded {
+  padding: 15px;
+  background-color: #f9f9f9;
+  border-top: 1px solid #eee;
+  margin-top: 10px;
+  animation: fadeIn 0.3s ease;
+}
+
+.od-detail-row {
+  display: flex;
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+.od-detail-label {
+  font-weight: 600;
+  min-width: 200px;
+  color: #555;
+}
+
+.od-detail-value {
+  flex: 1;
+  color: #333;
+}
+
+.order-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Make sure the existing .order-actions has flex-wrap: wrap */
+.order-actions {
+  flex-wrap: wrap;
 }

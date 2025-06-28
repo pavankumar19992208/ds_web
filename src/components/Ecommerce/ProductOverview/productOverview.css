@@ -20,6 +20,8 @@
   background-color: #fff;
   border-radius: 32px;
   padding: 1rem 2rem;
+  border: 1px solid #eee;
+
 }
 /* Product Image */
 .product-image-container {
@@ -28,13 +30,15 @@
   border-radius: 32px;
   overflow: hidden;
   background-color: #fff;
+  padding-top: 120px;
 }
 
 .product-image {
-  width: 100%;
+  width: 80%;
   height: 400px;
   object-fit: contain;
   cursor: zoom-in;
+  margin: 0 auto;
 }
 
 /* Product Info */

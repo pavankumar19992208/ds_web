@@ -18,7 +18,6 @@ const loaderStyle = {
   position: 'fixed',
   top: 0,
   left: 0,
-  backgroundColor: 'rgba(255, 255, 255, 0.8)',
   zIndex: 9999
 };
 
@@ -46,7 +45,7 @@ const CartPage = () => {
       } catch (error) {
         console.error("Error fetching cart items:", error);
         toast.error("Failed to load cart items");
-      }finally {
+      } finally {
         setIsLoading(false);
       }
     };
@@ -77,7 +76,6 @@ const CartPage = () => {
 
   const handleRemoveItem = async () => {
     if (!itemToRemove) return;
-    
     try {
       const response = await fetch(`${BaseUrl}/cart/${user.id}/${itemToRemove}`, {
         method: 'DELETE'
@@ -101,19 +99,22 @@ const CartPage = () => {
   const handleQuantityChange = async (productId, newQuantity) => {
     const quantity = Math.max(1, newQuantity);
     try {
+      setIsLoading(true);
       const response = await fetch(`${BaseUrl}/cart/${user.id}/${productId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ quantity }),
       });
       if (!response.ok) throw new Error('Failed to update quantity');
-      setCartItems(cartItems.map(item => 
+      setCartItems(cartItems.map(item =>
         item.id === productId ? { ...item, quantity } : item
       ));
       toast.success("Quantity updated successfully");
     } catch (error) {
       console.error("Error updating quantity:", error);
       toast.error("Failed to update quantity");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -133,12 +134,12 @@ const CartPage = () => {
 
   const handleCheckout = async () => {
     const itemsToCheckout = cartItems.filter(item => selectedItems.includes(item.id));
-    
+
     if (itemsToCheckout.length === 0) {
       toast.warning("Please select at least one item to checkout");
       return;
     }
-    
+
     setLoading(true);
     try {
       // Prepare order data with only selected items
@@ -153,35 +154,35 @@ const CartPage = () => {
       };
 
       const response = await fetch(`${BaseUrl}/orders/public`, {
-      method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      },
-      body: JSON.stringify({
-        items: itemsToCheckout.map(item => ({
-          product_id: item.id,
-          quantity: item.quantity
-        }))
-      })
-    });
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({
+          items: itemsToCheckout.map(item => ({
+            product_id: item.id,
+            quantity: item.quantity
+          }))
+        })
+      });
 
       if (!response.ok) throw new Error('Failed to create order');
 
       const result = await response.json();
-      
+
       // Remove only the selected items from cart after successful order
       await Promise.all(
-        itemsToCheckout.map(item => 
+        itemsToCheckout.map(item =>
           fetch(`${BaseUrl}/cart/${user.id}/${item.id}`, { method: 'DELETE' })
         )
       );
-      
+
       // Update cart and selected items state
       const remainingItems = cartItems.filter(item => !selectedItems.includes(item.id));
       setCartItems(remainingItems);
       setSelectedItems([]);
-      
+
       toast.success("Order placed successfully!");
       navigate(`/order-confirmation/${result.order_id}`);
     } catch (error) {
@@ -200,33 +201,35 @@ const CartPage = () => {
     navigate('/orders');
   };
 
-const handlePayment = () => {
-  const itemsToCheckout = cartItems.filter(item => selectedItems.includes(item.id));
-  
-  if (itemsToCheckout.length === 0) {
-    toast.warning("Please select at least one item to checkout");
-    return;
-  }
-  
-  navigate('/checkout', {
-    state: {
-      user_id: user.id, // <-- Make sure this is included
-      items: itemsToCheckout.map(item => {
-        const product = getProductDetails(item.id);
-        return {
-          id: item.id,
-          name: product?.name || 'Unknown Product',
-          price: product?.price || 0,
-          quantity: item.quantity
-        };
-      }),
-      subtotal: calculateSubtotal()
-    }
-  });
-};
+  const handlePayment = () => {
+    const itemsToCheckout = cartItems.filter(item => selectedItems.includes(item.id));
 
+    if (itemsToCheckout.length === 0) {
+      toast.warning("Please select at least one item to checkout");
+      return;
+    }
+
+    navigate('/checkout', {
+      state: {
+        user_id: user.id,
+        items: itemsToCheckout.map(item => {
+          const product = getProductDetails(item.id);
+          return {
+            id: item.id,
+            name: product?.name || 'Unknown Product',
+            price: product?.price || 0,
+            quantity: item.quantity
+          };
+        }),
+        subtotal: calculateSubtotal()
+      }
+    });
+
+    // Clear selected items after navigation
+    setSelectedItems([]);
+  };
   const toggleItemSelection = (productId) => {
-    setSelectedItems(prev => 
+    setSelectedItems(prev =>
       prev.includes(productId)
         ? prev.filter(id => id !== productId)
         : [...prev, productId]
@@ -244,9 +247,9 @@ const handlePayment = () => {
   if (isLoading) {
     return (
       <div style={loaderStyle}>
-        <Lottie 
-          animationData={loadingAnimation} 
-          loop={true} 
+        <Lottie
+          animationData={loadingAnimation}
+          loop={true}
           style={{ width: 300, height: 300 }}
         />
       </div>
@@ -269,8 +272,8 @@ const handlePayment = () => {
                   id="select-all"
                 />
                 <label htmlFor="select-all">
-                  {selectedItems.length === cartItems.length && cartItems.length > 0 
-                    ? 'Deselect All' 
+                  {selectedItems.length === cartItems.length && cartItems.length > 0
+                    ? 'Deselect All'
                     : 'Select All'}
                 </label>
               </div>
@@ -291,10 +294,10 @@ const handlePayment = () => {
                   </div>
                   <div className="image-container">
                     {product.mainImageUrl && (
-                      <img 
-                        src={product.mainImageUrl} 
-                        alt={product.name} 
-                        className="image" 
+                      <img
+                        src={product.mainImageUrl}
+                        alt={product.name}
+                        className="image"
                         onClick={() => handleProductClick(product.id)}
                       />
                     )}
@@ -311,7 +314,7 @@ const handlePayment = () => {
                         onChange={(e) => handleQuantityChange(item.id, parseInt(e.target.value))}
                       />
                     </div>
-                    <button 
+                    <button
                       onClick={() => confirmRemoveItem(item.id)}
                       className="remove-button"
                     >
@@ -324,7 +327,7 @@ const handlePayment = () => {
           ) : (
             <div className="empty-cart">
               <p>Your cart is empty</p>
-              <button 
+              <button
                 onClick={() => navigate('/ecommerce-dashboard')}
                 className="continue-shopping-button"
               >
@@ -345,7 +348,7 @@ const handlePayment = () => {
               <span>Subtotal:</span>
               <span>₹{calculateSubtotal()}</span>
             </div>
-            <button 
+            <button
               onClick={handlePayment}
               className="checkout-button"
               disabled={loading || selectedItems.length === 0}
@@ -362,7 +365,7 @@ const handlePayment = () => {
               <h3>Confirm Removal</h3>
               <p>Are you sure you want to remove this item from your cart?</p>
               <div className="modal-buttons">
-                <button 
+                <button
                   onClick={() => {
                     setShowConfirmModal(false);
                     setItemToRemove(null);
@@ -371,7 +374,7 @@ const handlePayment = () => {
                 >
                   Cancel
                 </button>
-                <button 
+                <button
                   onClick={handleRemoveItem}
                   className="confirm-button"
                 >

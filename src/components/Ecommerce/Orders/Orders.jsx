@@ -6,7 +6,7 @@ import BaseUrl from '../../../config';
 import Lottie from 'lottie-react';
 import loadingAnimation from '../loader/loader.json';
 import { GlobalStateContext } from '../GlobalState';
-import { FaFilter } from 'react-icons/fa';
+import { FaFilter, FaChevronDown, FaChevronUp } from 'react-icons/fa';
 
 const loaderStyle = {
   display: 'flex',
@@ -25,6 +25,7 @@ const OrdersPage = () => {
   const [orders, setOrders] = useState([]);
   const [allOrders, setAllOrders] = useState([]);
   const [products, setProducts] = useState([]);
+  const [addresses, setAddresses] = useState({}); // Store addresses by ID
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
@@ -33,7 +34,50 @@ const OrdersPage = () => {
   const [selectedMonth, setSelectedMonth] = useState('');
   const [selectedYear, setSelectedYear] = useState('');
   const [error, setError] = useState(null);
-  
+  const [expandedOrders, setExpandedOrders] = useState({});
+
+  // Toggle order details expansion
+  const toggleOrderDetails = (orderId) => {
+    setExpandedOrders(prev => ({
+      ...prev,
+      [orderId]: !prev[orderId]
+    }));
+  };
+
+  // Fetch address by ID
+  const fetchAddress = async (addressId) => {
+    try {
+      const response = await fetch(`${BaseUrl}/addresses/${addressId}`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch address');
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error fetching address:', error);
+      return null;
+    }
+  };
+
+  // Fetch all addresses when an order is expanded if not already fetched
+  const fetchAddressesForOrder = async (order) => {
+    if (!order.shipping_address_id || addresses[order.shipping_address_id]) {
+      return;
+    }
+
+    const address = await fetchAddress(order.shipping_address_id);
+    if (address) {
+      setAddresses(prev => ({
+        ...prev,
+        [order.shipping_address_id]: address
+      }));
+    }
+  };
+
   // Generate month options
   const months = [
     { value: '', label: 'All Months' },
@@ -50,7 +94,7 @@ const OrdersPage = () => {
     { value: '11', label: 'November' },
     { value: '12', label: 'December' }
   ];
-  
+
   // Generate year options (last 5 years and next 1 year)
   const currentYear = new Date().getFullYear();
   const years = [
@@ -61,30 +105,40 @@ const OrdersPage = () => {
     }))
   ];
 
-useEffect(() => {
+  useEffect(() => {
     if (!user || !user.id) return;
 
     const fetchData = async () => {
       try {
         setIsLoading(true);
         setError(null);
-        
-        console.log(`Fetching orders for user ID: ${user.id}`);
-        const ordersResponse = await fetch(`${BaseUrl}/orders/user/${user.id}`);
-        
-        console.log('Response status:', ordersResponse.status);
-        const ordersData = await ordersResponse.json();
-        console.log('Full response:', ordersData);
-        
+
+        const ordersResponse = await fetch(`${BaseUrl}/orders/user/${user.id}`, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+
         if (!ordersResponse.ok) {
-          throw new Error(ordersData.detail || `HTTP error! status: ${ordersResponse.status}`);
+          throw new Error(`HTTP error! status: ${ordersResponse.status}`);
         }
-        
+
+        let ordersData = await ordersResponse.json();
+
+        // Ensure ordersData is always an array
         if (!Array.isArray(ordersData)) {
-          throw new Error('Invalid orders data format');
+          // Handle different response formats:
+          // Case 1: Response is an object with an orders property
+          if (ordersData.orders && Array.isArray(ordersData.orders)) {
+            ordersData = ordersData.orders;
+          }
+          // Case 2: Response is empty or malformed
+          else {
+            ordersData = [];
+          }
         }
-        
-        console.log('Orders received:', ordersData);
+
+        console.log('Processed orders data:', ordersData);
         setOrders(ordersData);
         setAllOrders(ordersData);
 
@@ -92,10 +146,11 @@ useEffect(() => {
         const productsResponse = await fetch(`${BaseUrl}/products`);
         const productsData = await productsResponse.json();
         setProducts(productsData);
-        
+
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Error fetching orders:", error);
         setError(error.message);
+        // Set to empty array instead of null/undefined
         setOrders([]);
         setAllOrders([]);
       } finally {
@@ -117,15 +172,24 @@ useEffect(() => {
       const orderDate = new Date(order.order_date);
       const orderMonth = String(orderDate.getMonth() + 1).padStart(2, '0');
       const orderYear = String(orderDate.getFullYear());
-      
+
       const monthMatch = !selectedMonth || orderMonth === selectedMonth;
       const yearMatch = !selectedYear || orderYear === selectedYear;
-      
+
       return monthMatch && yearMatch;
     });
 
     setOrders(filtered);
   }, [selectedMonth, selectedYear, allOrders]);
+
+  // Fetch address when order is expanded
+  useEffect(() => {
+    orders.forEach(order => {
+      if (expandedOrders[order.order_id] && order.shipping_address_id) {
+        fetchAddressesForOrder(order);
+      }
+    });
+  }, [expandedOrders, orders]);
 
   const getProductDetails = (productId) => {
     return products.find(product => product.id === productId);
@@ -136,33 +200,45 @@ useEffect(() => {
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
+  const formatDateTime = (dateString) => {
+    const options = {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+
   const handleProductClick = (productId) => {
     navigate(`/product-overview/${productId}`);
   };
 
-const handlePayment = async (orderId, amount) => {
-  try {
-    // Payment endpoints should still require authentication
-    const token = localStorage.getItem('token');
-    if (!token) {
-      navigate('/login');
-      return;
-    }
+  const handlePayment = async (orderId, amount) => {
+    try {
+      // Payment endpoints should still require authentication
+      const token = localStorage.getItem('token');
+      if (!token) {
+        navigate('/login');
+        return;
+      }
 
-    const razorpayResponse = await fetch(`${BaseUrl}/api/create-razorpay-order`, {
-      method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify({
-        amount: Math.round(amount * 100),
-        currency: 'INR',
-        receipt: `order_${orderId}`,
-        order_id: orderId
-      })
-    });
-    
+      const razorpayResponse = await fetch(`${BaseUrl}/api/create-razorpay-order`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          amount: Math.round(amount * 100),
+          currency: 'INR',
+          receipt: `order_${orderId}`,
+          order_id: orderId
+        })
+      });
+
       const razorpayData = await razorpayResponse.json();
 
       const script = document.createElement('script');
@@ -179,7 +255,7 @@ const handlePayment = async (orderId, amount) => {
             try {
               const verifyResponse = await fetch(`${BaseUrl}/api/verify-payment`, {
                 method: 'POST',
-                headers: { 
+                headers: {
                   'Content-Type': 'application/json',
                   'Authorization': `Bearer ${localStorage.getItem('token')}`
                 },
@@ -196,8 +272,8 @@ const handlePayment = async (orderId, amount) => {
                 alert('Payment verification failed');
                 return;
               }
-              
-              const updatedOrders = await fetch(`${BaseUrl}/orders?user_id=${user.id}`, {
+
+              const updatedOrders = await fetch(`${BaseUrl}/orders/user/${user.id}`, {
                 headers: {
                   'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }
@@ -232,9 +308,9 @@ const handlePayment = async (orderId, amount) => {
   if (isLoading) {
     return (
       <div style={loaderStyle}>
-        <Lottie 
-          animationData={loadingAnimation} 
-          loop={true} 
+        <Lottie
+          animationData={loadingAnimation}
+          loop={true}
           style={{ width: 300, height: 300 }}
         />
       </div>
@@ -250,7 +326,7 @@ const handlePayment = async (orderId, amount) => {
             <h1>Your Orders</h1>
             {allOrders.length > 0 && (
               <div className="filter-container">
-                <button 
+                <button
                   className="filter-button"
                   onClick={() => setShowFilterDropdown(!showFilterDropdown)}
                 >
@@ -284,7 +360,7 @@ const handlePayment = async (orderId, amount) => {
                         ))}
                       </select>
                     </div>
-                    <button 
+                    <button
                       className="reset-filters"
                       onClick={resetFilters}
                     >
@@ -295,11 +371,11 @@ const handlePayment = async (orderId, amount) => {
               </div>
             )}
           </div>
-          
+
           {allOrders.length === 0 ? (
             <div className="no-orders">
               <p>You haven't placed any orders yet.</p>
-              <button 
+              <button
                 className="shop-now-button"
                 onClick={() => navigate('/ecommerce-dashboard')}
               >
@@ -309,7 +385,7 @@ const handlePayment = async (orderId, amount) => {
           ) : orders.length === 0 ? (
             <div className="no-orders">
               <p>No orders found matching your filters</p>
-              <button 
+              <button
                 className="reset-filters-button"
                 onClick={resetFilters}
               >
@@ -320,16 +396,16 @@ const handlePayment = async (orderId, amount) => {
             orders.map((order) => (
               <div key={order.order_id} className="order-card">
                 <div className="order-header">
-  <div>
-    <h3>Order #{order.order_id}</h3>
-    <p className="order-date">Placed on {formatDate(order.order_date)}</p>
-  </div>
-  <div className="order-status">
-    <span className={`status-badge ${order.status.toLowerCase()}`}>
-      {order.status}
-    </span>
-  </div>
-</div>
+                  <div>
+                    <h3>Order #{order.order_id}</h3>
+                    <p className="order-date">Placed on {formatDate(order.order_date)}</p>
+                  </div>
+                  <div className="order-status">
+                    <span className={`status-badge ${order.status.toLowerCase()}`}>
+                      {order.status}
+                    </span>
+                  </div>
+                </div>
 
                 <div className="order-items">
                   {order.items.map((item) => {
@@ -352,20 +428,79 @@ const handlePayment = async (orderId, amount) => {
                   })}
                 </div>
 
+                {/* Order details section that expands */}
+                {expandedOrders[order.order_id] && (
+                  <div className="order-details-expanded">
+                    <div className="od-detail-row">
+                      <span className="od-detail-label">Transaction ID:</span>
+                      <span className="od-detail-value">
+                        {order.razorpay_payment_id || 'Not available'}
+                      </span>
+                    </div>
+                    <div className="od-detail-row">
+                      <span className="od-detail-label">Order Time:</span>
+                      <span className="od-detail-value">
+                        {formatDateTime(order.order_date)}
+                      </span>
+                    </div>
+                    <div className="od-detail-row">
+                      <span className="od-detail-label">Shipping Address:</span>
+                      <span className="od-detail-value">
+                        {order.shipping_address_id && addresses[order.shipping_address_id] ? (
+                          <>
+                            <p className='od-address-name'>{addresses[order.shipping_address_id].full_name}</p>
+                            <p>{addresses[order.shipping_address_id].line1}</p>
+                            {addresses[order.shipping_address_id].landmark && (
+                              <p>{addresses[order.shipping_address_id].landmark}</p>
+                            )}
+                            <p>
+                              {addresses[order.shipping_address_id].city}, {addresses[order.shipping_address_id].state}
+                            </p>
+                            <p>
+                              {addresses[order.shipping_address_id].pincode}, {addresses[order.shipping_address_id].country}
+                            </p>
+                            <p>Phone: {addresses[order.shipping_address_id].mobile_number}</p>
+                          </>
+                        ) : 'Loading address...'}
+                      </span>
+                    </div>
+                    {/* <div className="od-detail-row">
+                      <span className="od-detail-label">Payment Method:</span>
+                      <span className="od-detail-value">
+                        {order.payment_method || 'Not specified'}
+                      </span>
+                    </div> */}
+                  </div>
+                )}
+
                 <div className="order-footer">
                   <div className="order-total">
-                    <p>Total: ₹{Number(order.total_amount).toFixed(2)}</p>       
+                    <p>Total: ₹{Number(order.total_amount).toFixed(2)}</p>
                   </div>
                   <div className="order-actions">
+                    <button
+                      className="order-details-button"
+                      onClick={() => toggleOrderDetails(order.order_id)}
+                    >
+                      {expandedOrders[order.order_id] ? (
+                        <>
+                          <FaChevronUp /> Hide Details
+                        </>
+                      ) : (
+                        <>
+                          <FaChevronDown /> Order Details
+                        </>
+                      )}
+                    </button>
                     {order.status.toLowerCase() === 'created' && (
-                      <button 
+                      <button
                         className="pay-now-button"
                         onClick={() => handlePayment(order.order_id, order.total_amount)}
                       >
                         Complete Payment
                       </button>
                     )}
-                    <button 
+                    <button
                       className="track-button"
                       onClick={() => navigate(`/order-tracking/${order.order_id}`)}
                     >

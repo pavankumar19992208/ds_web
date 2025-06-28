@@ -3,15 +3,19 @@ import { FaPlus, FaEdit, FaTrash } from 'react-icons/fa';
 import EcommerceNavbar from '../../EcommerceNavbar/ecommerceNavbar';
 import BaseUrl from '../../../../config';
 import { GlobalStateContext } from '../../GlobalState';
+import Lottie from 'lottie-react';
+import loadingAnimation from '../../loader/loader.json';
 import './Addresses.css';
 
 const Addresses = () => {
   const [addresses, setAddresses] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const { user } = useContext(GlobalStateContext) || {};
+  const [isLoading, setIsLoading] = useState(true);
   const [deleteId, setDeleteId] = useState(null);
   const [showDeletePopup, setShowDeletePopup] = useState(false);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false); // <-- Add this state
+  const [editId, setEditId] = useState(null); // Track which address is being edited
 
   const indianStates = [
     "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh",
@@ -37,33 +41,35 @@ const Addresses = () => {
     lon: null
   });
 
+  const fetchAddresses = async () => {
+    try {
+      setIsLoading(true);
+      const response = await fetch(`${BaseUrl}/user/addresses/${user.id}`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+
+      const data = await response.json();
+      // Map is_default to isDefault for frontend use
+      const mapped = Array.isArray(data)
+        ? data.map(addr => ({
+          ...addr,
+          isDefault: addr.is_default,
+        }))
+        : [];
+      setAddresses(mapped);
+    } catch (error) {
+      console.error('Error fetching addresses:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   // Fetch addresses from API
   useEffect(() => {
-    const fetchAddresses = async (id) => {
-      try {
-        const response = await fetch(`${BaseUrl}/user/addresses/${user.id}`, {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
-        });
-
-        const data = await response.json();
-        console.log('Fetched address data:', data);
-        // Map is_default to isDefault for frontend use
-        const mapped = Array.isArray(data)
-          ? data.map(addr => ({
-            ...addr,
-            isDefault: addr.is_default, // map snake_case to camelCase
-          }))
-          : [];
-        setAddresses(mapped);
-      } catch (error) {
-        console.error('Error fetching addresses:', error);
-      }
-    };
-
     if (user?.id && typeof user.id === 'number') {
-      fetchAddresses(user.id);
+      fetchAddresses();
     } else {
       console.warn('Invalid or missing user.id:', user?.id);
     }
@@ -77,16 +83,69 @@ const Addresses = () => {
     });
   };
 
+  const loaderStyle = {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100vh',
+    width: '100vw',
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    zIndex: 9999
+  };
+
+  if (isLoading) {
+    return (
+      <div style={loaderStyle}>
+        <Lottie
+          animationData={loadingAnimation}
+          loop={true}
+          style={{ width: 300, height: 300 }}
+        />
+      </div>
+    );
+  }
+
+  // Handler for edit icon click
+  const handleEditClick = (address) => {
+    setEditId(address.id);
+    // Split line1 into flatNo and area if needed
+    let flatNo = '';
+    let area = '';
+    if (address.line1) {
+      const parts = address.line1.split(',');
+      flatNo = parts[0]?.trim() || '';
+      area = parts.slice(1).join(',').trim();
+    }
+    setFormData({
+      fullName: address.full_name || '',
+      mobileNumber: address.mobile_number || '',
+      pincode: address.pincode || '',
+      flatNo,
+      area,
+      landmark: address.landmark || '',
+      city: address.city || '',
+      state: address.state || '',
+      isDefault: address.is_default || false,
+      lat: address.lat || null,
+      lon: address.lon || null,
+    });
+    setShowForm(true);
+  };
+
+
+  // Update handleSubmit to handle both add and edit
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Map frontend fields to backend fields
     const payload = {
       user_id: user.id,
       full_name: formData.fullName,
       mobile_number: formData.mobileNumber,
       pincode: formData.pincode,
       line1: `${formData.flatNo}, ${formData.area}`,
-      line2: '', // You can add a separate field if needed
+      line2: '',
       landmark: formData.landmark,
       city: formData.city,
       state: formData.state,
@@ -96,38 +155,53 @@ const Addresses = () => {
       lon: formData.lon
     };
 
-    console.log('Submitting address payload:', payload);
-
     try {
-      const response = await fetch(`${BaseUrl}/user/addresses`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-        body: JSON.stringify(payload)
-      });
-
-      if (response.ok) {
-        const newAddress = await response.json();
-        setAddresses([...addresses, newAddress]);
-        setShowForm(false);
-        setFormData({
-          fullName: '',
-          mobileNumber: '',
-          pincode: '',
-          flatNo: '',
-          area: '',
-          landmark: '',
-          city: '',
-          state: '',
-          isDefault: false,
-          lat: null,
-          lon: null
+      if (editId) {
+        // Edit mode: update address
+        const response = await fetch(`${BaseUrl}/user/addresses/${editId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          },
+          body: JSON.stringify(payload)
         });
+        if (response.ok) {
+          const updatedAddress = await response.json();
+          setAddresses(addresses.map(addr => addr.id === editId ? { ...updatedAddress, isDefault: updatedAddress.is_default } : addr));
+        }
+      } else {
+        // Add mode: create new address
+        const response = await fetch(`${BaseUrl}/user/addresses`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          },
+          body: JSON.stringify(payload)
+        });
+        if (response.ok) {
+          const newAddress = await response.json();
+          setAddresses([...addresses, newAddress]);
+        }
       }
+      setShowForm(false);
+      setEditId(null);
+      setFormData({
+        fullName: '',
+        mobileNumber: '',
+        pincode: '',
+        flatNo: '',
+        area: '',
+        landmark: '',
+        city: '',
+        state: '',
+        isDefault: false,
+        lat: null,
+        lon: null
+      });
     } catch (error) {
-      console.error('Error adding address:', error);
+      console.error('Error saving address:', error);
     }
   };
 
@@ -175,6 +249,7 @@ const Addresses = () => {
 
   const setDefaultAddress = async (id) => {
     try {
+      setIsLoading(true);
       await fetch(`${BaseUrl}/addresses/set-default`, {
         method: 'PUT',
         headers: {
@@ -188,9 +263,12 @@ const Addresses = () => {
         ...addr,
         isDefault: addr.id === id
       })));
+      fetchAddresses();
       console.log({ address_id: id, user_id: user.id });
     } catch (error) {
       console.error('Error setting default address:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -246,7 +324,23 @@ const Addresses = () => {
           <div className="address-list">
             <div className="address-grid">
               {/* Add New Address Card */}
-              <div className="address-card add-new" onClick={() => setShowForm(true)}>
+              <div className="address-card add-new" onClick={() => {
+                setShowForm(true);
+                setEditId(null);
+                setFormData({
+                  fullName: '',
+                  mobileNumber: '',
+                  pincode: '',
+                  flatNo: '',
+                  area: '',
+                  landmark: '',
+                  city: '',
+                  state: '',
+                  isDefault: false,
+                  lat: null,
+                  lon: null
+                });
+              }} >
                 <FaPlus size={24} />
                 <span>Add New Address</span>
               </div>
@@ -274,7 +368,7 @@ const Addresses = () => {
                       {address.is_default ? 'Default' : 'Set Default'}
                     </button>
                     <div>
-                      <button className="icon-btn" title="Edit">
+                      <button className="icon-btn" title="Edit" onClick={() => handleEditClick(address)}>
                         <FaEdit />
                       </button>
                       <button
@@ -295,8 +389,11 @@ const Addresses = () => {
           {showForm && (
             <div className="address-form-sidebar">
               <div className="address-form-container">
-                <h3>Add New Address</h3>
-                <button className="close-btn" onClick={() => setShowForm(false)}>×</button>
+                <h3>{editId ? 'Edit Address' : 'Add New Address'}</h3>
+                <button className="close-btn" onClick={() => {
+                  setShowForm(false);
+                  // setEditId(null);
+                }}>×</button>
 
                 {/* Autofill Button */}
                 <div className="autofill-section">
@@ -405,7 +502,7 @@ const Addresses = () => {
                       Cancel
                     </button>
                     <button type="submit" className="primary">
-                      Save Address
+                      {editId ? 'Update Address' : 'Save Address'}
                     </button>
                   </div>
                 </form>
