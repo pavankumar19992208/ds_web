@@ -7,7 +7,7 @@ import TextField from '@mui/material/TextField';
 import { Close } from '@mui/icons-material';
 import { GlobalStateContext } from '../GlobalState';
 import './UserRegistration.css';
-import logo from '../../../images/logo.png';
+import logo from '../../../images/logo2.png';
 
 const LoginPopup = ({ onClose, toggleAuthMode }) => {
   const navigate = useNavigate();
@@ -43,68 +43,68 @@ const LoginPopup = ({ onClose, toggleAuthMode }) => {
     setLoginData({ ...loginData, [name]: value });
   };
 
-const handleLoginSubmit = async (e) => {
-  e.preventDefault();
-  
-  try {
-    let response;
-    if (showOTP) {
-      const otpString = otp.join('');
-      const payload = useMobileLogin
-        ? { mobile_number: loginData.mobile_number, otp: otpString }
-        : { email: loginData.email, otp: otpString };
-      
-      response = await axios.post(`${BASE_URL}/verify-otp-login`, payload);
-    } else {
-      const payload = useMobileLogin
-        ? { mobile_number: loginData.mobile_number, password: loginData.password }
-        : { email: loginData.email, password: loginData.password };
-      
-      response = await axios.post(`${BASE_URL}/login`, payload);
+  const handleLoginSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      let response;
+      if (showOTP) {
+        const otpString = otp.join('');
+        const payload = useMobileLogin
+          ? { mobile_number: loginData.mobile_number, otp: otpString }
+          : { email: loginData.email, otp: otpString };
+
+        response = await axios.post(`${BASE_URL}/verify-otp-login`, payload);
+      } else {
+        const payload = useMobileLogin
+          ? { mobile_number: loginData.mobile_number, password: loginData.password }
+          : { email: loginData.email, password: loginData.password };
+
+        response = await axios.post(`${BASE_URL}/login`, payload);
+      }
+
+      console.log('Full response:', response); // Debug the complete response
+
+      // Verify response structure - now checking for both token and user
+      if (!response.data?.token || !response.data?.user) {
+        console.error('Invalid response structure:', response.data);
+        throw new Error('Invalid response structure from server');
+      }
+
+      // Store token and user data
+      localStorage.setItem('token', response.data.token);
+      localStorage.setItem('user', JSON.stringify(response.data.user));
+
+      // Update global state
+      loginUser(response.data.user);
+
+      // Set default authorization header
+      axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
+
+      onClose();
+      navigate('/ecommerce-dashboard');
+
+    } catch (error) {
+      console.error('Login error details:', {
+        error: error,
+        response: error.response,
+        message: error.message
+      });
+
+      setErrorMessage(
+        error.response?.data?.message ||
+        error.response?.data?.detail ||
+        error.message ||
+        'Login failed. Please try again.'
+      );
+      setShowError(true);
+
+      // Clear any partial auth state
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      delete axios.defaults.headers.common['Authorization'];
     }
-
-    console.log('Full response:', response); // Debug the complete response
-
-    // Verify response structure - now checking for both token and user
-    if (!response.data?.token || !response.data?.user) {
-      console.error('Invalid response structure:', response.data);
-      throw new Error('Invalid response structure from server');
-    }
-
-    // Store token and user data
-    localStorage.setItem('token', response.data.token);
-    localStorage.setItem('user', JSON.stringify(response.data.user));
-    
-    // Update global state
-    loginUser(response.data.user);
-    
-    // Set default authorization header
-    axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
-    
-    onClose();
-    navigate('/ecommerce-dashboard');
-
-  } catch (error) {
-    console.error('Login error details:', {
-      error: error,
-      response: error.response,
-      message: error.message
-    });
-    
-    setErrorMessage(
-      error.response?.data?.message || 
-      error.response?.data?.detail || 
-      error.message || 
-      'Login failed. Please try again.'
-    );
-    setShowError(true);
-    
-    // Clear any partial auth state
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    delete axios.defaults.headers.common['Authorization'];
-  }
-};
+  };
 
   const handleOTPClick = () => {
     setShowOTP(!showOTP);
@@ -128,21 +128,21 @@ const handleLoginSubmit = async (e) => {
 
   const handleSendOTP = async () => {
     if ((!loginData.mobile_number && !loginData.email) || !canResendOTP) return;
-  
+
     setIsSendingOTP(true);
     try {
       const payload = useMobileLogin
         ? { mobile_number: loginData.mobile_number }
         : { email: loginData.email };
-      
+
       await axios.post(`${BASE_URL}/send-otp`, payload);
-      
+
       setOtpTimer(30);
       setCanResendOTP(false);
     } catch (error) {
-      const errorMsg = error.response?.data?.message || 
-                      error.response?.data?.detail || 
-                      'Failed to send OTP. Please try again.';
+      const errorMsg = error.response?.data?.message ||
+        error.response?.data?.detail ||
+        'Failed to send OTP. Please try again.';
       setErrorMessage(errorMsg);
       setShowError(true);
     } finally {
@@ -164,8 +164,8 @@ const handleLoginSubmit = async (e) => {
           />
         ) : (
           <div className='two-column-layout'>
-            <div className='left-column'>
-              <h1 className='neuralife-text'>neuraLife</h1>
+            <div className='ec-left-column'>
+              {/* <h1 className='neuralife-text'>Cartsy</h1> */}
               <div className='logo-container'>
                 <img
                   src={logo}
@@ -174,55 +174,63 @@ const handleLoginSubmit = async (e) => {
                 />
               </div>
             </div>
-            
-            <div className='right-column'>
+
+            <div className='ec-right-column'>
               <div className='header-container'>
                 <h2 className='auth-title'>Sign In</h2>
                 <div className='closeIcon-container' onClick={onClose}>
-                  <Close className='close-icon'/>
+                  <Close className='close-icon' />
                 </div>
               </div>
-              
+
               <div className='reg-form-container'>
                 <form onSubmit={handleLoginSubmit}>
                   <div className='form-group'>
                     {useMobileLogin ? (
-                      <input
+                      <TextField
+                        variant="standard"
+                        label="Mobile Number"
+                        id="mobile-number"
                         type="text"
                         name="mobile_number"
-                        placeholder='Mobile Number'
+
                         value={loginData.mobile_number}
                         onChange={handleLoginChange}
                         required
-                        className="custom-input"
+
                       />
                     ) : (
-                      <input
+                      <TextField
+                        variant="standard"
+                        label="Email"
+                        id="email"
                         type="email"
                         name="email"
-                        placeholder='Email'
                         value={loginData.email}
                         onChange={handleLoginChange}
                         required
-                        className="custom-input"
+
                       />
                     )}
                   </div>
-                  
+
                   {!showOTP && (
                     <div className='form-group'>
-                      <input
+                      <TextField
+                        variant="standard"
+                        label="Password"
+                        id="password"
                         type="password"
                         name="password"
-                        placeholder='Password'
+
                         value={loginData.password}
                         onChange={handleLoginChange}
                         required
-                        className="custom-input"
+
                       />
                     </div>
                   )}
-                  
+
                   {showOTP && (
                     <div className='otp-section'>
                       <div className='otp-container'>
@@ -233,15 +241,16 @@ const handleLoginSubmit = async (e) => {
                             onChange={(e) => handleOtpChange(e.target.value, index)}
                             inputProps={{
                               maxLength: 1,
-                              style: { textAlign: 'center', color: '#fff' },
+                              style: { textAlign: 'center', color: '#333' },
                             }}
                             sx={{
                               '& .MuiOutlinedInput-root': {
                                 '& fieldset': {
-                                  borderColor: '#AEAEAE',
+                                  borderColor: '#333',
+                                  borderWidth: 2,
                                 },
                                 '&:hover fieldset': {
-                                  borderColor: '#AEAEAE',
+                                  borderColor: '#1d3557',
                                 },
                               },
                               input: { color: '#fff' },
@@ -257,13 +266,13 @@ const handleLoginSubmit = async (e) => {
                           onClick={handleSendOTP}
                           disabled={!canResendOTP || isSendingOTP}
                         >
-                          {isSendingOTP ? 'Sending...' : 
-                           canResendOTP ? 'Send OTP' : `Resend OTP (${otpTimer}s)`}
+                          {isSendingOTP ? 'Sending...' :
+                            canResendOTP ? 'Send OTP' : `Resend OTP (${otpTimer}s)`}
                         </button>
                       </div>
                     </div>
                   )}
-                  
+
                   <div className='btn-group'>
                     <button
                       type="button"
@@ -273,7 +282,7 @@ const handleLoginSubmit = async (e) => {
                       {showOTP ? 'Use Password' : 'Sign In with OTP'}
                     </button>
                   </div>
-                  
+
                   <div className='btn-group'>
                     <button
                       type="button"
@@ -285,19 +294,19 @@ const handleLoginSubmit = async (e) => {
                   </div>
                 </form>
               </div>
-              
+
               <div className='button-container'>
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   className='reg-lgn-btn'
                   onClick={handleLoginSubmit}
                 >
                   Sign In
                 </button>
               </div>
-              
+
               <div className='auth-toggle-text'>
-                Don't have an account? 
+                Don't have an account?
                 <span className='auth-toggle-link' onClick={toggleAuthMode}>
                   Sign up for free
                 </span>

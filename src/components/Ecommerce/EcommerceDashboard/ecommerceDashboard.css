@@ -149,7 +149,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: default; /* Non-clickable arrows as per requirements */
+  cursor: pointer; /* Non-clickable arrows as per requirements */
   font-weight: bold;
 }
 

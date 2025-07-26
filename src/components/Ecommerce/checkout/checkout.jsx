@@ -211,7 +211,7 @@ const CheckoutPage = () => {
         key: razorpayData.key,
         amount: razorpayData.amount,
         currency: razorpayData.currency,
-        name: 'Your Store',
+        name: 'Cartsy',
         description: `Order #${orderData.order_id}`,
         order_id: razorpayData.id,
         handler: async (response) => {
@@ -291,6 +291,7 @@ const CheckoutPage = () => {
 
   return (
     <>
+    <div className="checkout-page">
       <EcommerceNavbar />
       <div className="checkout-container">
         <div className="checkout-content">
@@ -308,7 +309,7 @@ const CheckoutPage = () => {
             </div>
           </div>
           <div className="checkout-form">
-            <h2>Shipping Information</h2>
+            <h4>Shipping Information</h4>
             {defaultAddress ? (
               <div className="address-card default">
                 <div className="default-badge">Default</div>
@@ -326,7 +327,7 @@ const CheckoutPage = () => {
               </div>
             ) : (
               <div>
-                <p>No default address found. Please add and set a default address in your <a href="/addresses">Addresses</a>.</p>
+                <p style={{fontSize: 'small'}}>No default address found. Please add and set a default address in your <a href="/addresses">Addresses</a>.</p>
               </div>
             )}
             <div style={{ marginTop: 24 }}>
@@ -372,6 +373,7 @@ const CheckoutPage = () => {
           </div>
         </div>
       )}
+      </div>
     </>
   );
 };

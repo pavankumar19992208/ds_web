@@ -6,7 +6,7 @@ import BaseUrl from '../../../config';
 import Lottie from 'lottie-react';
 import loadingAnimation from '../loader/loader.json';
 import { GlobalStateContext } from '../GlobalState';
-import { FaFilter, FaChevronDown, FaChevronUp } from 'react-icons/fa';
+import { FaFilter, FaChevronDown, FaChevronUp, FaFileInvoiceDollar, FaBoxOpen, FaTruck, FaClipboardCheck, FaHome } from 'react-icons/fa';
 
 const loaderStyle = {
   display: 'flex',
@@ -17,7 +17,6 @@ const loaderStyle = {
   position: 'fixed',
   top: 0,
   left: 0,
-  backgroundColor: 'rgba(255, 255, 255, 0.8)',
   zIndex: 9999
 };
 
@@ -248,7 +247,7 @@ const OrdersPage = () => {
           key: razorpayData.key,
           amount: razorpayData.amount,
           currency: razorpayData.currency,
-          name: 'Shoppers',
+          name: 'Cartsy',
           description: `Order #${orderId}`,
           order_id: razorpayData.id,
           handler: async (response) => {
@@ -311,16 +310,80 @@ const OrdersPage = () => {
         <Lottie
           animationData={loadingAnimation}
           loop={true}
-          style={{ width: 300, height: 300 }}
+          style={{ width: 200, height: 200 }}
         />
       </div>
     );
   }
 
+  const stages = [
+    { name: 'Order Placed', icon: <FaFileInvoiceDollar /> },
+    { name: 'Packed', icon: <FaBoxOpen /> },
+    { name: 'In Transit', icon: <FaTruck /> },
+    { name: 'Out for Delivery', icon: <FaClipboardCheck /> },
+    { name: 'Delivered', icon: <FaHome /> }
+  ];
+
+  // This function maps your backend status to a stage index (0-4)
+  const getStatusIndex = (status) => {
+    const statusString = status ? status.toLowerCase() : '';
+    switch (statusString) {
+      case 'created':
+      case 'placed':
+      case 'pending payment':
+        return 0;
+      case 'packed':
+      case 'processing':
+        return 1;
+      case 'shipped':
+      case 'in_transit':
+        return 2;
+      case 'out_for_delivery':
+        return 3;
+      case 'delivered':
+        return 4;
+      default:
+        return 0; // Default to the first stage if status is unknown
+    }
+  };
+
+  const OrderTracker = ({ status }) => {
+    const currentStageIndex = getStatusIndex(status);
+
+    // Calculate the width of the progress bar
+    const progressPercentage = currentStageIndex > 0
+      ? (currentStageIndex / (stages.length - 1)) * 100
+      : 0;
+
+    return (
+      <div className="tracker-container">
+        <div className="tracker-progress-bar" style={{ width: `${progressPercentage}%` }}></div>
+        <div className="tracker-stages">
+          {stages.map((stage, index) => {
+            const isCompleted = index < currentStageIndex;
+            const isActive = index === currentStageIndex;
+            const isDelivered = status.toLowerCase() === 'delivered' && index === stages.length - 1;
+
+            let stageClass = 'tracker-stage';
+            if (isCompleted || isDelivered) stageClass += ' completed';
+            if (isActive) stageClass += ' active';
+
+            return (
+              <div key={stage.name} className={stageClass}>
+                <div className="stage-icon">{stage.icon}</div>
+                <div className="stage-name">{stage.name}</div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <>
-      <EcommerceNavbar />
       <div className="orders-page">
+        <EcommerceNavbar />
         <div className="orders-container">
           <div className="orders-header">
             <h1>Your Orders</h1>
@@ -385,12 +448,12 @@ const OrdersPage = () => {
           ) : orders.length === 0 ? (
             <div className="no-orders">
               <p>No orders found matching your filters</p>
-              <button
+              {/* <button
                 className="reset-filters-button"
                 onClick={resetFilters}
               >
                 Reset Filters
-              </button>
+              </button> */}
             </div>
           ) : (
             orders.map((order) => (
@@ -417,8 +480,8 @@ const OrdersPage = () => {
                         </div>
                         <div className="item-details">
                           <h4 onClick={() => handleProductClick(product.id)}>{product.name}</h4>
-                          <p>Quantity: {item.quantity}</p>
-                          <p>Price: ₹{product.price}</p>
+                          <p style={{ fontSize: '0.8rem' }}>Quantity: {item.quantity}</p>
+                          <p style={{ fontSize: '0.8rem' }}>Price: ₹{product.price}</p>
                         </div>
                         <div className="item-total">
                           <p>₹{(product.price * item.quantity).toFixed(2)}</p>
@@ -464,6 +527,12 @@ const OrdersPage = () => {
                         ) : 'Loading address...'}
                       </span>
                     </div>
+                    <div className="od-detail-row tracker-row">
+                      {/* <span className="od-detail-label">Order Progress:</span> */}
+                      <div className="od-detail-value">
+                        <OrderTracker status={order.status} />
+                      </div>
+                    </div>
                     {/* <div className="od-detail-row">
                       <span className="od-detail-label">Payment Method:</span>
                       <span className="od-detail-value">
@@ -474,7 +543,7 @@ const OrdersPage = () => {
                 )}
 
                 <div className="order-footer">
-                  <div className="order-total">
+                  <div className="od-order-total">
                     <p>Total: ₹{Number(order.total_amount).toFixed(2)}</p>
                   </div>
                   <div className="order-actions">
@@ -500,12 +569,12 @@ const OrdersPage = () => {
                         Complete Payment
                       </button>
                     )}
-                    <button
+                    {/* <button
                       className="track-button"
                       onClick={() => navigate(`/order-tracking/${order.order_id}`)}
                     >
                       Track Order
-                    </button>
+                    </button> */}
                   </div>
                 </div>
               </div>

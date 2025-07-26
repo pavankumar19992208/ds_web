@@ -92,7 +92,6 @@ const Addresses = () => {
     position: 'fixed',
     top: 0,
     left: 0,
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
     zIndex: 9999
   };
 
@@ -102,7 +101,7 @@ const Addresses = () => {
         <Lottie
           animationData={loadingAnimation}
           loop={true}
-          style={{ width: 300, height: 300 }}
+          style={{ width: 200, height: 200 }}
         />
       </div>
     );
@@ -315,10 +314,8 @@ const Addresses = () => {
   return (
     <div className="addresses-page">
       <EcommerceNavbar />
-
       <div className="address-container">
         <h2>Saved Addresses</h2>
-
         <div className="address-layout">
           {/* Left side - Address cards */}
           <div className="address-list">
@@ -389,7 +386,7 @@ const Addresses = () => {
           {showForm && (
             <div className="address-form-sidebar">
               <div className="address-form-container">
-                <h3>{editId ? 'Edit Address' : 'Add New Address'}</h3>
+                <h4>{editId ? 'Edit Address' : 'Add New Address'}</h4>
                 <button className="close-btn" onClick={() => {
                   setShowForm(false);
                   // setEditId(null);

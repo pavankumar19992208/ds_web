@@ -9,16 +9,15 @@
   width: 98.25%;
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  gap: 10px; /* Adjust the gap between items as needed */
+  gap: 16px; /* Adjust the gap between items as needed */
 }
 
 .grid-item {
-
   position: relative;
-  background-color: #ffffff; /* Adjust the background color as needed */
-  padding: 20px; /* Adjust the padding as needed */
+  background: linear-gradient(to bottom right, #e4e7ea, #cfd5dc);
+  padding: 10px; /* Adjust the padding as needed */
   text-align: center;
-  border-radius: 10px; /* Add border radius */
+  border-radius: 20px; /* Add border radius */
   aspect-ratio: 1 / 1; /* Ensure equal height and width */
 }
 

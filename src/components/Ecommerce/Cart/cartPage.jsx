@@ -1,15 +1,17 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { data, useNavigate } from 'react-router-dom';
 import EcommerceNavbar from '../EcommerceNavbar/ecommerceNavbar';
 import './cartPage.css';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import BaseUrl from '../../../config';
 import Lottie from 'lottie-react';
+import { FaTrash } from 'react-icons/fa';
 import loadingAnimation from '../loader/loader.json';
 import { GlobalStateContext } from '../GlobalState'; // <-- Import context
 
-const loaderStyle = {
+const 
+loaderStyle = {
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
@@ -77,9 +79,12 @@ const CartPage = () => {
   const handleRemoveItem = async () => {
     if (!itemToRemove) return;
     try {
-      const response = await fetch(`${BaseUrl}/cart/${user.id}/${itemToRemove}`, {
-        method: 'DELETE'
+      const response = await fetch(`${BaseUrl}/cart/clear-selected/${user.id}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ item_ids: [itemToRemove] })
       });
+      console.log("Response status:", response);
       if (response.ok) {
         setCartItems(cartItems.filter(item => item.id !== itemToRemove));
         setSelectedItems(selectedItems.filter(id => id !== itemToRemove));
@@ -250,7 +255,7 @@ const CartPage = () => {
         <Lottie
           animationData={loadingAnimation}
           loop={true}
-          style={{ width: 300, height: 300 }}
+          style={{ width: 200, height: 200 }}
         />
       </div>
     );
@@ -258,8 +263,8 @@ const CartPage = () => {
 
   return (
     <>
-      <EcommerceNavbar />
       <div className="cart-page">
+        <EcommerceNavbar />
         <div className="cart-items-container">
           <div className="cart-header">
             <h2>Your Shopping Cart</h2>
@@ -279,62 +284,71 @@ const CartPage = () => {
               </div>
             )}
           </div>
-          {cartItems.length > 0 ? (
-            cartItems.map((item) => {
-              const product = getProductDetails(item.id);
-              return product ? (
-                <div key={item.id} className="cart-item">
-                  <div className="item-selection">
-                    <input
-                      type="checkbox"
-                      checked={selectedItems.includes(item.id)}
-                      onChange={() => toggleItemSelection(item.id)}
-                      id={`select-${item.id}`}
-                    />
-                  </div>
-                  <div className="image-container">
-                    {product.mainImageUrl && (
-                      <img
-                        src={product.mainImageUrl}
-                        alt={product.name}
-                        className="image"
-                        onClick={() => handleProductClick(product.id)}
-                      />
-                    )}
-                  </div>
-                  <div className="product-details">
-                    <h2 onClick={() => handleProductClick(product.id)}>{product.name}</h2>
-                    <p>Price: <span className='price'>₹{product.price}</span></p>
-                    <div className="quantity-selector">
-                      <label>Quantity:</label>
+          <div className='cart-items-list'>
+            {cartItems.length > 0 ? (
+              cartItems.map((item) => {
+                const product = getProductDetails(item.id);
+                return product ? (
+                  <div key={item.id} className="cart-item">
+                    <div className="item-selection">
                       <input
-                        type="number"
-                        min="1"
-                        value={item.quantity}
-                        onChange={(e) => handleQuantityChange(item.id, parseInt(e.target.value))}
+                        type="checkbox"
+                        checked={selectedItems.includes(item.id)}
+                        onChange={() => toggleItemSelection(item.id)}
+                        id={`select-${item.id}`}
                       />
                     </div>
-                    <button
-                      onClick={() => confirmRemoveItem(item.id)}
-                      className="remove-button"
-                    >
-                      Remove
-                    </button>
+                    <div className="image-container">
+                      {product.mainImageUrl && (
+                        <img
+                          src={product.mainImageUrl}
+                          alt={product.name}
+                          className="image"
+                          onClick={() => handleProductClick(product.id)}
+                        />
+                      )}
+                    </div>
+                    <div className="product-details">
+                      <p className='ct-product-name' onClick={() => handleProductClick(product.id)}>{product.name}</p>
+                      <div className='ct-sections'>
+                        <div className='ct-left-section'>
+                          <p>Price: <span className='price'>₹{product.price}</span></p>
+                        </div>
+                        <div className='ct-right-section'>
+                          <div className="quantity-selector">
+                            <input
+                              type="number"
+                              min="1"
+                              value={item.quantity}
+                              onChange={(e) => handleQuantityChange(item.id, parseInt(e.target.value))}
+                            />
+                          </div>
+                          <div className='ct-remove-btn'>
+                            <button
+                              onClick={() => confirmRemoveItem(item.id)}
+                              className="remove-button"
+                            >
+                              <FaTrash />                  
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              ) : null;
-            })
-          ) : (
-            <div className="empty-cart">
-              <p>Your cart is empty</p>
-              <button
-                onClick={() => navigate('/ecommerce-dashboard')}
-                className="continue-shopping-button"
-              >
-                Continue Shopping
-              </button>
-            </div>
-          )}
+                ) : null;
+              })
+            ) : (
+              <div className="empty-cart">
+                <p>Your cart is empty</p>
+                <button
+                  onClick={() => navigate('/ecommerce-dashboard')}
+                  className="continue-shopping-button"
+                >
+                  Continue Shopping
+                </button>
+              </div>
+            )}
+          </div>
         </div>
 
         {cartItems.length > 0 && (

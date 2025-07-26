@@ -18,8 +18,8 @@ const dashboardStyle = {
 };
 
 const contentStyle = {
-  marginTop: '90px',
-  maxWidth: '1800px',
+  marginTop: '80px',
+  maxWidth: '1900px',
 };
 
 const loaderStyle = {
@@ -31,7 +31,6 @@ const loaderStyle = {
   position: 'fixed',
   top: 0,
   left: 0,
-  backgroundColor: 'rgba(255, 255, 255, 0.8)',
   zIndex: 9999
 };
 
@@ -114,7 +113,7 @@ function EcommerceDashboard() {
         <Lottie
           animationData={loadingAnimation}
           loop={true}
-          style={{ width: 300, height: 300 }}
+          style={{ width: 200, height: 200 }}
         />
       </div>
     );

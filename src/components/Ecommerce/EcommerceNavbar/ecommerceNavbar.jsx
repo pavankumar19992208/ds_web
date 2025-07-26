@@ -9,7 +9,7 @@ import BaseUrl from '../../../config';
 import EcommerceSidebar from '../EcommerceSidebar/EcommerceSidebar';
 import AuthWrapper from '../Authentication/AuthWrapper';
 import { GlobalStateContext } from '../GlobalState';
-import logo from '../../../images/logo.png'; // Adjust the path as needed
+import logo from '../../../images/logo2.png'; // Adjust the path as needed
 import orders from '../../../images/orders.png'; // Adjust the path as needed
 import { FcLike } from "react-icons/fc";
 import mail from '../../../images/mail.png'; // Adjust the path as needed
@@ -46,12 +46,13 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 const ResultsList = styled(Paper)(({ theme }) => ({
   position: 'absolute',
-  top: '100%',
+  top: '120%',
   left: 0,
-  right: 0,
+   width: '500px', 
   zIndex: 1000,
-  maxHeight: '200px',
+  maxHeight: '400px',
   overflowY: 'auto',
+  borderRadius: '20px',
 }));
 
 const ProfileBox = styled(Box)({
@@ -164,12 +165,12 @@ function EcommerceNavbar() {
       <div className='toolbar'>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <IconButton edge="start" color="inherit" onClick={() => navigate('/ecommerce-dashboard')}>
-            <img src={logo} alt="Logo" style={{ width: 38, height: 38 }}/>
+            <img src={logo} alt="Logo" style={{ width: 40, height: 36 }} />
           </IconButton>
-          <button  className='nav-heading' onClick={() => navigate('/ecommerce-dashboard')}>
-            neuraLife
+          <button className='nav-heading' onClick={() => navigate('/ecommerce-dashboard')}>
+            Cartsy
           </button>
-          
+
           <Search className="search">
             <StyledInputBase
               className="styledInputBase"
@@ -207,37 +208,37 @@ function EcommerceNavbar() {
         </Box>
 
         <Box sx={{ flexGrow: 1 }} />
-        
+
         {user ? (
           <Box sx={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
             <IconButton color="inherit" onClick={() => navigate('/cart')}>
               <Badge badgeContent={cartCount} sx={{ '& .MuiBadge-badge': { backgroundColor: '#1F309B', color: '#fff', fontSize: '0.75rem', padding: '0 4px', marginTop: '-6px' } }}>
-                <img src={cart} alt="Logo" style={{ width: 28, height: 28 }}/>
+                <img src={cart} alt="Logo" style={{ width: 28, height: 28 }} />
               </Badge>
             </IconButton>
-            
+
             <IconButton color="inherit">
               <Badge badgeContent={17} sx={{ '& .MuiBadge-badge': { backgroundColor: '#1F309B', color: '#fff', fontSize: '0.75rem', padding: '0 4px', marginTop: '-6px' } }}>
-                <img src={mail} alt="Logo" style={{ width: 28, height: 28 }}/>
+                <img src={mail} alt="Logo" style={{ width: 28, height: 28 }} />
               </Badge>
             </IconButton>
-            
+
             <IconButton color="inherit" onClick={() => navigate('/orders')}>
               <Badge badgeContent={orderCount} sx={{ '& .MuiBadge-badge': { backgroundColor: '#1F309B', color: '#fff', fontSize: '0.75rem', padding: '0 4px', marginTop: '-6px' } }}>
-              <img src={orders} alt="Logo" style={{ width: 30, height: 30 }}/>
+                <img src={orders} alt="Logo" style={{ width: 30, height: 30 }} />
               </Badge>
             </IconButton>
-            
-            <IconButton color="inherit">
+
+            {/* <IconButton color="inherit">
               <FcLike />
-            </IconButton>
-            
+            </IconButton> */}
+
             <ProfileBox onClick={() => setSidebarOpen(true)}>
               <Typography variant="body1" sx={{ color: 'black', fontWeight: '600' }}>
                 {user.name || 'Profile'}
               </Typography>
               <Avatar sx={{ width: 36, height: 36, bgcolor: 'black', color: '#edeeef' }}>
-                <img src={profilePic} alt="Logo" style={{ width: 36, height: 36 }}/>
+                <img src={profilePic} alt="Logo" style={{ width: 36, height: 36 }} />
               </Avatar>
             </ProfileBox>
           </Box>
@@ -260,10 +261,10 @@ function EcommerceNavbar() {
           </Button>
         )}
       </div>
-      
+
       {/* Sidebar Drawer */}
       <EcommerceSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-      
+
       {/* Authentication Popup */}
       {authPopupOpen && (
         <AuthWrapper onClose={() => setAuthPopupOpen(false)} />
