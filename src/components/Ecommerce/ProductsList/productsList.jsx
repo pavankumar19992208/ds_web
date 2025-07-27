@@ -16,7 +16,7 @@ import { redirect } from 'react-router-dom';
 
 
 const ProductsList = () => {
-    const { productId } = useParams();
+  const { productId } = useParams();
   const [product, setProduct] = useState(null);
   const [products, setProducts] = useState([]);
   const [originalProducts, setOriginalProducts] = useState([]); // To keep the original list
@@ -132,14 +132,14 @@ const ProductsList = () => {
       console.error("Error adding to cart:", error);
     }
   };
-  
+
   const handleAddToFavourites = (productId) => {
     console.log(`Add to Favourites clicked for product ID: ${productId}`);
     // Implement add to favourites functionality here
   };
 
   const handleProductClick = (productId) => {
-    redirect(`/product-overview/${productId}`);
+    navigate(`/product-overview/${productId}`);
   };
 
   const loaderStyle = {
@@ -151,25 +151,36 @@ const ProductsList = () => {
     position: 'fixed',
     top: 0,
     left: 0,
-    zIndex: 9999
+    zIndex: 9999,
+    backgroundColor: 'rgba(255, 255, 255, 0.25)'
   };
 
-  if (isLoading) {
-    return (
-      <div style={loaderStyle}>
-        <Lottie
-          animationData={loadingAnimation}
-          loop={true}
-          style={{ width: 200, height: 200 }}
-        />
-      </div>
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <div style={loaderStyle}>
+  //       <Lottie
+  //         animationData={loadingAnimation}
+  //         loop={true}
+  //         style={{ width: 200, height: 200 }}
+  //       />
+  //     </div>
+  //   );
+  // }
 
   return (
     <>
       <div className='product-list-page'>
         <EcommerceNavbar />
+        {isLoading && (
+        <div style={loaderStyle}>
+          <Lottie
+            animationData={loadingAnimation}
+            loop={true}
+            style={{ width: 200, height: 200 }}
+          />
+        </div>
+        )}
+
         <ToastContainer
           position="top-right"
           autoClose={2000}
@@ -183,7 +194,7 @@ const ProductsList = () => {
         />
         <div className="product-list">
           <div className='product-list-cont-1'>
-            {products.length > 0 ? (
+            {
               products.map((product) => (
                 <div key={product.id} className="product">
                   <div className="image-container">
@@ -212,9 +223,7 @@ const ProductsList = () => {
                   </div>
                 </div>
               ))
-            ) : (
-              <p>No products available for the selected filters.</p>
-            )}
+            }
           </div>
           <div className='product-list-cont-2'>
             <Box sx={{ padding: '20px', backgroundColor: '#fff' }}>

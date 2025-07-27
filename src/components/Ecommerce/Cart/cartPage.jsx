@@ -10,18 +10,19 @@ import { FaTrash } from 'react-icons/fa';
 import loadingAnimation from '../loader/loader.json';
 import { GlobalStateContext } from '../GlobalState'; // <-- Import context
 
-const 
-loaderStyle = {
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  height: '100vh',
-  width: '100vw',
-  position: 'fixed',
-  top: 0,
-  left: 0,
-  zIndex: 9999
-};
+const
+  loaderStyle = {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100vh',
+    width: '100vw',
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    zIndex: 9999,
+    backgroundColor: 'rgba(255, 255, 255, 0.25)'
+  };
 
 const CartPage = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -249,21 +250,30 @@ const CartPage = () => {
     }
   };
 
-  if (isLoading) {
-    return (
-      <div style={loaderStyle}>
-        <Lottie
-          animationData={loadingAnimation}
-          loop={true}
-          style={{ width: 200, height: 200 }}
-        />
-      </div>
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <div style={loaderStyle}>
+  //       <Lottie
+  //         animationData={loadingAnimation}
+  //         loop={true}
+  //         style={{ width: 200, height: 200 }}
+  //       />
+  //     </div>
+  //   );
+  // }
 
   return (
     <>
       <div className="cart-page">
+        {isLoading && (
+          <div style={loaderStyle}>
+            <Lottie
+              animationData={loadingAnimation}
+              loop={true}
+              style={{ width: 200, height: 200 }}
+            />
+          </div>
+        )}
         <EcommerceNavbar />
         <div className="cart-items-container">
           <div className="cart-header">
@@ -328,7 +338,7 @@ const CartPage = () => {
                               onClick={() => confirmRemoveItem(item.id)}
                               className="remove-button"
                             >
-                              <FaTrash />                  
+                              <FaTrash />
                             </button>
                           </div>
                         </div>

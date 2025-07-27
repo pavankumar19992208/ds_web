@@ -40,7 +40,8 @@ const ProductOverview = () => {
     position: 'fixed',
     top: 0,
     left: 0,
-    zIndex: 9999
+    zIndex: 9999,
+    backgroundColor: 'rgba(255, 255, 255, 0.25)'
   };
 
   useEffect(() => {
@@ -88,7 +89,7 @@ const ProductOverview = () => {
 
       toast.success(
         <div>
-          {product.name} <span className="toast-bold-yellow">added to cart!</span>
+          {product?.name} <span className="toast-bold-yellow">added to cart!</span>
         </div>,
         {
           position: "top-right",
@@ -119,28 +120,28 @@ const ProductOverview = () => {
     }
   };
 
-    const handlePayment = () => {
-      if (!user || !user.id) {
-        toast.warning("Please log in to proceed to checkout");
-        return;
+  const handlePayment = () => {
+    if (!user || !user.id) {
+      toast.warning("Please log in to proceed to checkout");
+      return;
+    }
+
+    navigate('/checkout', {
+      state: {
+        user_id: user.id,
+        items: [
+          {
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            quantity: quantity
+          }
+        ]
+        // No subtotal or cart logic needed here
       }
-    
-      navigate('/checkout', {
-        state: {
-          user_id: user.id,
-          items: [
-            {
-              id: product.id,
-              name: product.name,
-              price: product.price,
-              quantity: quantity
-            }
-          ]
-          // No subtotal or cart logic needed here
-        }
-      });
-    };
-  
+    });
+  };
+
 
   const toggleDescription = (e) => {
     e.preventDefault();
@@ -189,25 +190,34 @@ const ProductOverview = () => {
     prevArrow: arrows ? <PrevArrow /> : null,
   });
 
-  if (isLoading) {
-    return (
-      <div style={loaderStyle}>
-        <Lottie
-          animationData={loadingAnimation}
-          loop={true}
-          style={{ width: 200, height: 200 }}
-        />
-      </div>
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <div style={loaderStyle}>
+  //       <Lottie
+  //         animationData={loadingAnimation}
+  //         loop={true}
+  //         style={{ width: 200, height: 200 }}
+  //       />
+  //     </div>
+  //   );
+  // }
 
   // if (isLoading) return <div className="loading">Loading product...</div>;
   if (error) return <div className="error">Error: {error}</div>;
-  if (!product) return <div className="not-found">Product not found</div>;
-
+  // if (!product) return <div className="not-found">Product not found</div>;
+  // if (!product) return null;
   return (
     <>
       <div className='product-overview-page'>
+        {isLoading && (
+          <div style={loaderStyle}>
+            <Lottie
+              animationData={loadingAnimation}
+              loop={true}
+              style={{ width: 200, height: 200 }}
+            />
+          </div>
+        )}
         <EcommerceNavbar />
         <div className="product-overview-container">
           <ToastContainer
@@ -224,11 +234,11 @@ const ProductOverview = () => {
           <div className="product-overview-grid">
             <div className="product-image-container">
               <Slider {...sliderSettings()} className="main-slider">
-                {product.imageUrls?.map((url, index) => (
+                {product?.imageUrls?.map((url, index) => (
                   <div key={index} className="slider-image-wrapper">
                     <img
                       src={url}
-                      alt={product.name}
+                      alt={product?.name}
                       className="product-image" w
                       onClick={(e) => {
                         e.stopPropagation();
@@ -242,8 +252,8 @@ const ProductOverview = () => {
 
             <div className="product-info-container">
               <div className="product-header">
-                <h3>{product.name}</h3>
-                <p className="product-price">₹{product.price}</p>
+                <h3>{product?.name}</h3>
+                <p className="product-price">₹{product?.price}</p>
               </div>
               <div className="product-actions">
                 <div className="quantity-selector">
@@ -283,7 +293,7 @@ const ProductOverview = () => {
             <h3>Description</h3>
             <div className="description-content">
               <span dangerouslySetInnerHTML={{ __html: renderDescription() }} />
-              {product.description.length > 300 && (
+              {product?.description.length > 300 && (
                 <button
                   onClick={toggleDescription}
                   className="description-toggle"
@@ -306,9 +316,9 @@ const ProductOverview = () => {
               onClick={() => setIsModalOpen(false)}
             />
             <Slider {...sliderSettings(true)} className="modal-slider">
-              {product.imageUrls?.map((url, index) => (
+              {product?.imageUrls?.map((url, index) => (
                 <div key={index} className="modal-slide">
-                  <img src={url} alt={product.name} className="modal-image" />
+                  <img src={url} alt={product?.name} className="modal-image" />
                 </div>
               ))}
             </Slider>

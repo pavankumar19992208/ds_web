@@ -4,6 +4,8 @@ import EcommerceNavbar from '../EcommerceNavbar/ecommerceNavbar';
 import './checkout.css';
 import BaseUrl from '../../../config';
 import { GlobalStateContext } from '../GlobalState';
+import Lottie from 'lottie-react';
+import loadingAnimation from '../loader/loader.json';
 
 const loadRazorpay = () => {
   return new Promise((resolve, reject) => {
@@ -26,6 +28,8 @@ const loadRazorpay = () => {
 
 const CheckoutPage = () => {
   const location = useLocation();
+  const [isLoading, setIsLoading] = useState(true);
+
   const navigate = useNavigate();
   const { user } = useContext(GlobalStateContext);
   const [addresses, setAddresses] = useState([]);
@@ -52,6 +56,18 @@ const CheckoutPage = () => {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [confirmedOrder, setConfirmedOrder] = useState(null);
 
+  const loaderStyle = {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100vh',
+    width: '100vw',
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    zIndex: 9999,
+    backgroundColor: 'rgba(255, 255, 255, 0.25)'
+  };
   const calculateTotal = () => {
     if (!orderDetails?.items?.length) return 0;
     return orderDetails.items.reduce((sum, item) => {
@@ -62,6 +78,8 @@ const CheckoutPage = () => {
   };
 
   useEffect(() => {
+          setIsLoading(true);
+
     const fetchAddresses = async () => {
       try {
         const response = await fetch(`${BaseUrl}/user/addresses/${user.id}`, {
@@ -81,6 +99,8 @@ const CheckoutPage = () => {
         setDefaultAddress(def || null);
       } catch (error) {
         console.error('Error fetching addresses:', error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -174,7 +194,7 @@ const CheckoutPage = () => {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${localStorage.getItem('token')}`
           },
-          body: JSON.stringify({item_ids: orderDetails.items.map(item => item.id)})
+          body: JSON.stringify({ item_ids: orderDetails.items.map(item => item.id) })
         });
 
         if (!clearCartResponse.ok) {
@@ -291,88 +311,97 @@ const CheckoutPage = () => {
 
   return (
     <>
-    <div className="checkout-page">
-      <EcommerceNavbar />
-      <div className="checkout-container">
-        <div className="checkout-content">
-          <div className="order-summary">
-            <h3>Order Summary</h3>
-            {orderDetails.items.map(item => (
-              <div key={item.id} className="order-item">
-                <span>{item.name} × {item.quantity}</span>
-                <span>₹{(item.price * item.quantity).toFixed(2)}</span>
-              </div>
-            ))}
-            <div className="order-total">
-              <span>Total</span>
-              <span>₹{displayTotal.toFixed(2)}</span>
-            </div>
+      <div className="checkout-page">
+        {isLoading && (
+          <div style={loaderStyle}>
+            <Lottie
+              animationData={loadingAnimation}
+              loop={true}
+              style={{ width: 200, height: 200 }}
+            />
           </div>
-          <div className="checkout-form">
-            <h4>Shipping Information</h4>
-            {defaultAddress ? (
-              <div className="address-card default">
-                <div className="default-badge">Default</div>
-                <div className="address-content">
-                  <h3>{defaultAddress.full_name}</h3>
-                  <p>{defaultAddress.line1}</p>
-                  {defaultAddress.landmark && <p>Landmark: {defaultAddress.landmark}</p>}
-                  <p>{defaultAddress.city}, {defaultAddress.state} - {defaultAddress.pincode}</p>
-                  <p>{defaultAddress.country}</p>
-                  <p>Phone: {defaultAddress.mobile_number}</p>
-                  {defaultAddress.lat && defaultAddress.lon && (
-                    <p>Lat/Lon: {defaultAddress.lat}, {defaultAddress.lon}</p>
-                  )}
+        )}
+        <EcommerceNavbar />
+        <div className="checkout-container">
+          <div className="checkout-content">
+            <div className="order-summary">
+              <h3>Order Summary</h3>
+              {orderDetails.items.map(item => (
+                <div key={item.id} className="order-item">
+                  <span>{item.name} × {item.quantity}</span>
+                  <span>₹{(item.price * item.quantity).toFixed(2)}</span>
                 </div>
+              ))}
+              <div className="order-total">
+                <span>Total</span>
+                <span>₹{displayTotal.toFixed(2)}</span>
               </div>
-            ) : (
-              <div>
-                <p style={{fontSize: 'small'}}>No default address found. Please add and set a default address in your <a href="/addresses">Addresses</a>.</p>
+            </div>
+            <div className="checkout-form">
+              <h4>Shipping Information</h4>
+              {defaultAddress ? (
+                <div className="address-card default">
+                  <div className="default-badge">Default</div>
+                  <div className="address-content">
+                    <h3>{defaultAddress.full_name}</h3>
+                    <p>{defaultAddress.line1}</p>
+                    {defaultAddress.landmark && <p>Landmark: {defaultAddress.landmark}</p>}
+                    <p>{defaultAddress.city}, {defaultAddress.state} - {defaultAddress.pincode}</p>
+                    <p>{defaultAddress.country}</p>
+                    <p>Phone: {defaultAddress.mobile_number}</p>
+                    {defaultAddress.lat && defaultAddress.lon && (
+                      <p>Lat/Lon: {defaultAddress.lat}, {defaultAddress.lon}</p>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <p style={{ fontSize: 'small' }}>No default address found. Please add and set a default address in your <a href="/addresses">Addresses</a>.</p>
+                </div>
+              )}
+              <div style={{ marginTop: 24 }}>
+                {error && <div className="payment-error">{error}</div>}
+                <button
+                  onClick={handlePayment}
+                  disabled={processing || displayTotal <= 0 || !defaultAddress}
+                  className={`pay-button ${processing ? 'processing' : ''}`}
+                >
+                  {processing ? 'Processing...' : `Make Payment ₹${displayTotal.toFixed(2)}`}
+                </button>
               </div>
-            )}
-            <div style={{ marginTop: 24 }}>
-              {error && <div className="payment-error">{error}</div>}
-              <button
-                onClick={handlePayment}
-                disabled={processing || displayTotal <= 0 || !defaultAddress}
-                className={`pay-button ${processing ? 'processing' : ''}`}
-              >
-                {processing ? 'Processing...' : `Make Payment ₹${displayTotal.toFixed(2)}`}
-              </button>
             </div>
           </div>
         </div>
-      </div>
-      {showConfirmation && (
-        <div className="confirmation-popup">
-          <div className="popup-content">
-            <h3>
-              {paymentCompleted
-                ? 'Order Confirmed!'
-                : 'Order Created!'}
-            </h3>
-            <p>
-              {paymentCompleted
-                ? `Your order #${confirmedOrder?.order_id} has been placed and paid successfully.`
-                : `Your order #${confirmedOrder?.order_id} has been created. You can complete payment from your orders page.`}
-            </p>
-            <div className="popup-buttons">
-              <button
-                onClick={() => navigate('/ecommerce-dashboard')}
-                className="continue-shopping"
-              >
-                Continue Shopping
-              </button>
-              <button
-                onClick={() => navigate('/orders')}
-                className="view-orders"
-              >
-                View Your Orders
-              </button>
+        {showConfirmation && (
+          <div className="confirmation-popup">
+            <div className="popup-content">
+              <h3>
+                {paymentCompleted
+                  ? 'Order Confirmed!'
+                  : 'Order Created!'}
+              </h3>
+              <p>
+                {paymentCompleted
+                  ? `Your order #${confirmedOrder?.order_id} has been placed and paid successfully.`
+                  : `Your order #${confirmedOrder?.order_id} has been created. You can complete payment from your orders page.`}
+              </p>
+              <div className="popup-buttons">
+                <button
+                  onClick={() => navigate('/ecommerce-dashboard')}
+                  className="continue-shopping"
+                >
+                  Continue Shopping
+                </button>
+                <button
+                  onClick={() => navigate('/orders')}
+                  className="view-orders"
+                >
+                  View Your Orders
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
       </div>
     </>
   );

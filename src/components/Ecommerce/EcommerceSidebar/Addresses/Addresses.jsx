@@ -92,20 +92,21 @@ const Addresses = () => {
     position: 'fixed',
     top: 0,
     left: 0,
-    zIndex: 9999
+    zIndex: 9999,
+    backgroundColor: 'rgba(255, 255, 255, 0.25)'
   };
 
-  if (isLoading) {
-    return (
-      <div style={loaderStyle}>
-        <Lottie
-          animationData={loadingAnimation}
-          loop={true}
-          style={{ width: 200, height: 200 }}
-        />
-      </div>
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <div style={loaderStyle}>
+  //       <Lottie
+  //         animationData={loadingAnimation}
+  //         loop={true}
+  //         style={{ width: 200, height: 200 }}
+  //       />
+  //     </div>
+  //   );
+  // }
 
   // Handler for edit icon click
   const handleEditClick = (address) => {
@@ -313,6 +314,15 @@ const Addresses = () => {
 
   return (
     <div className="addresses-page">
+      {isLoading && (
+        <div style={loaderStyle}>
+          <Lottie
+            animationData={loadingAnimation}
+            loop={true}
+            style={{ width: 200, height: 200 }}
+          />
+        </div>
+      )}
       <EcommerceNavbar />
       <div className="address-container">
         <h2>Saved Addresses</h2>

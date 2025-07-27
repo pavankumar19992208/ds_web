@@ -17,7 +17,8 @@ const loaderStyle = {
   position: 'fixed',
   top: 0,
   left: 0,
-  zIndex: 9999
+  zIndex: 9999,
+  backgroundColor: 'rgba(255, 255, 255, 0.25)'
 };
 
 const OrdersPage = () => {
@@ -304,17 +305,17 @@ const OrdersPage = () => {
     setShowFilterDropdown(false);
   };
 
-  if (isLoading) {
-    return (
-      <div style={loaderStyle}>
-        <Lottie
-          animationData={loadingAnimation}
-          loop={true}
-          style={{ width: 200, height: 200 }}
-        />
-      </div>
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <div style={loaderStyle}>
+  //       <Lottie
+  //         animationData={loadingAnimation}
+  //         loop={true}
+  //         style={{ width: 200, height: 200 }}
+  //       />
+  //     </div>
+  //   );
+  // }
 
   const stages = [
     { name: 'Order Placed', icon: <FaFileInvoiceDollar /> },
@@ -383,6 +384,15 @@ const OrdersPage = () => {
   return (
     <>
       <div className="orders-page">
+        {isLoading && (
+          <div style={loaderStyle}>
+            <Lottie
+              animationData={loadingAnimation}
+              loop={true}
+              style={{ width: 200, height: 200 }}
+            />
+          </div>
+        )}
         <EcommerceNavbar />
         <div className="orders-container">
           <div className="orders-header">

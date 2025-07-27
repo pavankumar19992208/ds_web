@@ -31,7 +31,8 @@ const loaderStyle = {
   position: 'fixed',
   top: 0,
   left: 0,
-  zIndex: 9999
+  zIndex: 9999,
+  backgroundColor: 'rgba(255, 255, 255, 0.25)'
 };
 
 function EcommerceDashboard() {
