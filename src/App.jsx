@@ -44,6 +44,8 @@ import Addresses from './components/Ecommerce/EcommerceSidebar/Addresses/Address
 import AgentDashboard from './components/Ecommerce/DeliveryAgent/AgentDashboard/agentDashboard.jsx';
 import AgentLogin from './components/Ecommerce/DeliveryAgent/AgentLogin/agentLogin.jsx';
 import AgentRegistration from './components/Ecommerce/DeliveryAgent/AgentRegister/agentRegister.jsx';
+import AssignPortal from './components/Ecommerce/DeliveryAgent/AssignPortal/assignPortal.jsx';
+import AgentOrders from './components/Ecommerce/DeliveryAgent/AgentOrders/agentOrders.jsx';
 
 const theme = createTheme();
 // mysql://root:nXbyCttzErnSirxYRBZtYNJRprHnbTar@shuttle.proxy.rlwy.net:21943/railway
@@ -94,6 +96,8 @@ function App() {
             <Route path="/agent-registration" element={<AgentRegistration/>}/>
             <Route path="/agent-login" element={<AgentLogin />} />
             <Route path="/agent-dashboard" element={<AgentDashboard/>}/>
+            <Route path="/assign-portal" element={<AssignPortal />} />
+            <Route path="/agent-orders" element={<AgentOrders />} />
           </Routes>
         </DndProvider>
       </Router>

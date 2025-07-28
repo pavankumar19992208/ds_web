@@ -4,37 +4,62 @@ export const GlobalStateContext = createContext();
 
 export const EcommerceStateProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [agent, setAgent] = useState(null);
+  const [isUserAuthenticated, setIsUserAuthenticated] = useState(false);
+  const [isAgentAuthenticated, setIsAgentAuthenticated] = useState(false);
 
   // Check for existing session on initial load
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
       setUser(JSON.parse(storedUser));
-      setIsAuthenticated(true);
+      setIsUserAuthenticated(true);
+    }
+    const storedAgent = localStorage.getItem('agent');
+    if (storedAgent) {
+      setAgent(JSON.parse(storedAgent));
+      setIsAgentAuthenticated(true);
     }
   }, []);
 
   const loginUser = (userData) => {
     setUser(userData);
-    setIsAuthenticated(true);
+    setIsUserAuthenticated(true);
     localStorage.setItem('user', JSON.stringify(userData));
   };
 
   const logoutUser = () => {
     setUser(null);
-    setIsAuthenticated(false);
+    setIsUserAuthenticated(false);
     localStorage.removeItem('user');
+  };
+
+  // Agent login/logout
+  const loginAgent = (agentData) => {
+    setAgent(agentData);
+    setIsAgentAuthenticated(true);
+    localStorage.setItem('agent', JSON.stringify(agentData));
+  };
+
+  const logoutAgent = () => {
+    setAgent(null);
+    setIsAgentAuthenticated(false);
+    localStorage.removeItem('agent');
   };
 
   return (
     <GlobalStateContext.Provider
       value={{
         user,
-        isAuthenticated,
+        agent,
+        isUserAuthenticated,
+        isAgentAuthenticated,
         loginUser,
         logoutUser,
-        setUser
+        loginAgent,
+        logoutAgent,
+        setUser,
+        setAgent
       }}
     >
       {children}

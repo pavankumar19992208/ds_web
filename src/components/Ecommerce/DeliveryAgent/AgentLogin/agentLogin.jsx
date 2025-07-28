@@ -1,12 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './AgentLogin.css';
+import BaseUrl from '../../../../config';
+import axios from 'axios';
+import { GlobalStateContext } from '../../GlobalState';
 
 const AgentLogin = ({ onLogin, onRegister }) => {
   const [mobile, setMobile] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+const { loginAgent } = useContext(GlobalStateContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -22,17 +26,24 @@ const AgentLogin = ({ onLogin, onRegister }) => {
       return;
     }
 
-    // Replace with your API call
     try {
-      // Example: const res = await fetch(...);
-      // Simulate login success
-      if (mobile === '9876543210' && password === 'password') {
-        if (onLogin) onLogin();
-      } else {
-        setError('Invalid mobile number or password.');
-      }
+      const response = await axios.post(`${BaseUrl}/agentlogin`, {
+        mobile_number: mobile,
+        password: password,
+      });
+
+      const data = response.data;
+      // Save token and agent data to localStorage
+      localStorage.setItem('agentToken', data.token);
+      localStorage.setItem('agentData', JSON.stringify(data.agent));
+      loginAgent(data.agent); 
+      navigate('/agent-dashboard');
     } catch (err) {
-      setError('Login failed. Please try again.');
+      if (err.response && err.response.data && err.response.data.detail) {
+        setError(err.response.data.detail);
+      } else {
+        setError('Login failed. Please try again.');
+      }
     }
   };
 
@@ -76,12 +87,12 @@ const AgentLogin = ({ onLogin, onRegister }) => {
           </div>
         </div>
         <button type="submit" className="agt-login-btn">Login</button>
-        
+
         <div className="agt-register-section">
-          <span style={{color:'#fff'}}>Don't have an account?</span>
-          <button 
-            className="agt-register-btn" 
-            onClick={() => {navigate('/agent-registration')}}
+          <span style={{ color: '#fff' }}>Don't have an account?</span>
+          <button
+            className="agt-register-btn"
+            onClick={() => { navigate('/agent-registration') }}
           >
             Register Now
           </button>
