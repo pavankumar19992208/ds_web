@@ -1,22 +1,20 @@
 .orders-page {
   /* max-width: 1000px; */
-  margin: 5rem auto;
+  margin: 0rem auto;
   padding: 0 1rem;
   height: 100vh;
-      background: linear-gradient(to top, #ffffff, #edeeef) !important; /* Gradient from light pink to a lighter shade */
+  background: linear-gradient(to top, #ffffff, #edeeef) !important; /* Gradient from light pink to a lighter shade */
 }
 .orders-container{
   max-width: 1000px;
-  margin: 5rem auto;
-  padding: 0 1rem;
+  margin: 0rem auto;
+  padding: 80px 1rem;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-
+  gap: 1rem;
 }
 
 .orders-page h1 {
-  margin-bottom: 2rem;
   font-size: 2rem;
   color: #333;
 }
@@ -27,7 +25,6 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
   position: relative;
 }
 
@@ -35,10 +32,14 @@
   position: relative;
 }
 
+.od-address-name{
+  margin: 0;
+}
+
 .filter-button {
   background-color: #f0f0f0;
   border: 1px solid #ddd;
-  border-radius: 4px;
+  border-radius: 20px;
   padding: 8px 15px;
   display: flex;
   align-items: center;
@@ -58,7 +59,7 @@
   top: 100%;
   background-color: white;
   border: 1px solid #ddd;
-  border-radius: 4px;
+  border-radius: 16px;
   padding: 15px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   z-index: 10;
@@ -80,14 +81,14 @@
   width: 100%;
   padding: 8px;
   border: 1px solid #ddd;
-  border-radius: 4px;
+  border-radius: 16px;
   font-size: 14px;
 }
 
 .reset-filters {
   background-color: #f8f8f8;
   border: 1px solid #ddd;
-  border-radius: 4px;
+  border-radius: 16px;
   padding: 6px 12px;
   font-size: 13px;
   cursor: pointer;
@@ -102,7 +103,7 @@
 .no-orders {
   text-align: center;
   padding: 40px;
-  background: #f9f9f9;
+  /* background: #f9f9f9; */
   border-radius: 8px;
   margin-top: 20px;
 }
@@ -129,7 +130,7 @@
 
 .order-card {
   background: #fff;
-  border-radius: 8px;
+  border-radius: 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   padding: 1.5rem;
 }
@@ -139,7 +140,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1rem;
-  padding-bottom: 1rem;
+  /* padding-bottom: 1rem; */
   border-bottom: 1px solid #eee;
 }
 
@@ -215,6 +216,7 @@
 
 .item-details {
   flex: 1;
+  font-size: 0.8rem;
 }
 
 .item-details h4 {
@@ -240,17 +242,112 @@
   font-weight: 500;
 }
 
+/* src/components/Orders/OrderTracker.css */
+
+.tracker-container {
+    position: relative;
+    width: 100%;
+    padding: 20px 0;
+}
+
+.tracker-stages {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    z-index: 1; /* Keep icons above the progress bar */
+}
+
+/* The solid line connecting the stages */
+.tracker-container::before {
+    content: '';
+    position: absolute;
+    top: 36px; /* Vertically center with the icons */
+    left: 10%;
+    right: 10%;
+    height: 4px;
+    background-color: #e0e0e0; /* The grey background line */
+    z-index: 0;
+}
+
+/* The green progress bar that fills up */
+.tracker-progress-bar {
+    position: absolute;
+    top: 36px;
+    left: 10%;
+    height: 4px;
+    background-color: #28a745; /* Green color for completed progress */
+    z-index: 0;
+    transition: width 0.5s ease-in-out;
+}
+
+.tracker-stage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 80px; /* Give each stage a fixed width */
+    color: #888;
+}
+
+.stage-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #fff; /* White background to sit on top of the line */
+    border: 4px solid #e0e0e0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    transition: border-color 0.5s ease;
+}
+
+.stage-name {
+    margin-top: 8px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    transition: color 0.5s ease;
+}
+
+/* Styling for completed stages */
+.tracker-stage.completed .stage-icon {
+    border-color: #28a745; /* Green border for completed */
+    color: #28a745;
+}
+
+.tracker-stage.completed .stage-name {
+    color: #333;
+    font-weight: 600;
+}
+
+/* Styling for the currently active stage */
+.tracker-stage.active .stage-icon {
+    border-color: #007bff; /* Blue border for active */
+    color: #007bff;
+}
+
+.tracker-stage.active .stage-name {
+    color: #007bff;
+    font-weight: 700;
+}
+
+
+.od-detail-row.tracker-row .od-detail-value {
+    flex-basis: 100%; /* Allow the tracker to take the full width */
+    margin-top: 10px;
+}
+
 .order-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding-top: 1rem;
-  border-top: 1px solid #eee;
+  /* border-top: 1px solid #eee;   */
 }
 
-.order-total p {
+.od-order-total p {
   font-weight: 600;
-  font-size: 1.1rem;
+  font-size: 1rem;
   margin: 0;
 }
 
@@ -264,7 +361,7 @@
   color: white;
   border: none;
   padding: 0.5rem 1.25rem;
-  border-radius: 4px;
+  border-radius: 20px;
   cursor: pointer;
   font-weight: 500;
   transition: background-color 0.2s;
@@ -279,7 +376,7 @@
   color: #333;
   border: none;
   padding: 0.5rem 1.25rem;
-  border-radius: 4px;
+  border-radius: 20px;
   cursor: pointer;
   font-weight: 500;
   transition: background-color 0.2s;
@@ -321,4 +418,72 @@
   padding: 2rem;
   font-size: 1.2rem;
   color: #666;
+}
+
+/* Add these styles to your existing Orders.css */
+
+.order-details-button {
+  background-color: #f0f0f0;
+  color: #333;
+  border: 1px solid #ddd;
+  padding: 8px 15px;
+  border-radius: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.order-details-button:hover {
+  background-color: #e0e0e0;
+}
+
+.order-details-expanded {
+  padding: 14px;
+  background-color: #f9f9f9;
+  border-top: 1px solid #eee;
+  /* margin-top: 10px; */
+  animation: fadeIn 0.3s ease;
+}
+
+.od-detail-row {
+  display: flex;
+  margin-bottom: 10px;
+  line-height: 1.5;
+  font-size: 0.8rem;
+}
+
+.od-detail-label {
+  font-weight: 600;
+  min-width: 200px;
+  color: #555;
+}
+
+.od-detail-value {
+  flex: 1;
+  color: #333;
+}
+
+.order-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Make sure the existing .order-actions has flex-wrap: wrap */
+.order-actions {
+  flex-wrap: wrap;
 }

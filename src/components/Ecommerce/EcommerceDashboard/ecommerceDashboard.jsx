@@ -3,7 +3,7 @@ import { Grid, Container, Button, Typography } from '@mui/material';
 import Slider from "react-slick";
 import { useNavigate } from 'react-router-dom';
 import './ecommerceDashboard.css';
-import "slick-carousel/slick/slick.css"; 
+import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import EcommerceNavbar from '../EcommerceNavbar/ecommerceNavbar';
 import Categories from '../Categories/categories';
@@ -18,8 +18,8 @@ const dashboardStyle = {
 };
 
 const contentStyle = {
-  marginTop: '90px',
-  maxWidth: '1800px',
+  marginTop: '80px',
+  maxWidth: '1900px',
 };
 
 const loaderStyle = {
@@ -31,8 +31,8 @@ const loaderStyle = {
   position: 'fixed',
   top: 0,
   left: 0,
-  backgroundColor: 'rgba(255, 255, 255, 0.8)',
-  zIndex: 9999
+  zIndex: 9999,
+  backgroundColor: 'rgba(255, 255, 255, 0.25)'
 };
 
 function EcommerceDashboard() {
@@ -40,7 +40,7 @@ function EcommerceDashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [userData, setUserData] = useState(null);
   const [showAuth, setShowAuth] = useState(false);
-  const { user, isAuthenticated, loginUser, logoutUser } = useContext(GlobalStateContext);
+  const { user, isUserAuthenticated, loginUser, logoutUser } = useContext(GlobalStateContext);
   const navigate = useNavigate();
 
   // Fetch user data after login
@@ -111,10 +111,10 @@ function EcommerceDashboard() {
   if (isLoading) {
     return (
       <div style={loaderStyle}>
-        <Lottie 
-          animationData={loadingAnimation} 
-          loop={true} 
-          style={{ width: 300, height: 300 }}
+        <Lottie
+          animationData={loadingAnimation}
+          loop={true}
+          style={{ width: 200, height: 200 }}
         />
       </div>
     );
@@ -130,15 +130,15 @@ function EcommerceDashboard() {
     <div className="dashboardStyle" style={dashboardStyle}>
       <EcommerceNavbar onLoginClick={handleOpenAuth} />
       <Container style={contentStyle}>
-        {isAuthenticated && userData && (
+        {isUserAuthenticated && userData && (
           <div style={{ background: '#fefae0', border: '1px #fefae0', padding: '10px 22px', borderRadius: '200px' }}>
-            <Typography style={{ fontWeight: '600'}}>Welcome, {userData.name}!</Typography>
+            <Typography style={{ fontWeight: '600' }}>Welcome, {userData.name}!</Typography>
           </div>
         )}
-        
+
         <div className="new-container">
           <div className="new-main-area">
-            <div style={{display: 'flex', flexDirection: 'column', width: '100%'}}>
+            <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
               {/* Box 1 - Main featured product with name and buy button */}
               <div className="new-box-1" onClick={() => productsToDisplay[0]?.id && !productsToDisplay[0]?.isPlaceholder && handleGridClick(productsToDisplay[0].id)}>
                 <div className="box-1-content">
@@ -148,24 +148,24 @@ function EcommerceDashboard() {
                   </div>
                   <div className="box-1-image">
                     {productsToDisplay[0]?.mainImageUrl ? (
-                      <img src={productsToDisplay[0].mainImageUrl} alt={productsToDisplay[0].name}/>
+                      <img src={productsToDisplay[0].mainImageUrl} alt={productsToDisplay[0].name} />
                     ) : (
                       <div className="placeholder-image">No image available</div>
                     )}
                   </div>
                 </div>
               </div>
-              
+
               <div className="new-bottom-container">
                 <div className="new-bottom-row">
                   {/* Box 4 */}
-                  <div 
-                    className="new-box-4" 
+                  <div
+                    className="new-box-4"
                     onClick={() => productsToDisplay[3]?.id && !productsToDisplay[3]?.isPlaceholder && handleGridClick(productsToDisplay[3].id)}
                   >
                     {productsToDisplay[3]?.mainImageUrl ? (
                       <>
-                        <img src={productsToDisplay[3].mainImageUrl} alt={productsToDisplay[3].name}/>
+                        <img src={productsToDisplay[3].mainImageUrl} alt={productsToDisplay[3].name} />
                         <div className="slider-arrows">
                           <span className="arrow right">→</span>
                         </div>
@@ -174,15 +174,15 @@ function EcommerceDashboard() {
                       <div className="placeholder-image">No image available</div>
                     )}
                   </div>
-                  
+
                   {/* Box 5 */}
-                  <div 
-                    className="new-box-5" 
+                  <div
+                    className="new-box-5"
                     onClick={() => productsToDisplay[4]?.id && !productsToDisplay[4]?.isPlaceholder && handleGridClick(productsToDisplay[4].id)}
                   >
                     {productsToDisplay[4]?.mainImageUrl ? (
                       <>
-                        <img src={productsToDisplay[4].mainImageUrl} alt={productsToDisplay[4].name}/>
+                        <img src={productsToDisplay[4].mainImageUrl} alt={productsToDisplay[4].name} />
                         <div className="slider-arrows">
                           <span className="arrow right">→</span>
                         </div>
@@ -191,15 +191,15 @@ function EcommerceDashboard() {
                       <div className="placeholder-image">No image available</div>
                     )}
                   </div>
-                  
+
                   {/* Box 6 */}
-                  <div 
-                    className="new-box-6" 
+                  <div
+                    className="new-box-6"
                     onClick={() => productsToDisplay[5]?.id && !productsToDisplay[5]?.isPlaceholder && handleGridClick(productsToDisplay[5].id)}
                   >
                     {productsToDisplay[5]?.mainImageUrl ? (
                       <>
-                        <img src={productsToDisplay[5].mainImageUrl} alt={productsToDisplay[5].name}/>
+                        <img src={productsToDisplay[5].mainImageUrl} alt={productsToDisplay[5].name} />
                         <div className="slider-arrows">
                           <span className="arrow right">→</span>
                         </div>
@@ -211,16 +211,16 @@ function EcommerceDashboard() {
                 </div>
               </div>
             </div>
-            
+
             <div className="new-side-column">
               {/* Box 2 */}
-              <div 
-                className="new-box-2" 
+              <div
+                className="new-box-2"
                 onClick={() => productsToDisplay[1]?.id && !productsToDisplay[1]?.isPlaceholder && handleGridClick(productsToDisplay[1].id)}
               >
                 {productsToDisplay[1]?.mainImageUrl ? (
                   <>
-                    <img src={productsToDisplay[1].mainImageUrl} alt={productsToDisplay[1].name}/>
+                    <img src={productsToDisplay[1].mainImageUrl} alt={productsToDisplay[1].name} />
                     <div className="slider-arrows">
                       <span className="arrow right">→</span>
                     </div>
@@ -229,15 +229,15 @@ function EcommerceDashboard() {
                   <div className="placeholder-image">No image available</div>
                 )}
               </div>
-              
+
               {/* Box 3 */}
-              <div 
-                className="new-box-3" 
+              <div
+                className="new-box-3"
                 onClick={() => productsToDisplay[2]?.id && !productsToDisplay[2]?.isPlaceholder && handleGridClick(productsToDisplay[2].id)}
               >
                 {productsToDisplay[2]?.mainImageUrl ? (
                   <>
-                    <img src={productsToDisplay[2].mainImageUrl} alt={productsToDisplay[2].name}/>
+                    <img src={productsToDisplay[2].mainImageUrl} alt={productsToDisplay[2].name} />
                     <div className="slider-arrows">
                       <span className="arrow right">→</span>
                     </div>
@@ -252,7 +252,7 @@ function EcommerceDashboard() {
 
         <Categories />
       </Container>
-      
+
       {/* Auth modal - only shown when explicitly triggered */}
       {showAuth && (
         <AuthWrapper onClose={handleCloseAuth} />

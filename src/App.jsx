@@ -28,7 +28,6 @@ import SubjectAllocation from './components/P2pHeader/SchoolSegment/schooldashbo
 import ClassTimeTable from './components/P2pHeader/SchoolSegment/schooldashboard/Cards/class-timetable/classTimeTable.jsx';
 import UploadProducts from './components/Ecommerce/UploadProducts/uploadProducts.jsx';
 import EcommerceDashboard from './components/Ecommerce/EcommerceDashboard/ecommerceDashboard.jsx';
-import EcomDash from './components/Ecommerce/EcommerceDashboard/ecomDash.jsx';
 import ProductsList from './components/Ecommerce/ProductsList/productsList.jsx';
 import ProductOverview from './components/Ecommerce/ProductOverview/productOverview.jsx';
 import CartPage from './components/Ecommerce/Cart/cartPage.jsx';
@@ -42,6 +41,11 @@ import EventPlanning from './components/P2pHeader/SchoolSegment/schooldashboard/
 import { UserContext } from './context/UserContext';
 import AuthWrapper from './components/Ecommerce/Authentication/AuthWrapper.jsx';
 import Addresses from './components/Ecommerce/EcommerceSidebar/Addresses/Addresses.jsx';
+import AgentDashboard from './components/Ecommerce/DeliveryAgent/AgentDashboard/agentDashboard.jsx';
+import AgentLogin from './components/Ecommerce/DeliveryAgent/AgentLogin/agentLogin.jsx';
+import AgentRegistration from './components/Ecommerce/DeliveryAgent/AgentRegister/agentRegister.jsx';
+import AssignPortal from './components/Ecommerce/DeliveryAgent/AssignPortal/assignPortal.jsx';
+import AgentOrders from './components/Ecommerce/DeliveryAgent/AgentOrders/agentOrders.jsx';
 
 const theme = createTheme();
 // mysql://root:nXbyCttzErnSirxYRBZtYNJRprHnbTar@shuttle.proxy.rlwy.net:21943/railway
@@ -79,7 +83,6 @@ function App() {
             <Route path="/class-timetable" element={<ClassTimeTable/>}/>
             <Route path="/upload-products" element={<UploadProducts/>}/>
             <Route path="/ecommerce-dashboard" element={<EcommerceDashboard/>}/>
-            <Route path="/ecom-dash" element={<EcomDash/>}/>
             <Route path="/products" element={<ProductsList/>}/>
             <Route path="/product-overview/:productId" element={<ProductOverview />} />
             <Route path="/cart" element={<CartPage />} />
@@ -90,6 +93,11 @@ function App() {
             <Route path='/school-statistics' element={<SchoolStatistics/>} />
             <Route path="/event-planning" element={<EventPlanning />} />
             <Route path="/addresses" element={<Addresses />} />
+            <Route path="/agent-registration" element={<AgentRegistration/>}/>
+            <Route path="/agent-login" element={<AgentLogin />} />
+            <Route path="/agent-dashboard" element={<AgentDashboard/>}/>
+            <Route path="/assign-portal" element={<AssignPortal />} />
+            <Route path="/agent-orders" element={<AgentOrders />} />
           </Routes>
         </DndProvider>
       </Router>

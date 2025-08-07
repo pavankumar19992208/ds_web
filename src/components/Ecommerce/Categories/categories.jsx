@@ -1,12 +1,12 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './categories.css'; // Make sure to create this CSS file
-import Books from './Images/books.jpg';
-import Accessories from './Images/accessories.jpg';
-import Stationery from './Images/stationery.jpg';
-import Furniture from './Images/furniture.jpg';
-import Sports from './Images/sports_fitness.webp';
-import Exam_Preparation from './Images/exam_preparation.jpg';
+import Books from './Images/books.png';
+import Accessories from './Images/accessories.png';
+import Stationery from './Images/stationery.png';
+import Furniture from './Images/furniture.png';
+import Sports from './Images/sports_fitness.png';
+import Exam_Preparation from './Images/exam_preparation.png';
 
 const Categories = () => {
   const navigate = useNavigate();

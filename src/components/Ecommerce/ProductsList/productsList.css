@@ -1,18 +1,43 @@
-.product-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 20px;
-  margin: 48px auto;
+.product-list-page{
+  /* width: 100%; */
+  /* background: rgb(248, 252, 255); */
+  background: linear-gradient(to top, #ffffff, #edeeef) !important; 
 }
-
+.product-list {
+  display: grid;
+  /* flex-direction: column; */
+  grid-template-columns: 75% 1fr; /* 2 columns */
+  /* gap: 8px; */
+  padding: 6rem 12px;
+  /* margin: 4rem auto; */
+}
+.product-list-cont-1 {
+  display: grid;
+  /* flex-direction: column; */
+  grid-template-columns: 1fr 1fr; /* 2 columns */
+  gap: 6px;
+}
+.product-list-cont-2 {
+ position: fixed;
+  top: 96px;  
+  right: 20px;
+  width: 350px; 
+  overflow: hidden;
+  z-index: 2;
+  box-shadow: 0 0 8px rgba(82, 82, 82, 0.1);
+  border-radius: 16px;
+  border: 1px solid #ddd;
+  
+}
 .product {
   display: grid;
   grid-template-columns: 1fr 2fr;
   border: 1px solid #ccc;
-  padding: 10px;
-  border-radius: 5px;
-  width: 98.5%;
+  background-color: #fff;
+  box-shadow: 0 0 8px rgba(82, 82, 82, 0.1);
+  padding: 10px 20px 16px;
+  border-radius: 16px;
+  /* width: 98.5%; */
 }
 
 .product-details {
@@ -20,31 +45,55 @@
   flex-direction: column;
   justify-content: space-between;
 }
-
-.product-details h2 {
-  font-size: 1.2rem; /* Adjust the font size as needed */
+.product-details p {
+  margin: 8px;
+  font-size: 0.9rem;
+  color: #333;
 }
+
+
 .price{
-  font-size: 1.4rem;
+  font-size: 1rem;
   font-weight: bold;
 }
 .stock {
-margin-top: -4px;
+/* margin-top: -4px; */
 
 }
+.product-card-sections{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  /* gap: 12px; */
+  width: 100%;
+}
+
 
 .image-container {
   display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: center;   /* horizontal center */
+  align-items: center;       /* vertical center */
+  height: 240px;             /* match your .image height or set as needed */
+  width: 100%;               /* ensure it fills the grid cell */
+  margin: auto;                 /* remove auto 0, not needed with flex */
+  flex-direction: column;    /* keep if you want column layout */
 }
 
 .image {
   width: auto;
   height: 240px;
-  object-fit: cover;
+  object-fit: contain;
 }
-
+.product-list-btn {
+  /* display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px; */
+  width: 100%;
+  display: flex;
+  /* flex-direction: row; */
+  /* justify-content: space-between; */
+  justify-content: end;
+  align-items: center;
+}
 button.add-to-cart:hover {
   opacity: 0.8;
 }
@@ -61,24 +110,32 @@ button.add-to-cart:active {
 
 button.add-to-cart {
   background-color: #1c3052; /* Green */
-  width: 25%;
+  /* width: 100%; */
   color: white;
-  padding: 10px 20px;
-  margin: 5px;
-  border: none;
-  border-radius: 5px;
+  padding: 8px 12px;
+  /* margin: 5px; */
   cursor: pointer;
-  font-size: 16px;
+  border: none;;
+  border-radius: 22px;
+  font-size: 0.7rem;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s;
 }
 
 button.add-to-favourites {
-  background-color: #0f0f0f; /* Tomato */
-  width: 25%;
-  color: white;
-  padding: 10px 20px;
-  margin: 5px;
-  border: none;
-  border-radius: 5px;
+  color: rgb(254, 78, 78);
+  background: none;
+  border: 2px solid rgb(255, 128, 128);
+  border-radius: 50%;         /* Make it a circle */
+  width: 40px;                /* Set width and height to same value */
+  height: 40px;
+  display: flex;              /* Center the icon */
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  font-size: 16px;
+  font-weight: 600;
+  font-size: 1rem;          /* Larger heart */
+  transition: all 0.2s;
+  padding: 0;                 /* Remove default padding */
 }

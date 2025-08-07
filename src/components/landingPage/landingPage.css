@@ -1,7 +1,6 @@
 .landing-page {
     height: auto; /* Viewport height */
     overflow-y: scroll; /* Allows content to scroll */
-    scrollbar-width: 8px; 
     align-items: center;
     background-color: rgb(255, 255, 255);
     bottom: 20px;

@@ -1,13 +1,11 @@
 
 .product-overview-page{
   background: linear-gradient(to top, #ffffff, #edeeef) !important; /* Gradient from light pink to a lighter shade */
-
-
 }
 .product-overview-container {
   max-width: 1400px;
-  margin: 5rem auto;
-  padding: 2rem 0;
+  margin: 0rem auto;
+  padding: 6rem 0;
 }
 
 .product-overview-grid {
@@ -20,6 +18,8 @@
   background-color: #fff;
   border-radius: 32px;
   padding: 1rem 2rem;
+  border: 1px solid #eee;
+
 }
 /* Product Image */
 .product-image-container {
@@ -28,13 +28,15 @@
   border-radius: 32px;
   overflow: hidden;
   background-color: #fff;
+  padding-top: 0px;
 }
 
 .product-image {
-  width: 100%;
+  width: 80%;
   height: 400px;
   object-fit: contain;
   cursor: zoom-in;
+  margin: 0 auto;
 }
 
 /* Product Info */
@@ -51,11 +53,16 @@
 
 /* Description */
 .product-description-section {
-  margin: 2rem 0;
+  margin: 1rem 0;
+  background-color: #fff;
+  border-radius: 32px;
+  padding: 1rem 2rem;
+  border: 1px solid #eee;
 }
 
 .description-content {
-  line-height: 1.6;
+  /* line-height: 1.5; */
+  font-size: 0.8rem;
 }
 
 .description-toggle {
@@ -189,6 +196,41 @@
   color: #1d3557;
 }
 
+/* Styles for the arrows in the popup modal */
+.image-modal .slick-arrow {
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex !important; /* Override slick's default display */
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  transition: background-color 0.3s ease;
+}
+
+.image-modal .slick-arrow:hover {
+  background-color: rgba(255, 255, 255, 1);
+}
+
+/* 
+  THIS IS THE KEY FIX:
+  It targets the default slick arrow and removes its content,
+  leaving only your custom icon visible.
+*/
+.image-modal .slick-arrow::before {
+  content: "" !important;
+}
+
+/* Adjust arrow positions for better visuals */
+.image-modal .slick-prev {
+  left: 25px;
+}
+
+.image-modal .slick-next {
+  right: 25px;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .product-overview-grid {
@@ -231,7 +273,7 @@
 }
 
 .Toastify__toast--success {
-  background-color: #4CAF50;
+  background-color: #ffffff;
 }
 
 .Toastify__toast--error {

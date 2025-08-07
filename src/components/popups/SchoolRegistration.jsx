@@ -197,7 +197,9 @@ const handleSuccessClose = () => {
       {!isLogin && (
         <>
           <div style={styles.formGroup} className='form-group'>
-            <input
+            <TextField
+              variant="standard"
+              label="School Name"
               type="text"
               name="school_name"
               placeholder='School Name'
@@ -205,11 +207,12 @@ const handleSuccessClose = () => {
               onChange={handleChange}
               required
               style={styles.inputField}
-              className="custom-input"
             />
           </div>
           <div style={styles.formGroup} className='form-group'>
-            <input
+            <TextField
+              variant="standard"
+              label="Syllabus Type"
               type="text"
               name="syllabus_type"
               placeholder='Syllabus Type'
@@ -217,11 +220,12 @@ const handleSuccessClose = () => {
               onChange={handleChange}
               required
               style={styles.inputField}
-              className="custom-input"
             />
           </div>
           <div style={styles.formGroup} className='form-group'>
-            <input
+            <TextField
+              variant="standard"
+              label="Admin Name"
               type="text"
               name="admin_name"
               placeholder='Admin Name'
@@ -229,11 +233,12 @@ const handleSuccessClose = () => {
               onChange={handleChange}
               required
               style={styles.inputField}
-              className="custom-input"
             />
           </div>
           <div style={styles.formGroup} className='form-group'>
-            <input
+            <TextField
+              variant="standard"
+              label="Mobile Number"
               type="text"
               name="mobile_number"
               placeholder='Mobile Number'
@@ -241,11 +246,12 @@ const handleSuccessClose = () => {
               onChange={handleChange}
               required
               style={styles.inputField}
-              className="custom-input"
             />
           </div>
           <div style={styles.formGroup} className='form-group'>
-            <input
+            <TextField
+              variant="standard"
+              label="Email"
               type="email"
               name="email"
               placeholder='Email'
@@ -253,14 +259,15 @@ const handleSuccessClose = () => {
               onChange={handleChange}
               required
               style={styles.inputField}
-              className="custom-input"
             />
           </div>
         </>
       )}
       {isLogin && !useMobileLogin && (
         <div style={styles.formGroup} className='form-group'>
-          <input
+          <TextField
+            variant="standard"
+            label="School ID"
             type="text"
             name="schoolId"
             placeholder='School ID'
@@ -268,13 +275,14 @@ const handleSuccessClose = () => {
             onChange={handleChange}
             required
             style={styles.inputField}
-            className="custom-input"
           />
         </div>
       )}
       {isLogin && useMobileLogin && (
         <div style={styles.formGroup} className='form-group'>
-          <input
+          <TextField
+            variant="standard"
+            label="Mobile Number"
             type="text"
             name="mobile_number"
             placeholder='Mobile Number'
@@ -282,13 +290,14 @@ const handleSuccessClose = () => {
             onChange={handleChange}
             required
             style={styles.inputField}
-            className="custom-input"
           />
         </div>
       )}
       {!showOTP && (
         <div style={styles.formGroup} className='form-group'>
-          <input
+          <TextField
+            variant="standard"
+            label="Password"
             type="password"
             name="password"
             placeholder='Password'
@@ -296,7 +305,6 @@ const handleSuccessClose = () => {
             onChange={handleChange}
             required
             style={styles.inputField}
-            className="custom-input"
           />
         </div>
       )}
