@@ -40,7 +40,7 @@ function EcommerceDashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [userData, setUserData] = useState(null);
   const [showAuth, setShowAuth] = useState(false);
-  const { user, isAuthenticated, loginUser, logoutUser } = useContext(GlobalStateContext);
+  const { user, isUserAuthenticated, loginUser, logoutUser } = useContext(GlobalStateContext);
   const navigate = useNavigate();
 
   // Fetch user data after login
@@ -130,7 +130,7 @@ function EcommerceDashboard() {
     <div className="dashboardStyle" style={dashboardStyle}>
       <EcommerceNavbar onLoginClick={handleOpenAuth} />
       <Container style={contentStyle}>
-        {isAuthenticated && userData && (
+        {isUserAuthenticated && userData && (
           <div style={{ background: '#fefae0', border: '1px #fefae0', padding: '10px 22px', borderRadius: '200px' }}>
             <Typography style={{ fontWeight: '600' }}>Welcome, {userData.name}!</Typography>
           </div>

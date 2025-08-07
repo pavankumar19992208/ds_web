@@ -73,10 +73,10 @@ function EcommerceNavbar() {
   const [error, setError] = useState('');
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [authPopupOpen, setAuthPopupOpen] = useState(false);
-  const [cartCount, setCartCount] = useState(0);
+  // const [cartCount, setCartCount] = useState(0);
   const [orderCount, setOrderCount] = useState(0);
   const navigate = useNavigate();
-  const { user } = useContext(GlobalStateContext) || {};
+  const { user, cartCount, setCartCount } = useContext(GlobalStateContext) || {};
 
   // Fetch cart count for logged-in user
   useEffect(() => {
@@ -94,7 +94,7 @@ function EcommerceNavbar() {
       }
     };
     fetchCartCount();
-  }, [user]);
+  }, [user, setCartCount]);
 
   // Fetch order count for logged-in user
   useEffect(() => {
@@ -168,7 +168,7 @@ function EcommerceNavbar() {
             <img src={logo} alt="Logo" style={{ width: 40, height: 36 }} />
           </IconButton>
           <button className='nav-heading' onClick={() => navigate('/ecommerce-dashboard')}>
-            Cartsy
+            Shoppers
           </button>
 
           <Search className="search">

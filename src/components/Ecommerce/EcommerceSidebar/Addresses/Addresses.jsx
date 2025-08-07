@@ -7,6 +7,8 @@ import Lottie from 'lottie-react';
 import loadingAnimation from '../../loader/loader.json';
 import './Addresses.css';
 
+const GEOCODE_API = import.meta.env.VITE_GEOCODE_API; ;
+
 const Addresses = () => {
   const [addresses, setAddresses] = useState([]);
   const [showForm, setShowForm] = useState(false);
@@ -68,6 +70,7 @@ const Addresses = () => {
 
   // Fetch addresses from API
   useEffect(() => {
+    if (!user) return;
     if (user?.id && typeof user.id === 'number') {
       fetchAddresses();
     } else {
@@ -95,18 +98,6 @@ const Addresses = () => {
     zIndex: 9999,
     backgroundColor: 'rgba(255, 255, 255, 0.25)'
   };
-
-  // if (isLoading) {
-  //   return (
-  //     <div style={loaderStyle}>
-  //       <Lottie
-  //         animationData={loadingAnimation}
-  //         loop={true}
-  //         style={{ width: 200, height: 200 }}
-  //       />
-  //     </div>
-  //   );
-  // }
 
   // Handler for edit icon click
   const handleEditClick = (address) => {
@@ -139,6 +130,36 @@ const Addresses = () => {
   // Update handleSubmit to handle both add and edit
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Build the address string from form fields
+  const addressString = [
+    formData.flatNo,
+    formData.area,
+    formData.landmark,
+    formData.city,
+    formData.state,
+    formData.pincode,
+    "India"
+  ].filter(Boolean).join(", ");
+
+  let lat = formData.lat;
+  let lon = formData.lon;
+
+  // Fetch lat/lon from Google Geocoding API
+  try {
+    const geoRes = await fetch(
+      `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(addressString)}&key=${GEOCODE_API}`
+    );
+    const geoData = await geoRes.json();
+    if (geoData.status === "OK" && geoData.results.length > 0) {
+      lat = geoData.results[0].geometry.location.lat;
+      lon = geoData.results[0].geometry.location.lng;
+    }
+  } catch (err) {
+    console.error("Failed to fetch lat/lon from address", err);
+    // Optionally alert the user or proceed without lat/lon
+  }
+
     const payload = {
       user_id: user.id,
       full_name: formData.fullName,
@@ -151,8 +172,8 @@ const Addresses = () => {
       state: formData.state,
       country: 'India',
       is_default: formData.isDefault,
-      lat: formData.lat,
-      lon: formData.lon
+      lat,
+      lon 
     };
 
     try {
@@ -272,47 +293,75 @@ const Addresses = () => {
     }
   };
 
-  const handleAutofill = async () => {
-    if (!navigator.geolocation) {
-      alert("Geolocation is not supported by your browser.");
-      return;
-    }
+const handleAutofill = async () => {
+  if (!navigator.geolocation) {
+    alert("Geolocation is not supported by your browser.");
+    return;
+  }
 
-    navigator.geolocation.getCurrentPosition(async (position) => {
-      const { latitude, longitude } = position.coords;
+  navigator.geolocation.getCurrentPosition(async (position) => {
+    const { latitude, longitude } = position.coords;
 
-      try {
-        const response = await fetch(`https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=d796b29e46d84caebda6f2d39a91f766`);
-        const data = await response.json();
+    try {
+      const response = await fetch(
+        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${GEOCODE_API}`
+      );
+      const data = await response.json();
 
-        if (data.results.length > 0) {
-          const location = data.results[0].components;
+      if (data.status === "OK" && data.results.length > 0) {
+        const components = data.results[0].address_components;
 
-          setFormData((prev) => ({
-            ...prev,
-            city: location.city || location.town || location.village || '',
-            state: location.state || '',
-            pincode: location.postcode || '',
-            area: location.suburb || location.neighbourhood || '',
-            flatNo: '',
-            landmark: '',
-            lat: latitude,
-            lon: longitude
-          }));
-        } else {
-          alert("Could not autofill the address. Please fill it manually.");
-        }
-      } catch (error) {
-        console.error('Autofill error:', error);
-        alert("Failed to fetch location data.");
+        // Helper to get component by type
+        const getComponent = (type) =>
+          components.find((c) => c.types.includes(type))?.long_name || "";
+
+        // Try to extract as much as possible
+        const flatNo =
+          getComponent("premise") ||
+          getComponent("subpremise") ||
+          getComponent("street_number") ||
+          "";
+        const area =
+          getComponent("route") ||
+          getComponent("sublocality_level_1") ||
+          getComponent("neighborhood") ||
+          "";
+        const landmark =
+          getComponent("point_of_interest") ||
+          getComponent("establishment") ||
+          "";
+        const city =
+          getComponent("locality") ||
+          getComponent("administrative_area_level_2") ||
+          "";
+        const state = getComponent("administrative_area_level_1") || "";
+        const pincode = getComponent("postal_code") || "";
+
+        setFormData((prev) => ({
+          ...prev,
+          city,
+          state,
+          pincode,
+          area,
+          flatNo,
+          landmark,
+          lat: latitude,
+          lon: longitude,
+        }));
+      } else {
+        alert("Could not autofill the address. Please fill it manually.");
       }
-    }, (err) => {
-      console.error(err);
-      alert("Unable to fetch your location.");
-    });
-  };
+    } catch (error) {
+      console.error("Autofill error:", error);
+      alert("Failed to fetch location data.");
+    }
+  }, (err) => {
+    console.error(err);
+    alert("Unable to fetch your location.");
+  });
+};
 
-  return (
+return (
     <div className="addresses-page">
       {isLoading && (
         <div style={loaderStyle}>

@@ -7,7 +7,7 @@ export const EcommerceStateProvider = ({ children }) => {
   const [agent, setAgent] = useState(null);
   const [isUserAuthenticated, setIsUserAuthenticated] = useState(false);
   const [isAgentAuthenticated, setIsAgentAuthenticated] = useState(false);
-
+  const [cartCount, setCartCount] = useState(0);
   // Check for existing session on initial load
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -59,7 +59,9 @@ export const EcommerceStateProvider = ({ children }) => {
         loginAgent,
         logoutAgent,
         setUser,
-        setAgent
+        setAgent,
+        cartCount,
+        setCartCount
       }}
     >
       {children}

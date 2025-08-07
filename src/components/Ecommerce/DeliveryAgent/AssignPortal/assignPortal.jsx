@@ -95,8 +95,8 @@ const AssignPortal = () => {
                     setSelectedAgent("");
                     setSelectedOrders([]);
                     setTimeout(() => {
-                    window.location.reload();
-                }, 1200);
+                        window.location.reload();
+                    }, 1200);
                 } else {
                     setMessage("❌ " + (data.detail || "Assignment failed."));
                 }
@@ -109,148 +109,151 @@ const AssignPortal = () => {
     };
 
     return (
-        <div style={{ display: "flex", gap: 32 }}>
-            {/* Left: Assign UI */}
-            <div style={styles.container}>
-                <h2 style={styles.header}>Assign Delivery</h2>
-
-                {/* Agent Selection */}
-                <div style={styles.formGroup}>
-                    <label style={styles.label}>1. Select Agent</label>
-                    <select
-                        value={selectedAgent}
-                        onChange={(e) => setSelectedAgent(e.target.value)}
-                        style={styles.selectInput}
-                    >
-                        <option value="">-- Choose an Agent --</option>
-                        {agents.map((agent) => (
-                            <option key={agent.id} value={agent.id}>
-                                {agent.name}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-
-                {/* Order Selection */}
-                <div style={styles.formGroup}>
-                    <label style={styles.label}>2. Select Order(s)</label>
-                    {/* Select All Checkbox */}
-                    <div style={{ marginBottom: "8px" }}>
-                        <input
-                            type="checkbox"
-                            id="selectAllOrders"
-                            checked={orders.length > 0 && selectedOrders.length === orders.length}
-                            onChange={(e) => {
-                                if (e.target.checked) {
-                                    setSelectedOrders(orders.map((order) => order.id));
-                                } else {
-                                    setSelectedOrders([]);
-                                }
-                            }}
-                        />
-                        <label htmlFor="selectAllOrders" style={{ marginLeft: 8, fontWeight: 500 }}>
-                            Select All
-                        </label>
-                    </div>
-                    <div style={styles.orderListContainer}>
-                        {orders
-                            .filter(order => !order.assigned_agent_id)
-                            .map((order) => {
-                                const isSelected = selectedOrders.includes(order.id);
-                                return (
-                                    <div
-                                        key={order.id}
-                                        onClick={() => handleOrderToggle(order.id)}
-                                        style={{
-                                            ...styles.orderItem,
-                                            ...(isSelected ? styles.orderItemSelected : {}),
-                                            display: "flex",
-                                            alignItems: "center",
-                                            gap: "12px"
-                                        }}
-                                    >
-                                        {isSelected && <CheckIcon />}
-                                        {order.mainImageUrl && (
-                                            <img
-                                                src={order.mainImageUrl}
-                                                alt={order.product_name || "Order"}
-                                                style={{ width: 40, height: 40, objectFit: "cover", borderRadius: 6 }}
-                                            />
-                                        )}
-                                        <div>
-                                            <div style={{ fontWeight: 600 }}>{order.product_name || order.description}</div>
-                                            <div style={{ fontSize: 13, color: "#555" }}>{order.address}</div>
-                                        </div>
-                                    </div>
-                                );
-                            })}
-                    </div>
-                </div>
-
-                {/* Assign Button */}
-                <button onClick={handleAssign} style={styles.assignButton}>
-                    Assign Now
-                </button>
-
-                {/* Feedback Message */}
-                {message && (
-                    <div
-                        style={{
-                            ...styles.message,
-                            color: message.startsWith("✅") ? "#28a745" : "#dc3545",
-                        }}
-                    >
-                        {message}
-                    </div>
-                )}
-            </div>
-            {/* Right: Assigned Agents */}
-            <div style={styles.assignedContainer}>
-                <h3 style={{ marginBottom: 16 }}>Assigned Agents</h3>
-                {assignedAgents.length === 0 && (
-                    <div style={{ color: "#888" }}>No assignments yet.</div>
-                )}
-                {assignedAgents.map((agent) => (
-                    <div key={agent.agent_id} style={styles.agentSection}>
-                        <div
-                            style={styles.agentHeader}
-                            onClick={() => handleExpandAgent(agent.agent_id)}
+        <div>
+            <h2 style={{ margin: "1rem 1rem", backgroundColor: "#f5f5f5", padding: "12px", borderRadius: "8px" }}>Delivery Assign Portal</h2>
+            <div style={{ display: "flex", gap: 32 }}>
+                {/* Left: Assign UI */}
+                <div style={styles.container}>
+                    <h2 style={styles.header}>Assign Delivery</h2>
+                    {/* Agent Selection */}
+                    <div style={styles.formGroup}>
+                        <label style={styles.label}>1. Select Agent</label>
+                        <select
+                            value={selectedAgent}
+                            onChange={(e) => setSelectedAgent(e.target.value)}
+                            style={styles.selectInput}
                         >
-                            <span style={{ fontWeight: 600 }}>{agent.agent_name}</span>
-                            <span style={{
-                                marginLeft: 8,
-                                cursor: "pointer",
-                                fontSize: 18,
-                                userSelect: "none",
-                                transform: expandedAgents[agent.agent_id] ? "rotate(90deg)" : "rotate(0deg)",
-                                transition: "transform 0.2s"
-                            }}>
-                                ▶
-                            </span>
-                        </div>
-                        {expandedAgents[agent.agent_id] && (
-                            <div style={styles.agentOrdersList}>
-                                {agent.orders.map((order) => (
-                                    <div key={order.id} style={styles.agentOrderItem}>
-                                        {order.mainImageUrl && (
-                                            <img
-                                                src={order.mainImageUrl}
-                                                alt={order.product_name || "Order"}
-                                                style={{ width: 32, height: 32, objectFit: "cover", borderRadius: 4, marginRight: 8 }}
-                                            />
-                                        )}
-                                        <div>
-                                            <div style={{ fontWeight: 500 }}>{order.product_name || order.description}</div>
-                                            <div style={{ fontSize: 12, color: "#555" }}>{order.address}</div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
+                            <option value="">-- Choose an Agent --</option>
+                            {agents.map((agent) => (
+                                <option key={agent.id} value={agent.id}>
+                                    {agent.name}- {agent.id}
+                                </option>
+                            ))}
+                        </select>
                     </div>
-                ))}
+
+                    {/* Order Selection */}
+                    <div style={styles.formGroup}>
+                        <label style={styles.label}>2. Select Order(s)</label>
+                        {/* Select All Checkbox */}
+                        <div style={{ marginBottom: "8px" }}>
+                            <input
+                                type="checkbox"
+                                id="selectAllOrders"
+                                checked={orders.length > 0 && selectedOrders.length === orders.length}
+                                onChange={(e) => {
+                                    if (e.target.checked) {
+                                        setSelectedOrders(orders.map((order) => order.id));
+                                    } else {
+                                        setSelectedOrders([]);
+                                    }
+                                }}
+                            />
+                            <label htmlFor="selectAllOrders" style={{ marginLeft: 8, fontWeight: 500 }}>
+                                Select All
+                            </label>
+                        </div>
+                        <div style={styles.orderListContainer}>
+                            {orders
+                                .filter(order => !order.assigned_agent_id)
+                                .map((order) => {
+                                    const isSelected = selectedOrders.includes(order.id);
+                                    return (
+                                        <div
+                                            key={order.id}
+                                            onClick={() => handleOrderToggle(order.id)}
+                                            style={{
+                                                ...styles.orderItem,
+                                                ...(isSelected ? styles.orderItemSelected : {}),
+                                                display: "flex",
+                                                alignItems: "center",
+                                                gap: "12px"
+                                            }}
+                                        >
+                                            {isSelected && <CheckIcon />}
+                                            {order.mainImageUrl && (
+                                                <img
+                                                    src={order.mainImageUrl}
+                                                    alt={order.product_name || "Order"}
+                                                    style={{ width: 40, height: 40, objectFit: "cover", borderRadius: 6 }}
+                                                />
+                                            )}
+                                            <div>
+                                                <div style={{ fontWeight: 600 }}>{order.product_name || order.description} - Order ID : #{order.id}</div>
+                                                <div style={{ fontSize: 13, color: "#555" }}>{order.address}</div>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                        </div>
+                    </div>
+
+                    {/* Assign Button */}
+                    <button onClick={handleAssign} style={styles.assignButton}>
+                        Assign Now
+                    </button>
+
+                    {/* Feedback Message */}
+                    {message && (
+                        <div
+                            style={{
+                                ...styles.message,
+                                color: message.startsWith("✅") ? "#28a745" : "#dc3545",
+                            }}
+                        >
+                            {message}
+                        </div>
+                    )}
+                </div>
+                {/* Right: Assigned Agents */}
+                <div style={styles.assignedContainer}>
+                    <h3 style={{ marginBottom: 16 }}>Assigned Agents</h3>
+                    {assignedAgents.length === 0 && (
+                        <div style={{ color: "#888" }}>No assignments yet.</div>
+                    )}
+                    {assignedAgents.map((agent) => (
+                        <div key={agent.agent_id} style={styles.agentSection}>
+                            <div
+                                style={styles.agentHeader}
+                                onClick={() => handleExpandAgent(agent.agent_id)}
+                            >
+                                <span style={{ fontWeight: 600 }}>{agent.agent_name} - {agent.agent_id}</span>
+                                <span style={{
+                                    marginLeft: 8,
+                                    cursor: "pointer",
+                                    fontSize: 18,
+                                    userSelect: "none",
+                                    transform: expandedAgents[agent.agent_id] ? "rotate(90deg)" : "rotate(0deg)",
+                                    transition: "transform 0.2s"
+                                }}>
+                                    ▶
+                                </span>
+                            </div>
+                            {expandedAgents[agent.agent_id] && (
+                                <div style={styles.agentOrdersList}>
+                                    {agent.orders.map((order) => (
+                                        <div key={order.id} style={styles.agentOrderItem}>
+                                            {order.mainImageUrl && (
+                                                <img
+                                                    src={order.mainImageUrl}
+                                                    alt={order.product_name || "Order"}
+                                                    style={{ width: 32, height: 32, objectFit: "cover", borderRadius: 4, marginRight: 8 }}
+                                                />
+                                            )}
+                                            <div>
+                                                <div style={{ fontWeight: 500 }}>{order.product_name || order.description}</div>
+                                                <div style={{ fontSize: 12, color: "#555" }}>{order.address}</div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    ))}
+                </div>
             </div>
         </div>
+
     );
 };
 
@@ -258,7 +261,7 @@ const AssignPortal = () => {
 const styles = {
 
     assignedContainer: {
-        margin: "2rem auto",
+        margin: "0rem auto",
         padding: "2rem",
         // minWidth: 320,
         width: 600,
@@ -293,7 +296,7 @@ const styles = {
     },
     container: {
         width: 750,
-        margin: "2rem auto",
+        margin: "0rem auto",
         padding: "2rem",
         fontFamily: "'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
         border: "1px solid #e0e0e0",

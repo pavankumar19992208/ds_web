@@ -78,7 +78,7 @@ const CheckoutPage = () => {
   };
 
   useEffect(() => {
-          setIsLoading(true);
+    setIsLoading(true);
 
     const fetchAddresses = async () => {
       try {
@@ -185,6 +185,15 @@ const CheckoutPage = () => {
 
       const orderData = await orderResponse.json();
       setConfirmedOrder(orderData);
+
+      // You can use orderData.order_status to show status
+      if (orderData.order_status === 1) {
+        // Order placed
+      } else if (orderData.order_status === 2) {
+        // Out for delivery
+      } else if (orderData.order_status === 3) {
+        // Delivered
+      }
 
       // 2. Clear the selected items from cart
       try {

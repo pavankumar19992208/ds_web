@@ -78,6 +78,16 @@ const OrdersPage = () => {
     }
   };
 
+  const getOrderStatusIndex = (order_status) => {
+  // 1 = Order Placed, 2 = Out for Delivery, 3 = Delivered
+  switch (order_status) {
+    case 1: return 0; // Order Placed
+    case 2: return 3; // Out for Delivery
+    case 3: return 4; // Delivered
+    default: return 0;
+  }
+};
+
   // Generate month options
   const months = [
     { value: '', label: 'All Months' },
@@ -348,38 +358,37 @@ const OrdersPage = () => {
     }
   };
 
-  const OrderTracker = ({ status }) => {
-    const currentStageIndex = getStatusIndex(status);
+const OrderTracker = ({ order_status }) => {
+  const currentStageIndex = getOrderStatusIndex(order_status);
 
-    // Calculate the width of the progress bar
-    const progressPercentage = currentStageIndex > 0
-      ? (currentStageIndex / (stages.length - 1)) * 100
-      : 0;
+  const progressPercentage = currentStageIndex > 0
+    ? (currentStageIndex / (stages.length - 1)) * 80
+    : 0;
 
-    return (
-      <div className="tracker-container">
-        <div className="tracker-progress-bar" style={{ width: `${progressPercentage}%` }}></div>
-        <div className="tracker-stages">
-          {stages.map((stage, index) => {
-            const isCompleted = index < currentStageIndex;
-            const isActive = index === currentStageIndex;
-            const isDelivered = status.toLowerCase() === 'delivered' && index === stages.length - 1;
+  return (
+    <div className="tracker-container">
+      <div className="tracker-progress-bar" style={{ width: `${progressPercentage}%` }}></div>
+      <div className="tracker-stages">
+        {stages.map((stage, index) => {
+          const isCompleted = index < currentStageIndex;
+          const isActive = index === currentStageIndex;
+          const isDelivered = order_status === 3 && index === stages.length - 1;
 
-            let stageClass = 'tracker-stage';
-            if (isCompleted || isDelivered) stageClass += ' completed';
-            if (isActive) stageClass += ' active';
+          let stageClass = 'tracker-stage';
+          if (isCompleted || isDelivered) stageClass += ' completed';
+          if (isActive) stageClass += ' active';
 
-            return (
-              <div key={stage.name} className={stageClass}>
-                <div className="stage-icon">{stage.icon}</div>
-                <div className="stage-name">{stage.name}</div>
-              </div>
-            );
-          })}
-        </div>
+          return (
+            <div key={stage.name} className={stageClass}>
+              <div className="stage-icon">{stage.icon}</div>
+              <div className="stage-name">{stage.name}</div>
+            </div>
+          );
+        })}
       </div>
-    );
-  };
+    </div>
+  );
+};
 
   return (
     <>
@@ -540,7 +549,7 @@ const OrdersPage = () => {
                     <div className="od-detail-row tracker-row">
                       {/* <span className="od-detail-label">Order Progress:</span> */}
                       <div className="od-detail-value">
-                        <OrderTracker status={order.status} />
+                        <OrderTracker order_status={order.order_status} />
                       </div>
                     </div>
                     {/* <div className="od-detail-row">

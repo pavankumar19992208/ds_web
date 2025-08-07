@@ -29,7 +29,7 @@ const ProductOverview = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAddedToCart, setIsAddedToCart] = useState(false);
   const navigate = useNavigate();
-  const { user } = useContext(GlobalStateContext) || {}; // <-- Get user from context
+  const { user, cartCount, setCartCount } = useContext(GlobalStateContext) || {}; // <-- Get user from context
 
   const loaderStyle = {
     display: 'flex',
@@ -65,6 +65,7 @@ const ProductOverview = () => {
   }, [productId]);
 
   const handleAddToCart = async () => {
+    setIsLoading(true);
     if (!user || !user.id) {
       toast.error("Please login to add to cart.");
       return;
@@ -87,8 +88,10 @@ const ProductOverview = () => {
 
       const data = await response.json();
 
+      if (setCartCount) setCartCount(prev => prev + quantity); // <-- Update cart count in context
+
       toast.success(
-        <div>
+        <div style={{ color: '#333' }}>
           {product?.name} <span className="toast-bold-yellow">added to cart!</span>
         </div>,
         {
@@ -101,7 +104,7 @@ const ProductOverview = () => {
           progress: undefined,
         }
       );
-
+      setIsLoading(false);
       setIsAddedToCart(true);
       setTimeout(() => {
         setIsAddedToCart(false);
@@ -253,6 +256,10 @@ const ProductOverview = () => {
             <div className="product-info-container">
               <div className="product-header">
                 <h3>{product?.name}</h3>
+                <div className="product-rating" style={{ color: '#FFD700', fontSize: '1.2em', margin: '4px 0' }}>
+                  {'★★★★'} {/* 5 filled stars */}
+                  <span style={{ color: '#888', fontSize: '0.9em', marginLeft: '8px' }}>(4.8/5)</span>
+                </div>
                 <p className="product-price">₹{product?.price}</p>
               </div>
               <div className="product-actions">

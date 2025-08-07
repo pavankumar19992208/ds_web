@@ -90,16 +90,16 @@ function AdminUploadPage() {
             alert("Please select a main image to upload.");
             return;
         }
-    
+
         if (images.length === 0) {
             alert("Please select images to upload.");
             return;
         }
-    
+
         const mainImageRef = ref(storage, `images/${mainImage.name}`);
         await uploadBytes(mainImageRef, mainImage);
         const mainImageUrl = await getDownloadURL(mainImageRef);
-    
+
         const imageUrls = await Promise.all(images.map(async (image) => {
             const imageRef = ref(storage, `images/${image.name}`);
             await uploadBytes(imageRef, image);
@@ -192,15 +192,15 @@ function AdminUploadPage() {
             alert("Replacement failed");
         }
     };
-    
+
 
     const filteredProducts = fetchedProducts
-    .filter(product => product.name.toLowerCase().includes(searchQuery.toLowerCase()))
-    .filter(product => !demandedProducts.some(demandedProduct => demandedProduct.id === product.id));
+        .filter(product => product.name.toLowerCase().includes(searchQuery.toLowerCase()))
+        .filter(product => !demandedProducts.some(demandedProduct => demandedProduct.id === product.id));
 
     return (
         <Container>
-            <Typography variant="h6" gutterBottom>Upload Product Data</Typography>
+            <Typography variant="h6" gutterBottom style={{ margin: "1rem 0", backgroundColor: "#f5f5f5", padding: "12px", borderRadius: "8px", fontWeight: "bold" }}>Upload Product Data</Typography>
             <Grid container spacing={2}>
                 <Grid item xs={12} sm={6}>
                     <TextField
@@ -253,7 +253,7 @@ function AdminUploadPage() {
                     <ReactQuill
                         value={description}
                         onChange={setDescription}
-                        style={{ height: '40vh', marginBottom: '16px' }}
+                        style={{ height: '40vh', marginBottom: '3rem' }}
                     />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -263,6 +263,7 @@ function AdminUploadPage() {
                         startIcon={<PhotoCamera />}
                         fullWidth
                         margin="normal"
+                        style={{ backgroundColor: "#f4c32fff", borderRadius: "20px", color: "#000", fontWeight: "bold" }}
                     >
                         Upload Main Image
                         <input
@@ -279,6 +280,8 @@ function AdminUploadPage() {
                         startIcon={<PhotoCamera />}
                         fullWidth
                         margin="normal"
+                        style={{ backgroundColor: "#f4c32fff", borderRadius: "20px", color: "#000", fontWeight: "bold" }}
+
                     >
                         Upload Images
                         <input
@@ -316,6 +319,8 @@ function AdminUploadPage() {
                         onClick={handleGenerateKeywords}
                         fullWidth
                         margin="normal"
+                        style={{ backgroundColor: "#f4c32fff", borderRadius: "20px", color: "#000", fontWeight: "bold" }}
+
                     >
                         Generate Keywords
                     </Button>
@@ -327,12 +332,13 @@ function AdminUploadPage() {
                         onClick={handleUpload}
                         fullWidth
                         margin="normal"
+                        style={{ backgroundColor: "#2f8bf4ff", borderRadius: "20px", color: "#000", fontWeight: "bold" }}
                     >
                         Upload
                     </Button>
                 </Grid>
             </Grid>
-            <Typography variant="h6" gutterBottom sx={{marginTop: '20px'}}>Selected Images:</Typography>
+            <Typography variant="h6" gutterBottom sx={{ marginTop: '20px', fontWeight: 'bold', backgroundColor: "#f5f5f5", padding: "12px", borderRadius: "8px"  }}>Selected Images:</Typography>
             <List>
                 {imageNames.map((name, index) => (
                     <ListItem key={index}>
@@ -340,17 +346,18 @@ function AdminUploadPage() {
                     </ListItem>
                 ))}
             </List>
-            
-            <Typography variant="h6" gutterBottom>Demanded Products:</Typography>
-            <List>
+
+            <Typography variant="h6" gutterBottom style={{fontWeight: 'bold', backgroundColor: "#f5f5f5", padding: "12px", borderRadius: "8px" }}>Demanded Products:</Typography>
+            <List style={{ maxHeight: '500px', overflowY: 'auto' }}>
                 {demandedProducts.map((product) => (
-                    <ListItem key={product.id}>
-                        <ListItemText primary={product.name}/>
+                    <ListItem key={product.id} style={{ width: '90%' }}>
+                        <ListItemText primary={product.name} />
                         <ListItemSecondaryAction>
                             <Button
                                 variant="contained"
                                 color="secondary"
                                 onClick={() => handleReplace(product.id, product.name)}
+                                style={{ backgroundColor: "#f4c32fff", borderRadius: "20px", color: "#000", fontWeight: "bold" }}
                             >
                                 Replace
                             </Button>
@@ -359,32 +366,32 @@ function AdminUploadPage() {
                 ))}
             </List>
             <Dialog open={open} onClose={() => setOpen(false)} maxWidth="80vw" fullWidth>
-            <Typography variant="h6" gutterBottom padding={'20px'}>
-                <strong>Selected product:</strong> {selectedProductName}
-            </Typography>
-            <DialogTitle>Select a Product to Replace</DialogTitle>
-            <DialogContent>
-                <TextField
-                    label="Search Products"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    fullWidth
-                    margin="normal"
-                />
-                <List>
-                    {filteredProducts.map((product) => (
-                        <ListItem key={product.id} button onClick={() => handleConfirmReplace(product.id)}>
-                            <ListItemText primary={`${product.name} - ${product.category}`} />
-                        </ListItem>
-                    ))}
-                </List>
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={() => setOpen(false)} color="primary">
-                    Cancel
-                </Button>
-            </DialogActions>
-        </Dialog>
+                <Typography variant="h6" gutterBottom padding={'20px'}>
+                    <strong>Selected product:</strong> {selectedProductName}
+                </Typography>
+                <DialogTitle>Select a Product to Replace</DialogTitle>
+                <DialogContent>
+                    <TextField
+                        label="Search Products"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        fullWidth
+                        margin="normal"
+                    />
+                    <List>
+                        {filteredProducts.map((product) => (
+                            <ListItem key={product.id} button onClick={() => handleConfirmReplace(product.id)}>
+                                <ListItemText primary={`${product.name} - ${product.category}`} />
+                            </ListItem>
+                        ))}
+                    </List>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setOpen(false)} color="primary">
+                        Cancel
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Container>
     );
 }
